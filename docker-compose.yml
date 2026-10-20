@@ -2,7 +2,7 @@
 # Keep the major version in step with the Neon project and the CI service container.
 services:
   db:
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

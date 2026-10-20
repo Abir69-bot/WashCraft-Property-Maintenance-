@@ -16,7 +16,7 @@ and Neon serverless Postgres. The full specification is in [docs/BRIEF.md](docs/
 ## Neon setup (one time)
 
 1. In the Neon console, create a project named **washcraft**. Pick the Postgres version Payload
-   supports (17) and the region closest to your customers. The region can't be changed later.
+   supports (18) and the region closest to your customers. The region can't be changed later.
 2. Neon creates a default branch called **`production`**. Under **Branches**, create a branch
    named **`dev`** from `production`.
 3. For **each** branch, open **Connect** and copy two connection strings:

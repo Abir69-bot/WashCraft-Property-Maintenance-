@@ -10,9 +10,14 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
 - **Neon's default branch is `production`, not `main`.** Neon now names the default branch
   `production`. Docs and scripts use that name; the brief's `main` means the same branch.
   The Git default branch is still `main`.
-- **Neon region: a US region.** The first project was created in AWS ap-southeast-2 (Sydney).
-  The business is in the US, so the project is recreated in the US region closest to its
-  customers (Neon can't move a project). The Vercel functions region must match (Phase 8).
+- **Neon region: AWS us-east-2 (Ohio).** The first project was created in Sydney. The business is
+  in the US, so the project was recreated in Ohio (Neon can't move a project). The Vercel
+  functions region must match: `iad1`/`cle1` (Phase 8).
+- **Postgres 18.** The Neon project runs 18.6, so the Docker test database and the CI service
+  container use `postgres:18` to match.
+- **`sslmode=verify-full` in connection strings.** node-postgres already treats `require` as
+  `verify-full` and prints a warning. Saying it explicitly keeps the same (secure) behavior
+  without the warning.
 - **Versions (latest stable that the toolchain supports):** Next 16.4.2, React 19.3.1, Payload 3.91,
   Tailwind 4.3, Zod 4, Vitest 5, pnpm 12. **TypeScript 6.0.3, not 7.0:** typescript-eslint only
   supports TS < 6.1. **ESLint 9, not 10:** Next's bundled lint plugins don't support 10 yet.

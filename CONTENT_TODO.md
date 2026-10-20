@@ -52,8 +52,7 @@ _Filled in Phase 2 when placeholder pricing rules are seeded (`needsReview: true
 
 ## 6. Infrastructure decisions
 
-- [ ] **Neon region.** Recreate the Neon project in the US region closest to your customers
-      (it was first created in Sydney).
+- [x] **Neon region.** Recreated in AWS US East 2 (Ohio).
 
 ## 7. Local SEO setup (do once, keep name/address/phone identical everywhere)
 
