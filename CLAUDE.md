@@ -69,7 +69,8 @@ src/
   lib/schemas/          shared Zod schemas
   lib/utils.ts          cn() (tailwind-merge aware of text-h1/h2/h3/body/small)
   access/roles.ts       owner/staff access helpers
-  components/brand/     logo (placeholder)
+  components/brand/     <Logo height> (next/image of src/assets/brand/washcraft-logo.png)
+  assets/brand/         owner's logo (transparent PNG); icons in app/(site) are derived from it
   config/site.ts        business facts (mirrored by the `site-settings` global)
   config/brand-tokens.ts colour tokens + contrast pairs (tested against globals.css)
   seed/                 seed script + content
@@ -96,7 +97,7 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 
 ## Conventions
 
-- Never invent business facts. Read them from site settings (`getSite()`); placeholders in `[BRACKETS]` render as a yellow "TODO" chip in dev and fail `check-config` for prod.
+- Never invent business facts. Read them from site settings (`getSite()`); placeholders in `[BRACKETS]` render as a yellow "TODO" chip in dev and fail `check-config` for prod. Fields in `site.demo` are owner-approved demo stand-ins: render them normally, never treat them as confirmed facts (e.g. no "call us" urgency copy that depends on a real number), and they also fail `check-config`.
 - Every third-party integration is optional: missing env var → console fallback, feature still works or hides itself. Only `DATABASE_URI` is required.
 - Read env vars only through `src/lib/env.ts`.
 - Server Components by default; `'use client'` only for interactive leaves (budget: < 150 KB JS per content page).

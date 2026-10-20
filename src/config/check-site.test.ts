@@ -15,6 +15,7 @@ const complete: SiteConfig = {
   locale: 'en-US',
   region: 'Example Region',
   serviceAreas: ['Northtown', 'Southvale'],
+  demo: [],
 }
 
 const fields = (config: SiteConfig) => checkSiteConfig(config).map((problem) => problem.field)
@@ -30,17 +31,24 @@ describe('isPlaceholder', () => {
 })
 
 describe('checkSiteConfig', () => {
-  it('flags every placeholder in the shipped config', () => {
-    expect(fields(site)).toEqual([
-      'tagline',
+  it('blocks the shipped demo config until the owner confirms it', () => {
+    expect(fields(site)).toEqual(site.demo)
+    expect(site.demo.length).toBeGreaterThan(0)
+  })
+
+  it('flags unset placeholders', () => {
+    const config: SiteConfig = {
+      ...complete,
+      phone: '[PHONE]',
+      serviceAreas: ['Northtown', '[CITY 2]'],
+    }
+    expect(fields(config)).toEqual(['phone', 'serviceAreas[1]'])
+  })
+
+  it('flags fields still marked as demo', () => {
+    expect(fields({ ...complete, demo: ['phone', 'serviceAreas'] })).toEqual([
       'phone',
-      'email',
-      'hours',
-      'region',
-      'address',
-      'serviceAreas[0]',
-      'serviceAreas[1]',
-      'serviceAreas[2]',
+      'serviceAreas',
     ])
   })
 

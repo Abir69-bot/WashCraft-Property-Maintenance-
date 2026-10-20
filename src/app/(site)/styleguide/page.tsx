@@ -14,7 +14,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { Logo, LogoMark } from '@/components/brand/logo'
+import { Logo } from '@/components/brand/logo'
 import {
   Accordion,
   AccordionContent,
@@ -39,7 +39,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SiteValue, TodoChip } from '@/components/ui/todo-chip'
 import { colorTokens, contrastPairs, tokenHex } from '@/config/brand-tokens'
-import { site } from '@/config/site'
+import { site, type DemoField } from '@/config/site'
 import { contrastRatio } from '@/lib/contrast'
 import { isProductionSite } from '@/lib/env'
 
@@ -80,18 +80,26 @@ function Block({
   )
 }
 
-const SITE_FACTS = [
-  ['tagline', site.tagline],
-  ['phone', site.phone],
-  ['email', site.email],
-  ['address', site.address ?? 'Service-area business (no public address)'],
-  ['hours', site.hours],
-  ['country', site.country],
-  ['currency', site.currency],
-  ['locale', site.locale],
-  ['region', site.region],
-  ...site.serviceAreas.map((city, index) => [`service area ${index + 1}`, city]),
-] as const
+const SITE_FACTS: { field: DemoField; label: string; value: string }[] = [
+  { field: 'tagline', label: 'tagline', value: site.tagline },
+  { field: 'phone', label: 'phone', value: site.phone },
+  { field: 'email', label: 'email', value: site.email },
+  {
+    field: 'address',
+    label: 'address',
+    value: site.address ?? 'Service-area business (no street address shown)',
+  },
+  { field: 'hours', label: 'hours', value: site.hours },
+  { field: 'country', label: 'country', value: site.country },
+  { field: 'currency', label: 'currency', value: site.currency },
+  { field: 'locale', label: 'locale', value: site.locale },
+  { field: 'region', label: 'region', value: site.region },
+  ...site.serviceAreas.map((city, index) => ({
+    field: 'serviceAreas' as const,
+    label: `service area ${index + 1}`,
+    value: city,
+  })),
+]
 
 export default function StyleguidePage() {
   if (isProductionSite) notFound()
@@ -407,36 +415,34 @@ export default function StyleguidePage() {
         </div>
       </Block>
 
-      <Block id="logo" title="Logo (placeholder)">
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="flex items-center justify-center rounded-card border border-border p-8">
-            <Logo />
+      <Block id="logo" title="Logo">
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex items-center justify-center gap-8 rounded-card border border-border p-8">
+            <Logo height={160} />
+            <Logo height={64} />
+            <Logo height={40} />
           </div>
-          <div className="flex items-center justify-center rounded-card on-dark p-8">
-            <Logo variant="white" />
+          <div className="flex items-center justify-center gap-8 rounded-card on-dark p-8">
+            <Logo height={160} />
+            <Logo height={64} />
+            <Logo height={40} />
           </div>
-          <div className="flex items-center justify-center rounded-card border border-border p-8 text-ink">
-            <Logo variant="mono" />
-          </div>
-        </div>
-        <div className="mt-6 flex items-center gap-6">
-          <LogoMark className="size-16" />
-          <LogoMark variant="mono" className="size-10 text-primary" />
-          <LogoMark variant="mono" className="size-6 text-ink" />
         </div>
       </Block>
 
       <Block id="facts" title="Site facts">
         <p className="mb-4 max-w-prose text-muted">
-          Unset values show as <TodoChip label="example" />. Production builds fail until the
-          required ones are set (<code>pnpm check-config</code>).
+          Unset values show as <TodoChip label="example" />. Values marked{' '}
+          <Badge tone="sample">Demo</Badge> are stand-ins. Production builds fail until every
+          required value is set and confirmed (<code>pnpm check-config</code>).
         </p>
         <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-[max-content_1fr]">
-          {SITE_FACTS.map(([label, value]) => (
+          {SITE_FACTS.map(({ field, label, value }) => (
             <div key={label} className="contents">
               <dt className="font-semibold">{label}</dt>
-              <dd>
+              <dd className="flex flex-wrap items-center gap-2">
                 <SiteValue value={value} label={label} />
+                {site.demo.includes(field) && <Badge tone="sample">Demo</Badge>}
               </dd>
             </div>
           ))}

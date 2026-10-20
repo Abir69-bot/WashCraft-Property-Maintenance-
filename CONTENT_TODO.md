@@ -9,6 +9,19 @@ Set these in `src/config/site.ts` (or later in the admin under **Site settings**
 `pnpm check-config` lists whatever is still missing. Country (US), currency (USD) and
 language (en-US) are already set.
 
+**Demo values are in place for now** (listed in `site.demo`). The site looks complete, but
+production deploys stay blocked until each one is confirmed or replaced:
+
+| Field          | Demo value                                              |
+| -------------- | ------------------------------------------------------- |
+| `tagline`      | Exterior care, year-round (from your logo)              |
+| `phone`        | (720) 555-0142 (fictional number)                       |
+| `email`        | hello@example.com (fictional address)                   |
+| `address`      | none shown (service-area business)                      |
+| `hours`        | Mon–Sat 7am–6pm                                         |
+| `region`       | Denver Metro                                            |
+| `serviceAreas` | Denver, Aurora, Lakewood, Arvada, Littleton, Centennial |
+
 | Field          | What to provide                                                       | Example format                                           |
 | -------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
 | `tagline`      | One short line under the logo and in search results                   | "Exterior, interior and seasonal care for your property" |
@@ -35,9 +48,11 @@ language (en-US) are already set.
 
 ## 3. Brand
 
-- [ ] **Logo.** The current logo is a placeholder (house roofline over a water droplet) in
-      `public/brand/`, `src/components/brand/logo.tsx`, `src/app/(site)/icon.svg`,
-      `src/app/favicon.ico` and the generated social image. Supply final artwork as SVG.
+- [x] **Logo.** Your badge logo is in use (`src/assets/brand/washcraft-logo.png`), along with
+      the browser-tab, phone home-screen and social-share images made from it.
+- [ ] **Original logo file.** The copy we received had a black background, which was removed
+      automatically. If you have the original PNG with a transparent background (or an SVG/AI
+      vector file), send it for cleaner edges.
 
 ## 4. Photos needed
 

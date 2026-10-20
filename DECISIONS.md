@@ -56,6 +56,35 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
     WorkSafeBC/WSIB.
   - Postal-code fields and checkers say "ZIP code" and match 5-digit ZIP prefixes.
 
+### Demo business details (2026-10-21)
+
+- **Demo stand-ins at the owner's request.** The owner asked for demo values until the real ones are
+  known. They're realistic but can't reach anyone or mislead a customer:
+  - Tagline: "Exterior care, year-round", taken from the line on the owner's logo.
+  - Phone: (720) 555-0142. The 555-0100–0199 range is reserved for fiction.
+  - Email: hello@example.com, a reserved domain.
+  - Address: `null`, presented as a service-area business, so no fake street address is shown.
+  - Hours: Mon–Sat 7am–6pm.
+  - Region: Denver Metro. Cities: Denver, Aurora, Lakewood, Arvada, Littleton and Centennial.
+- **Why Denver Metro:** the logo shows sun, snow and mountains, and the service mix includes snow
+  removal and holiday lighting. Colorado fits both, and it's close to the Neon region (Ohio).
+- **Demo values block production.** `site.demo` lists every stand-in field. `check-config` reports
+  each one, so a production deploy is impossible until the owner confirms or replaces it and
+  removes it from the list.
+
+### Logo (2026-10-21)
+
+- **Owner's logo in use.** The owner sent a raster badge logo (mascot house with crown). The pasted
+  copy had a flat black background, which was removed by flood-filling from the edges. A stray
+  light line along the right edge was cleared too. Result: `src/assets/brand/washcraft-logo.png`
+  (638×595, transparent).
+- **One version for all backgrounds.** The badge has its own dark outline, so it reads on white and
+  on `--primary`. No white or mono variants are needed.
+- **Icons use a crop of the mascot** (crowned house face) on a `--primary` rounded square. The
+  full badge is unreadable at 16–32px.
+- **Pending:** the original file with a transparent background (or a vector version) would give
+  cleaner edges. Tracked in CONTENT_TODO.md.
+
 ### Design system
 
 - **Contrast-safe colour variants.** Several brand hues fail 4.5:1 as text on white:

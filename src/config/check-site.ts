@@ -82,5 +82,9 @@ export function checkSiteConfig(config: SiteConfig): ConfigProblem[] {
     add('foundedYear', `must be between 1900 and ${thisYear}`)
   }
 
+  for (const field of config.demo) {
+    add(field, 'is a demo value (confirm or replace it, then remove it from `demo`)')
+  }
+
   return problems
 }

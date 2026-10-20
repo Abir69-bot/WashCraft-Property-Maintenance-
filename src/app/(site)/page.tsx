@@ -8,7 +8,7 @@ import { isProductionSite } from '@/lib/env'
 export default function HomePage() {
   return (
     <section className="container grid gap-6 section-y">
-      <Logo />
+      <Logo height={160} priority />
       <h1>{site.name}</h1>
       <p className="max-w-prose text-muted">Our new website is on its way.</p>
       {!isProductionSite && (
