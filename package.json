@@ -25,11 +25,16 @@
     "db:migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
     "db:migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create",
     "db:migrate:status": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:status",
-    "check-config": "tsx scripts/check-config.ts"
+    "db:reset-dev": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:fresh && pnpm seed",
+    "seed": "cross-env NODE_ENV=development NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts",
+    "check-config": "tsx scripts/check-config.ts",
+    "content-todo": "tsx scripts/content-todo.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.91.0",
     "@payloadcms/next": "3.91.0",
+    "@payloadcms/plugin-redirects": "3.91.0",
+    "@payloadcms/plugin-seo": "3.91.0",
     "@payloadcms/richtext-lexical": "3.91.0",
     "@payloadcms/ui": "3.91.0",
     "class-variance-authority": "0.7.1",

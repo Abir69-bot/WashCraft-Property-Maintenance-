@@ -4,6 +4,7 @@ import { isSignedIn } from '@/access/roles'
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  admin: { group: 'Admin' },
   access: {
     read: () => true,
     create: isSignedIn,

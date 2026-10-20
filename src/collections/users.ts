@@ -5,6 +5,7 @@ import { fieldIsOwner, isOwner, isOwnerOrSelf, isSignedIn, ROLE_OPTIONS } from '
 export const Users: CollectionConfig = {
   slug: 'users',
   admin: {
+    group: 'Admin',
     useAsTitle: 'email',
     defaultColumns: ['name', 'email', 'role'],
   },

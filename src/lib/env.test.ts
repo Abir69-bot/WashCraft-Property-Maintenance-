@@ -56,6 +56,15 @@ describe('parseEnv', () => {
     expect(parseEnv({ ...base, DB_STORAGE_LIMIT_MB: '3072' }).DB_STORAGE_LIMIT_MB).toBe(3072)
   })
 
+  describe('DB_PUSH', () => {
+    it('is on only when NODE_ENV is explicitly development', () => {
+      expect(parseEnv({ ...base, NODE_ENV: 'development' }).DB_PUSH).toBe(true)
+      expect(parseEnv(base).DB_PUSH).toBe(false)
+      expect(parseEnv({ ...base, NODE_ENV: 'test' }).DB_PUSH).toBe(false)
+      expect(parseEnv({ ...base, NODE_ENV: 'production' }).DB_PUSH).toBe(false)
+    })
+  })
+
   describe('SITE_ENV', () => {
     it('is production for a production build outside Vercel', () => {
       expect(parseEnv({ ...base, NODE_ENV: 'production' }).SITE_ENV).toBe('production')

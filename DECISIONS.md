@@ -125,3 +125,72 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
   in Phase 5).
 - Twilio has no free plan; trial credit can only text verified numbers. Google Places needs a
   billing-enabled Google Cloud account. Both fall back gracefully.
+
+## Phase 2 — Content model + seed (2026-10-21)
+
+### Schema
+
+- **Drafts only where there's a page.** Services, categories, cities, posts, solutions, team
+  members and job openings get drafts, preview and SEO fields (max 20 versions each).
+  Testimonials, gallery items, client logos, FAQs, plans and pricing have no page of their own,
+  so they publish immediately and have no SEO tab.
+- **SEO tab from the official SEO plugin**, with "Generate" buttons that follow the brief's title
+  patterns (`src/lib/seo/titles.ts`). Pages fall back to the same patterns when the fields are
+  blank.
+- **301s from the official redirects plugin.** When a published page's slug changes, a hook adds
+  a redirect from the old URL, repoints older redirects to the new URL (no chains) and deletes any
+  redirect away from the new URL (no loops).
+- **Public reads go through `publicRead()`.** Visitors only see published documents, and on the
+  live site never samples. The local API skips access control by default, so every public data
+  query must pass `overrideAccess: false`.
+- **`{region}` is a token, filled in when a page renders.** The seed copy says "{region}" instead
+  of "Denver Metro", so changing the region in Site settings updates every page.
+- **Service FAQs live on each service** (5–7 each). The FAQs collection holds the 36 site-wide and
+  category FAQs for the FAQ page, category hubs and the home page.
+- **Site settings mirror `site.ts`, except service areas.** The Cities collection is the live list
+  of service areas (each city is a page). `getSite()` returns the saved settings plus published
+  city names, and falls back to `site.ts` until the settings have been saved once.
+- **`check-config` reads the admin's Site settings** when the database is reachable, because
+  that's what the live site shows. Deploy order is therefore `db:migrate` → `check-config` →
+  `build`.
+- **A `pricing-settings` global** (not in the brief's list) holds the range multipliers (0.9 /
+  1.15), the tax note and the estimate note.
+- **Per-unit add-ons.** A pricing-rule add-on with answer `*` is priced per unit of a number
+  answer (e.g. $60 per tree). The brief's formula only has flat add-ons.
+- **Private uploads in their own collection.** Customer photos, RFPs and résumés go to
+  `lead-files` (signed-in staff only), never to the public `media` collection.
+- **Leads can't be created through the public REST API.** Forms save on the server with
+  `overrideAccess`, after validation, spam checks and rate limiting (Phase 5).
+- **Case studies have no detail page.** They aren't in the brief's sitemap, so they show on the
+  commercial pages only, with no slug, drafts or SEO.
+- **Schema push is opt-in.** It runs only when NODE_ENV is explicitly "development" (`next dev`,
+  `pnpm seed`). Scripts with NODE_ENV unset (check-config, migrations) can never push to
+  production.
+
+### Seed content
+
+- **49 services**, the brief's full catalog (its "~55" was approximate), each with original US-English
+  copy: problem, 3–4 benefits, what's included, method, safety, 4–5 steps, price factors, add-ons,
+  5 FAQs and 3 related services. Plus 6 categories, 6 cities, 36 FAQs, 6 posts, 6 solutions,
+  29 pricing rules, 5 discounts and 7 plans.
+- **No invented business facts in the copy.** Two drafted FAQs were reworded: one named payment
+  methods and one promised "we'll make it right" (a guarantee). Operational details in the copy
+  (notice periods, what we haul) are flagged for the owner's review in CONTENT_TODO.md.
+- **No prices in the copy.** `fromPrice` is left blank. Placeholder numbers live only in pricing
+  rules and plans, all marked `needsReview` and hidden on the live site.
+- **Re-running the seed keeps owner edits.** Documents are matched by slug, question or name.
+  Existing ones are skipped unless `--force` is passed, so a re-run never duplicates content or
+  overwrites edits.
+- **Demo cities use real geography only.** Names, coordinates, ZIP codes and neighborhoods are
+  general public knowledge for the Denver Metro area. No local statistics are seeded, because
+  they'd need a cited source. ZIP lists and neighborhoods are flagged for review.
+- **Seeding Neon from a distant machine is slow.** Every save is dozens of small queries, and from
+  the UK to Ohio that's about 20 seconds per document. The first `dev` seed took about 40 minutes.
+  The production seed will run from a US-based GitHub runner instead (Phase 8).
+- **CONTENT_TODO.md lists are generated.** `pnpm content-todo` rebuilds the photo list (117 so far)
+  and the pricing-review list from the seed data and every `<PhotoPlaceholder label>` in the code.
+
+### Admin
+
+- The owner's logo brands the admin login and navigation.
+- City pages show a live word count and warn below 150 words (brief §9.4).

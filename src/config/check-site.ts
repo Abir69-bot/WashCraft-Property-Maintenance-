@@ -83,7 +83,10 @@ export function checkSiteConfig(config: SiteConfig): ConfigProblem[] {
   }
 
   for (const field of config.demo) {
-    add(field, 'is a demo value (confirm or replace it, then remove it from `demo`)')
+    add(
+      field,
+      'is a demo value (confirm or replace it, then remove it from the "Still demo values" list)',
+    )
   }
 
   return problems

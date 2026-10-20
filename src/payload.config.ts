@@ -1,13 +1,41 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { redirectsPlugin } from '@payloadcms/plugin-redirects'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { isOwner, isSignedIn } from './access/roles'
+import { Posts, Solutions } from './collections/articles'
+import { Cities } from './collections/cities'
+import { JobOpenings, TeamMembers } from './collections/company'
+import { Faqs } from './collections/faqs'
+import { Applications, LeadFiles, Leads } from './collections/leads'
 import { Media } from './collections/media'
+import { Discounts, Plans, PricingRules } from './collections/pricing'
+import { ServiceCategories } from './collections/service-categories'
+import { Services } from './collections/services'
+import {
+  CaseStudies,
+  ClientLogos,
+  GalleryItems,
+  GoogleReviews,
+  Testimonials,
+} from './collections/social-proof'
 import { Users } from './collections/users'
+import {
+  FeatureFlags,
+  Footer,
+  Homepage,
+  Navigation,
+  PricingSettings,
+  SeasonalSettings,
+} from './globals/settings'
+import { SiteSettings } from './globals/site-settings'
 import { env } from './lib/env'
+import { generateSeoTitle, generateSeoUrl } from './lib/seo/generate'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -16,8 +44,45 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: ' · WashCraft admin' },
+    components: {
+      graphics: {
+        Logo: '@/components/admin/brand#AdminLogo',
+        Icon: '@/components/admin/brand#AdminIcon',
+      },
+    },
   },
-  collections: [Users, Media],
+  collections: [
+    Services,
+    ServiceCategories,
+    PricingRules,
+    Discounts,
+    Plans,
+    Cities,
+    Posts,
+    Solutions,
+    Faqs,
+    Testimonials,
+    GoogleReviews,
+    GalleryItems,
+    ClientLogos,
+    CaseStudies,
+    TeamMembers,
+    JobOpenings,
+    Leads,
+    Applications,
+    LeadFiles,
+    Media,
+    Users,
+  ],
+  globals: [
+    SiteSettings,
+    SeasonalSettings,
+    Navigation,
+    Footer,
+    Homepage,
+    FeatureFlags,
+    PricingSettings,
+  ],
   editor: lexicalEditor(),
   secret: env.PAYLOAD_SECRET,
   serverURL: env.NEXT_PUBLIC_SITE_URL,
@@ -32,9 +97,21 @@ export default buildConfig({
       connectionTimeoutMillis: 15_000, // Neon scale-to-zero cold starts
       idleTimeoutMillis: 10_000,
     },
-    // Auto-sync the schema only under `next dev`. Tests, CI and production use migrations.
-    push: env.NODE_ENV === 'development',
+    // Auto-sync the schema only when NODE_ENV is explicitly "development" (`next dev`,
+    // `pnpm seed`). Tests, CI, scripts and production use the committed migrations.
+    push: env.DB_PUSH,
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
+  plugins: [
+    seoPlugin({ generateTitle: generateSeoTitle, generateURL: generateSeoUrl }),
+    redirectsPlugin({
+      collections: ['services', 'service-categories', 'cities', 'posts', 'solutions'],
+      redirectTypes: ['301', '302'],
+      overrides: {
+        admin: { group: 'Admin' },
+        access: { read: () => true, create: isSignedIn, update: isSignedIn, delete: isOwner },
+      },
+    }),
+  ],
   sharp,
 })

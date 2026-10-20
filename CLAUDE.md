@@ -41,14 +41,18 @@ pnpm db:migrate:create   # payload migrate:create <name>; commit src/migrations
 pnpm check-config        # unset business facts; strict on Vercel production / STRICT_CONFIG=true
 pnpm generate:types      # payload generate:types -> src/payload-types.ts (commit it)
 pnpm generate:importmap  # after adding custom admin components
-# Later phases add: pnpm test:e2e, pnpm seed, pnpm db:reset-dev
+pnpm seed [--force]      # idempotent starter content (pushes schema: sets NODE_ENV=development)
+pnpm db:reset-dev        # migrate:fresh + seed on the DB in .env (asks to confirm)
+pnpm content-todo        # regenerate photo + pricing lists in CONTENT_TODO.md
+# Later phases add: pnpm test:e2e
 ```
 
 Payload CLI commands load the config, so `DATABASE_URI` must be set (`.env` or inline) even for
 `generate:types`. Integration tests must pass `migrations` from `@/migrations` to
 `payload.db.migrate()`: Payload's own file loader can't import the generated files under Vitest.
 
-Vercel build command: `pnpm check-config && pnpm db:migrate && pnpm build`.
+Vercel build command: `pnpm db:migrate && pnpm check-config && pnpm build` (check-config reads the
+saved Site settings, so migrations run first).
 
 ## Folder structure
 
@@ -56,8 +60,11 @@ Vercel build command: `pnpm check-config && pnpm db:migrate && pnpm build`.
 src/
   app/(site)/           public pages (Server Components by default)
   app/(payload)/        Payload admin + API (generated; don't hand-edit)
-  collections/          Payload collections
-  globals/              Payload globals
+  collections/          Payload collections (several per file, grouped by admin section)
+  globals/              Payload globals (site-settings.ts + settings.ts)
+  fields/common.ts      shared fields: seoTab, isSampleField, iconField, seasonsField, VERSIONS
+  hooks/                collection hooks (redirect-on-slug-change)
+  access/public-read.ts visitors: published only, no samples in production
   components/ui/        primitives (button, dialog, accordion, tabs, select, popover…)
   components/sections/  page sections (Hero, TrustStrip, BeforeAfter, …)
   components/quote/     quick form, wizard, dedicated flows
@@ -71,9 +78,14 @@ src/
   access/roles.ts       owner/staff access helpers
   components/brand/     <Logo height> (next/image of src/assets/brand/washcraft-logo.png)
   assets/brand/         owner's logo (transparent PNG); icons in app/(site) are derived from it
-  config/site.ts        business facts (mirrored by the `site-settings` global)
+  config/site.ts        business facts (seeds the `site-settings` global; `site.demo` = stand-ins)
+  config/catalog.ts     seasons, quote modes, category tones, frequencies
+  config/icons.ts       icon keys (map to Lucide in components/service-icon.tsx)
+  lib/routes.ts         every public URL + DOC_PATHS (collection -> page path)
+  lib/site-settings.ts  getSite(payload): saved settings or site.ts fallback
+  lib/quote/questions.ts Zod schema for services' quoteQuestions JSON
   config/brand-tokens.ts colour tokens + contrast pairs (tested against globals.css)
-  seed/                 seed script + content
+  seed/                 seed.ts (idempotent), data/*.ts (all starter copy), types.ts
   migrations/           committed Payload migrations
 tests/int/              Vitest integration tests (*.int.test.ts) + setup
 e2e/                    Playwright specs
@@ -102,12 +114,15 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 - Read env vars only through `src/lib/env.ts`.
 - Server Components by default; `'use client'` only for interactive leaves (budget: < 150 KB JS per content page).
 - Public pages are static/ISR and must not hit the DB at request time. Revalidate from Payload `afterChange` hooks, not short timers.
+- **Public data queries pass `overrideAccess: false`**, so `publicRead()` hides drafts and (in production) samples. The local API skips access control by default.
+- Copy may contain `{region}`; fill it in at render time, never store the expanded text.
+- Links between documents use `routes` / `DOC_PATHS` from `src/lib/routes.ts`, never hand-built strings.
 - Public-content collections: SEO fields, drafts, `versions.maxPerDoc: 20`. Index every slug and every filter field.
 - Schema changes: `push` in dev only; production changes go through committed migrations, run over the direct (non-pooler) connection.
 - Tests never touch the Neon `production` branch. CI uses a Postgres service container.
 - TypeScript strict, no `any`, no dead code, no unused dependencies. Kebab-case filenames, `@/` → `src/`.
 - **US business.** Visitor-facing copy uses US English, "ZIP code", "HOA & condo" (not "strata"), "parking garage" (not "parkade"), USD and TCPA/CAN-SPAM consent. See DECISIONS.md for the slug changes from the brief.
-- Copy: plain language, grade 6–8 reading level, `site.region` used naturally, no keyword stuffing.
+- Copy: plain language, grade 6–8 reading level, `{region}` used naturally, no keyword stuffing, no prices, guarantees or payment terms.
 - Unit tests sit next to the code (`*.test.ts`); e2e specs live in `e2e/`.
 
 ## Per-phase workflow

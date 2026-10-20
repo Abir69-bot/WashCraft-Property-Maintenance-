@@ -33,11 +33,26 @@ and Neon serverless Postgres. The full specification is in [docs/BRIEF.md](docs/
 ```bash
 pnpm install
 cp .env.example .env          # then fill in DATABASE_URI, DATABASE_URI_DIRECT, PAYLOAD_SECRET
+pnpm seed                     # starter content: services, cities, FAQs, articles, samples
 pnpm dev                      # http://localhost:3000. The schema syncs to the Neon dev branch automatically
 ```
 
 Open <http://localhost:3000/admin> and create the first user. That account becomes the **owner**.
 The development-only styleguide is at <http://localhost:3000/styleguide>.
+
+### Seeding
+
+`pnpm seed` fills the database in `.env` with all starter content: 49 services, 6 categories,
+the cities from `src/config/site.ts`, 36 FAQs, 6 blog posts, 6 solutions, placeholder pricing and
+sample testimonials, team and gallery items (samples never appear on the live site).
+
+- **Safe to re-run.** Existing documents are matched by slug or name and left alone, so your
+  edits survive. `pnpm seed --force` overwrites them with the starter content.
+- **It's slow over long distances.** Each document takes dozens of database round trips, so
+  seeding a Neon project on another continent can take 30–45 minutes. Run it from close to the
+  database region when you can.
+- `pnpm db:reset-dev` wipes the database in `.env` and re-seeds it. It asks for confirmation.
+  Never point it at production.
 
 ## Scripts
 
@@ -54,14 +69,18 @@ The development-only styleguide is at <http://localhost:3000/styleguide>.
 | `pnpm db:migrate:status`                       | List applied and pending migrations                                                 |
 | `pnpm check-config`                            | List unset business facts. Fails production builds until they're set                |
 | `pnpm generate:types`                          | Regenerate `src/payload-types.ts` after changing collections                        |
+| `pnpm seed` / `pnpm seed --force`              | Add starter content / overwrite it                                                  |
+| `pnpm db:reset-dev`                            | Wipe and re-seed the database in `.env` (development only)                          |
+| `pnpm content-todo`                            | Regenerate the photo and pricing lists in `CONTENT_TODO.md`                         |
 
 ## Database workflow
 
 - **While developing:** `pnpm dev` keeps the Neon `dev` branch in sync automatically (schema push).
 - **Before merging a schema change:** run `pnpm db:migrate:create <name>` and commit
   `src/migrations`. CI fails if the Payload config and the committed migrations disagree.
-- **On deploy:** the build command is `pnpm check-config && pnpm db:migrate && pnpm build`.
-  Migrations run against the `production` branch through its direct connection.
+- **On deploy:** the build command is `pnpm db:migrate && pnpm check-config && pnpm build`.
+  Migrations run against the `production` branch through its direct connection. Then the config
+  check reads the saved Site settings.
 - **Never** run `pnpm dev` with `production` connection strings: dev mode pushes schema changes.
 
 ## Testing
@@ -72,8 +91,9 @@ pnpm test:db:up       # once per session
 pnpm test:int         # integration (runs the committed migrations first)
 ```
 
-CI (`.github/workflows/ci.yml`) runs config check, lint, format check, typecheck, unit tests,
-migrations, integration tests, the production build and a migration drift check. It uses a
+CI (`.github/workflows/ci.yml`) runs lint, format check, typecheck, unit tests, migrations, the
+config check, integration tests (including a full seed run twice), the production build and a
+migration drift check. It uses a
 throwaway Postgres service container, so CI never uses Neon compute.
 
 ## Project documents

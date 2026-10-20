@@ -31,3 +31,6 @@ next-env.d.ts
 npm-debug.log*
 .vercel
 /.idea/*
+
+# private lead uploads in development
+/lead-files

@@ -12,7 +12,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     # Throwaway database. CI never connects to Neon, so it spends no Neon compute.
     # Keep the major version in step with the Neon project.
@@ -50,9 +50,6 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Site config (report only; strict on production deploys)
-        run: pnpm check-config
-
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm typecheck
@@ -60,6 +57,9 @@ jobs:
 
       - name: Apply committed migrations
         run: pnpm db:migrate
+
+      - name: Site config (report only; strict on production deploys)
+        run: pnpm check-config
 
       - run: pnpm test:int
 

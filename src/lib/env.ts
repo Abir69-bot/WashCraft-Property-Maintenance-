@@ -68,6 +68,9 @@ export function parseEnv(source: Record<string, string | undefined>) {
     // Migrations and backups need a direct connection; fall back to the pooled one locally.
     DATABASE_URI_DIRECT: data.DATABASE_URI_DIRECT ?? data.DATABASE_URI,
     SITE_ENV: siteEnv,
+    // Schema push only when NODE_ENV is explicitly "development" (`next dev`, `pnpm seed`).
+    // Scripts with NODE_ENV unset must never push, in case they point at production.
+    DB_PUSH: source.NODE_ENV === 'development',
   }
 }
 
