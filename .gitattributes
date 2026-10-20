@@ -1,0 +1,4 @@
+# LF everywhere (Prettier and CI expect it), regardless of core.autocrlf.
+* text=auto eol=lf
+*.ico binary
+*.png binary

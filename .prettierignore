@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+.next/
+media/
+src/payload-types.ts
+src/migrations/
+src/app/(payload)/
+docs/BRIEF.md

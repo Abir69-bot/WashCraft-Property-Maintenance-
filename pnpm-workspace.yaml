@@ -1,0 +1,7 @@
+# Packages allowed to run install (build) scripts.
+allowBuilds:
+  sharp: true
+  esbuild: true
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - lucide-react@1.60.0

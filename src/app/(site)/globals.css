@@ -1,0 +1,208 @@
+@import 'tailwindcss';
+
+/*
+ * Brand tokens (brief §5). Documented and contrast-tested in src/config/brand-tokens.ts.
+ * Base hues are for fills and accents; "-strong" shades are for text and icons on light
+ * backgrounds.
+ */
+:root {
+  --primary: #0e4d64;
+  --primary-hover: #0b3e51;
+  --secondary: #2cb1bc;
+  --secondary-strong: #1f7b83;
+  --secondary-on-dark: #68c7cf;
+  --cta: #f5b700;
+  --cta-hover: #e0a700;
+  --ink: #14202b;
+  --muted: #5b6b78;
+  --surface: #f4f8fa;
+  --border: #d9e3e9;
+  --border-strong: #7b8c98;
+  --success: #2e9e5b;
+  --success-strong: #257f49;
+  --error: #c62828;
+  --winter: #3b82c4;
+  --winter-strong: #3473ae;
+  --holiday: #b83a3a;
+  --yard: #4c9a50;
+  --yard-strong: #3e7e41;
+  --todo: #ffe066;
+  --focus-ring: var(--primary);
+}
+
+/* Brand palette only: Tailwind's default colours are removed so off-brand classes fail. */
+@theme {
+  --color-*: initial;
+  --color-white: #fff;
+
+  --breakpoint-sm: 30rem; /* 480 */
+  --breakpoint-md: 48rem; /* 768 */
+  --breakpoint-lg: 64rem; /* 1024 */
+  --breakpoint-xl: 80rem; /* 1280 */
+
+  --radius-card: 0.75rem;
+  --container-site: 75rem; /* 1200 */
+
+  --animate-fade-in: fade-in 150ms ease-out;
+  --animate-slide-in-right: slide-in-right 220ms ease-out;
+  --animate-slide-in-up: slide-in-up 220ms ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
+    }
+  }
+  @keyframes slide-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+  }
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-strong: var(--secondary-strong);
+  --color-secondary-on-dark: var(--secondary-on-dark);
+  --color-cta: var(--cta);
+  --color-cta-hover: var(--cta-hover);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-success: var(--success);
+  --color-success-strong: var(--success-strong);
+  --color-error: var(--error);
+  --color-winter: var(--winter);
+  --color-winter-strong: var(--winter-strong);
+  --color-holiday: var(--holiday);
+  --color-yard: var(--yard);
+  --color-yard-strong: var(--yard-strong);
+  --color-todo: var(--todo);
+
+  --font-heading: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/*
+ * Type scale: mobile size at 480px, desktop size at 1280px, fluid in between.
+ * The rem term keeps text zoomable (WCAG 1.4.4).
+ */
+@utility text-h1 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(2.125rem, 1.6rem + 1.75vw, 3rem); /* 34 → 48 */
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+@utility text-h2 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 1.45rem + 1vw, 2.25rem); /* 28 → 36 */
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+@utility text-h3 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); /* 20 → 24 */
+  line-height: 1.25;
+}
+@utility text-body {
+  font-size: clamp(1rem, 0.9625rem + 0.125vw, 1.0625rem); /* 16 → 17 */
+  line-height: 1.6;
+}
+@utility text-small {
+  font-size: 0.875rem; /* 14 */
+  line-height: 1.5;
+}
+
+/* 1200px content width; 24px gutters, 16px on phones. */
+@utility container {
+  width: 100%;
+  max-width: calc(var(--container-site) + 3rem);
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @variant sm {
+    padding-inline: 1.5rem;
+  }
+}
+
+/* Section rhythm: 56px mobile, 96px desktop. */
+@utility section-y {
+  padding-block: 3.5rem;
+  @variant lg {
+    padding-block: 6rem;
+  }
+}
+
+/* Dark band: white text, light focus ring, white headings and plain links. */
+@utility on-dark {
+  background-color: var(--primary);
+  color: #fff;
+  --focus-ring: var(--cta);
+  & :where(h1, h2, h3, h4) {
+    color: #fff;
+  }
+  & :where(a:not([class])) {
+    color: #fff;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply bg-white font-sans text-body text-ink antialiased;
+  }
+  h1 {
+    @apply text-h1 text-primary;
+  }
+  h2 {
+    @apply text-h2 text-primary;
+  }
+  h3 {
+    @apply text-h3 text-primary;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  a {
+    color: var(--secondary-strong);
+    text-underline-offset: 0.2em;
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background-color: var(--secondary);
+    color: var(--ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

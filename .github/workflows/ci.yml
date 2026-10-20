@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # Throwaway database. CI never connects to Neon, so it spends no Neon compute.
+    # Keep the major version in step with the Neon project.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: washcraft
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URI: postgresql://postgres:postgres@localhost:5432/washcraft
+      TEST_DATABASE_URI: postgresql://postgres:postgres@localhost:5432/washcraft
+      PAYLOAD_SECRET: ci-only-secret-never-used-outside-ci-0123456789
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_TELEMETRY_DISABLED: 1
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Site config (report only; strict on production deploys)
+        run: pnpm check-config
+
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm typecheck
+      - run: pnpm test
+
+      - name: Apply committed migrations
+        run: pnpm db:migrate
+
+      - run: pnpm test:int
+
+      - run: pnpm build
+
+      - name: Migrations match the Payload config
+        run: |
+          pnpm payload migrate:create drift-check --skip-empty
+          if [ -n "$(git status --porcelain src/migrations)" ]; then
+            echo "::error::Schema changed without a migration. Run: pnpm db:migrate:create <name>"
+            git status --porcelain src/migrations
+            exit 1
+          fi
