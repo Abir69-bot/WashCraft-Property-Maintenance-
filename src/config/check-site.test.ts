@@ -6,13 +6,13 @@ import { isPlaceholder, site, type SiteConfig } from './site'
 const complete: SiteConfig = {
   ...site,
   tagline: 'Exterior, interior and seasonal care for your property',
-  phone: '(604) 555-0142',
+  phone: '(303) 555-0142',
   email: 'hello@example.com',
   address: null,
   hours: 'Mon–Sat 8am–6pm',
-  country: 'CA',
-  currency: 'CAD',
-  locale: 'en-CA',
+  country: 'US',
+  currency: 'USD',
+  locale: 'en-US',
   region: 'Example Region',
   serviceAreas: ['Northtown', 'Southvale'],
 }
@@ -22,8 +22,8 @@ const fields = (config: SiteConfig) => checkSiteConfig(config).map((problem) => 
 describe('isPlaceholder', () => {
   it('detects bracketed values only', () => {
     expect(isPlaceholder('[PHONE]')).toBe(true)
-    expect(isPlaceholder(' [e.g. Greater Vancouver] ')).toBe(true)
-    expect(isPlaceholder('604 555 0142')).toBe(false)
+    expect(isPlaceholder(' [e.g. Denver Metro] ')).toBe(true)
+    expect(isPlaceholder('303 555 0142')).toBe(false)
     expect(isPlaceholder('[]')).toBe(false)
     expect(isPlaceholder(null)).toBe(false)
   })
@@ -31,22 +31,17 @@ describe('isPlaceholder', () => {
 
 describe('checkSiteConfig', () => {
   it('flags every placeholder in the shipped config', () => {
-    expect(fields(site)).toEqual(
-      expect.arrayContaining([
-        'tagline',
-        'phone',
-        'email',
-        'hours',
-        'region',
-        'address',
-        'country',
-        'currency',
-        'locale',
-        'serviceAreas[0]',
-        'serviceAreas[1]',
-        'serviceAreas[2]',
-      ]),
-    )
+    expect(fields(site)).toEqual([
+      'tagline',
+      'phone',
+      'email',
+      'hours',
+      'region',
+      'address',
+      'serviceAreas[0]',
+      'serviceAreas[1]',
+      'serviceAreas[2]',
+    ])
   })
 
   it('passes a complete config', () => {
@@ -54,7 +49,7 @@ describe('checkSiteConfig', () => {
   })
 
   it('accepts a real address', () => {
-    expect(fields({ ...complete, address: '1 Main St, Northtown, BC V0V 0V0' })).toEqual([])
+    expect(fields({ ...complete, address: '1 Main St, Northtown, CO 80000' })).toEqual([])
   })
 
   it('requires at least one service area', () => {
@@ -69,7 +64,7 @@ describe('checkSiteConfig', () => {
   })
 
   it('keeps currency and locale consistent with the country', () => {
-    expect(fields({ ...complete, country: 'US' })).toEqual(['currency', 'locale'])
+    expect(fields({ ...complete, country: 'CA' })).toEqual(['currency', 'locale'])
   })
 
   it('requires https URLs for review and social links', () => {

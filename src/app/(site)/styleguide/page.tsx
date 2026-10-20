@@ -49,7 +49,7 @@ export const metadata: Metadata = {
 }
 
 const SECTIONS = [
-  ['colours', 'Colours'],
+  ['colors', 'Colors'],
   ['typography', 'Typography'],
   ['layout', 'Layout'],
   ['buttons', 'Buttons'],
@@ -115,7 +115,7 @@ export default function StyleguidePage() {
         </nav>
       </header>
 
-      <Block id="colours" title="Colours">
+      <Block id="colors" title="Colors">
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {colorTokens.map((token) => (
             <li key={token.name} className="overflow-hidden rounded-card border border-border">
@@ -272,8 +272,8 @@ export default function StyleguidePage() {
             {(control) => <Input {...control} autoComplete="name" />}
           </FormField>
           <FormField
-            id="sg-postal"
-            label="Postal code"
+            id="sg-zip"
+            label="ZIP code"
             hint="We use it to check that you're in our service area."
           >
             {(control) => <Input {...control} autoComplete="postal-code" />}
@@ -401,7 +401,7 @@ export default function StyleguidePage() {
 
       <Block id="photos" title="Photo placeholders">
         <div className="grid gap-6 md:grid-cols-3">
-          <PhotoPlaceholder ratio="16/9" label="Crew soft-washing a two-storey house" />
+          <PhotoPlaceholder ratio="16/9" label="Crew soft-washing a two-story house" />
           <PhotoPlaceholder ratio="4/3" label="Cleared driveway after a snowfall" />
           <PhotoPlaceholder ratio="1/1" label="Founder portrait outdoors, natural light" />
         </div>

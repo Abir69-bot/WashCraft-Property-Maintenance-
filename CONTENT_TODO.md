@@ -6,19 +6,18 @@ development site, and production deploys stay blocked until the required facts a
 ## 1. Business facts — required before launch
 
 Set these in `src/config/site.ts` (or later in the admin under **Site settings**).
-`pnpm check-config` lists whatever is still missing.
+`pnpm check-config` lists whatever is still missing. Country (US), currency (USD) and
+language (en-US) are already set.
 
-| Field                 | What to provide                                                       | Example format                                           |
-| --------------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
-| `tagline`             | One short line under the logo and in search results                   | "Exterior, interior and seasonal care for your property" |
-| `phone`               | Main number for calls **and** texts                                   | (604) 555-0142                                           |
-| `email`               | Address leads and customers write to                                  | hello@yourdomain.com                                     |
-| `address`             | Street address, or tell us you work from home (service-area business) | 123 Main St, City, BC V0V 0V0                            |
-| `hours`               | Office hours                                                          | Mon–Sat 8am–6pm                                          |
-| `country`             | CA or US (sets currency, spelling and consent wording)                | CA                                                       |
-| `currency` / `locale` | Follows country: CAD + en-CA, or USD + en-US                          | CAD / en-CA                                              |
-| `region`              | How locals name your area                                             | Greater Vancouver                                        |
-| `serviceAreas`        | Every city you serve (each gets its own page)                         | Burnaby, Coquitlam, …                                    |
+| Field          | What to provide                                                       | Example format                                           |
+| -------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
+| `tagline`      | One short line under the logo and in search results                   | "Exterior, interior and seasonal care for your property" |
+| `phone`        | Main number for calls **and** texts                                   | (303) 555-0142                                           |
+| `email`        | Address leads and customers write to                                  | hello@yourdomain.com                                     |
+| `address`      | Street address, or tell us you work from home (service-area business) | 123 Main St, Denver, CO 80202                            |
+| `hours`        | Office hours                                                          | Mon–Sat 8am–6pm                                          |
+| `region`       | How locals name your area                                             | Denver Metro                                             |
+| `serviceAreas` | Every city you serve (each gets its own page)                         | Aurora, Lakewood, …                                      |
 
 ## 2. Optional facts — each section stays hidden until you set it
 
@@ -26,8 +25,8 @@ Set these in `src/config/site.ts` (or later in the admin under **Site settings**
 | ---------------------------------- | ------------------------------------------------------ |
 | `foundedYear`                      | "Serving since …"                                      |
 | `insuranceCoverage`                | Insurance badge and compliance block                   |
-| `workersCompRegistration`          | Workers' comp badge (e.g. WorkSafeBC / WSIB number)    |
-| `licenceNumbers`                   | Licence list in the footer and commercial pages        |
+| `workersCompRegistration`          | Workers' comp badge (state workers' comp policy)       |
+| `licenceNumbers`                   | License list in the footer and commercial pages        |
 | `googlePlaceId`, `googleReviewUrl` | Live Google reviews and the "Leave us a review" button |
 | `responseTimePromise`              | "We reply within …" on forms and the thank-you page    |
 | `guarantee`                        | The satisfaction-guarantee band (your own wording)     |
@@ -53,8 +52,8 @@ _Filled in Phase 2 when placeholder pricing rules are seeded (`needsReview: true
 
 ## 6. Infrastructure decisions
 
-- [ ] **Neon region.** The project is in AWS Sydney. If your customers are in Canada or the US,
-      recreate it in the closest US region before launch.
+- [ ] **Neon region.** Recreate the Neon project in the US region closest to your customers
+      (it was first created in Sydney).
 
 ## 7. Local SEO setup (do once, keep name/address/phone identical everywhere)
 

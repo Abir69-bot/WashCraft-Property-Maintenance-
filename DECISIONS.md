@@ -10,9 +10,9 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
 - **Neon's default branch is `production`, not `main`.** Neon now names the default branch
   `production`. Docs and scripts use that name; the brief's `main` means the same branch.
   The Git default branch is still `main`.
-- **Neon region: flagged.** The project was created in AWS ap-southeast-2 (Sydney). If the business
-  is in Canada or the US, recreate it in the closest US region before launch (Neon can't move a
-  project) and set the Vercel functions region to match. Tracked in CONTENT_TODO.md.
+- **Neon region: a US region.** The first project was created in AWS ap-southeast-2 (Sydney).
+  The business is in the US, so the project is recreated in the US region closest to its
+  customers (Neon can't move a project). The Vercel functions region must match (Phase 8).
 - **Versions (latest stable that the toolchain supports):** Next 16.4.2, React 19.3.1, Payload 3.91,
   Tailwind 4.3, Zod 4, Vitest 5, pnpm 12. **TypeScript 6.0.3, not 7.0:** typescript-eslint only
   supports TS < 6.1. **ESLint 9, not 10:** Next's bundled lint plugins don't support 10 yet.
@@ -37,9 +37,19 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
 - **`SITE_ENV` (development | preview | production)** is derived from `VERCEL_ENV`/`NODE_ENV` and
   can be overridden. Production hides sample content and allows indexing. Development and preview
   show "Sample" badges and send `noindex`.
-- **Spelling: Canadian English** for seed copy, because the brief uses Canadian terms ("strata",
-  WorkSafeBC, "neighbourhood"). Pending the owner's `country` choice. Consent copy switches on
-  `site.country` while the site runs.
+- **The business is in the US** (owner confirmed 2026-10-21): `country: 'US'`, `currency: 'USD'`,
+  `locale: 'en-US'`. All visitor-facing copy uses US English ("color", "neighborhood",
+  "two-story", "ZIP code"). Code identifiers keep the brief's names (e.g. `licenceNumbers`).
+  SMS consent follows the TCPA, and marketing email follows CAN-SPAM.
+- **US terms replace the brief's Canadian ones (applied in Phase 2).** US customers don't search
+  for "strata" or "parkade", so the brief's terms would cost leads:
+  - "strata" becomes "HOA & condo": `/commercial/strata` becomes `/commercial/hoa`, and
+    `strata-building-washing` becomes `hoa-building-washing`.
+  - "Strata / Commercial" service names become "HOA & Commercial".
+  - "parkade" becomes "parking garage": `parkade-cleaning` becomes `parking-garage-cleaning`.
+  - "Workers' comp registration" refers to the state workers' compensation policy rather than
+    WorkSafeBC/WSIB.
+  - Postal-code fields and checkers say "ZIP code" and match 5-digit ZIP prefixes.
 
 ### Design system
 

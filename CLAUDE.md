@@ -103,9 +103,10 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 - Public pages are static/ISR and must not hit the DB at request time. Revalidate from Payload `afterChange` hooks, not short timers.
 - Public-content collections: SEO fields, drafts, `versions.maxPerDoc: 20`. Index every slug and every filter field.
 - Schema changes: `push` in dev only; production changes go through committed migrations, run over the direct (non-pooler) connection.
-- Tests never touch Neon `main`. CI uses a Postgres service container.
+- Tests never touch the Neon `production` branch. CI uses a Postgres service container.
 - TypeScript strict, no `any`, no dead code, no unused dependencies. Kebab-case filenames, `@/` → `src/`.
-- Copy: plain language, grade 6–8 reading level, Canadian spelling (see DECISIONS.md), `site.region` used naturally, no keyword stuffing.
+- **US business.** Visitor-facing copy uses US English, "ZIP code", "HOA & condo" (not "strata"), "parking garage" (not "parkade"), USD and TCPA/CAN-SPAM consent. See DECISIONS.md for the slug changes from the brief.
+- Copy: plain language, grade 6–8 reading level, `site.region` used naturally, no keyword stuffing.
 - Unit tests sit next to the code (`*.test.ts`); e2e specs live in `e2e/`.
 
 ## Per-phase workflow
