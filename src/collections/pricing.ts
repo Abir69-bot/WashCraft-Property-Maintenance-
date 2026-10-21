@@ -40,6 +40,7 @@ export const PricingRules: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'unit', 'baseFee', 'unitRate', 'minCharge', 'needsReview'],
     description: 'How the instant-price wizard prices each service. Only owners can change these.',
+    components: { beforeListTable: ['@/components/admin/lead-list-banners#PricingReviewBanner'] },
   },
   access: ownerEdits,
   fields: [
@@ -115,6 +116,7 @@ export const Discounts: CollectionConfig = {
     group: 'Pricing',
     useAsTitle: 'name',
     defaultColumns: ['name', 'type', 'percent', 'active', 'needsReview'],
+    components: { beforeListTable: ['@/components/admin/lead-list-banners#PricingReviewBanner'] },
   },
   access: ownerEdits,
   fields: [
@@ -154,6 +156,7 @@ export const Plans: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'kind', 'price', 'needsReview'],
     description: 'Maintenance plans and seasonal packages on /maintenance-plans.',
+    components: { beforeListTable: ['@/components/admin/lead-list-banners#PricingReviewBanner'] },
   },
   access: { read: publicRead(), create: isOwner, update: isOwner, delete: isOwner },
   defaultSort: 'order',

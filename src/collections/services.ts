@@ -2,7 +2,13 @@ import { slugField, type ArrayField, type CollectionConfig } from 'payload'
 
 import { publicRead } from '@/access/public-read'
 import { isOwner, isSignedIn } from '@/access/roles'
-import { DEDICATED_FLOWS, QUOTE_MODE_LABELS, QUOTE_MODES } from '@/config/catalog'
+import {
+  DEDICATED_FLOWS,
+  FREQUENCIES,
+  FREQUENCY_LABELS,
+  QUOTE_MODE_LABELS,
+  QUOTE_MODES,
+} from '@/config/catalog'
 import {
   faqsField,
   iconField,
@@ -175,6 +181,17 @@ export const Services: CollectionConfig = {
                 { name: 'name', type: 'text', required: true },
                 { name: 'description', type: 'text' },
               ],
+            },
+            {
+              name: 'frequencies',
+              type: 'select',
+              hasMany: true,
+              defaultValue: ['one-time'],
+              options: FREQUENCIES.map((value) => ({ label: FREQUENCY_LABELS[value], value })),
+              admin: {
+                description:
+                  'How often customers can book this in the instant-price wizard. Recurring discounts are set under Pricing → Discounts.',
+              },
             },
             seasonsField,
             {

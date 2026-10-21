@@ -3,14 +3,14 @@
 From brief §17. An item is ticked only when it works in the browser.
 ☑ done everywhere listed · ◐ built and verified on the pages that exist so far; the rest arrive
 in later phases, or the section needs data the owner hasn't added yet (real reviews, insurance
-details, sourced local facts) · ☐ not started.
+details, sourced local facts, or the owner's own Twilio / Turnstile / R2 keys to confirm live) · ☐ not started.
 Source: HF = High Five, WT = WashTech, C = client request, N = new for WashCraft.
 
 | #   | Done | Feature                                                                                  | Source | Where                   |
 | --- | ---- | ---------------------------------------------------------------------------------------- | ------ | ----------------------- |
 | 1   | ☑    | Sticky header with phone and "instant price" button                                      | HF     | Header                  |
 | 2   | ☑    | Icon mega-menus for services and commercial                                              | HF     | Header                  |
-| 3   | ☐    | Slide-in quick-quote popup                                                               | HF     | Global                  |
+| 3   | ☑    | Slide-in quick-quote popup                                                               | HF     | Global                  |
 | 4   | ☑    | Quick-quote form on home, service and city pages                                         | HF     | Sections                |
 | 5   | ☑    | Hero with photo carousel or background video                                             | HF, WT | Home                    |
 | 6   | ☐    | Star-rating badge in hero (real data only)                                               | WT     | Home, services          |
@@ -40,30 +40,30 @@ Source: HF = High Five, WT = WashTech, C = client request, N = new for WashCraft
 | 30  | ☐    | Careers with application form                                                            | HF, WT | /careers                |
 | 31  | ☐    | Reviews page                                                                             | HF     | /reviews                |
 | 32  | ☑    | Strata and commercial section                                                            | HF, WT | /commercial             |
-| 33  | ☐    | Instant price vs custom quote split by job size                                          | HF     | /quote                  |
-| 34  | ☐    | Commercial / strata bid path                                                             | HF     | /quote/commercial       |
-| 35  | ☐    | Instant SMS lead alerts to the owner                                                     | HF     | Notifications           |
+| 33  | ☑    | Instant price vs custom quote split by job size                                          | HF     | /quote                  |
+| 34  | ☑    | Commercial / strata bid path                                                             | HF     | /quote/commercial       |
+| 35  | ◐    | Instant SMS lead alerts to the owner                                                     | HF     | Notifications           |
 | 36  | ☑    | "Let's talk" call band with marquee                                                      | WT     | Global                  |
 | 37  | ☑    | Full footer: services, areas, contact, hours, address, socials, badges, legal            | HF, WT | Footer                  |
-| 38  | ☐    | Spam protection on all forms                                                             | HF     | Forms                   |
+| 38  | ◐    | Spam protection on all forms                                                             | HF     | Forms                   |
 | 39  | ☑    | Holiday lighting and permanent LED lighting services                                     | WT, C  | Services                |
 | 40  | ☑    | Additional solutions: solar, graffiti, parkade, glass awning, post-construction          | WT, C  | Services                |
 | 41  | ☑    | Service page: tabbed benefits, trust icons, what's included, process, FAQ, related links | HF, WT | Service template        |
 | 42  | ☑    | All client-requested services (section 7.1–7.5)                                          | C      | Services                |
-| 43  | ☐    | Seasonal snow contract sign-up                                                           | C      | /quote/snow-contract    |
-| 44  | ☐    | Christmas light install, removal and storage booking                                     | C      | /quote/holiday-lights   |
-| 45  | ☐    | Photo-based junk removal quote                                                           | C      | /quote/junk-removal     |
-| 46  | ☐    | Garbage bin cleaning subscription                                                        | C      | Wizard / subscription   |
+| 43  | ☑    | Seasonal snow contract sign-up                                                           | C      | /quote/snow-contract    |
+| 44  | ☑    | Christmas light install, removal and storage booking                                     | C      | /quote/holiday-lights   |
+| 45  | ☑    | Photo-based junk removal quote                                                           | C      | /quote/junk-removal     |
+| 46  | ☑    | Garbage bin cleaning subscription                                                        | C      | Wizard / subscription   |
 | 47  | ☑    | Seasonal announcement bar and auto-switching hero                                        | N      | Global, home            |
 | 48  | ☑    | Maintenance plans and seasonal packages                                                  | N      | /maintenance-plans      |
 | 49  | ☑    | Mobile sticky Call · Text · Quote bar                                                    | N      | Global                  |
 | 50  | ◐    | Postal-code service-area checker + map                                                   | N      | Home, /areas, contact   |
-| 51  | ☐    | Admin lead pipeline, CSV export, dashboard widget                                        | N      | /admin                  |
-| 52  | ☐    | Owner-editable pricing rules with review gate                                            | N      | /admin                  |
-| 53  | ☐    | Customer auto-replies and review-request automation                                      | N      | Notifications           |
+| 51  | ☑    | Admin lead pipeline, CSV export, dashboard widget                                        | N      | /admin                  |
+| 52  | ☑    | Owner-editable pricing rules with review gate                                            | N      | /admin                  |
+| 53  | ◐    | Customer auto-replies and review-request automation                                      | N      | Notifications           |
 | 54  | ◐    | Cookie consent + GA4/Clarity events                                                      | N      | Global                  |
 | 55  | ☐    | Schema markup, sitemap, redirects, OG images                                             | N      | SEO                     |
 | 56  | ☑    | Neon Postgres with branches, pooled/direct strings and committed migrations              | N      | Infrastructure          |
-| 57  | ☐    | Cold-start retry and R2 fallback so no lead is lost                                      | N      | Quote system            |
-| 58  | ☐    | Database size widget with warning at 80% of the free-plan limit                          | N      | /admin                  |
+| 57  | ◐    | Cold-start retry and R2 fallback so no lead is lost                                      | N      | Quote system            |
+| 58  | ☑    | Database size widget with warning at 80% of the free-plan limit                          | N      | /admin                  |
 | 59  | ☐    | Weekly `pg_dump` backup of Neon `main` to R2                                             | N      | GitHub Actions          |

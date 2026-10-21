@@ -123,6 +123,21 @@ export const SeasonalSettings: GlobalConfig = {
         },
       ],
     },
+    {
+      name: 'snowTriggers',
+      label: 'Snow contract trigger depths',
+      type: 'text',
+      hasMany: true,
+      admin: { description: 'Choices on the snow contract form, e.g. "1 inch", "2 inches".' },
+    },
+    {
+      name: 'snowPaymentNote',
+      type: 'textarea',
+      admin: {
+        description:
+          'How snow contracts are billed, shown on the sign-up form. Leave blank to say the schedule is confirmed with the contract. No payment is taken online.',
+      },
+    },
   ],
 }
 

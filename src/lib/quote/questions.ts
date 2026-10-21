@@ -64,3 +64,35 @@ export function validateQuoteQuestions(value: unknown): true | string {
     .map((issue) => `Question ${issue.path.join('.')}: ${issue.message}`)
     .join('; ')
 }
+
+const blankToUndefined = (value: unknown) =>
+  value === '' || value === null || value === undefined ? undefined : value
+
+/** Validation for the answers to one service's questions, used by the wizard and the server. */
+export function answersSchema(questions: QuoteQuestion[]) {
+  const shape = Object.fromEntries(
+    questions.map((question) => {
+      if (question.type === 'boolean') return [question.id, z.boolean().optional()]
+      if (question.type === 'select') {
+        const choice = z.enum(question.options as [string, ...string[]], {
+          error: `Choose an answer for “${question.label}”`,
+        })
+        return [
+          question.id,
+          question.required ? choice : z.preprocess(blankToUndefined, choice.optional()),
+        ]
+      }
+      const min = question.min ?? 0
+      const max = question.max ?? 1_000_000
+      const range = `Enter a number from ${min.toLocaleString('en-US')} to ${max.toLocaleString('en-US')}`
+      const number = z.coerce.number({ error: range }).min(min, range).max(max, range)
+      return [
+        question.id,
+        question.required
+          ? z.preprocess((value) => blankToUndefined(value) ?? NaN, number)
+          : z.preprocess(blankToUndefined, number.optional()),
+      ]
+    }),
+  )
+  return z.object(shape)
+}

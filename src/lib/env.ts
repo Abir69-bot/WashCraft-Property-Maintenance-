@@ -20,6 +20,8 @@ const postgresUrl = (what: string) =>
 
 const deployEnv = z.enum(['development', 'preview', 'production'])
 
+const optionalText = z.preprocess(blankToUndefined, z.string().trim().optional())
+
 const schema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   VERCEL_ENV: z.preprocess(blankToUndefined, deployEnv.optional()),
@@ -40,6 +42,29 @@ const schema = z.object({
     blankToUndefined,
     z.coerce.number().int().positive().default(512),
   ),
+  /** Private files (customer photos, RFPs, failed-lead backups) when R2 isn't configured. */
+  PRIVATE_UPLOADS_DIR: z.preprocess(blankToUndefined, z.string().default('.private-uploads')),
+
+  // Every integration below is optional. Missing values fall back to console logging or skip
+  // the feature, so the site works with none of them (brief §3, CLAUDE.md).
+  TURNSTILE_SECRET_KEY: optionalText,
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: optionalText,
+  TWILIO_ACCOUNT_SID: optionalText,
+  TWILIO_AUTH_TOKEN: optionalText,
+  /** Sending number in E.164 form, e.g. +17205550100. */
+  TWILIO_FROM: optionalText,
+  RESEND_API_KEY: optionalText,
+  /** e.g. "WashCraft <quotes@yourdomain.com>" on a domain verified in Resend. */
+  EMAIL_FROM: optionalText,
+  /** Cloudflare R2 (any S3-compatible store), e.g. https://<account>.r2.cloudflarestorage.com */
+  R2_ENDPOINT: z.preprocess(blankToUndefined, z.url().optional()),
+  R2_ACCESS_KEY_ID: optionalText,
+  R2_SECRET_ACCESS_KEY: optionalText,
+  /** Public bucket for site photos (Media), served from R2_PUBLIC_URL. */
+  R2_PUBLIC_BUCKET: optionalText,
+  R2_PUBLIC_URL: z.preprocess(blankToUndefined, z.url().optional()),
+  /** Private bucket: customer uploads, failed-lead backups and database dumps. */
+  R2_PRIVATE_BUCKET: optionalText,
 })
 
 export type SiteEnv = z.infer<typeof deployEnv>
@@ -77,6 +102,20 @@ export function parseEnv(source: Record<string, string | undefined>) {
 }
 
 export type Env = ReturnType<typeof parseEnv>
+
+/** R2 settings when every key for that bucket is present, otherwise null (local fallback). */
+export function r2Config(data: Env, bucket: 'public' | 'private') {
+  const name = bucket === 'public' ? data.R2_PUBLIC_BUCKET : data.R2_PRIVATE_BUCKET
+  if (!data.R2_ENDPOINT || !data.R2_ACCESS_KEY_ID || !data.R2_SECRET_ACCESS_KEY || !name) {
+    return null
+  }
+  return {
+    bucket: name,
+    endpoint: data.R2_ENDPOINT,
+    accessKeyId: data.R2_ACCESS_KEY_ID,
+    secretAccessKey: data.R2_SECRET_ACCESS_KEY,
+  }
+}
 
 export const env = parseEnv(process.env)
 

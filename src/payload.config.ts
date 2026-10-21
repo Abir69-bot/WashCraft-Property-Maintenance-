@@ -1,6 +1,8 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { importExportPlugin } from '@payloadcms/plugin-import-export'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -36,10 +38,11 @@ import {
 } from './globals/settings'
 import { SiteSettings } from './globals/site-settings'
 import { withGlobalRevalidation, withRevalidation } from './hooks/revalidate'
-import { env } from './lib/env'
+import { env, r2Config } from './lib/env'
 import { generateSeoTitle, generateSeoUrl } from './lib/seo/generate'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
+const publicBucket = r2Config(env, 'public')
 
 export default buildConfig({
   admin: {
@@ -47,6 +50,7 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: ' · WashCraft admin' },
     components: {
+      beforeDashboard: ['@/components/admin/lead-dashboard#LeadDashboard'],
       graphics: {
         Logo: '@/components/admin/brand#AdminLogo',
         Icon: '@/components/admin/brand#AdminIcon',
@@ -119,6 +123,40 @@ export default buildConfig({
         admin: { group: 'Admin' },
         access: { read: () => true, create: isSignedIn, update: isSignedIn, delete: isOwner },
       },
+    }),
+    // Site photos on Cloudflare R2 in production (local disk otherwise). Customer files use a
+    // separate private bucket through src/lib/storage, never this public one.
+    s3Storage({
+      enabled: Boolean(publicBucket),
+      alwaysInsertFields: true,
+      bucket: publicBucket?.bucket ?? 'unused',
+      config: {
+        region: 'auto',
+        endpoint: publicBucket?.endpoint,
+        forcePathStyle: true,
+        credentials: publicBucket
+          ? {
+              accessKeyId: publicBucket.accessKeyId,
+              secretAccessKey: publicBucket.secretAccessKey,
+            }
+          : undefined,
+      },
+      collections: {
+        media: {
+          prefix: 'media',
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename, prefix }) =>
+            `${env.R2_PUBLIC_URL}/${prefix ? `${prefix}/` : ''}${filename}`,
+        },
+      },
+    }),
+    // CSV export of leads and job applications (brief §11), downloaded straight from the list.
+    importExportPlugin({
+      collections: (['leads', 'applications'] as const).map((slug) => ({
+        slug,
+        import: false,
+        export: { format: 'csv', disableSave: true, disableJobsQueue: true },
+      })),
     }),
   ],
   sharp,

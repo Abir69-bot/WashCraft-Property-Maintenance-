@@ -32,12 +32,16 @@
     "content-todo": "tsx scripts/content-todo.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.1153.0",
+    "@aws-sdk/s3-request-presigner": "3.1153.0",
     "@hookform/resolvers": "6.0.0",
     "@payloadcms/db-postgres": "3.91.0",
     "@payloadcms/next": "3.91.0",
+    "@payloadcms/plugin-import-export": "3.91.0",
     "@payloadcms/plugin-redirects": "3.91.0",
     "@payloadcms/plugin-seo": "3.91.0",
     "@payloadcms/richtext-lexical": "3.91.0",
+    "@payloadcms/storage-s3": "3.91.0",
     "@payloadcms/ui": "3.91.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",

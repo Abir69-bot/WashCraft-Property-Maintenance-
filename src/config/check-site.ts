@@ -91,3 +91,42 @@ export function checkSiteConfig(config: SiteConfig): ConfigProblem[] {
 
   return problems
 }
+
+type Source = Record<string, string | undefined>
+
+const set = (source: Source, ...names: string[]) => names.every((name) => source[name]?.trim())
+
+/**
+ * Integrations a production deploy needs (Vercel's disk is read-only, so uploads and lead
+ * backups must go to R2, and the owner hears about leads by email), plus recommended ones.
+ */
+export function checkIntegrations(source: Source): {
+  required: ConfigProblem[]
+  recommended: ConfigProblem[]
+} {
+  const required: ConfigProblem[] = []
+  const recommended: ConfigProblem[] = []
+  const r2Keys = ['R2_ENDPOINT', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY']
+  if (!set(source, ...r2Keys, 'R2_PRIVATE_BUCKET')) {
+    required.push({
+      field: 'R2 private bucket',
+      message: 'is needed for customer photos and lead backups',
+    })
+  }
+  if (!set(source, ...r2Keys, 'R2_PUBLIC_BUCKET', 'R2_PUBLIC_URL')) {
+    required.push({
+      field: 'R2 public bucket',
+      message: 'is needed for photos uploaded in the admin',
+    })
+  }
+  if (!set(source, 'RESEND_API_KEY', 'EMAIL_FROM')) {
+    required.push({ field: 'Resend email', message: 'is needed to email you new leads' })
+  }
+  if (!set(source, 'TURNSTILE_SECRET_KEY', 'NEXT_PUBLIC_TURNSTILE_SITE_KEY')) {
+    recommended.push({ field: 'Turnstile', message: 'is not set: forms have no spam check' })
+  }
+  if (!set(source, 'TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_FROM')) {
+    recommended.push({ field: 'Twilio', message: 'is not set: no text alerts for new leads' })
+  }
+  return { required, recommended }
+}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseEnv } from './env'
+import { parseEnv, r2Config } from './env'
 
 const base = {
   DATABASE_URI: 'postgresql://u:p@ep-x-pooler.example.neon.tech/washcraft?sslmode=require',
@@ -79,5 +79,31 @@ describe('parseEnv', () => {
     it('can be overridden explicitly', () => {
       expect(parseEnv({ ...base, SITE_ENV: 'production' }).SITE_ENV).toBe('production')
     })
+  })
+})
+
+describe('optional integrations', () => {
+  it('treats blank keys as not configured', () => {
+    const env = parseEnv({ ...base, TWILIO_ACCOUNT_SID: ' ', RESEND_API_KEY: '' })
+    expect(env.TWILIO_ACCOUNT_SID).toBeUndefined()
+    expect(env.RESEND_API_KEY).toBeUndefined()
+  })
+
+  it('uses R2 for a bucket only when every key for it is set', () => {
+    const keys = {
+      R2_ENDPOINT: 'https://account.r2.cloudflarestorage.com',
+      R2_ACCESS_KEY_ID: 'id',
+      R2_SECRET_ACCESS_KEY: 'secret',
+      R2_PRIVATE_BUCKET: 'washcraft-private',
+    }
+    const env = parseEnv({ ...base, ...keys })
+    expect(r2Config(env, 'private')).toEqual({
+      bucket: 'washcraft-private',
+      endpoint: keys.R2_ENDPOINT,
+      accessKeyId: 'id',
+      secretAccessKey: 'secret',
+    })
+    expect(r2Config(env, 'public')).toBeNull()
+    expect(r2Config(parseEnv({ ...base, ...keys, R2_SECRET_ACCESS_KEY: '' }), 'private')).toBeNull()
   })
 })

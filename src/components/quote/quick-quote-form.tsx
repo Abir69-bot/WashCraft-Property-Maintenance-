@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleCheck } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useId, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -10,14 +10,22 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { FormField } from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
 import { NativeSelect } from '@/components/ui/native-select'
-import { submitQuickQuote } from '@/lib/leads/quick-quote'
+import { track } from '@/lib/analytics'
+import { submitQuickQuote } from '@/lib/leads/actions'
+import { routes } from '@/lib/routes'
 import { quickQuoteSchema, type QuickQuoteInput } from '@/lib/schemas/quick-quote'
 import { collectTracking, rememberLandingPage } from '@/lib/tracking'
 import { cn } from '@/lib/utils'
 
+import { applyServerErrors, FormAlert, Honeypot } from './fields'
+import { Turnstile } from './turnstile'
+
 export type ServiceGroup = { label: string; options: { value: string; label: string }[] }
 
-/** The short quote form (brief §10.1), reused in the hero strip, service and city pages. */
+/**
+ * The short quote form (brief §10.1), reused in the home strip, service and city pages and the
+ * slide-in. On success it goes to the thank-you page.
+ */
 export function QuickQuoteForm({
   groups,
   consentLabel,
@@ -30,15 +38,11 @@ export function QuickQuoteForm({
   layout?: 'stacked' | 'wide'
 }) {
   const id = useId()
+  const router = useRouter()
   const [pending, startTransition] = useTransition()
-  const [sent, setSent] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors },
-  } = useForm<QuickQuoteInput>({
+  const [challenge, setChallenge] = useState(0)
+  const form = useForm<QuickQuoteInput>({
     resolver: zodResolver(quickQuoteSchema),
     defaultValues: {
       name: '',
@@ -48,8 +52,14 @@ export function QuickQuoteForm({
       email: '',
       consent: false,
       fax: '',
+      turnstile: '',
     },
   })
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = form
 
   useEffect(rememberLandingPage, [])
 
@@ -58,29 +68,15 @@ export function QuickQuoteForm({
     startTransition(async () => {
       const result = await submitQuickQuote(values, collectTracking())
       if (result.ok) {
-        setSent(true)
+        track('quick_form_submit', { service: values.service })
+        router.push(`${routes.quoteThankYou}?type=quick`)
         return
       }
       setServerError(result.message)
-      for (const [field, message] of Object.entries(result.fieldErrors ?? {})) {
-        setError(field as keyof QuickQuoteInput, { message })
-      }
+      applyServerErrors(form, result.fieldErrors)
+      setChallenge((count) => count + 1)
     })
   })
-
-  if (sent) {
-    return (
-      <div role="status" className="flex items-start gap-3 rounded-card bg-white p-6 text-ink">
-        <CircleCheck aria-hidden className="mt-0.5 size-6 shrink-0 text-success-strong" />
-        <div>
-          <p className="font-heading text-lg font-bold text-primary">Thanks, we’ve got it.</p>
-          <p className="mt-1 text-muted">
-            We’ll be in touch about your quote. Need us sooner? Call or text.
-          </p>
-        </div>
-      </div>
-    )
-  }
 
   const field = (name: keyof QuickQuoteInput) => `${id}-${name}`
   const wide = layout === 'wide'
@@ -141,16 +137,9 @@ export function QuickQuoteForm({
         </Button>
       </div>
       <Checkbox id={field('consent')} {...register('consent')} label={consentLabel} />
-      {/* Honeypot: hidden from people and screen readers. */}
-      <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
-        <label htmlFor={field('fax')}>Leave this empty</label>
-        <input id={field('fax')} tabIndex={-1} autoComplete="off" {...register('fax')} />
-      </div>
-      {serverError && (
-        <p role="alert" className="font-medium text-error">
-          {serverError}
-        </p>
-      )}
+      <Turnstile key={challenge} onToken={(token) => form.setValue('turnstile', token)} />
+      <Honeypot form={form} />
+      <FormAlert message={serverError} />
     </form>
   )
 }

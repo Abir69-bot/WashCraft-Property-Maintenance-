@@ -34,3 +34,4 @@ npm-debug.log*
 
 # private lead uploads in development
 /lead-files
+/.private-uploads

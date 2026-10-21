@@ -106,6 +106,27 @@ export const SiteSettings: GlobalConfig = {
           ],
         },
         {
+          label: 'Lead alerts',
+          description:
+            'Who hears about new quote requests. Texts need Twilio and emails need Resend (see README).',
+          fields: [
+            {
+              name: 'alertPhones',
+              label: 'Text new leads to',
+              type: 'text',
+              hasMany: true,
+              admin: { description: 'Mobile numbers, e.g. (720) 555-0100.' },
+            },
+            {
+              name: 'alertEmails',
+              label: 'Email new leads to',
+              type: 'text',
+              hasMany: true,
+              admin: { description: 'Leave empty to use the business email above.' },
+            },
+          ],
+        },
+        {
           label: 'Google & social',
           fields: [
             text('googlePlaceId', 'Lets the site fetch your Google reviews.'),

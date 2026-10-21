@@ -18,3 +18,10 @@ process.env.PAYLOAD_SECRET ||= 'integration-test-secret-integration-test'
 const uploads = path.join(os.tmpdir(), 'washcraft-int-uploads')
 rmSync(uploads, { recursive: true, force: true })
 process.env.UPLOADS_DIR = uploads
+
+// Private uploads and failed-lead backups too.
+const privateUploads = path.join(os.tmpdir(), 'washcraft-int-private')
+rmSync(privateUploads, { recursive: true, force: true })
+process.env.PRIVATE_UPLOADS_DIR = privateUploads
+// Integration tests never send real messages.
+for (const key of ['TWILIO_ACCOUNT_SID', 'RESEND_API_KEY', 'R2_ENDPOINT']) delete process.env[key]

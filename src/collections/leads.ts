@@ -2,29 +2,9 @@ import type { CollectionConfig } from 'payload'
 
 import { isOwner, isSignedIn } from '@/access/roles'
 import { FREQUENCIES, FREQUENCY_LABELS, PROPERTY_TYPES } from '@/config/catalog'
-
-export const LEAD_TYPES = [
-  'quick',
-  'instant',
-  'custom',
-  'snow_contract',
-  'holiday_lights',
-  'junk',
-  'commercial_bid',
-  'subscription',
-  'contact',
-] as const
-
-export const LEAD_STATUSES = [
-  'new',
-  'estimate_viewed',
-  'booking_requested',
-  'contacted',
-  'quoted',
-  'booked',
-  'won',
-  'lost',
-] as const
+import { LEAD_STATUSES, LEAD_TYPES } from '@/config/leads'
+import { reimportHandler, requestReview } from '@/lib/leads/admin'
+import { downloadLeadFile, removeStoredFile } from '@/lib/leads/lead-files'
 
 const options = (values: readonly string[]) =>
   values.map((value) => ({ label: value.replaceAll('_', ' '), value }))
@@ -40,6 +20,7 @@ export const Leads: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'type', 'status', 'cityName', 'totalHigh', 'createdAt'],
     listSearchableFields: ['name', 'email', 'phone', 'postalCode'],
+    components: { beforeListTable: ['@/components/admin/lead-list-banners#FailedLeadsBanner'] },
   },
   access: { read: isSignedIn, create: isSignedIn, update: isSignedIn, delete: isOwner },
   defaultSort: '-createdAt',
@@ -84,6 +65,12 @@ export const Leads: CollectionConfig = {
               relationTo: 'services',
               hasMany: true,
               index: true,
+            },
+            {
+              name: 'plan',
+              type: 'relationship',
+              relationTo: 'plans',
+              admin: { condition: (data) => Boolean(data.plan) },
             },
             {
               name: 'lineItems',
@@ -195,7 +182,19 @@ export const Leads: CollectionConfig = {
       defaultValue: 'new',
       index: true,
       options: options(LEAD_STATUSES),
-      admin: { position: 'sidebar' },
+      admin: {
+        position: 'sidebar',
+        components: { Cell: '@/components/admin/status-cell#StatusCell' },
+      },
+    },
+    {
+      name: 'callbackRequested',
+      type: 'checkbox',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'The customer asked for a call after seeing the estimate.',
+      },
     },
     {
       name: 'outOfArea',
@@ -211,6 +210,8 @@ export const Leads: CollectionConfig = {
     },
     { name: 'internalNotes', type: 'textarea', admin: { position: 'sidebar' } },
   ],
+  endpoints: [{ path: '/reimport', method: 'post', handler: reimportHandler }],
+  hooks: { afterChange: [requestReview] },
 }
 
 export const Applications: CollectionConfig = {
@@ -247,25 +248,55 @@ export const Applications: CollectionConfig = {
   ],
 }
 
-/** Customer photos, RFPs and résumés. Private: only signed-in staff can open them. */
+/**
+ * Customer photos, RFPs and résumés. The files live in private storage (R2, or a local folder
+ * in development) and are never public: signed-in staff download them through this collection's
+ * endpoint. Created only by the quote forms (brief §10.5).
+ */
 export const LeadFiles: CollectionConfig = {
   slug: 'lead-files',
   labels: { singular: 'Lead file', plural: 'Lead files' },
   admin: {
     group: 'Leads',
     useAsTitle: 'filename',
-    defaultColumns: ['filename', 'mimeType', 'createdAt'],
+    defaultColumns: ['filename', 'mimeType', 'size', 'createdAt'],
+    description: 'Photos and documents customers sent with their requests. Staff only.',
   },
-  access: { read: isSignedIn, create: isSignedIn, update: isSignedIn, delete: isOwner },
-  upload: {
-    mimeTypes: [
-      'image/jpeg',
-      'image/png',
-      'image/webp',
-      'image/heic',
-      'image/heif',
-      'application/pdf',
-    ],
-  },
-  fields: [],
+  access: { read: isSignedIn, create: () => false, update: () => false, delete: isOwner },
+  fields: [
+    { name: 'filename', type: 'text', required: true, admin: { readOnly: true } },
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'mimeType',
+          label: 'Type',
+          type: 'text',
+          required: true,
+          admin: { readOnly: true },
+        },
+        {
+          name: 'size',
+          label: 'Size (bytes)',
+          type: 'number',
+          required: true,
+          admin: { readOnly: true },
+        },
+      ],
+    },
+    {
+      name: 'key',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: { readOnly: true, description: 'Where the file is kept in private storage.' },
+    },
+    {
+      name: 'download',
+      type: 'ui',
+      admin: { components: { Field: '@/components/admin/file-download#FileDownload' } },
+    },
+  ],
+  endpoints: [{ path: '/:id/download', method: 'get', handler: downloadLeadFile }],
+  hooks: { afterDelete: [removeStoredFile] },
 }

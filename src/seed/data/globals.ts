@@ -18,6 +18,7 @@ export const seasonalSettings = {
     holiday: range(10, 1, 1, 31),
   },
   heroOverride: 'auto',
+  snowTriggers: ['1 inch', '2 inches', '3 inches'],
   announcements: [
     {
       season: 'winter',

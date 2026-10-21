@@ -37,6 +37,7 @@ import {
   whyChooseUsImages,
   type MediaKey,
 } from './data/media'
+import { serviceFrequencies } from './data/frequencies'
 import { allServices } from './data/services'
 
 export { allServices }
@@ -223,6 +224,7 @@ export async function seed(
       dedicatedFlow: service.dedicatedFlow,
       requiresSiteVisit: service.siteVisit ?? false,
       quoteQuestions: service.questions ?? [],
+      frequencies: serviceFrequencies[service.slug] ?? ['one-time'],
       priceFactors: service.priceFactors.map((factor) => ({ factor })),
       addOns: service.addOns ?? [],
       seasons: service.seasons,

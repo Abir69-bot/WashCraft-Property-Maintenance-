@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button'
 import { SEASON_LABELS, type Season } from '@/config/catalog'
 import type { SiteConfig } from '@/config/site'
 import type { NavCategory, NavService } from '@/lib/data/layout'
-import { isProductionSite } from '@/lib/env'
+import { planPrice } from '@/lib/pricing/plans'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { fillTokens, smsHref, telHref } from '@/lib/text'
@@ -434,12 +434,6 @@ export function CommercialBlock({ site }: { site: SiteConfig }) {
       </div>
     </Section>
   )
-}
-
-/** "$899 per year", or "Custom quote" while the price is a placeholder on the live site. */
-export function planPrice(plan: Pick<Plan, 'price' | 'priceUnit' | 'needsReview'>) {
-  if (plan.price == null || (plan.needsReview && isProductionSite)) return null
-  return `$${plan.price.toLocaleString('en-US')}${plan.priceUnit ? ` ${plan.priceUnit}` : ''}`
 }
 
 export function PlansTeaser({ plans }: { plans: Plan[] }) {

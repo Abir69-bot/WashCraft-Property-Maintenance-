@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { checkSiteConfig } from './check-site'
+import { checkIntegrations, checkSiteConfig } from './check-site'
 import { isPlaceholder, site, type SiteConfig } from './site'
 
 const complete: SiteConfig = {
@@ -91,5 +91,46 @@ describe('checkSiteConfig', () => {
       stats: { ...complete.stats, rating: 6, reviewCount: 2.5 },
     }
     expect(fields(config)).toEqual(['stats.rating', 'stats.reviewCount', 'foundedYear'])
+  })
+})
+
+describe('checkIntegrations', () => {
+  const r2 = {
+    R2_ENDPOINT: 'https://account.r2.cloudflarestorage.com',
+    R2_ACCESS_KEY_ID: 'id',
+    R2_SECRET_ACCESS_KEY: 'secret',
+    R2_PRIVATE_BUCKET: 'private',
+    R2_PUBLIC_BUCKET: 'public',
+    R2_PUBLIC_URL: 'https://media.example.com',
+  }
+
+  it('requires storage and email for production', () => {
+    const { required, recommended } = checkIntegrations({})
+    expect(required.map((problem) => problem.field)).toEqual([
+      'R2 private bucket',
+      'R2 public bucket',
+      'Resend email',
+    ])
+    expect(recommended.map((problem) => problem.field)).toEqual(['Turnstile', 'Twilio'])
+  })
+
+  it('passes once everything is set', () => {
+    const result = checkIntegrations({
+      ...r2,
+      RESEND_API_KEY: 're_x',
+      EMAIL_FROM: 'WashCraft <q@example.com>',
+      TURNSTILE_SECRET_KEY: 's',
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: 'k',
+      TWILIO_ACCOUNT_SID: 'AC',
+      TWILIO_AUTH_TOKEN: 't',
+      TWILIO_FROM: '+17205550100',
+    })
+    expect(result).toEqual({ required: [], recommended: [] })
+  })
+
+  it('treats blank values as missing', () => {
+    expect(checkIntegrations({ ...r2, R2_PRIVATE_BUCKET: ' ' }).required[0].field).toBe(
+      'R2 private bucket',
+    )
   })
 })

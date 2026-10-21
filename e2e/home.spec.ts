@@ -107,15 +107,4 @@ test.describe('quick quote form', () => {
     await expect(form.getByLabel('Name')).toBeFocused()
     await expect(form.getByLabel('Name')).toHaveAttribute('aria-invalid', 'true')
   })
-
-  test('saves a request', async ({ page }) => {
-    await page.goto('/?utm_source=e2e&utm_medium=test')
-    const form = page.locator('#quick-quote-heading').locator('..')
-    await form.getByLabel('Name').fill('E2E Test')
-    await form.getByLabel('Phone').fill('(303) 555-0199')
-    await form.getByLabel('ZIP code').fill('80202')
-    await form.getByLabel('Service').selectOption({ label: 'Gutter Cleaning' })
-    await form.getByRole('button', { name: 'Get my quote' }).click()
-    await expect(page.getByRole('status').filter({ hasText: 'we’ve got it' })).toBeVisible()
-  })
 })

@@ -89,7 +89,10 @@ export interface Config {
     'lead-files': LeadFile;
     users: User;
     redirects: Redirect;
+    exports: Export;
+    imports: Import;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -118,7 +121,10 @@ export interface Config {
     'lead-files': LeadFilesSelect<false> | LeadFilesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    exports: ExportsSelect<false> | ExportsSelect<true>;
+    imports: ImportsSelect<false> | ImportsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -153,7 +159,14 @@ export interface Config {
   };
   user: User;
   jobs: {
-    tasks: unknown;
+    tasks: {
+      createCollectionExport: TaskCreateCollectionExport;
+      createCollectionImport: TaskCreateCollectionImport;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
 }
@@ -326,6 +339,10 @@ export interface Service {
       }[]
     | null;
   /**
+   * How often customers can book this in the instant-price wizard. Recurring discounts are set under Pricing → Discounts.
+   */
+  frequencies?: ('one-time' | 'twice-yearly' | 'quarterly' | 'monthly')[] | null;
+  /**
    * When this service is offered. Dates are set in Seasonal settings.
    */
   seasons: ('all-year' | 'spring' | 'summer' | 'fall' | 'winter' | 'holiday')[];
@@ -372,6 +389,8 @@ export interface Media {
    * Describe the photo for screen-reader users, e.g. "Clean cedar deck after washing".
    */
   alt: string;
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -1119,6 +1138,7 @@ export interface Lead {
   propertyType?: ('house' | 'townhouse' | 'condo' | 'commercial') | null;
   frequency?: ('one-time' | 'twice-yearly' | 'quarterly' | 'monthly') | null;
   services?: (number | Service)[] | null;
+  plan?: (number | null) | Plan;
   lineItems?:
     | {
         service?: (number | null) | Service;
@@ -1190,6 +1210,10 @@ export interface Lead {
     | 'contact';
   status: 'new' | 'estimate_viewed' | 'booking_requested' | 'contacted' | 'quoted' | 'booked' | 'won' | 'lost';
   /**
+   * The customer asked for a call after seeing the estimate.
+   */
+  callbackRequested?: boolean | null;
+  /**
    * ZIP code outside your cities.
    */
   outOfArea?: boolean | null;
@@ -1199,22 +1223,22 @@ export interface Lead {
   createdAt: string;
 }
 /**
+ * Photos and documents customers sent with their requests. Staff only.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "lead-files".
  */
 export interface LeadFile {
   id: number;
+  filename: string;
+  mimeType: string;
+  size: number;
+  /**
+   * Where the file is kept in private storage.
+   */
+  key: string;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1302,6 +1326,80 @@ export interface Redirect {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exports".
+ */
+export interface Export {
+  id: number;
+  name?: string | null;
+  format: 'csv' | 'json';
+  limit?: number | null;
+  page?: number | null;
+  sort?: string | null;
+  sortOrder?: ('asc' | 'desc') | null;
+  drafts?: ('yes' | 'no') | null;
+  selectionToUse?: ('currentSelection' | 'currentFilters' | 'all') | null;
+  fields?: string[] | null;
+  collectionSlug: string;
+  where?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports".
+ */
+export interface Import {
+  id: number;
+  collectionSlug: string;
+  importMode?: ('create' | 'update' | 'upsert') | null;
+  matchField?: string | null;
+  status?: ('pending' | 'completed' | 'partial' | 'failed') | null;
+  summary?: {
+    imported?: number | null;
+    updated?: number | null;
+    total?: number | null;
+    issues?: number | null;
+    issueDetails?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1316,6 +1414,98 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: number;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'createCollectionExport' | 'createCollectionImport';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'createCollectionExport' | 'createCollectionImport') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1522,6 +1712,7 @@ export interface ServicesSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  frequencies?: T;
   seasons?: T;
   bookingWindowNote?: T;
   relatedServices?: T;
@@ -1958,6 +2149,8 @@ export interface JobOpeningsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1985,6 +2178,7 @@ export interface LeadsSelect<T extends boolean = true> {
   propertyType?: T;
   frequency?: T;
   services?: T;
+  plan?: T;
   lineItems?:
     | T
     | {
@@ -2021,6 +2215,7 @@ export interface LeadsSelect<T extends boolean = true> {
   reviewRequestedAt?: T;
   type?: T;
   status?: T;
+  callbackRequested?: T;
   outOfArea?: T;
   assignedTo?: T;
   internalNotes?: T;
@@ -2048,17 +2243,12 @@ export interface ApplicationsSelect<T extends boolean = true> {
  * via the `definition` "lead-files_select".
  */
 export interface LeadFilesSelect<T extends boolean = true> {
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
   filename?: T;
   mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
+  size?: T;
+  key?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2104,11 +2294,100 @@ export interface RedirectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exports_select".
+ */
+export interface ExportsSelect<T extends boolean = true> {
+  name?: T;
+  format?: T;
+  limit?: T;
+  page?: T;
+  sort?: T;
+  sortOrder?: T;
+  drafts?: T;
+  selectionToUse?: T;
+  fields?: T;
+  collectionSlug?: T;
+  where?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports_select".
+ */
+export interface ImportsSelect<T extends boolean = true> {
+  collectionSlug?: T;
+  importMode?: T;
+  matchField?: T;
+  status?: T;
+  summary?:
+    | T
+    | {
+        imported?: T;
+        updated?: T;
+        total?: T;
+        issues?: T;
+        issueDetails?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2198,6 +2477,14 @@ export interface SiteSetting {
     reviewCount?: number | null;
   };
   /**
+   * Mobile numbers, e.g. (720) 555-0100.
+   */
+  alertPhones?: string[] | null;
+  /**
+   * Leave empty to use the business email above.
+   */
+  alertEmails?: string[] | null;
+  /**
    * Lets the site fetch your Google reviews.
    */
   googlePlaceId?: string | null;
@@ -2285,6 +2572,14 @@ export interface SeasonalSetting {
    * Snow routes left this season. Hidden when blank.
    */
   routesRemaining?: number | null;
+  /**
+   * Choices on the snow contract form, e.g. "1 inch", "2 inches".
+   */
+  snowTriggers?: string[] | null;
+  /**
+   * How snow contracts are billed, shown on the sign-up form. Leave blank to say the schedule is confirmed with the contract. No payment is taken online.
+   */
+  snowPaymentNote?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2601,6 +2896,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         rating?: T;
         reviewCount?: T;
       };
+  alertPhones?: T;
+  alertEmails?: T;
   googlePlaceId?: T;
   googleReviewUrl?: T;
   social?:
@@ -2680,6 +2977,8 @@ export interface SeasonalSettingsSelect<T extends boolean = true> {
       };
   snowSignupDeadline?: T;
   routesRemaining?: T;
+  snowTriggers?: T;
+  snowPaymentNote?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2897,6 +3196,80 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateCollectionExport".
+ */
+export interface TaskCreateCollectionExport {
+  input: {
+    id: string;
+    name: string;
+    batchSize?: number | null;
+    collectionSlug:
+      | 'services'
+      | 'service-categories'
+      | 'pricing-rules'
+      | 'discounts'
+      | 'plans'
+      | 'cities'
+      | 'posts'
+      | 'solutions'
+      | 'faqs'
+      | 'testimonials'
+      | 'google-reviews'
+      | 'gallery-items'
+      | 'client-logos'
+      | 'case-studies'
+      | 'team-members'
+      | 'job-openings'
+      | 'media'
+      | 'leads'
+      | 'applications'
+      | 'lead-files'
+      | 'users'
+      | 'redirects'
+      | 'exports'
+      | 'imports';
+    drafts?: ('yes' | 'no') | null;
+    exportCollection: string;
+    fields?: string[] | null;
+    format: 'csv' | 'json';
+    limit?: number | null;
+    locale?: string | null;
+    maxLimit?: number | null;
+    page?: number | null;
+    sort?: string | null;
+    userCollection?: string | null;
+    userID?: string | null;
+    where?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateCollectionImport".
+ */
+export interface TaskCreateCollectionImport {
+  input: {
+    importId: string;
+    importCollection: string;
+    userID?: string | null;
+    userCollection?: string | null;
+    batchSize?: number | null;
+    debug?: boolean | null;
+    defaultVersionStatus?: ('draft' | 'published') | null;
+    maxLimit?: number | null;
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -15,7 +15,7 @@ Decisions on ambiguities: [DECISIONS.md](DECISIONS.md). Feature status: [FEATURE
 | Forms           | React Hook Form + Zod; schemas in `src/lib/schemas` shared by client and server                                                                                                                    |
 | Spam            | Turnstile + honeypot + per-IP rate limit                                                                                                                                                           |
 | Notify          | Twilio SMS, Resend email — behind `Notifier` in `src/lib/notify`, console fallback                                                                                                                 |
-| Media           | Local disk in dev, Cloudflare R2 (S3 adapter) in prod                                                                                                                                              |
+| Media           | Site photos: local disk in dev, public R2 bucket (Payload S3 adapter) in prod. Customer files and lead backups: private store in `src/lib/storage` (R2, or `.private-uploads/` locally)            |
 | Maps            | Leaflet + OSM, loaded only when visible                                                                                                                                                            |
 | Analytics       | GTM (GA4) + Clarity, only after cookie consent                                                                                                                                                     |
 | Tests           | Vitest 5 (unit + int projects), Playwright, @axe-core/playwright, Lighthouse CI                                                                                                                    |
@@ -38,7 +38,7 @@ pnpm test:db:up          # Docker Postgres on :5433 for integration tests
 pnpm test:int            # Vitest int project against TEST_DATABASE_URI (never Neon)
 pnpm db:migrate          # payload migrate (switches to DATABASE_URI_DIRECT via PAYLOAD_MIGRATING)
 pnpm db:migrate:create   # payload migrate:create <name>; commit src/migrations
-pnpm check-config        # unset business facts; strict on Vercel production / STRICT_CONFIG=true
+pnpm check-config        # unset business facts + R2/Resend; strict on Vercel production / STRICT_CONFIG=true
 pnpm generate:types      # payload generate:types -> src/payload-types.ts (commit it)
 pnpm generate:importmap  # after adding custom admin components
 pnpm seed [--force]      # idempotent starter content (pushes schema: sets NODE_ENV=development)
@@ -69,11 +69,14 @@ src/
   components/sections/  page sections (Hero, TrustStrip, BeforeAfter, …) and template parts
                         (page-hero, category-hub, service-/city-/commercial-blocks, plans)
   components/layout/    header, mega-menu, mobile menu + action bar, footer, call band, cookie banner
-  components/quote/     quick form, wizard, dedicated flows
+  components/quote/     quick form, wizard, flows/*, fields, file-upload, estimate-result, slide-in
   lib/env.ts            the ONLY place env vars are read (Zod-validated)
-  lib/pricing/          pure pricing engine + tests
-  lib/notify/           Notifier implementations
-  lib/leads/            save-with-retry, R2 fallback, re-import
+  lib/pricing/          engine.ts (pure, tested), load.ts (cached rules), plans.ts
+  lib/notify/           Notifier: Twilio + Resend over fetch, console fallback
+  lib/leads/            actions.ts (server actions), pipeline.ts (submitLead), save.ts (retry, backup,
+                        re-import), create.ts, lead-files.ts, guard.ts (spam), messages.ts, admin.ts
+  lib/storage/          private ObjectStore (R2 or local folder), signed upload URLs
+  components/admin/     dashboard, banners, status cell, re-import button, file download
   lib/seo/              metadata + JSON-LD builders
   lib/schemas/          shared Zod schemas
   lib/data/             cached public queries (cachedQuery, tag `content`), page loaders (load.ts), seasonNow()
@@ -85,6 +88,8 @@ src/
   assets/brand/         owner's logo (transparent PNG); icons in app/(site) are derived from it
   config/site.ts        business facts (seeds the `site-settings` global; `site.demo` = stand-ins)
   config/catalog.ts     seasons, quote modes, category tones, frequencies
+  config/quote.ts       quote form choices; FLOW_SERVICES (slugs the dedicated forms depend on)
+  config/leads.ts       lead types and statuses
   config/icons.ts       icon keys (map to Lucide in components/service-icon.tsx)
   lib/routes.ts         every public URL + DOC_PATHS (collection -> page path)
   lib/site-settings.ts  getSite(payload): saved settings or site.ts fallback
@@ -116,7 +121,10 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 
 - Never invent business facts. Read them from site settings (`getSite()`); placeholders in `[BRACKETS]` render as a yellow "TODO" chip in dev and fail `check-config` for prod. Fields in `site.demo` are owner-approved demo stand-ins: render them normally, never treat them as confirmed facts (e.g. no "call us" urgency copy that depends on a real number), and they also fail `check-config`.
 - Every third-party integration is optional: missing env var → console fallback, feature still works or hides itself. Only `DATABASE_URI` is required.
-- Read env vars only through `src/lib/env.ts`.
+- Read env vars only through `src/lib/env.ts` (server) or `src/lib/public-env.ts` (`NEXT_PUBLIC_` values the browser needs, read as literal `process.env.NAME`).
+- Every lead goes through `submitLead()` (save → retry → backup → notifications), never `payload.create` directly. System updates to a lead use `payload.db.updateOne` (single columns), so concurrent writes don't overwrite each other.
+- Forms: one Zod schema in `src/lib/schemas` for browser and server, a server action in `lib/leads/actions.ts` (validate, `guardSubmission`, then `submitLead`), and the fields in `components/quote/fields.tsx`. Every public form has the honeypot and Turnstile.
+- Customer files go to the private store (`lib/storage`), never the public Media collection; they are checked by content (`verifyUploads`).
 - Server Components by default; `'use client'` only for interactive leaves (budget: < 150 KB JS per content page).
 - Public pages are static/ISR and must not hit the DB at request time. Revalidate from Payload `afterChange` hooks, not short timers. Public queries go through `cachedQuery()` in `src/lib/data`; the site layout's daily `revalidate` is what switches seasons.
 - Images: pass `mediaSrc(media)` to `next/image`, never `media.url` (Payload's URLs are absolute).

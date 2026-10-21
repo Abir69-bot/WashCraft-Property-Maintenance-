@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { quoteQuestionsSchema, validateQuoteQuestions } from './questions'
+import { answersSchema, quoteQuestionsSchema, validateQuoteQuestions } from './questions'
 
 const briefExample = [
   {
@@ -50,5 +50,44 @@ describe('quote questions', () => {
     expect(
       validateQuoteQuestions([{ id: 'area', type: 'number', label: 'Area', min: 10, max: 5 }]),
     ).toMatch(/min must not be greater than max/)
+  })
+})
+
+describe('answersSchema', () => {
+  const schema = answersSchema([
+    {
+      id: 'stories',
+      type: 'select',
+      label: 'How many stories?',
+      options: ['1', '2', '3'],
+      required: true,
+    },
+    { id: 'area', type: 'number', label: 'Area', min: 50, max: 5000, required: true },
+    { id: 'windows', type: 'number', label: 'Windows', min: 0, max: 80 },
+    { id: 'screens', type: 'boolean', label: 'Screens too?' },
+  ])
+
+  it('accepts valid answers, turning typed numbers into numbers', () => {
+    expect(schema.parse({ stories: '2', area: '1200', windows: '', screens: true })).toEqual({
+      stories: '2',
+      area: 1200,
+      screens: true,
+    })
+  })
+
+  it('explains what is wrong', () => {
+    const result = schema.safeParse({ stories: '9', area: '20', windows: 'many' })
+    const messages = Object.fromEntries(
+      result.error!.issues.map((issue) => [issue.path[0], issue.message]),
+    )
+    expect(messages).toEqual({
+      stories: 'Choose an answer for “How many stories?”',
+      area: 'Enter a number from 50 to 5,000',
+      windows: 'Enter a number from 0 to 80',
+    })
+  })
+
+  it('requires required numbers', () => {
+    expect(schema.safeParse({ stories: '1', area: '' }).success).toBe(false)
   })
 })

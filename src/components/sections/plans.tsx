@@ -4,11 +4,11 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { SEASON_LABELS, type Season } from '@/config/catalog'
+import { planPrice } from '@/lib/pricing/plans'
 import { routes } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 import type { Plan, Service } from '@/payload-types'
 
-import { planPrice } from './home-blocks'
 import { Section, type SectionTone } from './section'
 
 /** Opens the instant-price wizard with the plan's services pre-selected (brief §9.6). */

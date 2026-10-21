@@ -1,26 +1,12 @@
 import { z } from 'zod'
 
-import { normalizeZip } from '@/lib/service-area'
+import { contactFields, zipField } from './fields'
 
 /** Shared by the quick quote form (browser) and its server action (brief §10.1). */
 export const quickQuoteSchema = z.object({
-  name: z.string().trim().min(2, 'Enter your name').max(80, 'Use 80 characters or fewer'),
-  phone: z
-    .string()
-    .trim()
-    .refine((value) => {
-      const digits = value.replace(/\D/g, '')
-      return digits.length === 10 || (digits.length === 11 && digits.startsWith('1'))
-    }, 'Enter a 10-digit phone number'),
-  zip: z
-    .string()
-    .trim()
-    .refine((value) => normalizeZip(value) !== null, 'Enter a 5-digit ZIP code'),
+  ...contactFields,
+  zip: zipField,
   service: z.string().min(1, 'Choose a service'),
-  email: z.union([z.literal(''), z.email('Enter a valid email address')]),
-  consent: z.boolean(),
-  /** Honeypot. Hidden from people; bots that fill it are silently ignored. */
-  fax: z.string(),
 })
 
 export type QuickQuoteInput = z.infer<typeof quickQuoteSchema>

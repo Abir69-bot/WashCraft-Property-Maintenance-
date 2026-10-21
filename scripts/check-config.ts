@@ -1,5 +1,6 @@
 /**
- * Lists unset or demo business facts. Strict mode (exit 1) blocks production builds:
+ * Lists unset or demo business facts and missing production integrations (R2, Resend).
+ * Strict mode (exit 1) blocks production builds:
  * `--strict`, STRICT_CONFIG=true, or automatically on Vercel production builds.
  * CI runs it in report mode so the pipeline stays green while content is pending.
  *
@@ -8,7 +9,7 @@
  */
 import nextEnv from '@next/env'
 
-import { checkSiteConfig } from '../src/config/check-site'
+import { checkIntegrations, checkSiteConfig } from '../src/config/check-site'
 import { site, type SiteConfig } from '../src/config/site'
 
 nextEnv.loadEnvConfig(process.cwd())
@@ -41,19 +42,30 @@ async function loadSite(): Promise<{ config: SiteConfig; source: string }> {
 
 const { config, source } = await loadSite()
 const problems = checkSiteConfig(config)
+const integrations = checkIntegrations(process.env)
 
 if (problems.length === 0) {
   console.log(`✓ Site config is complete (${source}).`)
-  process.exit(0)
+} else {
+  console.log(`Site config has ${problems.length} unresolved item(s) in ${source}:`)
+  for (const problem of problems) console.log(`  - ${problem.field} ${problem.message}`)
 }
 
-console.log(`Site config has ${problems.length} unresolved item(s) in ${source}:`)
-for (const problem of problems) console.log(`  - ${problem.field} ${problem.message}`)
+if (integrations.required.length === 0) {
+  console.log('✓ Storage (R2) and email (Resend) are configured.')
+} else {
+  console.log('\nIntegrations needed for production:')
+  for (const problem of integrations.required)
+    console.log(`  - ${problem.field} ${problem.message}`)
+}
+for (const problem of integrations.recommended)
+  console.log(`  (recommended) ${problem.field} ${problem.message}`)
 
+const blocking = problems.length + integrations.required.length
+if (blocking === 0) process.exit(0)
 if (strict) {
   console.error('\n✗ Production builds are blocked until these are set.')
   process.exit(1)
 }
-
 console.log('\n(Report only. Production builds run this check in strict mode.)')
 process.exit(0)

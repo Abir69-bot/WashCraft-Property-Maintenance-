@@ -15,11 +15,14 @@ import type { FeaturedCard } from '@/components/layout/main-nav'
 import { MobileActionBar } from '@/components/layout/mobile-action-bar'
 import { PreviewBanner } from '@/components/layout/preview-banner'
 import { UtilityBar } from '@/components/layout/utility-bar'
+import { SlideInQuote } from '@/components/quote/slide-in-quote'
+import { consentText } from '@/config/consent'
 import { isPlaceholder } from '@/config/site'
 import { getLayoutData, type LayoutData } from '@/lib/data/layout'
 import { seasonNow } from '@/lib/data/season'
 import { env, isProductionSite } from '@/lib/env'
 import { fillTokens } from '@/lib/text'
+import { serviceGroups } from '@/lib/view'
 
 import './globals.css'
 
@@ -103,6 +106,10 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         <Footer data={layout} />
         <MobileActionBar phone={site.phone} />
         <CookieConsent />
+        <SlideInQuote
+          groups={serviceGroups(layout.categories)}
+          consentLabel={consentText(site.country, site.shortName)}
+        />
       </body>
     </html>
   )

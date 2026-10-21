@@ -34,17 +34,18 @@ production deploys stay blocked until each one is confirmed or replaced:
 
 ## 2. Optional facts — each section stays hidden until you set it
 
-| Field                              | Unlocks                                                |
-| ---------------------------------- | ------------------------------------------------------ |
-| `foundedYear`                      | "Serving since …"                                      |
-| `insuranceCoverage`                | Insurance badge and compliance block                   |
-| `workersCompRegistration`          | Workers' comp badge (state workers' comp policy)       |
-| `licenceNumbers`                   | License list in the footer and commercial pages        |
-| `googlePlaceId`, `googleReviewUrl` | Live Google reviews and the "Leave us a review" button |
-| `responseTimePromise`              | "We reply within …" on forms and the thank-you page    |
-| `guarantee`                        | The satisfaction-guarantee band (your own wording)     |
-| `social.*`                         | Footer social icons                                    |
-| `stats.*`                          | Jobs completed, happy clients, rating, review count    |
+| Field                              | Unlocks                                                      |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `foundedYear`                      | "Serving since …"                                            |
+| `insuranceCoverage`                | Insurance badge and compliance block                         |
+| `workersCompRegistration`          | Workers' comp badge (state workers' comp policy)             |
+| `licenceNumbers`                   | License list in the footer and commercial pages              |
+| `googlePlaceId`, `googleReviewUrl` | Live Google reviews and the "Leave us a review" button       |
+| `responseTimePromise`              | "We reply within …" on forms and the thank-you page          |
+| `guarantee`                        | The satisfaction-guarantee band (your own wording)           |
+| `social.*`                         | Footer social icons                                          |
+| `stats.*`                          | Jobs completed, happy clients, rating, review count          |
+| `alertPhones`, `alertEmails`       | Who gets a text / email for every new lead (Lead alerts tab) |
 
 ## 3. Brand
 
@@ -189,6 +190,18 @@ Hero Variants → the Holiday row → Image**. You can also change the season da
 
 ## 5. Pricing awaiting review
 
+Until each rule, discount and plan below is checked and **Needs review** is unticked, the live site
+shows "We'll price this with you" instead of a price (the admin dashboard shows how many are left).
+Also check these quote settings:
+
+- [ ] **Repeat schedules per service** (each service → Quote & pricing → Frequencies): which
+      services can be booked twice a year, quarterly or monthly in the instant-price wizard.
+- [ ] **Roofline estimate by home size** (`src/config/quote.ts`, `ROOFLINE_ESTIMATES`): used when a
+      customer doesn't know their roofline length for holiday lights (120–240 ft).
+- [ ] **Snow contracts** (admin → Seasonal settings): the trigger depths offered (1, 2 or 3 inches
+      for now), how contracts are billed (the payment note; blank says "confirmed with your
+      contract"), the sign-up deadline and routes left (both hidden until set).
+
 <!-- pricing:start -->
 
 Every number below is a placeholder. While a rule is marked **Needs review** in the admin, the
@@ -270,12 +283,29 @@ The starter text was written for you, but only you know your methods and policie
       **Feature switches → City service pages**, then pick services under each city's
       **Location → Service-in-city pages**. Only do this for services where you can add local
       detail; near-identical pages can hurt search rankings. New pages go live when you save.
+- [ ] **Quote forms and messages.** The "What happens next" steps on the quote pages and the
+      thank-you page, and the confirmation email/text customers get (`src/lib/leads/messages.ts`).
+      They promise only that you'll be in touch; add your reply time in Site settings to show it.
 
-## 7. Infrastructure decisions
+## 7. Services to set up before launch
+
+Step-by-step instructions are in README.md → "Services setup". `pnpm check-config` blocks a
+production deploy until the first two are done.
+
+- [ ] **Cloudflare R2** (required): a public bucket for photos and a private bucket for customer
+      uploads and lead backups.
+- [ ] **Resend** (required): sends you every new lead by email and confirms to customers.
+- [ ] **Twilio** (recommended): texts you each new lead. US numbers need A2P 10DLC registration
+      before texting customers.
+- [ ] **Cloudflare Turnstile** (recommended): invisible spam check on every form.
+- [ ] **Lead alerts** (admin → Site settings → Lead alerts): the phone numbers and email addresses
+      that should hear about new leads.
+
+## 8. Infrastructure decisions
 
 - [x] **Neon region.** Recreated in AWS US East 2 (Ohio).
 
-## 8. Local SEO setup (do once, keep name/address/phone identical everywhere)
+## 9. Local SEO setup (do once, keep name/address/phone identical everywhere)
 
 1. **Google Business Profile:** create or claim the profile at business.google.com. Use the
    exact business name, phone and address (or service areas) from section 1. Choose a primary

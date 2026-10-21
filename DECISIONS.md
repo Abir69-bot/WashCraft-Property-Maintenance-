@@ -340,3 +340,120 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
   user. It skips locally so it never touches a real account.
 - **Neon `dev` was patched with one-off scripts** when seeded copy changed, because the seed
   never overwrites existing documents. Production will be seeded fresh from the current data.
+
+## Phase 5 — Quote system (2026-10-21)
+
+### Saving leads
+
+- **Database first, then everything else** (`lib/leads/pipeline.ts`). A lead and its file records
+  are created in one transaction. A connection error (Neon waking up) gets one retry after 1.5 s;
+  if that fails too, or on any other error, the full lead is written as JSON to private storage
+  under `failed-leads/` and emailed to the owner. If both of those fail, the whole lead is
+  written to the server log as a last resort. Re-imports happen from the Leads list ("Re-import
+  backed-up leads", `POST /api/leads/reimport`); imported files move to
+  `failed-leads/imported/`, so nothing is imported twice.
+- **Notifications run after the visitor already has an answer** (`after()`), so a slow SMS or
+  email never delays the form. The results go into the lead's notification log; a failure marks
+  it `partial` or `failed` and is logged.
+- **Small system updates write single columns** (`payload.db.updateOne`). A full Payload update
+  rewrites the whole record, and a "Book this" click landing while notifications were being
+  logged overwrote the log (seen in testing, now covered by an integration test).
+- **Lead statuses:** the wizard, snow and holiday forms save as `estimate_viewed` before the price
+  is shown; "Book this" moves it to `booking_requested` (only from `new` or `estimate_viewed`);
+  "Request a call-back" ticks `callbackRequested`. A signed token (an HMAC of the lead id) lets
+  the visitor do this without an account.
+
+### Pricing
+
+- **The minimum charge applies per service**, before bundle and frequency discounts. The brief's
+  formula can be read either way; per service matches how the rules are stored.
+- **The best matching discount of each kind applies**: one bundle discount (by number of priced
+  services) and one frequency discount. Ranges are rounded outwards to $5.
+- **Placeholders never reach the live site.** Rules and discounts marked "Needs review" are used
+  (and badged "Placeholder price") in development and preview only. On the live site the line
+  shows "We'll price this with you", and the e2e tests check that no placeholder or dollar figure
+  appears. The admin dashboard and the pricing lists show how many prices still need review.
+- **Pricing runs on the server only.** Rules, discounts and settings are cached server-side and
+  never sent to the browser; the visitor only sees ranges.
+- **Each service lists the repeat schedules it allows** (new "Frequencies" field). The wizard
+  offers only the schedules every chosen service allows and Pricing settings offers.
+- **Questions asked identically by several services are asked once** ("About your property"),
+  then copied to each service, so choosing house washing and gutters doesn't ask for the home
+  size twice.
+
+### Forms
+
+- **One schema per form, shared by browser and server** (`lib/schemas/quote.ts`). Answers to a
+  service's own CMS questions are checked with a schema built from those questions, so a new
+  instant service still needs no code. Number fields that would need converting are validated
+  as text and converted on the server, so the form and server types stay identical.
+- **The wizard runs in the browser only** (dynamic import, no server rendering): it restores
+  saved progress from localStorage and reads `?service=` and `?plan=`. Commercial properties stop
+  at the property step with a link to the bid form. A maintenance plan books as a `subscription`
+  lead, as does any subscription service (garbage bin cleaning).
+- **Dedicated forms are tied to specific services by slug** (`FLOW_SERVICES` in
+  `config/quote.ts`): snow removal, the three holiday-light services and junk removal. Renaming
+  those slugs means updating that file.
+- **Holiday lights: "I don't know my roofline"** uses a rough length per home size
+  (`ROOFLINE_ESTIMATES`), marked as estimated on the lead and listed for the owner to check.
+- **Snow contract:** trigger depths and an optional payment note come from Seasonal settings
+  (defaults 1, 2 or 3 inches; no payment terms invented). The deadline and routes left show only
+  when set. Per-visit billing has no estimate; seasonal billing does.
+- **The quick quote and the dedicated forms end on `/quote/thank-you`** (not indexed). The
+  instant, snow and holiday flows show their estimate first.
+- **The slide-in quick quote** (desktop, exit intent or 45 s, once per 7 days, never on quote
+  pages) also stays away while the visitor is filling in a form, and loads its form code only
+  when it opens.
+
+### Uploads
+
+- **Files go straight from the browser to private storage** with a 10-minute signed URL (R2
+  presigned PUT in production; a signed local route in development). This avoids Vercel's
+  4.5 MB request limit, so photos and PDFs up to 10 MB work.
+- **Every file is checked by its content**, right after upload (so the visitor is told) and again
+  when the form is sent. Anything that isn't JPEG, PNG, WebP, HEIC or (for bids) PDF is deleted.
+- **Customer files never use the public Media collection or bucket.** `lead-files` records point
+  at objects in the private bucket and are downloaded through a staff-only endpoint, always as an
+  attachment. Deleting the record deletes the file.
+- **Site photos use Payload's official S3 adapter on a separate public R2 bucket**, with
+  `alwaysInsertFields`, so the schema is the same with or without R2 configured.
+- Abandoned uploads (a visitor leaves without sending) stay in the private bucket; an R2
+  lifecycle rule can expire them (README).
+- **The lead-files schema change took two migrations.** Turning the upload collection into plain
+  records adds and drops columns in one table, which makes the migration tool ask whether each new
+  column is a rename; that question can't be answered in a script, so the drops and the adds are
+  separate migrations.
+
+### Spam, alerts, admin
+
+- **Spam:** a honeypot (silently accepted, nothing saved), Turnstile when keys are set, and a
+  rate limit of 6 submissions and 40 uploads per 10 minutes per visitor IP, kept in memory per
+  server instance (no database or extra service). Local requests (no IP, or loopback) are never
+  limited. If Cloudflare can't be reached, the submission goes through: losing a real lead is
+  worse.
+- **Twilio and Resend are called over plain HTTPS**, without SDKs. Who gets alerts is set in the
+  admin (Site settings → Lead alerts); email falls back to the business email.
+- **Customer messages:** an email confirmation when they gave an email; a text only with consent,
+  always ending "Reply STOP to opt out". The reply-time line only appears when the owner set a
+  response-time promise.
+- **Review requests** (switch "Review requests"): when a lead with consent is first marked won,
+  one text and/or email with the Google review link; `reviewRequestedAt` stops repeats.
+- **Admin:** a dashboard with this week's leads by type, source and status, the database size
+  against `DB_STORAGE_LIMIT_MB` (red warning from 80%), and banners for prices to review and leads
+  waiting in backup; a status menu in each Leads row; CSV export from the list's ⋮ menu (Payload's
+  import-export plugin: download only, no stored export files or job queue).
+- **`check-config` now requires R2 and Resend for production builds** (Vercel's disk is read-only,
+  and the owner must hear about leads) and recommends Turnstile and Twilio.
+- **Property data lookup** (§10.6): an interface and a no-op provider only; nothing imported.
+
+### Tests
+
+- 13 pricing-engine tests, plus tests for retry, backup and re-import, messages, file sniffing,
+  spam checks, tokens, notifiers and storage. Integration tests cover the transaction and its
+  rollback, column-level updates, re-import with files and review requests against Postgres.
+- Browser tests cover every flow on desktop and phone, uploads (including a disguised file), saved
+  progress, the commercial exit, plans, the slide-in frequency cap and axe on every quote page.
+  Staff tests (preview, dashboard, status change, pricing banner) run only on an empty database
+  (CI), where they create the first account.
+- **The e2e server runs with its own address as the site URL**: Payload only accepts signed-in
+  writes from the configured origin (its CSRF check), and the test server uses port 3100.

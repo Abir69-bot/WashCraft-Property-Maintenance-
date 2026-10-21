@@ -28,6 +28,93 @@ and Neon serverless Postgres. The full specification is in [docs/BRIEF.md](docs/
 5. Keep the `production` strings for the Vercel production environment. Never put them in a local
    `.env`.
 
+## Services setup
+
+Everything below is optional for local development: without keys, texts and emails are written
+to the terminal and files are stored in `.private-uploads/` and `media/`. A production build
+(`pnpm check-config` on Vercel) **requires R2 and Resend**, and recommends Turnstile and Twilio.
+Put each value in `.env` locally and in Vercel → Project → Settings → Environment Variables.
+
+### Cloudflare R2 (photos, customer uploads, lead backups)
+
+1. In the Cloudflare dashboard, open **R2** and create two buckets, e.g. `washcraft-media` and
+   `washcraft-private`. Choose a location near your customers.
+2. **Public bucket** (`washcraft-media`): Settings → Public access → connect a custom domain such
+   as `media.yourdomain.com` (or enable the r2.dev URL for testing). That address is
+   `R2_PUBLIC_URL`, without a trailing slash.
+3. **Private bucket** (`washcraft-private`): leave public access **off**. Under Settings → CORS
+   policy, allow uploads from the site (customers' photos go straight from the browser to R2):
+
+   ```json
+   [
+     {
+       "AllowedOrigins": ["https://www.yourdomain.com", "http://localhost:3000"],
+       "AllowedMethods": ["PUT"],
+       "AllowedHeaders": ["content-type"],
+       "MaxAgeSeconds": 3600
+     }
+   ]
+   ```
+
+   Optional: a lifecycle rule that deletes objects under `lead-files/` after, say, 365 days, and
+   under `failed-leads/imported/` after 90 days.
+
+4. **R2 → Manage API tokens → Create API token** with "Object Read & Write" on both buckets. Copy
+   the **Access Key ID**, **Secret Access Key** and the **S3 endpoint**
+   (`https://<account-id>.r2.cloudflarestorage.com`).
+5. Set `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_PUBLIC_BUCKET`,
+   `R2_PUBLIC_URL` and `R2_PRIVATE_BUCKET`.
+
+### Resend (email)
+
+1. Create a [Resend](https://resend.com) account and add your domain under **Domains**. Add the
+   DNS records it shows at your domain host and wait for "Verified".
+2. **API Keys → Create** with "Sending access". Set `RESEND_API_KEY`.
+3. Set `EMAIL_FROM`, e.g. `WashCraft <quotes@yourdomain.com>` (on the verified domain).
+4. In the admin, **Site settings → Lead alerts → Email new leads to**: who gets lead emails
+   (blank uses the business email).
+
+### Twilio (text alerts)
+
+1. Create a [Twilio](https://www.twilio.com) account and buy a local number with SMS. US numbers
+   need A2P 10DLC registration before they can text customers; owner alerts to a verified number
+   work on a trial account.
+2. Copy the **Account SID** and **Auth Token** from the console. Set `TWILIO_ACCOUNT_SID`,
+   `TWILIO_AUTH_TOKEN` and `TWILIO_FROM` (your Twilio number, e.g. `+17205550100`).
+3. In the admin, **Site settings → Lead alerts → Text new leads to**: the mobile numbers that get
+   a text for every new lead.
+
+### Cloudflare Turnstile (spam protection)
+
+1. Cloudflare dashboard → **Turnstile → Add widget**. Add your domain (and `localhost` for
+   testing), mode "Managed".
+2. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (site key) and `TURNSTILE_SECRET_KEY` (secret key).
+   The check is invisible for most visitors and only asks for a click when Cloudflare isn't sure.
+
+## Working with leads (admin)
+
+- **Leads** lists every request, newest first. Change a status straight from the list; open a
+  lead for its answers, estimate, notes, consent and where the visitor came from.
+- **Photos and documents** are under each lead (and in **Lead files**). Open one and click
+  **Download file**; only signed-in staff can.
+- **CSV export:** Leads list → **⋮** → **Export**. Pick the fields, clear the **Limit** to export
+  everything, then **Download**.
+- **Backed-up leads:** if the database was unreachable when someone sent a form, the lead was
+  emailed to you and saved to backup storage. A red banner on the dashboard and the Leads list
+  then offers **Re-import backed-up leads**.
+- **Prices:** every seeded price is a placeholder. Until you check a rule (Pricing → Pricing rules,
+  Discounts, Plans) and untick **Needs review**, the live site shows "We'll price this with you"
+  instead of a number.
+
+## Property data lookup (optional, off)
+
+`src/lib/property-data.ts` defines a `PropertyDataProvider` that could pre-fill the wizard (floor
+area, stories) from an address. Only a no-op provider exists. To add one later: load a building
+dataset (Statistics Canada's Open Database of Buildings, or Microsoft's building footprints for
+the US) into a PostGIS table, enable PostGIS with a migration, implement `lookup()` with a
+spatial query, and turn on **Feature switches → Property lookup**. Check storage first: these
+datasets are far larger than Neon's free plan.
+
 ## Local setup
 
 ```bash
@@ -104,8 +191,10 @@ pnpm exec playwright install chromium   # once
 pnpm build && pnpm test:e2e             # browser tests on http://localhost:3100
 ```
 
-The browser tests use whatever database the build used (locally the Neon `dev` branch). The quick
-quote test saves a lead named "E2E Test" with `utm_source=e2e`.
+The browser tests use whatever database the build used (locally the Neon `dev` branch). The quote
+tests save leads named "E2E Test" with `utm_source=e2e` (delete them from the admin afterwards
+if you like). The staff tests (admin preview, dashboard, status changes) only run on an empty
+database, as in CI, where they create the first account; elsewhere they skip.
 
 CI (`.github/workflows/ci.yml`) runs lint, format check, typecheck, unit tests, migrations, the
 config check, integration tests (including a full seed run twice, in their own database), a seed
