@@ -76,7 +76,7 @@ Hero Variants → the Holiday row → Image**. You can also change the season da
 - [ ] Why choose us, "Locally owned": Owner shaking hands with a customer at the front door
 - [ ] Why choose us, "Clear pricing": Customer checking a price on a phone
 
-**Category pages**
+**Category and commercial pages**
 
 - [ ] Exterior Cleaning: Two-story home with freshly washed siding, clean windows and a bright driveway
 - [ ] Interior Cleaning: Bright, freshly cleaned kitchen with clear counters
@@ -84,6 +84,7 @@ Hero Variants → the Holiday row → Image**. You can also change the season da
 - [ ] Holiday Lighting: Home at dusk with warm white roofline lights and lit shrubs
 - [ ] Yard & Exterior Care: Neat front yard with edged beds and a freshly stained fence
 - [ ] Commercial & HOA: Crew on a lift washing a three-story condo building
+- [ ] HOA & condo page: Crew washing the siding of a condo building while residents walk past
 
 **Service pages**
 
@@ -258,6 +259,17 @@ The starter text was written for you, but only you know your methods and policie
       you sent are real and already in use: before/after gallery, home hero, "Why choose us".)
 - [ ] **Comparison table and "Why choose us"** (admin, **Home page**). Make sure every point is
       true for your business.
+- [ ] **Commercial and HOA pages** (admin, **Commercial pages**). The four "Why managers work with
+      us" points and the HOA & condo page describe how you work with boards: written proposals,
+      resident notices, one contract for the year, photo records after each visit. Keep only what
+      you actually do.
+- [ ] **Insurance block.** The commercial pages show an "Insurance and compliance" box only after
+      you fill in `insuranceCoverage`, `workersCompRegistration` or `licenceNumbers` in Site
+      settings. Certificates are only mentioned once insurance is set.
+- [ ] **Optional: city service pages.** To add pages like "Gutter Cleaning in Aurora", turn on
+      **Feature switches → City service pages**, then pick services under each city's
+      **Location → Service-in-city pages**. Only do this for services where you can add local
+      detail; near-identical pages can hurt search rankings. New pages go live when you save.
 
 ## 7. Infrastructure decisions
 

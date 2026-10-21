@@ -26,6 +26,7 @@ import {
 } from './collections/social-proof'
 import { Users } from './collections/users'
 import {
+  CommercialPages,
   FeatureFlags,
   Footer,
   Homepage,
@@ -85,6 +86,7 @@ export default buildConfig({
     Navigation,
     Footer,
     Homepage,
+    CommercialPages,
     FeatureFlags,
     PricingSettings,
   ].map(withGlobalRevalidation),

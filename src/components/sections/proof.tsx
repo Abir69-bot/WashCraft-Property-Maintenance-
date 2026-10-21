@@ -9,7 +9,7 @@ import { asMedia, mediaSrc } from '@/lib/view'
 import type { City, GalleryItem, Service, Testimonial } from '@/payload-types'
 
 import { BeforeAfterSlider } from './before-after-slider'
-import { Section } from './section'
+import { Section, type SectionTone } from './section'
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -136,9 +136,11 @@ export function Testimonials({
 export function BeforeAfter({
   items,
   title = 'Before and after',
+  tone,
 }: {
   items: GalleryItem[]
   title?: string
+  tone?: SectionTone
 }) {
   const pairs = items
     .map((item) => ({ item, before: asMedia(item.before), after: asMedia(item.after) }))
@@ -148,6 +150,7 @@ export function BeforeAfter({
   return (
     <Section
       id="before-after"
+      tone={tone}
       eyebrow="Our work"
       title={title}
       intro="Drag the handle, or use the arrow keys, to compare."

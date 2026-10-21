@@ -12,11 +12,13 @@ import {
   VERSIONS,
 } from '@/fields/common'
 import { redirectOnSlugChange } from '@/hooks/redirect-on-slug-change'
+import { previewUrl } from '@/lib/preview'
 
 export const ServiceCategories: CollectionConfig = {
   slug: 'service-categories',
   labels: { singular: 'Service category', plural: 'Service categories' },
   admin: {
+    preview: previewUrl('service-categories'),
     group: 'Services',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'order', '_status'],
@@ -40,6 +42,7 @@ export const ServiceCategories: CollectionConfig = {
           fields: [
             { name: 'headline', type: 'text', required: true },
             { name: 'intro', type: 'textarea', required: true },
+            { name: 'heroImage', type: 'upload', relationTo: 'media' },
             photoLabelField('heroImageLabel', 'Hero photo needed'),
             {
               name: 'bookingNote',

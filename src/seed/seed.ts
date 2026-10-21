@@ -8,6 +8,7 @@ import type {
   Where,
 } from 'payload'
 
+import { toSlug } from '@/lib/text'
 import type { Season } from '@/config/catalog'
 import { isPlaceholder, site, type Country, type Currency, type Locale } from '@/config/site'
 
@@ -15,16 +16,17 @@ import { posts, solutions } from './data/articles'
 import { categories } from './data/categories'
 import { cities } from './data/cities'
 import { faqs } from './data/faqs'
-import { footer, homepage, navigation, pricingSettings, seasonalSettings } from './data/globals'
+import {
+  commercialPages,
+  footer,
+  homepage,
+  navigation,
+  pricingSettings,
+  seasonalSettings,
+} from './data/globals'
 import { discounts, plans, pricingRules } from './data/pricing'
 import { sampleClientLogos, sampleJobs, sampleTeam, sampleTestimonials } from './data/samples'
-import { commercialServices } from './data/services-commercial'
-import { exteriorServices } from './data/services-exterior'
-import { holidayServices } from './data/services-holiday'
-import { interiorServices } from './data/services-interior'
-import { winterServices } from './data/services-winter'
-import { yardServices } from './data/services-yard'
-import type { CitySeed, ServiceSeed } from './types'
+import type { CitySeed } from './types'
 import {
   featuredServices,
   gallery,
@@ -35,15 +37,9 @@ import {
   whyChooseUsImages,
   type MediaKey,
 } from './data/media'
+import { allServices } from './data/services'
 
-export const allServices: ServiceSeed[] = [
-  ...exteriorServices,
-  ...interiorServices,
-  ...winterServices,
-  ...holidayServices,
-  ...yardServices,
-  ...commercialServices,
-]
+export { allServices }
 
 export type SeedOptions = {
   /** Overwrite documents and globals that already exist (owner edits are lost). */
@@ -54,12 +50,6 @@ export type SeedOptions = {
 export type SeedReport = Record<string, { created: number; updated: number; skipped: number }>
 
 const PUBLISHED = { _status: 'published' as const }
-
-const toSlug = (text: string) =>
-  text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
 
 /**
  * Idempotent seed (brief §16). Documents are matched by a natural key (slug, question, name);
@@ -512,6 +502,10 @@ export async function seed(
   await seedGlobal('homepage', homepage)
   await seedGlobal('feature-flags', {})
   await seedGlobal('pricing-settings', pricingSettings)
+  await seedGlobal('commercial-pages', {
+    ...commercialPages,
+    hoa: { ...commercialPages.hoa, services: idsFor(serviceIds, commercialPages.hoa.services) },
+  })
 
   // Photos and featured services: only filled where still empty, so admin choices survive.
   for (const [collection, heroes] of [

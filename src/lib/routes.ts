@@ -8,6 +8,7 @@ export const routes = {
   service: (slug: string) => `/services/${slug}`,
   /** Category hubs live at the top level, e.g. /exterior-cleaning. */
   category: (slug: string) => `/${slug}`,
+  commercial: '/commercial',
   hoa: '/commercial/hoa',
   maintenancePlans: '/maintenance-plans',
   areas: '/areas',
@@ -50,3 +51,6 @@ export const DOC_PATHS = {
 } as const satisfies Record<string, (slug: string) => string>
 
 export type PageCollection = keyof typeof DOC_PATHS
+
+/** The commercial category's hub is its own page (/commercial) with extra sections (brief §9.5). */
+export const COMMERCIAL_CATEGORY = 'commercial'

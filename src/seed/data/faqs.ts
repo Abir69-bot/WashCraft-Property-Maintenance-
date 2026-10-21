@@ -240,13 +240,14 @@ export const faqs: FaqSeed[] = [
     category: 'commercial',
     question: 'Do you work with HOAs and property managers?',
     answer:
-      'Yes. We offer one point of contact, scheduled services, resident notices and documents for your board or insurer.',
+      'Yes. We offer one point of contact, scheduled services and resident notices, and we confirm the paperwork your board needs with each bid.',
   },
   {
     category: 'commercial',
     showOnHome: true,
-    question: 'Can you provide insurance certificates?',
-    answer: 'Yes. Ask for one with your bid request and we’ll include it with the proposal.',
+    question: 'What paperwork can you provide with a bid?',
+    answer:
+      'Tell us what your board, manager or insurer requires when you request a bid, and we’ll confirm what we can include with the proposal.',
   },
   {
     category: 'commercial',

@@ -137,7 +137,7 @@ export const categories: CategorySeed[] = [
     icon: 'building',
     headline: 'Property maintenance for HOAs, property managers and businesses',
     intro:
-      'One contact for building washing, windows, gutters, parking garages, snow and holiday lighting across one property or many. We work to your schedule, keep residents and customers informed, and provide the paperwork your board or insurer asks for.',
+      'One contact for building washing, windows, gutters, parking garages, snow and holiday lighting across one property or many. We work to your schedule, keep residents and customers informed, and confirm the paperwork your board needs up front.',
     summary:
       'Building washing, windows, gutters, roofs, parking garages, graffiti removal, solar panels and permanent lighting for HOAs and businesses.',
     outcomeLabel: 'Request a commercial bid',

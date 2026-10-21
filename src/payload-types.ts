@@ -133,6 +133,7 @@ export interface Config {
     navigation: Navigation;
     footer: Footer;
     homepage: Homepage;
+    'commercial-pages': CommercialPage;
     'feature-flags': FeatureFlag;
     'pricing-settings': PricingSetting;
   };
@@ -142,6 +143,7 @@ export interface Config {
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    'commercial-pages': CommercialPagesSelect<false> | CommercialPagesSelect<true>;
     'feature-flags': FeatureFlagsSelect<false> | FeatureFlagsSelect<true>;
     'pricing-settings': PricingSettingsSelect<false> | PricingSettingsSelect<true>;
   };
@@ -568,6 +570,7 @@ export interface ServiceCategory {
   title: string;
   headline: string;
   intro: string;
+  heroImage?: (number | null) | Media;
   /**
    * What the photo should show. Displayed until a real photo is uploaded.
    */
@@ -783,6 +786,7 @@ export interface City {
    * Write this for this city only: what homes and weather are like, and how you help.
    */
   intro: string;
+  heroImage?: (number | null) | Media;
   /**
    * What the photo should show. Displayed until a real photo is uploaded.
    */
@@ -791,6 +795,7 @@ export interface City {
     | {
         name: string;
         blurb: string;
+        image?: (number | null) | Media;
         /**
          * What the photo should show. Displayed until a real photo is uploaded.
          */
@@ -1546,6 +1551,7 @@ export interface ServiceCategoriesSelect<T extends boolean = true> {
   title?: T;
   headline?: T;
   intro?: T;
+  heroImage?: T;
   heroImageLabel?: T;
   bookingNote?: T;
   bundles?:
@@ -1654,12 +1660,14 @@ export interface PlansSelect<T extends boolean = true> {
 export interface CitiesSelect<T extends boolean = true> {
   name?: T;
   intro?: T;
+  heroImage?: T;
   heroImageLabel?: T;
   neighborhoods?:
     | T
     | {
         name?: T;
         blurb?: T;
+        image?: T;
         imageLabel?: T;
         id?: T;
       };
@@ -2462,6 +2470,56 @@ export interface Homepage {
   createdAt?: string | null;
 }
 /**
+ * Extra content for /commercial and the HOA & condo page. The commercial hub's headline, intro and bundles are on the "Commercial & HOA" service category. Insurance details come from Site settings. Write {region} to insert your service region.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commercial-pages".
+ */
+export interface CommercialPage {
+  id: number;
+  points?:
+    | {
+        title: string;
+        body: string;
+        id?: string | null;
+      }[]
+    | null;
+  hoa: {
+    headline: string;
+    intro: string;
+    heroImage?: (number | null) | Media;
+    /**
+     * What the photo should show. Displayed until a real photo is uploaded.
+     */
+    heroImageLabel?: string | null;
+    sections?:
+      | {
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Service cards shown on the page.
+     */
+    services?: (number | Service)[] | null;
+    faqs?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Leave blank for "HOA & Condo Property Maintenance in [region]". " | WashCraft" is added automatically.
+     */
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "feature-flags".
  */
@@ -2755,6 +2813,47 @@ export interface HomepageSelect<T extends boolean = true> {
               large?: T;
               id?: T;
             };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commercial-pages_select".
+ */
+export interface CommercialPagesSelect<T extends boolean = true> {
+  points?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  hoa?:
+    | T
+    | {
+        headline?: T;
+        intro?: T;
+        heroImage?: T;
+        heroImageLabel?: T;
+        sections?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+        services?: T;
+        faqs?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+        metaTitle?: T;
+        metaDescription?: T;
       };
   updatedAt?: T;
   createdAt?: T;

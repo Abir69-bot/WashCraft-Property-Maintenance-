@@ -4,11 +4,13 @@ import { publicRead } from '@/access/public-read'
 import { isOwner, isSignedIn } from '@/access/roles'
 import { faqsField, orderField, photoLabelField, seoTab, VERSIONS } from '@/fields/common'
 import { redirectOnSlugChange } from '@/hooks/redirect-on-slug-change'
+import { previewUrl } from '@/lib/preview'
 
 export const Cities: CollectionConfig = {
   slug: 'cities',
   labels: { singular: 'City', plural: 'Cities' },
   admin: {
+    preview: previewUrl('cities'),
     group: 'Areas',
     useAsTitle: 'name',
     defaultColumns: ['name', 'state', 'slug', '_status'],
@@ -44,6 +46,7 @@ export const Cities: CollectionConfig = {
               type: 'ui',
               admin: { components: { Field: '@/components/admin/word-count-hint#WordCountHint' } },
             },
+            { name: 'heroImage', type: 'upload', relationTo: 'media' },
             photoLabelField('heroImageLabel', 'City photo needed'),
             {
               name: 'neighborhoods',
@@ -51,6 +54,7 @@ export const Cities: CollectionConfig = {
               fields: [
                 { name: 'name', type: 'text', required: true },
                 { name: 'blurb', type: 'textarea', required: true },
+                { name: 'image', type: 'upload', relationTo: 'media' },
                 photoLabelField('imageLabel'),
               ],
             },

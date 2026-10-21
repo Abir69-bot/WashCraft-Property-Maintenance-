@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
+import { draftMode } from 'next/headers'
 
 import {
   AnnouncementBar,
@@ -12,6 +13,7 @@ import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
 import type { FeaturedCard } from '@/components/layout/main-nav'
 import { MobileActionBar } from '@/components/layout/mobile-action-bar'
+import { PreviewBanner } from '@/components/layout/preview-banner'
 import { UtilityBar } from '@/components/layout/utility-bar'
 import { isPlaceholder } from '@/config/site'
 import { getLayoutData, type LayoutData } from '@/lib/data/layout'
@@ -68,7 +70,7 @@ function featuredCard(
 }
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const layout = await getLayoutData()
+  const [layout, draft] = await Promise.all([getLayoutData(), draftMode()])
   const { site } = layout
   const { season, active, variant } = seasonNow(layout)
   const announcement = pickAnnouncement(layout.seasonal, season, active)
@@ -90,6 +92,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         >
           Skip to main content
         </a>
+        {draft.isEnabled && <PreviewBanner />}
         <AnnouncementBar announcement={announcement} />
         <UtilityBar site={site} />
         <Header data={layout} featured={featuredCard(layout, variant)} />

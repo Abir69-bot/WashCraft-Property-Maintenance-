@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { e164, fillTokens, smsHref, telHref } from './text'
+import { e164, fillTokens, smsHref, telHref, toSlug } from './text'
 
 describe('fillTokens', () => {
   it('fills known tokens', () => {
@@ -28,5 +28,12 @@ describe('phone links', () => {
     expect(telHref('[PHONE]')).toBeNull()
     expect(smsHref('555-0142')).toBeNull()
     expect(e164(null)).toBeNull()
+  })
+})
+
+describe('toSlug', () => {
+  it('makes lowercase hyphenated slugs', () => {
+    expect(toSlug('Castle Rock')).toBe('castle-rock')
+    expect(toSlug('  Coeur d’Alene! ')).toBe('coeur-d-alene')
   })
 })

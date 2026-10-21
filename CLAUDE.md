@@ -66,7 +66,8 @@ src/
   hooks/                collection hooks (redirect-on-slug-change)
   access/public-read.ts visitors: published only, no samples in production
   components/ui/        primitives (button, dialog, accordion, tabs, select, popover…)
-  components/sections/  page sections (Hero, TrustStrip, BeforeAfter, …)
+  components/sections/  page sections (Hero, TrustStrip, BeforeAfter, …) and template parts
+                        (page-hero, category-hub, service-/city-/commercial-blocks, plans)
   components/layout/    header, mega-menu, mobile menu + action bar, footer, call band, cookie banner
   components/quote/     quick form, wizard, dedicated flows
   lib/env.ts            the ONLY place env vars are read (Zod-validated)
@@ -75,7 +76,9 @@ src/
   lib/leads/            save-with-retry, R2 fallback, re-import
   lib/seo/              metadata + JSON-LD builders
   lib/schemas/          shared Zod schemas
-  lib/data/             cached public queries (cachedQuery, tag `content`), seasonNow()
+  lib/data/             cached public queries (cachedQuery, tag `content`), page loaders (load.ts), seasonNow()
+  lib/quote/flow.ts     quoteCta(): where each service's / category's quote button goes
+  lib/preview.ts        admin Preview button URLs; app/next/preview turns on draft mode
   lib/utils.ts          cn() (tailwind-merge aware of text-h1/h2/h3/body/small)
   access/roles.ts       owner/staff access helpers
   components/brand/     <Logo height> (next/image of src/assets/brand/washcraft-logo.png)
@@ -117,6 +120,10 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 - Server Components by default; `'use client'` only for interactive leaves (budget: < 150 KB JS per content page).
 - Public pages are static/ISR and must not hit the DB at request time. Revalidate from Payload `afterChange` hooks, not short timers. Public queries go through `cachedQuery()` in `src/lib/data`; the site layout's daily `revalidate` is what switches seasons.
 - Images: pass `mediaSrc(media)` to `next/image`, never `media.url` (Payload's URLs are absolute).
+- Dynamic pages load through `lib/data/load.ts` (slug checked against cached layout data first, so junk URLs never hit the DB) and build metadata with `pageMetadata()` (title pattern, canonical, Open Graph). The H1 equals the title pattern.
+- Content cache keys include `CONTENT_CACHE_VERSION` (new per build, set in next.config.ts). After changing content outside the admin (seed, restore), redeploy or save any document.
+- On city pages, shared copy that makes claims about the business keeps `{region}`; only service/city copy is filled with the city name.
+- Plain links inside sentences have no `className`, so the base style underlines them (WCAG 1.4.1). Give standalone styled links a class.
 - **Public data queries pass `overrideAccess: false`**, so `publicRead()` hides drafts and (in production) samples. The local API skips access control by default.
 - Copy may contain `{region}`; fill it in at render time, never store the expanded text.
 - Links between documents use `routes` / `DOC_PATHS` from `src/lib/routes.ts`, never hand-built strings.

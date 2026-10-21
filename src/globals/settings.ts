@@ -2,7 +2,7 @@ import type { Field, GlobalConfig } from 'payload'
 
 import { isOwner, isSignedIn } from '@/access/roles'
 import { FREQUENCIES, FREQUENCY_LABELS, SEASON_LABELS, SEASONS } from '@/config/catalog'
-import { photoLabelField, TOKENS_HINT } from '@/fields/common'
+import { faqsField, photoLabelField, TOKENS_HINT } from '@/fields/common'
 
 const publicGlobal = { read: () => true, update: isSignedIn }
 const ownerGlobal = { read: () => true, update: isOwner }
@@ -403,6 +403,65 @@ export const PricingSettings: GlobalConfig = {
       admin: {
         description: 'Frequencies offered in the wizard (discounts are set under Discounts).',
       },
+    },
+  ],
+}
+
+const titledText = (name: string, label: string): Field => ({
+  name,
+  label,
+  type: 'array',
+  fields: [
+    { name: 'title', type: 'text', required: true },
+    { name: 'body', type: 'textarea', required: true },
+  ],
+})
+
+export const CommercialPages: GlobalConfig = {
+  slug: 'commercial-pages',
+  label: 'Commercial pages',
+  admin: {
+    group: 'Settings',
+    description: `Extra content for /commercial and the HOA & condo page. The commercial hub's headline, intro and bundles are on the "Commercial & HOA" service category. Insurance details come from Site settings. ${TOKENS_HINT}`,
+  },
+  access: publicGlobal,
+  fields: [
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Commercial hub',
+          fields: [titledText('points', 'Why managers work with us')],
+        },
+        {
+          name: 'hoa',
+          label: 'HOA & condo page',
+          fields: [
+            { name: 'headline', type: 'text', required: true },
+            { name: 'intro', type: 'textarea', required: true },
+            { name: 'heroImage', type: 'upload', relationTo: 'media' },
+            photoLabelField('heroImageLabel', 'Hero photo needed'),
+            titledText('sections', 'Sections'),
+            {
+              name: 'services',
+              type: 'relationship',
+              relationTo: 'services',
+              hasMany: true,
+              admin: { description: 'Service cards shown on the page.' },
+            },
+            faqsField(),
+            {
+              name: 'metaTitle',
+              type: 'text',
+              admin: {
+                description:
+                  'Leave blank for "HOA & Condo Property Maintenance in [region]". " | WashCraft" is added automatically.',
+              },
+            },
+            { name: 'metaDescription', type: 'textarea' },
+          ],
+        },
+      ],
     },
   ],
 }

@@ -13,6 +13,7 @@ import { site } from '@/config/site'
 import { migrations } from '@/migrations'
 import config from '@/payload.config'
 import { faqs } from '@/seed/data/faqs'
+import { commercialPages } from '@/seed/data/globals'
 import { gallery, mediaFiles } from '@/seed/data/media'
 import { allServices, seed } from '@/seed/seed'
 
@@ -89,6 +90,11 @@ describe('seed', () => {
     expect(settings.demo).toEqual(site.demo)
     const homepage = await payload.findGlobal({ slug: 'homepage' })
     expect(homepage.sections).toHaveLength(20)
+    const commercial = await payload.findGlobal({ slug: 'commercial-pages', depth: 1 })
+    expect(commercial.points).toHaveLength(commercialPages.points.length)
+    expect(
+      (commercial.hoa.services ?? []).map((service) => (service as { slug: string }).slug),
+    ).toEqual(commercialPages.hoa.services)
   })
 
   it('links services, articles and solutions both ways', async () => {

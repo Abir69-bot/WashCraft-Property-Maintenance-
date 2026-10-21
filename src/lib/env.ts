@@ -82,3 +82,9 @@ export const env = parseEnv(process.env)
 
 /** True only on the live site: hides sample content, enables indexing. */
 export const isProductionSite = env.SITE_ENV === 'production'
+
+/**
+ * Set per build by next.config.ts and inlined at compile time (so it must be read as a literal
+ * `process.env` property). Scripts run outside Next and get "scripts".
+ */
+export const CONTENT_CACHE_VERSION = process.env.CONTENT_CACHE_VERSION ?? 'scripts'

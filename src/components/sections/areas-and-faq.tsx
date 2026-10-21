@@ -8,10 +8,11 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import type { AreaCity } from '@/lib/data/layout'
+import type { FaqEntry } from '@/lib/faqs'
 import { routes } from '@/lib/routes'
 import { fillTokens } from '@/lib/text'
 
-import { Section } from './section'
+import { Section, type SectionTone } from './section'
 import { ServiceAreaMap } from './service-area-map'
 import { ZipChecker } from './zip-checker'
 
@@ -49,23 +50,23 @@ export function ServiceAreas({ cities, region }: { cities: AreaCity[]; region: s
   )
 }
 
-export type FaqEntry = { id: string | number; question: string; answer: string }
-
 /** Accordion of questions. Answers stay in the HTML for search engines (brief §9.1.18). */
 export function FaqList({
   faqs,
   region,
   title = 'Questions people ask',
   id = 'faq',
+  tone,
 }: {
   faqs: FaqEntry[]
   region: string
   title?: string
   id?: string
+  tone?: SectionTone
 }) {
   if (faqs.length === 0) return null
   return (
-    <Section id={id} eyebrow="FAQ" title={title}>
+    <Section id={id} tone={tone} eyebrow="FAQ" title={title}>
       <Accordion type="multiple" className="max-w-3xl">
         {faqs.map((faq) => (
           <AccordionItem key={faq.id} value={String(faq.id)}>

@@ -6,6 +6,8 @@ const TONES = {
   dark: 'on-dark',
 } as const
 
+export type SectionTone = keyof typeof TONES
+
 /** Standard page section: rhythm, container, optional eyebrow / heading / intro. */
 export function Section({
   id,
@@ -18,7 +20,7 @@ export function Section({
   children,
 }: {
   id: string
-  tone?: keyof typeof TONES
+  tone?: SectionTone
   eyebrow?: string
   title?: React.ReactNode
   intro?: React.ReactNode

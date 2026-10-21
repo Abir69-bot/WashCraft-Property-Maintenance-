@@ -169,7 +169,7 @@ export const homepage = {
       body: 'We do the work, tidy up and send photos when we’re done.',
     },
   ],
-  recurringUpsell: 'Want it handled every season? Put it on a maintenance plan and save.',
+  recurringUpsell: 'Want it handled every season? Put it on a maintenance plan.',
   whyChooseUs: [
     {
       title: 'Reliable',
@@ -247,4 +247,80 @@ export const pricingSettings = {
   taxNote: 'Prices are estimates before any sales tax that applies.',
   estimateNote:
     'Your estimate is confirmed after we see photos or visit. We agree the final price before any work starts.',
+}
+
+/** Commercial hub points and the HOA & condo page (brief §9.5). Services are slugs. */
+export const commercialPages = {
+  points: [
+    {
+      title: 'One point of contact',
+      body: 'One manager for every service and every site, so you always know who to call.',
+    },
+    {
+      title: 'Year-round contracts',
+      body: 'Washing, windows and gutters in the warm months, snow and ice all winter, and lighting for the holidays, on one schedule.',
+    },
+    {
+      title: 'Volume and multi-site pricing',
+      body: 'Several buildings or properties can be priced together under one proposal.',
+    },
+    {
+      title: 'Notices for residents and tenants',
+      body: 'We give you notices to share before each visit and work around entrances, parking and business hours.',
+    },
+  ],
+  hoa: {
+    headline: 'Exterior care for HOA communities and condo buildings',
+    intro:
+      'Clean siding, clear gutters, safe walkways and bright windows across every building, planned around your residents. We put the scope, schedule and price in writing so your board can compare and approve with confidence.',
+    heroImageLabel: 'Crew washing the siding of a condo building while residents walk past',
+    sections: [
+      {
+        title: 'Proposals your board can approve',
+        body: 'After a site walk you get a written scope, a schedule and a price for each service. Ask us to split it by building or by season if that helps your budget.',
+      },
+      {
+        title: 'Planned around residents',
+        body: 'We plan work building by building, give you notices to share ahead of each visit and keep entrances, sidewalks and parking areas open where we can.',
+      },
+      {
+        title: 'Every season on one calendar',
+        body: 'Spring and fall washing and gutters, window cleaning, snow and ice clearing in winter and holiday lighting, all booked under one contract if you like.',
+      },
+      {
+        title: 'Records after every visit',
+        body: 'Photos and notes after each visit show what was done and flag anything that needs repair, ready for your next board meeting.',
+      },
+    ],
+    services: [
+      'hoa-building-washing',
+      'commercial-gutter-cleaning',
+      'commercial-window-cleaning',
+      'commercial-roof-cleaning',
+      'commercial-pressure-washing',
+      'commercial-snow-clearing',
+    ],
+    faqs: [
+      {
+        question: 'How does the bidding process work?',
+        answer:
+          'Request a bid and tell us about the community. We walk the site, then send a written scope, schedule and price that your board can review.',
+      },
+      {
+        question: 'Can you work around residents?',
+        answer:
+          'Yes. We schedule building by building, give you notices to share ahead of time and agree on parking and access before work starts.',
+      },
+      {
+        question: 'Can one contract cover the whole year?',
+        answer:
+          'Yes. Washing, gutters, windows, snow clearing and holiday lighting can all be combined under one contract and one schedule.',
+      },
+      {
+        question: 'Do you work with property management companies?',
+        answer:
+          'Yes. We can work with your manager or directly with the board, whichever your community prefers.',
+      },
+    ],
+  },
 }

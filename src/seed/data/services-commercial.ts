@@ -9,9 +9,9 @@ const bidProcess = [
 ]
 
 const documentsFaq: Faq = {
-  question: 'Can you provide insurance certificates and safety documents?',
+  question: 'What documents can you provide for our board or manager?',
   answer:
-    'Yes. Ask for them with your bid request and we’ll include what your board or manager needs.',
+    'Tell us what you need when you request a bid, such as proof of insurance or safety procedures, and we’ll confirm what we can provide with the proposal.',
 }
 
 const multiSiteFaq: Faq = {

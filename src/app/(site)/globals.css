@@ -192,6 +192,11 @@
     color: var(--secondary-strong);
     text-underline-offset: 0.2em;
   }
+  /* Plain links sit inside sentences, so they need more than colour (WCAG 1.4.1). Styled links
+     (cards, buttons, menus) carry classes and set their own decoration. */
+  a:not([class]) {
+    text-decoration-line: underline;
+  }
   :focus-visible {
     outline: 3px solid var(--focus-ring);
     outline-offset: 2px;

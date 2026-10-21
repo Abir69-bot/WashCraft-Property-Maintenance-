@@ -28,7 +28,7 @@ export const interiorServices: ServiceSeed[] = [
         title: 'Consistent results',
         body: 'We follow the same room-by-room checklist every visit.',
       },
-      { title: 'Flexible schedule', body: 'Book once, or set a regular schedule and save.' },
+      { title: 'Flexible schedule', body: 'Book once, or set a regular schedule that suits you.' },
     ],
     included: [
       'Kitchen counters, sink, stovetop and outside of appliances',

@@ -13,7 +13,7 @@ import { HeroMedia, type HeroImage } from './hero-media'
 type Variant = NonNullable<Homepage['heroVariants']>[number]
 
 /** Proof points shown under the subline, each only when backed by site settings (brief §3.3). */
-function proofPoints(site: SiteConfig) {
+export function proofPoints(site: SiteConfig) {
   return [
     site.insuranceCoverage && 'Insured',
     site.workersCompRegistration && 'Workers’ comp covered',

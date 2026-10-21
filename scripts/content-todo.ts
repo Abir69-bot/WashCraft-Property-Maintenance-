@@ -11,7 +11,7 @@ import type { Season } from '../src/config/catalog'
 import { posts, solutions } from '../src/seed/data/articles'
 import { categories } from '../src/seed/data/categories'
 import { cities } from '../src/seed/data/cities'
-import { homepage } from '../src/seed/data/globals'
+import { commercialPages, homepage } from '../src/seed/data/globals'
 import { discounts, plans, pricingRules } from '../src/seed/data/pricing'
 import {
   homeHeroImages,
@@ -20,7 +20,7 @@ import {
   whyChooseUsImages,
 } from '../src/seed/data/media'
 import { sampleTeam } from '../src/seed/data/samples'
-import { allServices } from '../src/seed/seed'
+import { allServices } from '../src/seed/data/services'
 
 const FILE = path.resolve('CONTENT_TODO.md')
 
@@ -47,10 +47,10 @@ const photos = [
       .filter((card) => !whyChooseUsImages[card.title])
       .map((card) => `Why choose us, "${card.title}": ${card.imageLabel}`),
   ]),
-  ...section(
-    'Category pages',
-    categories.map((category) => `${category.title}: ${category.heroImageLabel}`),
-  ),
+  ...section('Category and commercial pages', [
+    ...categories.map((category) => `${category.title}: ${category.heroImageLabel}`),
+    `HOA & condo page: ${commercialPages.hoa.heroImageLabel}`,
+  ]),
   ...section(
     'Service pages',
     allServices

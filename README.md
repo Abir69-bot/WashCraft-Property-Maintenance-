@@ -83,6 +83,15 @@ sample testimonials, team and gallery items (samples never appear on the live si
   Migrations run against the `production` branch through its direct connection. Then the config
   check reads the saved Site settings.
 - **Never** run `pnpm dev` with `production` connection strings: dev mode pushes schema changes.
+- **After changing data outside the admin** (a seed, a script or a backup restore), redeploy or
+  save any document in the admin. Pages are cached, and only admin saves and new builds refresh
+  that cache.
+
+## Content updates
+
+Saving in the admin updates the live pages within seconds. Services, categories and cities have
+a **Preview** button that shows unpublished drafts (and sample content) to signed-in staff, with
+an **Exit preview** button in the yellow banner.
 
 ## Testing
 

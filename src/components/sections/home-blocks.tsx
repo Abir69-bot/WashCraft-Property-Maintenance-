@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
+import { TONE_BORDER } from '@/components/category-tone'
 import { CmsImage } from '@/components/cms-image'
 import { CallLink, TextLink } from '@/components/layout/contact-links'
 import { QuickQuoteForm, type ServiceGroup } from '@/components/quote/quick-quote-form'
@@ -21,12 +22,14 @@ import { SEASON_LABELS, type Season } from '@/config/catalog'
 import type { SiteConfig } from '@/config/site'
 import type { NavCategory, NavService } from '@/lib/data/layout'
 import { isProductionSite } from '@/lib/env'
+import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { fillTokens, smsHref, telHref } from '@/lib/text'
 import { formatDate } from '@/lib/view'
 import type { ClientLogo, Homepage, Plan, Post, TeamMember } from '@/payload-types'
 
-import { Section } from './section'
+import { credentials } from './commercial-blocks'
+import { Section, type SectionTone } from './section'
 import { ServiceExplorer, type ExplorerService } from './service-explorer'
 
 export function QuickQuoteStrip({
@@ -81,13 +84,14 @@ export function ClientLogos({ logos }: { logos: ClientLogo[] }) {
   )
 }
 
-/** Four checkmarks, each only when site settings back it up (brief §9.1.4). */
+/** Up to four checkmarks, each only when site settings back it up (brief §9.1.4, §9.3.8). */
 export function TrustStrip({ site }: { site: SiteConfig }) {
   const items = [
     site.insuranceCoverage && `Insured: ${site.insuranceCoverage}`,
     site.workersCompRegistration && 'Workers’ comp registered',
     site.licenceNumbers.length > 0 && 'Licensed',
     site.guarantee && 'Satisfaction guarantee',
+    site.responseTimePromise && `Replies ${site.responseTimePromise}`,
     site.stats.rating &&
       site.stats.reviewCount &&
       `${site.stats.rating.toFixed(1)}★ from ${site.stats.reviewCount} reviews`,
@@ -105,15 +109,6 @@ export function TrustStrip({ site }: { site: SiteConfig }) {
       </ul>
     </section>
   )
-}
-
-const TONE_BORDER: Record<string, string> = {
-  exterior: 'border-t-secondary-strong',
-  interior: 'border-t-primary',
-  winter: 'border-t-winter-strong',
-  holiday: 'border-t-holiday',
-  yard: 'border-t-yard-strong',
-  commercial: 'border-t-ink',
 }
 
 export function ServiceCategories({
@@ -203,14 +198,17 @@ const STEP_ICONS = [ClipboardList, CalendarCheck, Sparkles]
 export function HowItWorks({
   steps,
   upsell,
+  tone,
 }: {
   steps: Homepage['howItWorks']
   upsell?: string | null
+  tone?: SectionTone
 }) {
   if (!steps?.length) return null
   return (
     <Section
       id="how-it-works"
+      tone={tone}
       eyebrow="How it works"
       title="Three steps to a cleaner property"
       align="center"
@@ -284,13 +282,26 @@ export function NeedUsNow({ phone }: { phone: string }) {
   )
 }
 
-export function WhyChooseUs({ cards, region }: { cards: Homepage['whyChooseUs']; region: string }) {
+export function WhyChooseUs({
+  cards,
+  region,
+  intro,
+  tone,
+}: {
+  cards: Homepage['whyChooseUs']
+  region: string
+  /** Local angle on city pages (brief §9.4). */
+  intro?: string | null
+  tone?: SectionTone
+}) {
   if (!cards?.length) return null
   return (
     <Section
       id="why-choose-us"
+      tone={tone}
       eyebrow="Why WashCraft"
       title="Why homeowners and managers choose us"
+      intro={intro}
     >
       <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((card) => (
@@ -316,12 +327,18 @@ export function WhyChooseUs({ cards, region }: { cards: Homepage['whyChooseUs'];
   )
 }
 
-export function ComparisonTable({ comparison }: { comparison: Homepage['comparison'] }) {
+export function ComparisonTable({
+  comparison,
+  tone = 'surface',
+}: {
+  comparison: Homepage['comparison']
+  tone?: SectionTone
+}) {
   if (!comparison?.rows?.length) return null
   return (
     <Section
       id="compare"
-      tone="surface"
+      tone={tone}
       eyebrow="Compare"
       title="How we compare"
       intro="General differences between typical options. Every company is different, so ask questions."
@@ -375,11 +392,7 @@ export function ComparisonTable({ comparison }: { comparison: Homepage['comparis
 }
 
 export function CommercialBlock({ site }: { site: SiteConfig }) {
-  const credentials = [
-    site.insuranceCoverage && `Insurance: ${site.insuranceCoverage}`,
-    site.workersCompRegistration && `Workers’ comp: ${site.workersCompRegistration}`,
-    ...site.licenceNumbers.map((number) => `License ${number}`),
-  ].filter(Boolean) as string[]
+  const proof = credentials(site)
   return (
     <Section
       id="commercial"
@@ -402,9 +415,9 @@ export function CommercialBlock({ site }: { site: SiteConfig }) {
           ))}
         </ul>
         <div className="grid content-start gap-4">
-          {credentials.length > 0 && (
+          {proof.length > 0 && (
             <ul className="grid gap-1 text-small text-white/90">
-              {credentials.map((credential) => (
+              {proof.map((credential) => (
                 <li key={credential}>✓ {credential}</li>
               ))}
             </ul>
@@ -569,21 +582,32 @@ export function LatestArticles({ posts }: { posts: Post[] }) {
   )
 }
 
-export function FinalCta({ region }: { region: string }) {
+/** Closing call to action. Inner pages pass their own quote flow and wording. */
+export function FinalCta({
+  region,
+  cta = { href: routes.quoteInstant, label: 'Get instant price' },
+  title = 'Ready for a cleaner, safer property?',
+  text = `Get a price range in minutes for most homes in ${region}, or tell us about a bigger job.`,
+}: {
+  region: string
+  cta?: QuoteCta
+  title?: string
+  text?: string
+}) {
   return (
     <section aria-labelledby="final-cta-heading" className="bg-surface">
       <div className="container section-y text-center">
-        <h2 id="final-cta-heading">Ready for a cleaner, safer property?</h2>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted">
-          Get a price range in minutes for most homes in {region}, or tell us about a bigger job.
-        </p>
+        <h2 id="final-cta-heading">{title}</h2>
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted">{text}</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button asChild size="lg">
-            <Link href={routes.quoteInstant}>Get instant price</Link>
+            <Link href={cta.href}>{cta.label}</Link>
           </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link href={routes.quoteCustom}>Request a custom quote</Link>
-          </Button>
+          {!cta.href.startsWith(routes.quoteCustom) && (
+            <Button asChild size="lg" variant="outline">
+              <Link href={routes.quoteCustom}>Request a custom quote</Link>
+            </Button>
+          )}
         </div>
       </div>
     </section>

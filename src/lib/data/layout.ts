@@ -31,7 +31,10 @@ export type NavCategory = Pick<
   'id' | 'title' | 'slug' | 'icon' | 'tone' | 'menuLabel' | 'summary' | 'outcomeLabel'
 > & { services: NavService[] }
 
-export type AreaCity = Pick<City, 'id' | 'name' | 'slug' | 'state' | 'zipPrefixes' | 'lat' | 'lng'>
+export type AreaCity = Pick<
+  City,
+  'id' | 'name' | 'slug' | 'state' | 'zipPrefixes' | 'lat' | 'lng' | 'servicePages'
+>
 
 export type LayoutData = {
   site: SiteConfig
@@ -92,7 +95,15 @@ export const getLayoutData = cachedQuery('layout', async (): Promise<LayoutData>
         sort: 'order',
         pagination: false,
         depth: 0,
-        select: { name: true, slug: true, state: true, zipPrefixes: true, lat: true, lng: true },
+        select: {
+          name: true,
+          slug: true,
+          state: true,
+          zipPrefixes: true,
+          lat: true,
+          lng: true,
+          servicePages: true,
+        },
       }),
       payload.findGlobal({ slug: 'navigation', depth: 0 }),
       payload.findGlobal({ slug: 'footer', depth: 0 }),

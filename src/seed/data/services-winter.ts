@@ -486,8 +486,9 @@ export const winterServices: ServiceSeed[] = [
         answer: 'Yes, under one contract and one point of contact.',
       },
       {
-        question: 'Do you provide insurance certificates?',
-        answer: 'Ask for one with your bid request and we’ll include it.',
+        question: 'What documents can you provide?',
+        answer:
+          'Tell us what your property needs when you request a bid, and we’ll confirm what we can include.',
       },
       {
         question: 'Seasonal or per-event pricing?',

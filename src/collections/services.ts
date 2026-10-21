@@ -14,6 +14,7 @@ import {
   VERSIONS,
 } from '@/fields/common'
 import { redirectOnSlugChange } from '@/hooks/redirect-on-slug-change'
+import { previewUrl } from '@/lib/preview'
 import { validateQuoteQuestions } from '@/lib/quote/questions'
 
 const titledItems = (
@@ -37,6 +38,7 @@ const titledItems = (
 export const Services: CollectionConfig = {
   slug: 'services',
   admin: {
+    preview: previewUrl('services'),
     group: 'Services',
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'quoteMode', 'enabled', '_status'],

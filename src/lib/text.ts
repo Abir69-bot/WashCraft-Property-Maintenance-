@@ -28,3 +28,10 @@ export const smsHref = (phone: string | null | undefined) => {
   const number = e164(phone)
   return number ? `sms:${number}` : null
 }
+
+/** URL slug from a name, e.g. "Castle Rock" → "castle-rock" (matches Payload's slug field). */
+export const toSlug = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
