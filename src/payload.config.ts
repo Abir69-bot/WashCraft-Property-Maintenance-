@@ -34,6 +34,7 @@ import {
   SeasonalSettings,
 } from './globals/settings'
 import { SiteSettings } from './globals/site-settings'
+import { withGlobalRevalidation, withRevalidation } from './hooks/revalidate'
 import { env } from './lib/env'
 import { generateSeoTitle, generateSeoUrl } from './lib/seo/generate'
 
@@ -52,28 +53,32 @@ export default buildConfig({
     },
   },
   collections: [
-    Services,
-    ServiceCategories,
-    PricingRules,
-    Discounts,
-    Plans,
-    Cities,
-    Posts,
-    Solutions,
-    Faqs,
-    Testimonials,
-    GoogleReviews,
-    GalleryItems,
-    ClientLogos,
-    CaseStudies,
-    TeamMembers,
-    JobOpenings,
+    // Content shown on public pages: saving any of these refreshes the cached site.
+    ...[
+      Services,
+      ServiceCategories,
+      PricingRules,
+      Discounts,
+      Plans,
+      Cities,
+      Posts,
+      Solutions,
+      Faqs,
+      Testimonials,
+      GoogleReviews,
+      GalleryItems,
+      ClientLogos,
+      CaseStudies,
+      TeamMembers,
+      JobOpenings,
+      Media,
+    ].map(withRevalidation),
     Leads,
     Applications,
     LeadFiles,
-    Media,
     Users,
   ],
+
   globals: [
     SiteSettings,
     SeasonalSettings,
@@ -82,7 +87,8 @@ export default buildConfig({
     Homepage,
     FeatureFlags,
     PricingSettings,
-  ],
+  ].map(withGlobalRevalidation),
+
   editor: lexicalEditor(),
   secret: env.PAYLOAD_SECRET,
   serverURL: env.NEXT_PUBLIC_SITE_URL,

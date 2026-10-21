@@ -34,6 +34,8 @@ const schema = z.object({
     z.string(required('random string, 32+ characters')).min(32, 'must be at least 32 characters'),
   ),
   NEXT_PUBLIC_SITE_URL: z.preprocess(blankToUndefined, z.url().default('http://localhost:3000')),
+  /** Local upload folder (dev and tests). Production uploads go to Cloudflare R2. */
+  UPLOADS_DIR: z.preprocess(blankToUndefined, z.string().default('media')),
   DB_STORAGE_LIMIT_MB: z.preprocess(
     blankToUndefined,
     z.coerce.number().int().positive().default(512),

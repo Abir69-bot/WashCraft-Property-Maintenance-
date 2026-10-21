@@ -1,6 +1,8 @@
+import path from 'path'
 import type { CollectionConfig } from 'payload'
 
 import { isSignedIn } from '@/access/roles'
+import { env } from '@/lib/env'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -24,5 +26,6 @@ export const Media: CollectionConfig = {
   ],
   upload: {
     mimeTypes: ['image/*'],
+    staticDir: path.resolve(process.cwd(), env.UPLOADS_DIR),
   },
 }

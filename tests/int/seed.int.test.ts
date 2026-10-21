@@ -13,6 +13,7 @@ import { site } from '@/config/site'
 import { migrations } from '@/migrations'
 import config from '@/payload.config'
 import { faqs } from '@/seed/data/faqs'
+import { gallery, mediaFiles } from '@/seed/data/media'
 import { allServices, seed } from '@/seed/seed'
 
 let payload: Payload
@@ -68,6 +69,7 @@ describe('seed', () => {
       testimonials: 6,
       'job-openings': 2,
       plans: 7,
+      'gallery-items': gallery.length,
     })
     expect(allServices.length).toBeGreaterThanOrEqual(45)
     expect(totals.faqs).toBeGreaterThanOrEqual(30)
@@ -112,14 +114,32 @@ describe('seed', () => {
     expect(docs[0].content.root.children.length).toBeGreaterThan(3)
   })
 
-  it('hides every sample from visitors on the live site', async () => {
+  it('hides samples from visitors on the live site, but not real content', async () => {
     const liveWhere = publicRead({ samples: true, production: true })({
       req: { user: null },
     } as unknown as AccessArgs) as Where
-    for (const collection of ['testimonials', 'gallery-items', 'client-logos'] as const) {
+    for (const collection of ['testimonials', 'client-logos'] as const) {
       expect((await payload.count({ collection })).totalDocs).toBeGreaterThan(0)
       expect((await payload.count({ collection, where: liveWhere })).totalDocs).toBe(0)
     }
+    expect((await payload.count({ collection: 'gallery-items', where: liveWhere })).totalDocs).toBe(
+      gallery.length,
+    )
+  })
+
+  it("uploads the owner's photos and fills empty photo slots", async () => {
+    expect((await payload.count({ collection: 'media' })).totalDocs).toBe(
+      Object.keys(mediaFiles).length,
+    )
+    const { docs } = await payload.find({
+      collection: 'services',
+      where: { slug: { equals: 'gutter-cleaning' } },
+      depth: 1,
+    })
+    expect(docs[0].heroImage).toMatchObject({ filename: 'gutter-after.jpg' })
+    const home = await payload.findGlobal({ slug: 'homepage', depth: 0 })
+    expect(home.featuredServices).toHaveLength(6)
+    expect(home.heroVariants?.find((variant) => variant.season === 'fall')?.image).toBeTruthy()
   })
 
   it('adds a 301 when a published slug changes, without loops', async () => {

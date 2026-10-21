@@ -44,7 +44,7 @@ pnpm generate:importmap  # after adding custom admin components
 pnpm seed [--force]      # idempotent starter content (pushes schema: sets NODE_ENV=development)
 pnpm db:reset-dev        # migrate:fresh + seed on the DB in .env (asks to confirm)
 pnpm content-todo        # regenerate photo + pricing lists in CONTENT_TODO.md
-# Later phases add: pnpm test:e2e
+pnpm test:e2e            # Playwright + axe on desktop + Pixel 7, against `pnpm build` (port 3100)
 ```
 
 Payload CLI commands load the config, so `DATABASE_URI` must be set (`.env` or inline) even for
@@ -67,6 +67,7 @@ src/
   access/public-read.ts visitors: published only, no samples in production
   components/ui/        primitives (button, dialog, accordion, tabs, select, popover…)
   components/sections/  page sections (Hero, TrustStrip, BeforeAfter, …)
+  components/layout/    header, mega-menu, mobile menu + action bar, footer, call band, cookie banner
   components/quote/     quick form, wizard, dedicated flows
   lib/env.ts            the ONLY place env vars are read (Zod-validated)
   lib/pricing/          pure pricing engine + tests
@@ -74,6 +75,7 @@ src/
   lib/leads/            save-with-retry, R2 fallback, re-import
   lib/seo/              metadata + JSON-LD builders
   lib/schemas/          shared Zod schemas
+  lib/data/             cached public queries (cachedQuery, tag `content`), seasonNow()
   lib/utils.ts          cn() (tailwind-merge aware of text-h1/h2/h3/body/small)
   access/roles.ts       owner/staff access helpers
   components/brand/     <Logo height> (next/image of src/assets/brand/washcraft-logo.png)
@@ -113,7 +115,8 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 - Every third-party integration is optional: missing env var → console fallback, feature still works or hides itself. Only `DATABASE_URI` is required.
 - Read env vars only through `src/lib/env.ts`.
 - Server Components by default; `'use client'` only for interactive leaves (budget: < 150 KB JS per content page).
-- Public pages are static/ISR and must not hit the DB at request time. Revalidate from Payload `afterChange` hooks, not short timers.
+- Public pages are static/ISR and must not hit the DB at request time. Revalidate from Payload `afterChange` hooks, not short timers. Public queries go through `cachedQuery()` in `src/lib/data`; the site layout's daily `revalidate` is what switches seasons.
+- Images: pass `mediaSrc(media)` to `next/image`, never `media.url` (Payload's URLs are absolute).
 - **Public data queries pass `overrideAccess: false`**, so `publicRead()` hides drafts and (in production) samples. The local API skips access control by default.
 - Copy may contain `{region}`; fill it in at render time, never store the expanded text.
 - Links between documents use `routes` / `DOC_PATHS` from `src/lib/routes.ts`, never hand-built strings.

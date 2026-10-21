@@ -6,12 +6,20 @@ import { readdirSync, readFileSync, statSync, writeFileSync } from 'fs'
 import path from 'path'
 import { format, resolveConfig } from 'prettier'
 
+import type { Season } from '../src/config/catalog'
+
 import { posts, solutions } from '../src/seed/data/articles'
 import { categories } from '../src/seed/data/categories'
 import { cities } from '../src/seed/data/cities'
 import { homepage } from '../src/seed/data/globals'
 import { discounts, plans, pricingRules } from '../src/seed/data/pricing'
-import { sampleGallery, sampleTeam } from '../src/seed/data/samples'
+import {
+  homeHeroImages,
+  serviceHeroImages,
+  solutionHeroImages,
+  whyChooseUsImages,
+} from '../src/seed/data/media'
+import { sampleTeam } from '../src/seed/data/samples'
 import { allServices } from '../src/seed/seed'
 
 const FILE = path.resolve('CONTENT_TODO.md')
@@ -29,10 +37,15 @@ function codeLabels(dir: string): string[] {
 const section = (title: string, items: string[]) =>
   items.length ? [`**${title}**`, '', ...items.map((item) => `- [ ] ${item}`), ''] : []
 
+// Slots that already have one of the owner's photos are left out.
 const photos = [
   ...section('Home page', [
-    ...homepage.heroVariants.map((variant) => `Hero (${variant.season}): ${variant.imageLabel}`),
-    ...homepage.whyChooseUs.map((card) => `Why choose us, "${card.title}": ${card.imageLabel}`),
+    ...homepage.heroVariants
+      .filter((variant) => !homeHeroImages[variant.season as Season])
+      .map((variant) => `Hero (${variant.season}): ${variant.imageLabel}`),
+    ...homepage.whyChooseUs
+      .filter((card) => !whyChooseUsImages[card.title])
+      .map((card) => `Why choose us, "${card.title}": ${card.imageLabel}`),
   ]),
   ...section(
     'Category pages',
@@ -40,7 +53,9 @@ const photos = [
   ),
   ...section(
     'Service pages',
-    allServices.map((service) => `${service.title}: ${service.heroImageLabel}`),
+    allServices
+      .filter((service) => !serviceHeroImages[service.slug])
+      .map((service) => `${service.title}: ${service.heroImageLabel}`),
   ),
   ...section(
     'City pages',
@@ -51,12 +66,16 @@ const photos = [
   ),
   ...section(
     'Articles',
-    [...posts, ...solutions].map((article) => `${article.title}: ${article.heroImageLabel}`),
+    [...posts, ...solutions]
+      .filter((article) => !solutionHeroImages[article.slug])
+      .map((article) => `${article.title}: ${article.heroImageLabel}`),
   ),
-  ...section(
-    'Before & after pairs (same angle and distance for both)',
-    sampleGallery.map((item) => `${item.caption}: before "${item.before}", after "${item.after}"`),
-  ),
+  ...section('More before & after pairs (same angle and distance for both shots)', [
+    'Winter: a driveway and walkway before and after snow clearing',
+    'Holiday: a home before and after light installation (daytime and dusk)',
+    'Yard care: a fence or deck before and after staining',
+    'Interior: a garage before and after cleaning',
+  ]),
   ...section(
     'Team',
     sampleTeam.map((member) => `${member.role.replace(' (sample)', '')}: ${member.photoLabel}`),

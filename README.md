@@ -64,6 +64,7 @@ sample testimonials, team and gallery items (samples never appear on the live si
 | `pnpm test`                                    | Unit tests (no database)                                                            |
 | `pnpm test:db:up` / `pnpm test:db:down`        | Start / stop the Docker Postgres for integration tests (port 5433)                  |
 | `pnpm test:int`                                | Integration tests against `TEST_DATABASE_URI`, never Neon                           |
+| `pnpm test:e2e`                                | Browser tests (desktop + phone, axe WCAG 2.2 AA) against the production build       |
 | `pnpm db:migrate`                              | Apply committed migrations, over the **direct** connection                          |
 | `pnpm db:migrate:create <name>`                | Generate a migration from schema changes. Commit `src/migrations`                   |
 | `pnpm db:migrate:status`                       | List applied and pending migrations                                                 |
@@ -89,12 +90,19 @@ sample testimonials, team and gallery items (samples never appear on the live si
 pnpm test             # unit
 pnpm test:db:up       # once per session
 pnpm test:int         # integration (runs the committed migrations first)
+
+pnpm exec playwright install chromium   # once
+pnpm build && pnpm test:e2e             # browser tests on http://localhost:3100
 ```
 
+The browser tests use whatever database the build used (locally the Neon `dev` branch). The quick
+quote test saves a lead named "E2E Test" with `utm_source=e2e`.
+
 CI (`.github/workflows/ci.yml`) runs lint, format check, typecheck, unit tests, migrations, the
-config check, integration tests (including a full seed run twice), the production build and a
-migration drift check. It uses a
-throwaway Postgres service container, so CI never uses Neon compute.
+config check, integration tests (including a full seed run twice, in their own database), a seed
+of the app database, the production build, the browser tests and a migration drift check. It
+uses a throwaway Postgres service container, so CI never uses Neon compute. When browser tests
+fail, the run keeps a `playwright-report` artifact for 7 days.
 
 ## Project documents
 

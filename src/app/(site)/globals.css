@@ -46,6 +46,7 @@
   --animate-fade-in: fade-in 150ms ease-out;
   --animate-slide-in-right: slide-in-right 220ms ease-out;
   --animate-slide-in-up: slide-in-up 220ms ease-out;
+  --animate-marquee: marquee 45s linear infinite;
 
   @keyframes fade-in {
     from {
@@ -55,6 +56,11 @@
   @keyframes slide-in-right {
     from {
       transform: translateX(100%);
+    }
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-100%);
     }
   }
   @keyframes slide-in-up {
@@ -194,6 +200,11 @@
     background-color: var(--secondary);
     color: var(--ink);
   }
+}
+
+/* A dismissed announcement stays hidden for 7 days (see components/layout/announcement.tsx). */
+html[data-announcement-hidden] [data-announcement] {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

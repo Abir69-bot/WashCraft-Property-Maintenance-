@@ -83,10 +83,10 @@ export interface Config {
     'case-studies': CaseStudy;
     'team-members': TeamMember;
     'job-openings': JobOpening;
+    media: Media;
     leads: Lead;
     applications: Application;
     'lead-files': LeadFile;
-    media: Media;
     users: User;
     redirects: Redirect;
     'payload-kv': PayloadKv;
@@ -112,10 +112,10 @@ export interface Config {
     'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
     'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     'job-openings': JobOpeningsSelect<false> | JobOpeningsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
     applications: ApplicationsSelect<false> | ApplicationsSelect<true>;
     'lead-files': LeadFilesSelect<false> | LeadFilesSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -1384,6 +1384,10 @@ export interface PayloadLockedDocument {
         value: number | JobOpening;
       } | null)
     | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
         relationTo: 'leads';
         value: number | Lead;
       } | null)
@@ -1394,10 +1398,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'lead-files';
         value: number | LeadFile;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
       } | null)
     | ({
         relationTo: 'users';
@@ -1946,6 +1946,24 @@ export interface JobOpeningsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "leads_select".
  */
 export interface LeadsSelect<T extends boolean = true> {
@@ -2022,24 +2040,6 @@ export interface ApplicationsSelect<T extends boolean = true> {
  * via the `definition` "lead-files_select".
  */
 export interface LeadFilesSelect<T extends boolean = true> {
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -2394,6 +2394,10 @@ export interface Homepage {
       }[]
     | null;
   /**
+   * The tabs in the home page service explorer (up to 6).
+   */
+  featuredServices?: (number | Service)[] | null;
+  /**
    * One per season. The site picks the one for today’s date.
    */
   heroVariants?:
@@ -2406,6 +2410,7 @@ export interface Homepage {
           label: string;
           href: string;
         };
+        image?: (number | null) | Media;
         /**
          * What the photo should show. Displayed until a real photo is uploaded.
          */
@@ -2700,6 +2705,7 @@ export interface HomepageSelect<T extends boolean = true> {
         enabled?: T;
         id?: T;
       };
+  featuredServices?: T;
   heroVariants?:
     | T
     | {
@@ -2713,6 +2719,7 @@ export interface HomepageSelect<T extends boolean = true> {
               label?: T;
               href?: T;
             };
+        image?: T;
         imageLabel?: T;
         id?: T;
       };

@@ -2,7 +2,7 @@ import { Camera } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
-const RATIOS = {
+export const RATIOS = {
   '16/9': 'aspect-video',
   '21/9': 'aspect-[21/9]',
   '3/2': 'aspect-[3/2]',

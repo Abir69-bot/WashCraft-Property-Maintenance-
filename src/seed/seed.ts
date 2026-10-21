@@ -1,4 +1,5 @@
 import { convertMarkdownToLexical, editorConfigFactory } from '@payloadcms/richtext-lexical'
+import path from 'path'
 import type {
   CollectionSlug,
   GlobalSlug,
@@ -7,6 +8,7 @@ import type {
   Where,
 } from 'payload'
 
+import type { Season } from '@/config/catalog'
 import { isPlaceholder, site, type Country, type Currency, type Locale } from '@/config/site'
 
 import { posts, solutions } from './data/articles'
@@ -15,13 +17,7 @@ import { cities } from './data/cities'
 import { faqs } from './data/faqs'
 import { footer, homepage, navigation, pricingSettings, seasonalSettings } from './data/globals'
 import { discounts, plans, pricingRules } from './data/pricing'
-import {
-  sampleClientLogos,
-  sampleGallery,
-  sampleJobs,
-  sampleTeam,
-  sampleTestimonials,
-} from './data/samples'
+import { sampleClientLogos, sampleJobs, sampleTeam, sampleTestimonials } from './data/samples'
 import { commercialServices } from './data/services-commercial'
 import { exteriorServices } from './data/services-exterior'
 import { holidayServices } from './data/services-holiday'
@@ -29,6 +25,16 @@ import { interiorServices } from './data/services-interior'
 import { winterServices } from './data/services-winter'
 import { yardServices } from './data/services-yard'
 import type { CitySeed, ServiceSeed } from './types'
+import {
+  featuredServices,
+  gallery,
+  homeHeroImages,
+  mediaFiles,
+  serviceHeroImages,
+  solutionHeroImages,
+  whyChooseUsImages,
+  type MediaKey,
+} from './data/media'
 
 export const allServices: ServiceSeed[] = [
   ...exteriorServices,
@@ -147,6 +153,32 @@ export async function seed(
     stats: site.stats,
     demo: site.demo,
   })
+
+  // The owner's job photos (src/seed/media), matched by file name.
+  const mediaIds = new Map<MediaKey, number>()
+  for (const [key, alt] of Object.entries(mediaFiles) as [MediaKey, string][]) {
+    const filename = `${key}.jpg`
+    const existing = await payload.find({
+      collection: 'media',
+      where: { filename: { equals: filename } },
+      limit: 1,
+      depth: 0,
+    })
+    if (existing.docs[0]) {
+      mediaIds.set(key, existing.docs[0].id)
+      tally('media', 'skipped')
+      continue
+    }
+    const created = await payload.create({
+      collection: 'media',
+      data: { alt },
+      filePath: path.resolve(process.cwd(), 'src/seed/media', filename),
+      depth: 0,
+    })
+    mediaIds.set(key, created.id)
+    tally('media', 'created')
+  }
+  const mediaId = (key: MediaKey) => mediaIds.get(key)!
 
   // Categories, then services.
   const categoryIds = new Map<string, number>()
@@ -374,17 +406,18 @@ export async function seed(
     )
   }
 
-  for (const [index, item] of sampleGallery.entries()) {
+  // Real before/after pairs from the owner's jobs.
+  for (const [index, item] of gallery.entries()) {
     await upsert(
       'gallery-items',
       { caption: { equals: item.caption } },
       {
         caption: item.caption,
-        beforeLabel: item.before,
-        afterLabel: item.after,
+        before: mediaId(item.before),
+        after: mediaId(item.after),
         service: idsFor(serviceIds, [item.service])[0],
-        city: optionalCity(item.city),
-        isSample: true,
+        featured: item.featured ?? false,
+        isSample: false,
         order: (index + 1) * 10,
       },
     )
@@ -479,6 +512,51 @@ export async function seed(
   await seedGlobal('homepage', homepage)
   await seedGlobal('feature-flags', {})
   await seedGlobal('pricing-settings', pricingSettings)
+
+  // Photos and featured services: only filled where still empty, so admin choices survive.
+  for (const [collection, heroes] of [
+    ['services', serviceHeroImages],
+    ['solutions', solutionHeroImages],
+  ] as const) {
+    for (const [slug, key] of Object.entries(heroes)) {
+      const { docs } = await payload.find({ collection, where: bySlug(slug), limit: 1, depth: 0 })
+      if (!docs[0] || docs[0].heroImage) continue
+      await payload.update({
+        collection,
+        id: docs[0].id,
+        data: { heroImage: mediaId(key) },
+        depth: 0,
+      } as never)
+      tally(`${collection} photos`, 'updated')
+    }
+  }
+
+  const home = await payload.findGlobal({ slug: 'homepage', depth: 0 })
+  let homeChanged = false
+  const heroVariants = (home.heroVariants ?? []).map((variant) => {
+    const key = homeHeroImages[variant.season as Season]
+    if (variant.image || !key) return variant
+    homeChanged = true
+    return { ...variant, image: mediaId(key) }
+  })
+  const whyChooseUs = (home.whyChooseUs ?? []).map((card) => {
+    const key = whyChooseUsImages[card.title]
+    if (card.image || !key) return card
+    homeChanged = true
+    return { ...card, image: mediaId(key) }
+  })
+  const featured = home.featuredServices?.length
+    ? home.featuredServices
+    : idsFor(serviceIds, featuredServices)
+  if (!home.featuredServices?.length) homeChanged = true
+  if (homeChanged) {
+    await payload.updateGlobal({
+      slug: 'homepage',
+      data: { heroVariants, whyChooseUs, featuredServices: featured },
+      depth: 0,
+    })
+    tally('global:homepage photos', 'updated')
+  }
 
   for (const [collection, counts] of Object.entries(report)) {
     log(

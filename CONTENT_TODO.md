@@ -60,20 +60,19 @@ Each photo slot on the site shows a placeholder describing exactly what to shoot
 work only (no stock photos of people). Upload photos in the admin under **Media**, then attach
 them to the matching page. This list is regenerated with `pnpm content-todo`.
 
+**Most urgent: the holiday hero photo.** Holiday season runs Oct 1 – Jan 31 and winter Nov 1 –
+Mar 31, and your current photos are all summer work, so the home page hero shows a placeholder
+until a holiday photo (then a winter one) is uploaded. Attach it in the admin: **Home page → Hero tab →
+Hero Variants → the Holiday row → Image**. You can also change the season dates in **Seasonal settings**.
+
 <!-- photos:start -->
 
 **Home page**
 
-- [ ] Hero (spring): Freshly washed house with spring flowers in the beds
-- [ ] Hero (summer): Freshly stained deck on a sunny afternoon
-- [ ] Hero (fall): Technician cleaning gutters with fall leaves on the lawn
 - [ ] Hero (winter): Cleared driveway and walkway at dawn after a snowfall
 - [ ] Hero (holiday): Home at dusk with warm white roofline lights
-- [ ] Hero (all-year): Crew soft-washing a two-story house
 - [ ] Why choose us, "Reliable": Crew arriving at a home in a branded truck
-- [ ] Why choose us, "Safety-trained crews": Technician in safety harness on a roof
 - [ ] Why choose us, "Careful with products": Technician soaking plants before washing
-- [ ] Why choose us, "Damage-free methods": Close-up of a soft-wash nozzle on siding
 - [ ] Why choose us, "Locally owned": Owner shaking hands with a customer at the front door
 - [ ] Why choose us, "Clear pricing": Customer checking a price on a phone
 
@@ -88,18 +87,10 @@ them to the matching page. This list is regenerated with `pnpm content-todo`.
 
 **Service pages**
 
-- [ ] Pressure Washing: Concrete walkway half cleaned, showing a sharp line between dirty and clean
-- [ ] Soft Washing: Technician soft washing stucco with a low-pressure hose
-- [ ] House Washing: Crew soft-washing a two-story house with vinyl siding
 - [ ] Driveway Cleaning: Concrete driveway after cleaning, with a clean line where the work stopped
-- [ ] Patio & Balcony Cleaning: Clean stone patio with outdoor furniture set back in place
 - [ ] Deck Cleaning: Cedar deck with one half cleaned and the other still gray
 - [ ] Fence Cleaning: White vinyl fence half cleaned, with green algae on the other half
-- [ ] Gutter Cleaning: Technician on a ladder scooping leaves from a gutter into a bucket
 - [ ] Gutter Brightening: Close-up of a white gutter, half streaked and half bright
-- [ ] Roof Cleaning: Shingle roof with black algae streaks on one side and clean shingles on the other
-- [ ] Window Cleaning: Technician squeegeeing a large living room window
-- [ ] Exterior Surface Cleaning: Stone retaining wall being soft washed
 - [ ] Driveway Sealing: Freshly sealcoated asphalt driveway with a crisp edge
 - [ ] House Cleaning: Bright living room with freshly vacuumed rug and dusted shelves
 - [ ] Move-In / Move-Out Cleaning: Empty, freshly cleaned kitchen with open cabinets
@@ -128,14 +119,12 @@ them to the matching page. This list is regenerated with `pnpm content-todo`.
 - [ ] Garage & Driveway Pressure Cleaning: Garage floor with oil stain treated, next to a cleaned driveway
 - [ ] Commercial Property Maintenance: Clean storefront and walkway of a small retail plaza
 - [ ] HOA & Condo Building Washing: Crew on a lift soft-washing a three-story condo building
-- [ ] HOA & Commercial Gutter Cleaning: Technician cleaning gutters on a townhome row
 - [ ] Commercial Window Cleaning: Technician cleaning a storefront window with a squeegee
 - [ ] HOA & Commercial Roof Cleaning: Townhome roofs with black streaks being treated
 - [ ] Commercial Pressure Washing: Surface cleaner on a busy store entrance at night
 - [ ] Parking Garage Cleaning: Underground parking level being scrubbed and rinsed
 - [ ] Graffiti Removal: Brick wall with graffiti partly removed
 - [ ] Solar Panel Cleaning: Technician cleaning rooftop solar panels with a soft brush pole
-- [ ] Glass Awning Cleaning: Glass entrance canopy being cleaned from a lift
 - [ ] Permanent LED Lighting: Home with discreet permanent LED lights glowing along the roofline
 
 **City pages**
@@ -177,21 +166,16 @@ them to the matching page. This list is regenerated with `pnpm content-todo`.
 - [ ] When to book Christmas light installation: Home with warm white roofline lights at dusk
 - [ ] A spring checklist for the outside of your home: Freshly washed house with spring flowers in the beds
 - [ ] What a move-out clean covers (and what it doesn’t): Empty, clean kitchen with open cabinets
-- [ ] Black streaks and moss on your roof: Roof with black streaks next to a clean section
 - [ ] Ice dams along the roof edge: Thick ice and icicles along a snowy roof edge
 - [ ] Oil stains on the driveway or garage floor: Oil stain on a concrete garage floor, partly treated
-- [ ] Green streaks on siding: North wall of a house with green algae on vinyl siding
-- [ ] Gutters overflowing in the rain: Rainwater pouring over the edge of a gutter
 - [ ] Icy walkways and steps: Icy front steps with ice melt being applied
 
-**Before & after pairs (same angle and distance for both)**
+**More before & after pairs (same angle and distance for both shots)**
 
-- [ ] Two-story vinyl house wash: before "Vinyl siding with green algae on the north wall", after "Same wall after soft washing, bright and even"
-- [ ] Concrete driveway with tire marks: before "Gray driveway with tire marks and leaf stains", after "Same driveway after cleaning, light and even"
-- [ ] Shingle roof with black streaks: before "Roof with black algae streaks", after "Same roof after soft-wash treatment"
-- [ ] Cedar deck restored: before "Gray, weathered cedar deck", after "Same deck cleaned and brightened"
-- [ ] Wood fence cleaned and stained: before "Weathered gray fence", after "Same fence stained a warm cedar tone"
-- [ ] Gutter faces brightened: before "White gutter with black tiger stripes", after "Same gutter, bright white"
+- [ ] Winter: a driveway and walkway before and after snow clearing
+- [ ] Holiday: a home before and after light installation (daytime and dusk)
+- [ ] Yard care: a fence or deck before and after staining
+- [ ] Interior: a garage before and after cleaning
 
 **Team**
 
@@ -269,8 +253,9 @@ The starter text was written for you, but only you know your methods and policie
       safety notes and the FAQs, especially notice periods, what you haul and what you won't do.
 - [ ] **Demo cities.** Check each city's ZIP codes and neighborhoods (admin, **Cities**). Add
       local conditions (snowfall, rainfall) only with a source link.
-- [ ] **Sample content.** Testimonials, before/after pairs, client logos, team members and the two
-      job openings are samples. They never appear on the live site. Replace them with real ones.
+- [ ] **Sample content.** Testimonials, client logos, team members and the two job openings are
+      samples. They never appear on the live site. Replace them with real ones. (The 23 job photos
+      you sent are real and already in use: before/after gallery, home hero, "Why choose us".)
 - [ ] **Comparison table and "Why choose us"** (admin, **Home page**). Make sure every point is
       true for your business.
 

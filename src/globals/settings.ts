@@ -241,6 +241,14 @@ export const Homepage: GlobalConfig = {
                 },
               ],
             },
+            {
+              name: 'featuredServices',
+              type: 'relationship',
+              relationTo: 'services',
+              hasMany: true,
+              maxRows: 6,
+              admin: { description: 'The tabs in the home page service explorer (up to 6).' },
+            },
           ],
         },
         {
@@ -256,6 +264,7 @@ export const Homepage: GlobalConfig = {
                 { name: 'headline', type: 'text', required: true },
                 { name: 'subline', type: 'textarea', required: true },
                 link('cta'),
+                { name: 'image', type: 'upload', relationTo: 'media' },
                 photoLabelField('imageLabel', 'Hero photo needed'),
               ],
             },

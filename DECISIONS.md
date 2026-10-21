@@ -194,3 +194,71 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
 
 - The owner's logo brands the admin login and navigation.
 - City pages show a live word count and warn below 150 words (brief §9.4).
+
+## Phase 3 — Layout + home (2026-10-21)
+
+### Rendering and caching
+
+- **Static pages, rebuilt daily and on every edit.** Public pages use Next's ISR model (no
+  `cacheComponents`). The site layout sets `revalidate = 86400`, so the seasonal hero, the
+  announcement and the "in season now" order switch over within a day without a deploy. Payload
+  `afterChange`/`afterDelete` hooks call `revalidateTag('content')` and `revalidatePath('/',
+'layout')`, so admin edits show up straight away. Data helpers wrap queries in `unstable_cache`
+  (tag `content`) plus React `cache()`, so one render never asks twice.
+- **The newest season wins.** When seasons overlap (fall and holiday in November), the hero uses
+  the active season that began most recently. The owner can pin one in Seasonal settings.
+- **Image URLs are made same-origin.** Payload builds absolute media URLs from the request host,
+  which `next/image` rejects. `mediaSrc()` turns `/api/media/file/...` URLs into relative paths;
+  R2 URLs (Phase 5) stay absolute and get a `remotePatterns` entry then.
+
+### Photos
+
+- **The owner's job photos are real content.** They confirmed the 23 photos are their own jobs, so
+  they are seeded as normal (non-sample) gallery items and hero images and show on the live site.
+  Baked-in "before/after" labels were cropped, side-by-side shots split, and license plates in two
+  gutter photos blurred. No caption names a city, because the photos weren't tagged with one.
+- **The hero only shows photos that fit the season.** The season's own hero image comes first,
+  then featured "after" photos. Winter and holiday heroes skip the gallery (it's all summer work)
+  and show a placeholder until the owner uploads a seasonal photo.
+
+### Claims and copy
+
+- **"Recommended", not "Most popular".** The plans teaser badge can't claim popularity without
+  sales data (brief §3.3). The "lower price than one-off visits" line was dropped for the same
+  reason; plan prices are placeholders and hidden on the live site until reviewed.
+- **Hero proof points come from Site settings only.** "Insured", "Workers' comp covered",
+  "Serving since…" and a reply-time promise each appear only when that setting is filled in. The
+  star badge needs a real rating and review count (Phase 6).
+- **Sample-only sections hide on the live site.** Testimonials, client logos and the founder block
+  only have samples so far, so production builds don't render them. The guarantee band only shows
+  once a guarantee is written in Site settings, and the call/text block only with a valid phone
+  number (the demo number counts).
+
+### Components
+
+- **Native `<select>` and checkbox in forms.** They work with every screen reader, autofill and
+  phone picker, and need no JavaScript. Radix is used for the mega-menu, mobile menu dialog,
+  accordions (`forceMount`, so answers are in the HTML for search engines), tabs and popovers.
+- **Mega-menu shows six services per category** plus an "All … →" link, so it fits one screen. The
+  featured card follows the current season unless the owner sets one in Navigation.
+- **Announcement dismissal is remembered without a flash.** A small inline script in `<head>`
+  reads `localStorage` and hides the bar before first paint.
+- **The quick quote already saves leads.** It validates with the shared Zod schema, ignores a
+  filled honeypot, matches the ZIP to a city and stores consent text and UTM tags. Turnstile, rate
+  limiting, retry + R2 fallback and notifications arrive with the quote system (Phase 5).
+- **Leaflet loads only when the map scrolls into view** (OSM tiles, non-interactive markers with
+  city labels). The ZIP checker works without it.
+
+### Accessibility and tests
+
+- **Wide tables scroll inside a focusable region** (`role="region"`, label, `tabIndex=0`) so
+  keyboard users can scroll them on phones (axe `scrollable-region-focusable`).
+- **One axe exclusion, scoped and tested.** Radix NavigationMenu adds an `aria-hidden` focusable
+  span after an open trigger that forwards focus into the menu. axe reports it as
+  `aria-hidden-focus`; the mega-menu test excludes only that span and checks that Tab really lands
+  on the first menu link.
+- **E2E runs against a production build** on port 3100 (desktop Chrome + Pixel 7), so "no samples
+  on the live site" is tested for real. The quick-quote test creates a lead named "E2E Test" with
+  `utm_source=e2e`; Phase 5 must stop such leads from sending notifications.
+- **CI gives integration tests their own database** (`washcraft_test`). The app database is
+  migrated, seeded with plain `payload run` (no schema push), built and tested with Playwright.

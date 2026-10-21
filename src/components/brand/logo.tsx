@@ -1,28 +1,34 @@
 import Image from 'next/image'
 
-import logo from '@/assets/brand/washcraft-logo.png'
+import badge from '@/assets/brand/washcraft-logo.png'
+import horizontal from '@/assets/brand/washcraft-logo-horizontal.png'
 import { cn } from '@/lib/utils'
 
+const LOGOS = { badge, horizontal } as const
+
 /**
- * The WashCraft badge logo. It has its own outline, so one version works on light and dark
- * backgrounds. Sized by height; next/image serves AVIF/WebP at 1x and 2x of that size.
+ * The owner's logo. "horizontal" suits the header; "badge" suits large placements. Both have
+ * their own outline, so they work on light and dark backgrounds. Sized by height; next/image
+ * serves AVIF/WebP at 1x and 2x of that size.
  */
 export function Logo({
+  variant = 'badge',
   height = 64,
   priority = false,
   className,
 }: {
+  variant?: keyof typeof LOGOS
   height?: number
-  /** Set for the header logo, which is above the fold on every page. */
+  /** Set where the logo is above the fold on every page (the header). */
   priority?: boolean
   className?: string
 }) {
-  const width = Math.round((height * logo.width) / logo.height)
+  const image = LOGOS[variant]
   return (
     <Image
-      src={logo}
+      src={image}
       alt="WashCraft Property Maintenance"
-      width={width}
+      width={Math.round((height * image.width) / image.height)}
       height={height}
       priority={priority}
       className={cn('h-auto max-w-full', className)}

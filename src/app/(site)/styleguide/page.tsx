@@ -138,7 +138,12 @@ export default function StyleguidePage() {
         </ul>
 
         <h3 className="mt-10 mb-4">Contrast pairs</h3>
-        <div className="overflow-x-auto">
+        <div
+          role="region"
+          aria-label="Contrast pairs table"
+          tabIndex={0}
+          className="overflow-x-auto"
+        >
           <table className="w-full min-w-xl text-left text-small">
             <thead>
               <tr className="border-b border-border">

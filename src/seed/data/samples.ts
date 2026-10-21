@@ -96,51 +96,6 @@ export const sampleTeam = [
   },
 ]
 
-export const sampleGallery = [
-  {
-    caption: 'Two-story vinyl house wash',
-    service: 'house-washing',
-    city: 'Aurora',
-    before: 'Vinyl siding with green algae on the north wall',
-    after: 'Same wall after soft washing, bright and even',
-  },
-  {
-    caption: 'Concrete driveway with tire marks',
-    service: 'driveway-cleaning',
-    city: 'Denver',
-    before: 'Gray driveway with tire marks and leaf stains',
-    after: 'Same driveway after cleaning, light and even',
-  },
-  {
-    caption: 'Shingle roof with black streaks',
-    service: 'roof-cleaning',
-    city: 'Lakewood',
-    before: 'Roof with black algae streaks',
-    after: 'Same roof after soft-wash treatment',
-  },
-  {
-    caption: 'Cedar deck restored',
-    service: 'deck-cleaning',
-    city: 'Littleton',
-    before: 'Gray, weathered cedar deck',
-    after: 'Same deck cleaned and brightened',
-  },
-  {
-    caption: 'Wood fence cleaned and stained',
-    service: 'fence-deck-staining',
-    city: 'Centennial',
-    before: 'Weathered gray fence',
-    after: 'Same fence stained a warm cedar tone',
-  },
-  {
-    caption: 'Gutter faces brightened',
-    service: 'gutter-brightening',
-    city: 'Arvada',
-    before: 'White gutter with black tiger stripes',
-    after: 'Same gutter, bright white',
-  },
-]
-
 export const sampleClientLogos = [
   'Sample Property Group',
   'Sample HOA Community',
