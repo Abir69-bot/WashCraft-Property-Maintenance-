@@ -4,6 +4,7 @@ import * as migration_20261020_213016_home_photos from './20261020_213016_home_p
 import * as migration_20261021_083356_phase4_templates from './20261021_083356_phase4_templates';
 import * as migration_20261021_110721_phase5_quote_system from './20261021_110721_phase5_quote_system';
 import * as migration_20261021_110741_phase5_lead_files from './20261021_110741_phase5_lead_files';
+import * as migration_20261023_062733_phase6_content_pages from './20261023_062733_phase6_content_pages';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20261021_110741_phase5_lead_files.up,
     down: migration_20261021_110741_phase5_lead_files.down,
-    name: '20261021_110741_phase5_lead_files'
+    name: '20261021_110741_phase5_lead_files',
+  },
+  {
+    up: migration_20261023_062733_phase6_content_pages.up,
+    down: migration_20261023_062733_phase6_content_pages.down,
+    name: '20261023_062733_phase6_content_pages'
   },
 ];

@@ -11,21 +11,28 @@ import type { Tracking } from '@/lib/schemas/quick-quote'
 import { matchCity, normalizeZip } from '@/lib/service-area'
 import { privateStore } from '@/lib/storage'
 import { e164 } from '@/lib/text'
-import type { Lead } from '@/payload-types'
+import type { Application, Lead } from '@/payload-types'
 
-import { createLead, type LeadData } from './create'
+import { createApplication, createLead, type ApplicationData, type LeadData } from './create'
 import type { CheckedFile } from './lead-files'
 import {
+  applicantEmail,
+  applicationBackupEmail,
+  applicationOwnerEmail,
+  applicationOwnerSms,
   backupEmail,
   customerEmail,
   customerSms,
   ownerEmail,
   ownerSms,
+  type ApplicationSummary,
   type LeadSummary,
 } from './messages'
 import { backupLead, failedLeadRecord, persistLead } from './save'
 
 const adminLink = (id: number) => `${env.NEXT_PUBLIC_SITE_URL}/admin/collections/leads/${id}`
+const applicationLink = (id: number) =>
+  `${env.NEXT_PUBLIC_SITE_URL}/admin/collections/applications/${id}`
 const fileLink = (id: number) => `${env.NEXT_PUBLIC_SITE_URL}/api/lead-files/${id}/download`
 
 /** Who hears about new leads (Site settings → Lead alerts), with the business email as fallback. */
@@ -110,6 +117,27 @@ function summarize(data: LeadData, serviceNames: string[]): LeadSummary {
 
 type Job = { channel: string; to: string; send: () => Promise<void> }
 
+/** Sends every message; one failure never stops the others. Returns what happened to each. */
+async function runJobs(jobs: Job[], notifier: { sms: string; email: string }) {
+  const results = await Promise.allSettled(jobs.map((job) => job.send()))
+  return jobs.map((job, index) => {
+    const result = results[index]
+    return {
+      channel: job.channel,
+      to: job.to,
+      via: job.channel.endsWith('sms') ? notifier.sms : notifier.email,
+      ok: result.status === 'fulfilled',
+      ...(result.status === 'rejected' && { error: String(result.reason).slice(0, 300) }),
+      at: new Date().toISOString(),
+    }
+  })
+}
+
+const layoutSite = () =>
+  getLayoutData()
+    .then((layout) => layout.site)
+    .catch(() => configSite)
+
 /** Owner alerts and the customer confirmation, sent after the visitor already has a reply. */
 async function sendNotifications(
   summary: LeadSummary,
@@ -119,9 +147,7 @@ async function sendNotifications(
 ) {
   const notifier = getNotifier()
   const alerts = await leadAlerts()
-  const site = await getLayoutData()
-    .then((layout) => layout.site)
-    .catch(() => configSite)
+  const site = await layoutSite()
   const pricing = await getPricingData().catch(() => null)
   const link = lead ? adminLink(lead.id) : null
   const fileIds = (lead?.files ?? []).map((file) => (typeof file === 'object' ? file.id : file))
@@ -172,18 +198,7 @@ async function sendNotifications(
     })
   }
 
-  const results = await Promise.allSettled(jobs.map((job) => job.send()))
-  const log = jobs.map((job, index) => {
-    const result = results[index]
-    return {
-      channel: job.channel,
-      to: job.to,
-      via: job.channel.endsWith('sms') ? notifier.sms : notifier.email,
-      ok: result.status === 'fulfilled',
-      ...(result.status === 'rejected' && { error: String(result.reason).slice(0, 300) }),
-      at: new Date().toISOString(),
-    }
-  })
+  const log = await runJobs(jobs, notifier)
   const sent = log.filter((entry) => entry.ok).length
   const status = sent === log.length ? 'sent' : sent > 0 ? 'partial' : 'failed'
   if (status !== 'sent') console.error('[lead] some notifications failed', log)
@@ -236,6 +251,101 @@ export async function submitLead({
   after(() =>
     sendNotifications(summary, result.saved ? result.result : null, data.consent === true, files),
   )
+  return result.saved
+    ? { saved: true, id: result.result.id }
+    : { saved: false, backedUp: result.backedUp }
+}
+
+async function sendApplicationNotifications(
+  summary: ApplicationSummary,
+  application: Application | null,
+  files: CheckedFile[],
+) {
+  const notifier = getNotifier()
+  const alerts = await leadAlerts()
+  const site = await layoutSite()
+  const link = application ? applicationLink(application.id) : null
+  const resume = application?.resume
+  const resumeId = typeof resume === 'object' ? resume?.id : resume
+  const withFiles = {
+    ...summary,
+    files: files.map((file) => ({
+      name: file.filename,
+      url: resumeId ? fileLink(resumeId) : '(saved in backup storage)',
+    })),
+  }
+
+  const jobs: Job[] = alerts.phones.map((to) => ({
+    channel: 'owner-sms',
+    to,
+    send: () => notifier.sendSms({ to, body: applicationOwnerSms(withFiles, link) }),
+  }))
+  if (application && alerts.emails.length) {
+    jobs.push({
+      channel: 'owner-email',
+      to: alerts.emails.join(', '),
+      send: () =>
+        notifier.sendEmail({
+          to: alerts.emails,
+          ...applicationOwnerEmail(withFiles, link),
+          replyTo: summary.email,
+        }),
+    })
+  }
+  jobs.push({
+    channel: 'applicant-email',
+    to: summary.email,
+    send: () =>
+      notifier.sendEmail({
+        to: [summary.email],
+        ...applicantEmail(summary, site),
+        replyTo: alerts.emails[0],
+      }),
+  })
+  const log = await runJobs(jobs, notifier)
+  if (log.some((entry) => !entry.ok)) console.error('[application] some notifications failed', log)
+}
+
+/**
+ * Saves a job application with the same safety net as leads (database, retry, backup), then
+ * tells the owner and confirms to the applicant.
+ */
+export async function submitApplication({
+  data,
+  files = [],
+  role,
+}: {
+  data: ApplicationData
+  files?: CheckedFile[]
+  role: string | null
+}): Promise<SubmitOutcome> {
+  const summary: ApplicationSummary = {
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    role,
+    message: data.message,
+  }
+  const result = await persistLead({
+    save: async () => createApplication(await getPayloadClient(), data, files),
+    backup: async (error) => {
+      const record = {
+        ...failedLeadRecord(data as Record<string, unknown>, files, error),
+        collection: 'applications' as const,
+      }
+      const alerts = await leadAlerts()
+      await backupLead(record, privateStore(), () =>
+        alerts.emails.length
+          ? getNotifier().sendEmail({
+              to: alerts.emails,
+              ...applicationBackupEmail(summary, record),
+            })
+          : Promise.reject(new Error('No email address for lead alerts')),
+      )
+    },
+  })
+
+  after(() => sendApplicationNotifications(summary, result.saved ? result.result : null, files))
   return result.saved
     ? { saved: true, id: result.result.id }
     : { saved: false, backedUp: result.backedUp }

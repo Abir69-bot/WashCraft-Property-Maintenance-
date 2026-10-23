@@ -2,8 +2,10 @@ import { slugField, type CollectionConfig, type Field } from 'payload'
 
 import { publicRead } from '@/access/public-read'
 import { isOwner, isSignedIn } from '@/access/roles'
+import { POST_CATEGORIES } from '@/config/content'
 import { faqsField, photoLabelField, seoTab, TOKENS_HINT, VERSIONS } from '@/fields/common'
 import { redirectOnSlugChange } from '@/hooks/redirect-on-slug-change'
+import { previewUrl } from '@/lib/preview'
 
 const access = {
   read: publicRead({ drafts: true }),
@@ -36,6 +38,7 @@ export const Posts: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'publishedAt', '_status'],
     description: `Articles at /blog/<slug>. ${TOKENS_HINT}`,
+    preview: previewUrl('posts'),
   },
   access,
   versions: VERSIONS,
@@ -75,12 +78,7 @@ export const Posts: CollectionConfig = {
       name: 'category',
       type: 'select',
       required: true,
-      options: [
-        { label: 'Seasonal tips', value: 'seasonal' },
-        { label: 'How-to', value: 'how-to' },
-        { label: 'Buying guides', value: 'guides' },
-        { label: 'Company news', value: 'news' },
-      ],
+      options: POST_CATEGORIES.map(({ label, value }) => ({ label, value })),
       admin: { position: 'sidebar' },
     },
     {
@@ -109,6 +107,7 @@ export const Solutions: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', '_status'],
     description: `Problem-and-fix pages at /solutions/<slug>, e.g. "Ice dam prevention". ${TOKENS_HINT}`,
+    preview: previewUrl('solutions'),
   },
   access,
   versions: VERSIONS,

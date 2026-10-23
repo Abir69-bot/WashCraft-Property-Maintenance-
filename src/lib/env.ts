@@ -65,6 +65,10 @@ const schema = z.object({
   R2_PUBLIC_URL: z.preprocess(blankToUndefined, z.url().optional()),
   /** Private bucket: customer uploads, failed-lead backups and database dumps. */
   R2_PRIVATE_BUCKET: optionalText,
+  /** Google Places API (New) key, restricted to that API. Fetches the rating and reviews daily. */
+  GOOGLE_PLACES_API_KEY: optionalText,
+  /** Shared secret for scheduled jobs; Vercel Cron sends it as "Authorization: Bearer …". */
+  CRON_SECRET: optionalText,
 })
 
 export type SiteEnv = z.infer<typeof deployEnv>

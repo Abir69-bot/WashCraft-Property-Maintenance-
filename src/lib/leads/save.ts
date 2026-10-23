@@ -86,12 +86,16 @@ export async function persistLead<T>({
 export const FAILED_PREFIX = 'failed-leads/'
 const IMPORTED_PREFIX = 'failed-leads/imported/'
 
-/** What a backed-up lead looks like in storage. `lead` is the data for `leads.create`. */
+/**
+ * What a backed-up lead looks like in storage. `lead` is the data for `leads.create`, or for
+ * `applications.create` when `collection` says so (job applications use the same safety net).
+ */
 export type FailedLeadRecord = {
   version: 1
   id: string
   receivedAt: string
   error: string
+  collection?: 'applications'
   lead: Record<string, unknown>
   files: CheckedFile[]
 }

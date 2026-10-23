@@ -2,18 +2,12 @@ import path from 'path'
 
 import { expect, test, type Page } from '@playwright/test'
 
-import { expectAccessible, skipCookieBanner } from './helpers'
+import { expectAccessible, quiet, skipCookieBanner } from './helpers'
 
 const fixture = (name: string) => path.resolve('e2e', 'fixtures', name)
 
 /** Every lead made by the tests is named "E2E Test" and tagged utm_source=e2e. */
 const E2E = 'utm_source=e2e&utm_medium=test'
-
-/** No cookie banner, and the slide-in counts as already shown, so neither gets in the way. */
-async function quiet(page: Page) {
-  await skipCookieBanner(page)
-  await page.addInitScript(() => localStorage.setItem('wc-slide-in', String(Date.now())))
-}
 
 async function fillContact(page: Page, { address = true, zip = true } = {}) {
   await page.getByLabel('Name', { exact: true }).fill('E2E Test')

@@ -4,6 +4,7 @@ import { publicRead } from '@/access/public-read'
 import { isOwner, isSignedIn } from '@/access/roles'
 import { isSampleField, orderField, photoLabelField, seoTab, VERSIONS } from '@/fields/common'
 import { redirectOnSlugChange } from '@/hooks/redirect-on-slug-change'
+import { previewUrl } from '@/lib/preview'
 
 const access = {
   read: publicRead({ drafts: true, samples: true }),
@@ -27,6 +28,7 @@ export const TeamMembers: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'role', 'isFounder', 'isSample', '_status'],
     description: 'Each person has a bio page at /team/<slug>.',
+    preview: previewUrl('team-members'),
   },
   access,
   versions: VERSIONS,
@@ -80,6 +82,7 @@ export const JobOpenings: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'employmentType', 'active', 'isSample', '_status'],
     description: 'Open roles at /careers/<slug>. Untick "Accepting applications" to close one.',
+    preview: previewUrl('job-openings'),
   },
   access,
   versions: VERSIONS,

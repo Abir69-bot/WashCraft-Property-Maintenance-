@@ -18,27 +18,27 @@ Source: HF = High Five, WT = WashTech, C = client request, N = new for WashCraft
 | 8   | ☑    | Three-step process with recurring upsell                                                 | HF, WT | Home, services, cities  |
 | 9   | ☐    | Satisfaction guarantee band                                                              | HF     | Home, services          |
 | 10  | ☑    | Before/after comparison sliders                                                          | HF, WT | Home, services, cities  |
-| 11  | ☐    | Filterable before & after gallery page                                                   | WT     | /before-and-after       |
+| 11  | ☑    | Filterable before & after gallery page                                                   | WT     | /before-and-after       |
 | 12  | ☑    | Call and text urgency block (tel:, sms:)                                                 | HF     | Home, services          |
 | 13  | ☐    | Featured testimonial with photo                                                          | HF     | Home                    |
 | 14  | ◐    | Testimonial cards with photo, city, service, "Verified Google review" link               | WT     | Home, services, reviews |
-| 15  | ☐    | Google rating and review count badge                                                     | WT     | Home, reviews           |
-| 16  | ☐    | Values story and trust badges                                                            | HF     | Home, about             |
+| 15  | ◐    | Google rating and review count badge                                                     | WT     | Home, reviews           |
+| 16  | ◐    | Values story and trust badges                                                            | HF     | Home, about             |
 | 17  | ◐    | Four-point trust strip                                                                   | WT     | Home, cities, contact   |
 | 18  | ☑    | Tabbed service explorer                                                                  | HF     | Home                    |
 | 19  | ☑    | Outcome-led service cards and button labels                                              | WT     | Home, hubs              |
 | 20  | ☑    | Generic comparison table vs other providers                                              | HF     | Home, services          |
 | 21  | ☑    | "Why choose us" image cards                                                              | WT     | Home, cities            |
 | 22  | ◐    | Insurance and compliance block for property managers                                     | WT     | Home, commercial        |
-| 23  | ☐    | Meet the founder + team bio pages                                                        | WT     | Home, about, /team      |
-| 24  | ◐    | Objection-handling FAQ blocks + FAQ page                                                 | HF, WT | Many                    |
+| 23  | ◐    | Meet the founder + team bio pages                                                        | WT     | Home, about, /team      |
+| 24  | ☑    | Objection-handling FAQ blocks + FAQ page                                                 | HF, WT | Many                    |
 | 25  | ☑    | City landing pages + city grid                                                           | HF, WT | /areas                  |
 | 26  | ◐    | Neighbourhood cards, cited local stats, localised FAQs                                   | WT     | City pages              |
 | 27  | ☑    | Service-area links on service pages; service-in-city pages                               | WT     | Services, /areas        |
-| 28  | ☐    | Solutions (long-tail) collection                                                         | WT     | /solutions              |
-| 29  | ☐    | Blog                                                                                     | HF, WT | /blog                   |
-| 30  | ☐    | Careers with application form                                                            | HF, WT | /careers                |
-| 31  | ☐    | Reviews page                                                                             | HF     | /reviews                |
+| 28  | ☑    | Solutions (long-tail) collection                                                         | WT     | /solutions              |
+| 29  | ☑    | Blog                                                                                     | HF, WT | /blog                   |
+| 30  | ☑    | Careers with application form                                                            | HF, WT | /careers                |
+| 31  | ◐    | Reviews page                                                                             | HF     | /reviews                |
 | 32  | ☑    | Strata and commercial section                                                            | HF, WT | /commercial             |
 | 33  | ☑    | Instant price vs custom quote split by job size                                          | HF     | /quote                  |
 | 34  | ☑    | Commercial / strata bid path                                                             | HF     | /quote/commercial       |
@@ -57,7 +57,7 @@ Source: HF = High Five, WT = WashTech, C = client request, N = new for WashCraft
 | 47  | ☑    | Seasonal announcement bar and auto-switching hero                                        | N      | Global, home            |
 | 48  | ☑    | Maintenance plans and seasonal packages                                                  | N      | /maintenance-plans      |
 | 49  | ☑    | Mobile sticky Call · Text · Quote bar                                                    | N      | Global                  |
-| 50  | ◐    | Postal-code service-area checker + map                                                   | N      | Home, /areas, contact   |
+| 50  | ☑    | Postal-code service-area checker + map                                                   | N      | Home, /areas, contact   |
 | 51  | ☑    | Admin lead pipeline, CSV export, dashboard widget                                        | N      | /admin                  |
 | 52  | ☑    | Owner-editable pricing rules with review gate                                            | N      | /admin                  |
 | 53  | ◐    | Customer auto-replies and review-request automation                                      | N      | Notifications           |

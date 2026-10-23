@@ -457,3 +457,74 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
   (CI), where they create the first account.
 - **The e2e server runs with its own address as the site URL**: Payload only accepts signed-in
   writes from the configured origin (its CSRF check), and the test server uses port 3100.
+
+## Phase 6 — Proof and content pages (2026-10-23)
+
+### Pages
+
+- **About, Careers and the legal pages are edited as globals** (Admin → Pages): About page,
+  Careers page, Legal pages. Every About section hides itself until it has content; the starter
+  copy invents no story, community work, certificates or staff benefits (listed in
+  CONTENT_TODO.md). Certificates are PDFs uploaded to Media, which now accepts PDFs.
+- **H1s follow the page-type pattern** like the other templates: "About WashCraft",
+  "Careers at WashCraft in Denver Metro", "Contact WashCraft". The CMS headline ("One team for
+  every season") shows under the H1.
+- **Blog posts and solutions share one article template:** a table of contents built from the h2
+  and h3 headings (sticky beside the text on wide screens), a call to action at the h2 nearest
+  the middle (at the end of short articles), and the related services' quote flow. `{region}`
+  tokens are filled inside the rich text at render time, so the CMS keeps the tokens.
+- **The author box is hidden when the author isn't public.** Seeded posts are by the sample
+  founder, so on the live site they show no author until a real team member is chosen.
+- **Filters and search run in the browser over server-rendered content** (blog categories,
+  solution topics, review services, FAQ search, gallery selects), so every card, answer and
+  photo is in the HTML for search engines and works without JavaScript. Solutions are filtered
+  by the categories of their related services (they have no category of their own).
+- **Before & after: three selects** (category, service, city), each shown only when it would
+  narrow the list. The lightbox is a full-screen dialog with a larger slider and Previous/Next;
+  focus is trapped and Esc closes it.
+- **Reviews: Google reviews and the owner's testimonials in one list.** The rating in the hero
+  only shows when Google (or the owner, in Site settings) has provided one. With nothing real to
+  show, the page says the business is just getting started with reviews and offers the
+  "Leave us a review" link when it's set.
+- **Unknown URLs at any depth get the site's own 404** via a catch-all route
+  (`app/(site)/[...missing]`) that calls `notFound()`, instead of the experimental
+  `global-not-found` file: the 404 keeps the header, footer and search. The catch-all renders on
+  request (it isn't cached, so junk URLs can't fill the cache) and reads only cached data. The
+  404 search runs in the browser over services, cities, solutions, articles and main pages.
+- **Known Next.js limitation: 404 pages are drawn in the browser.** When a page calls
+  `notFound()`, Next 16 sends the 404 status with an empty HTML shell (`<html id="__next_error__">`)
+  and the browser renders the 404 page from the data in that response. Visitors see the full
+  page (header, search, footer) as soon as it loads; without JavaScript it is blank. This applies
+  to every `notFound()` page (unknown service, city, article…), not just the catch-all. Next's
+  experimental `global-not-found` would server-render unmatched URLs only, so it isn't worth a
+  second copy of the layout. Revisit if Next renders not-found boundaries on the server.
+- **Inactive or sample job openings have no public page** (404), like other hidden content; a
+  closed role only shows its "This role is closed" notice in preview.
+- **Careers and Contact keep a quote CTA** (brief §3.4) as the closing band ("Looking for a
+  quote instead?" on careers); legal pages have none.
+
+### Forms
+
+- **Contact form → a `contact` lead** through `submitLead` (save, retry, backup, notifications).
+  The ZIP code is optional; without one the lead isn't marked out of area.
+- **Job applications use the same safety net as leads** but are saved to Job applications, not
+  Leads (`submitApplication`). A backed-up application is stored with `collection:
+"applications"` and re-imported by the same "Re-import backed-up leads" button. The owner gets
+  the SMS/email alert; the applicant gets a confirmation email that promises no reply time.
+  Notification results are logged (applications have no notification-status field).
+- **The résumé is optional** and may be a PDF or a photo (the existing `document` upload kind,
+  checked by content, private storage). Many seasonal applicants don't have a résumé file.
+- **Applications have their own consent line** ("WashCraft may call, text or email me about my
+  application."), separate from the marketing consent on quote forms.
+
+### Google reviews
+
+- **Places API (New), once a day** (`/next/cron/google-reviews`, Vercel Cron in `vercel.json`,
+  protected by `CRON_SECRET`). It stores the rating, review count and the up to five reviews
+  Google returns, so pages never call Google while a visitor waits. Reviews Google stops
+  returning are deleted, except ones staff hid, so a hidden review stays hidden if it returns.
+  Without `GOOGLE_PLACES_API_KEY` or a Place ID the job does nothing.
+- **Google's numbers win** over a rating typed into Site settings → Stats.
+- **Attribution:** each Google review shows the reviewer's name, "Google review", the date and a
+  link to the review on Google, as Google's display rules require. Reviewer photos are not shown
+  (they would need another image domain allowed).

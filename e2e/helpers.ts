@@ -1,11 +1,19 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, type Page } from '@playwright/test'
 
+import { site } from '../src/config/site'
+
 /** Pretend the visitor already answered the cookie banner, so it doesn't cover the page. */
 export async function skipCookieBanner(page: Page) {
   await page.addInitScript(() => {
     localStorage.setItem('wc-consent', JSON.stringify({ analytics: false, at: '2026-01-01' }))
   })
+}
+
+/** No cookie banner, and the slide-in counts as already shown, so neither gets in the way. */
+export async function quiet(page: Page) {
+  await skipCookieBanner(page)
+  await page.addInitScript(() => localStorage.setItem('wc-slide-in', String(Date.now())))
 }
 
 /**
@@ -38,4 +46,28 @@ export async function expectAccessible(page: Page, { exclude = [] }: { exclude?:
         .join('\n  ')}`,
   )
   expect(summary, summary.join('\n\n')).toEqual([])
+}
+
+const suffix = ` | ${site.shortName}`
+const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+/** Status, one H1, title pattern, description, canonical URL, Open Graph and breadcrumbs. */
+export async function expectTemplate(page: Page, path: string, heading: string) {
+  const response = await page.goto(path)
+  expect(response?.status(), path).toBe(200)
+  await expect(page.locator('h1')).toHaveCount(1)
+  await expect(page.locator('h1')).toHaveText(heading)
+  await expect(page).toHaveTitle(heading + suffix)
+  const description = await page.locator('meta[name="description"]').getAttribute('content')
+  expect(description?.length, `${path} description`).toBeGreaterThan(50)
+  expect(description!.length, `${path} description`).toBeLessThanOrEqual(160)
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    new RegExp(`${escape(path)}$`),
+  )
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+    'content',
+    heading + suffix,
+  )
+  await expect(page.getByRole('navigation', { name: 'Breadcrumb' })).toBeVisible()
 }

@@ -2,19 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 import { publicRead } from '@/access/public-read'
 import { isOwner, isSignedIn } from '@/access/roles'
+import { FAQ_CATEGORIES } from '@/config/content'
 import { orderField, TOKENS_HINT } from '@/fields/common'
-
-export const FAQ_CATEGORIES = [
-  { label: 'General', value: 'general' },
-  { label: 'Pricing & payment', value: 'pricing' },
-  { label: 'Booking & scheduling', value: 'scheduling' },
-  { label: 'Exterior cleaning', value: 'exterior' },
-  { label: 'Interior cleaning', value: 'interior' },
-  { label: 'Winter services', value: 'winter' },
-  { label: 'Holiday lighting', value: 'holiday' },
-  { label: 'Yard care', value: 'yard' },
-  { label: 'Commercial & HOA', value: 'commercial' },
-] as const
 
 export const Faqs: CollectionConfig = {
   slug: 'faqs',

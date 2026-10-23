@@ -38,6 +38,7 @@ import {
   type MediaKey,
 } from './data/media'
 import { serviceFrequencies } from './data/frequencies'
+import { aboutPage, careersPage, legalPages } from './data/pages'
 import { allServices } from './data/services'
 
 export { allServices }
@@ -507,6 +508,17 @@ export async function seed(
   await seedGlobal('commercial-pages', {
     ...commercialPages,
     hoa: { ...commercialPages.hoa, services: idsFor(serviceIds, commercialPages.hoa.services) },
+  })
+  await seedGlobal('about-page', aboutPage)
+  await seedGlobal('careers-page', careersPage)
+  const today = new Date().toISOString().slice(0, 10)
+  await seedGlobal('legal-pages', {
+    privacy: richText(legalPages.privacy),
+    privacyUpdated: today,
+    terms: richText(legalPages.terms),
+    termsUpdated: today,
+    accessibility: richText(legalPages.accessibility),
+    accessibilityUpdated: today,
   })
 
   // Photos and featured services: only filled where still empty, so admin choices survive.

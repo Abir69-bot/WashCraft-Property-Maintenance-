@@ -61,15 +61,18 @@ src/
   app/(site)/           public pages (Server Components by default)
   app/(payload)/        Payload admin + API (generated; don't hand-edit)
   collections/          Payload collections (several per file, grouped by admin section)
-  globals/              Payload globals (site-settings.ts + settings.ts)
+  globals/              Payload globals (site-settings.ts, settings.ts, pages.ts: About, Careers, Legal)
   fields/common.ts      shared fields: seoTab, isSampleField, iconField, seasonsField, VERSIONS
   hooks/                collection hooks (redirect-on-slug-change)
   access/public-read.ts visitors: published only, no samples in production
   components/ui/        primitives (button, dialog, accordion, tabs, select, popover…)
   components/sections/  page sections (Hero, TrustStrip, BeforeAfter, …) and template parts
-                        (page-hero, category-hub, service-/city-/commercial-blocks, plans)
+                        (page-hero, category-hub, service-/city-/commercial-blocks, plans, article,
+                        team, careers, legal)
   components/layout/    header, mega-menu, mobile menu + action bar, footer, call band, cookie banner
   components/quote/     quick form, wizard, flows/*, fields, file-upload, estimate-result, slide-in
+  components/forms/     contact and job application forms (reuse quote/fields and useQuoteForm)
+  components/rich-text.tsx  <Prose> for CMS rich text (headings get ids for the contents)
   lib/env.ts            the ONLY place env vars are read (Zod-validated)
   lib/pricing/          engine.ts (pure, tested), load.ts (cached rules), plans.ts
   lib/notify/           Notifier: Twilio + Resend over fetch, console fallback
@@ -79,7 +82,11 @@ src/
   components/admin/     dashboard, banners, status cell, re-import button, file download
   lib/seo/              metadata + JSON-LD builders
   lib/schemas/          shared Zod schemas
-  lib/data/             cached public queries (cachedQuery, tag `content`), page loaders (load.ts), seasonNow()
+  lib/data/             cached public queries (cachedQuery, tag `content`; content.ts for blog, solutions,
+                        FAQ, gallery, reviews, team, jobs, page globals), page loaders (load.ts), seasonNow()
+  lib/rich-text.ts      table of contents, mid-article split, {region} filling inside rich text
+  lib/reviews/google.ts daily Google Places sync (app/next/cron/google-reviews, vercel.json cron)
+  lib/search.ts         404 page search ranking
   lib/quote/flow.ts     quoteCta(): where each service's / category's quote button goes
   lib/preview.ts        admin Preview button URLs; app/next/preview turns on draft mode
   lib/utils.ts          cn() (tailwind-merge aware of text-h1/h2/h3/body/small)
@@ -90,6 +97,7 @@ src/
   config/catalog.ts     seasons, quote modes, category tones, frequencies
   config/quote.ts       quote form choices; FLOW_SERVICES (slugs the dedicated forms depend on)
   config/leads.ts       lead types and statuses
+  config/content.ts     blog and FAQ categories
   config/icons.ts       icon keys (map to Lucide in components/service-icon.tsx)
   lib/routes.ts         every public URL + DOC_PATHS (collection -> page path)
   lib/site-settings.ts  getSite(payload): saved settings or site.ts fallback
@@ -122,7 +130,7 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 - Never invent business facts. Read them from site settings (`getSite()`); placeholders in `[BRACKETS]` render as a yellow "TODO" chip in dev and fail `check-config` for prod. Fields in `site.demo` are owner-approved demo stand-ins: render them normally, never treat them as confirmed facts (e.g. no "call us" urgency copy that depends on a real number), and they also fail `check-config`.
 - Every third-party integration is optional: missing env var → console fallback, feature still works or hides itself. Only `DATABASE_URI` is required.
 - Read env vars only through `src/lib/env.ts` (server) or `src/lib/public-env.ts` (`NEXT_PUBLIC_` values the browser needs, read as literal `process.env.NAME`).
-- Every lead goes through `submitLead()` (save → retry → backup → notifications), never `payload.create` directly. System updates to a lead use `payload.db.updateOne` (single columns), so concurrent writes don't overwrite each other.
+- Every lead goes through `submitLead()` (save → retry → backup → notifications), never `payload.create` directly; job applications go through `submitApplication()` (same safety net). System updates to a lead use `payload.db.updateOne` (single columns), so concurrent writes don't overwrite each other.
 - Forms: one Zod schema in `src/lib/schemas` for browser and server, a server action in `lib/leads/actions.ts` (validate, `guardSubmission`, then `submitLead`), and the fields in `components/quote/fields.tsx`. Every public form has the honeypot and Turnstile.
 - Customer files go to the private store (`lib/storage`), never the public Media collection; they are checked by content (`verifyUploads`).
 - Server Components by default; `'use client'` only for interactive leaves (budget: < 150 KB JS per content page).

@@ -91,6 +91,23 @@ Put each value in `.env` locally and in Vercel → Project → Settings → Envi
 2. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (site key) and `TURNSTILE_SECRET_KEY` (secret key).
    The check is invisible for most visitors and only asks for a click when Cloudflare isn't sure.
 
+### Google reviews (rating and reviews, daily)
+
+1. In [Google Cloud Console](https://console.cloud.google.com/), create a project, enable
+   **Places API (New)** and create an **API key**. Restrict the key to that API.
+2. Find your **Place ID** with Google's
+   [Place ID finder](https://developers.google.com/maps/documentation/places/web-service/place-id)
+   and paste it into Admin → Site settings → Google & social. Add your "Leave us a review" link
+   there too.
+3. Set `GOOGLE_PLACES_API_KEY` and a random `CRON_SECRET` (e.g. `openssl rand -hex 32`) in Vercel.
+   Vercel Cron (`vercel.json`) then calls `/next/cron/google-reviews` once a day with that secret.
+   It copies the rating, review count and the up to five reviews Google shares into the admin
+   (Social proof → Google reviews), where you can tick **Hide on site** for any of them.
+4. To run it now: `curl -H "Authorization: Bearer $CRON_SECRET" https://<your-site>/next/cron/google-reviews`.
+
+Google's free monthly allowance covers a daily call. Without the key or the Place ID the job does
+nothing and the reviews page shows your own testimonials only.
+
 ## Working with leads (admin)
 
 - **Leads** lists every request, newest first. Change a status straight from the list; open a
@@ -99,8 +116,10 @@ Put each value in `.env` locally and in Vercel → Project → Settings → Envi
   **Download file**; only signed-in staff can.
 - **CSV export:** Leads list → **⋮** → **Export**. Pick the fields, clear the **Limit** to export
   everything, then **Download**.
-- **Backed-up leads:** if the database was unreachable when someone sent a form, the lead was
-  emailed to you and saved to backup storage. A red banner on the dashboard and the Leads list
+- **Job applications** (Leads → Job applications) come from the careers pages, with the résumé
+  under each one. Contact-page messages arrive as leads of type "contact".
+- **Backed-up leads:** if the database was unreachable when someone sent a form (including job
+  applications), it was emailed to you and saved to backup storage. A red banner on the dashboard and the Leads list
   then offers **Re-import backed-up leads**.
 - **Prices:** every seeded price is a placeholder. Until you check a rule (Pricing → Pricing rules,
   Discounts, Plans) and untick **Needs review**, the live site shows "We'll price this with you"

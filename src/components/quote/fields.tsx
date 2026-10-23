@@ -319,7 +319,7 @@ export function ContactSection<T extends FieldValues>({
   emailRequired?: boolean
   address?: boolean
   /** Off when the form already asked for the ZIP code (the wizard's first step). */
-  zip?: boolean
+  zip?: boolean | 'optional'
   title?: string
 }) {
   const field = (name: string) => name as Path<T>
@@ -360,6 +360,7 @@ export function ContactSection<T extends FieldValues>({
             autoComplete="postal-code"
             inputMode="numeric"
             maxLength={10}
+            optional={zip === 'optional'}
           />
         )}
       </div>

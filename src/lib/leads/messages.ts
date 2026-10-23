@@ -67,6 +67,18 @@ const show = (value: unknown): string =>
         : 'No'
       : String(value)
 
+/** "Label: value" lines, skipping empty values. */
+const detailLines = (rows: [string, unknown][]) =>
+  rows
+    .filter(
+      ([, value]) =>
+        value !== null &&
+        value !== undefined &&
+        value !== '' &&
+        !(Array.isArray(value) && !value.length),
+    )
+    .map(([name, value]) => `${name}: ${show(value)}`)
+
 /** Owner alert, kept short for SMS: who, what, where, how much, and the admin link. */
 export function ownerSms(lead: LeadSummary, link: string | null) {
   const parts = [
@@ -96,15 +108,7 @@ export function ownerEmail(lead: LeadSummary, link: string | null) {
       ([key, value]) => [label(key), value] as [string, unknown],
     ),
   ]
-  const lines = rows
-    .filter(
-      ([, value]) =>
-        value !== null &&
-        value !== undefined &&
-        value !== '' &&
-        !(Array.isArray(value) && !value.length),
-    )
-    .map(([name, value]) => `${name}: ${show(value)}`)
+  const lines = detailLines(rows)
   const files = (lead.files ?? []).map((file) => `- ${file.name}: ${file.url}`)
   return {
     subject: `New ${LEAD_TYPE_LABELS[lead.type]} lead: ${lead.name}${where(lead) ? ` (${where(lead)})` : ''}`,
@@ -185,4 +189,69 @@ export function quoteUpdate(
   const what = action === 'book' ? 'wants to book' : 'asked for a call-back about'
   const text = `${lead.name} ${what} their ${LEAD_TYPE_LABELS[lead.type]} estimate. Phone: ${lead.phone} — ${link}`
   return { sms: text, email: { subject: `${lead.name} ${what} their estimate`, text } }
+}
+
+/** A job application, for the owner's alerts and the applicant's confirmation. */
+export type ApplicationSummary = {
+  name: string
+  email: string
+  phone: string
+  /** The job's title, or null for "any role". */
+  role: string | null
+  message?: string | null
+  files?: { name: string; url: string }[]
+}
+
+const roleLabel = (application: ApplicationSummary) => application.role ?? 'any role'
+
+export function applicationOwnerSms(application: ApplicationSummary, link: string | null) {
+  return `New job application: ${application.name}, ${roleLabel(application)}${link ? ` — ${link}` : ''}`
+}
+
+export function applicationOwnerEmail(application: ApplicationSummary, link: string | null) {
+  const files = (application.files ?? []).map((file) => `- ${file.name}: ${file.url}`)
+  return {
+    subject: `New job application: ${application.name} (${roleLabel(application)})`,
+    text: [
+      ...detailLines([
+        ['Name', application.name],
+        ['Phone', application.phone],
+        ['Email', application.email],
+        ['Role', roleLabel(application)],
+        ['Message', application.message],
+      ]),
+      ...(files.length ? ['', 'Résumé (sign in to the admin to open):', ...files] : []),
+      ...(link ? ['', `Open in the admin: ${link}`] : []),
+    ].join('\n'),
+  }
+}
+
+/** Confirmation to the applicant. No promises about a reply time or outcome. */
+export function applicantEmail(application: ApplicationSummary, site: Site) {
+  return {
+    subject: `We got your application – ${site.shortName}`,
+    text: [
+      `Hi ${firstName(application.name)},`,
+      '',
+      `Thanks for applying to ${site.name}${application.role ? ` for the ${application.role} role` : ''}. We read every application and will contact you if there’s a good fit.`,
+      ...(contactLine(site) ? ['', contactLine(site)!] : []),
+      '',
+      site.name,
+    ].join('\n'),
+  }
+}
+
+export function applicationBackupEmail(application: ApplicationSummary, record: unknown) {
+  return {
+    subject: `New job application (saved to backup): ${application.name}`,
+    text: [
+      'The database was unreachable, so this application was saved to the backup folder instead.',
+      'It will appear in the admin after you click “Re-import backed-up leads” on the Leads page.',
+      '',
+      applicationOwnerEmail(application, null).text,
+      '',
+      'Full record:',
+      JSON.stringify(record, null, 2),
+    ].join('\n'),
+  }
 }

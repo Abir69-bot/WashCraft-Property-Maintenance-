@@ -36,6 +36,7 @@ import {
   PricingSettings,
   SeasonalSettings,
 } from './globals/settings'
+import { AboutPage, CareersPage, LegalPages } from './globals/pages'
 import { SiteSettings } from './globals/site-settings'
 import { withGlobalRevalidation, withRevalidation } from './hooks/revalidate'
 import { env, r2Config } from './lib/env'
@@ -91,6 +92,9 @@ export default buildConfig({
     Footer,
     Homepage,
     CommercialPages,
+    AboutPage,
+    CareersPage,
+    LegalPages,
     FeatureFlags,
     PricingSettings,
   ].map(withGlobalRevalidation),

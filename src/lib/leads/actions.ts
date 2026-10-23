@@ -11,6 +11,7 @@ import {
   SNOW_ADD_ONS,
 } from '@/config/quote'
 import { getPayloadClient } from '@/lib/data/cache'
+import { getJobs } from '@/lib/data/content'
 import { getLayoutData, type LayoutData } from '@/lib/data/layout'
 import { getPlans } from '@/lib/data/pages'
 import { env } from '@/lib/env'
@@ -26,6 +27,7 @@ import {
 import { planPrice } from '@/lib/pricing/plans'
 import { answersSchema } from '@/lib/quote/questions'
 import { isWizardService, sharedFrequencies } from '@/lib/quote/services'
+import { applicationSchema, contactSchema } from '@/lib/schemas/contact'
 import type { FileRef } from '@/lib/schemas/fields'
 import { quickQuoteSchema, trackingSchema, type Tracking } from '@/lib/schemas/quick-quote'
 import {
@@ -47,6 +49,7 @@ import { quoteUpdate } from './messages'
 import {
   baseLeadData,
   getLeadAlerts,
+  submitApplication,
   submitLead,
   type LeadData,
   type SubmitOutcome,
@@ -605,6 +608,77 @@ export async function submitCommercialBid(input: unknown, tracking: unknown): Pr
     return result.ok ? { ok: true } : result
   } catch (error) {
     console.error('[quote] commercial bid failed', error)
+    return { ok: false, message: SERVER_ERROR }
+  }
+}
+
+/** Contact page form: a lead of type "contact" (brief §9.7). The ZIP code is optional. */
+export async function submitContact(input: unknown, tracking: unknown): Promise<FormResult> {
+  const parsed = contactSchema.safeParse(input)
+  if (!parsed.success) return invalid(fieldErrors(parsed.error))
+  const form = parsed.data
+  const blocked = await guard(form)
+  if (blocked) return blocked
+  try {
+    const layout = await getLayoutData()
+    const base = leadBase('contact', form, tracking, layout)
+    const outcome = await submitLead({
+      data: {
+        ...base,
+        ...(!form.zip && {
+          postalCode: undefined,
+          city: undefined,
+          cityName: undefined,
+          outOfArea: false,
+        }),
+        notes: form.message,
+      },
+      serviceNames: [],
+    })
+    const result = receipt(outcome, layout)
+    return result.ok ? { ok: true } : result
+  } catch (error) {
+    console.error('[contact] contact form failed', error)
+    return { ok: false, message: SERVER_ERROR }
+  }
+}
+
+/** Careers application with an optional résumé (brief §9.7). Saved to Job applications. */
+export async function submitJobApplication(input: unknown): Promise<FormResult> {
+  const parsed = applicationSchema.safeParse(input)
+  if (!parsed.success) return invalid(fieldErrors(parsed.error))
+  const form = parsed.data
+  const blocked = await guard(form)
+  if (blocked) return blocked
+  try {
+    const [layout, jobs, files] = await Promise.all([
+      getLayoutData(),
+      getJobs(),
+      checkedFiles(form.resume, 'document'),
+    ])
+    const job = jobs.find((opening) => opening.slug === form.role)
+    const outcome = await submitApplication({
+      data: {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        jobOpening: job?.id,
+        message: form.message || undefined,
+        consent: form.consent,
+        status: 'new',
+      },
+      files,
+      role: job?.title ?? null,
+    })
+    if (!outcome.saved && !outcome.backedUp) {
+      return {
+        ok: false,
+        message: `Sorry, we couldn’t save your application. Please call us at ${layout.site.phone}.`,
+      }
+    }
+    return { ok: true }
+  } catch (error) {
+    console.error('[careers] application failed', error)
     return { ok: false, message: SERVER_ERROR }
   }
 }

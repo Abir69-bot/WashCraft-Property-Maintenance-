@@ -18,6 +18,7 @@ export type EventName =
   | 'email_click'
   | 'review_link_click'
   | 'careers_apply'
+  | 'contact_submit'
 
 export function track(event: EventName, params: Record<string, string | number | undefined> = {}) {
   try {

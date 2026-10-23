@@ -140,6 +140,9 @@ export interface Config {
     footer: Footer;
     homepage: Homepage;
     'commercial-pages': CommercialPage;
+    'about-page': AboutPage;
+    'careers-page': CareersPage;
+    'legal-pages': LegalPage;
     'feature-flags': FeatureFlag;
     'pricing-settings': PricingSetting;
   };
@@ -150,6 +153,9 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     'commercial-pages': CommercialPagesSelect<false> | CommercialPagesSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'careers-page': CareersPageSelect<false> | CareersPageSelect<true>;
+    'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
     'feature-flags': FeatureFlagsSelect<false> | FeatureFlagsSelect<true>;
     'pricing-settings': PricingSettingsSelect<false> | PricingSettingsSelect<true>;
   };
@@ -2492,6 +2498,12 @@ export interface SiteSetting {
    * The "Leave us a review" link from your Google Business Profile.
    */
   googleReviewUrl?: string | null;
+  /**
+   * From Google, refreshed daily.
+   */
+  googleRating?: number | null;
+  googleReviewCount?: number | null;
+  googleSyncedAt?: string | null;
   social?: {
     facebook?: string | null;
     instagram?: string | null;
@@ -2815,6 +2827,138 @@ export interface CommercialPage {
   createdAt?: string | null;
 }
 /**
+ * Sections without content are hidden. Write {region} to insert your service region.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  headline: string;
+  intro: string;
+  heroImage?: (number | null) | Media;
+  /**
+   * What the photo should show. Displayed until a real photo is uploaded.
+   */
+  heroImageLabel?: string | null;
+  /**
+   * How WashCraft started and who is behind it, in your own words. Hidden until written.
+   */
+  story?: string | null;
+  mission?: string | null;
+  values?:
+    | {
+        title: string;
+        body: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Local teams, causes or events you support. Hidden until written.
+   */
+  community?: string | null;
+  /**
+   * e.g. certificate of insurance or a license, uploaded as PDFs to Media. Only add documents you are happy to publish.
+   */
+  certificates?:
+    | {
+        title: string;
+        file: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Write {region} to insert your service region.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "careers-page".
+ */
+export interface CareersPage {
+  id: number;
+  headline: string;
+  intro: string;
+  whyWorkHere?:
+    | {
+        title: string;
+        body: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Pay, schedule, equipment, training… Only list what you actually offer.
+   */
+  benefits?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Starter text written for this site. Have it reviewed (ideally by a lawyer) before launch.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-pages".
+ */
+export interface LegalPage {
+  id: number;
+  privacyUpdated: string;
+  privacy: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  termsUpdated: string;
+  terms: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  accessibilityUpdated: string;
+  accessibility: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "feature-flags".
  */
@@ -2900,6 +3044,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   alertEmails?: T;
   googlePlaceId?: T;
   googleReviewUrl?: T;
+  googleRating?: T;
+  googleReviewCount?: T;
+  googleSyncedAt?: T;
   social?:
     | T
     | {
@@ -3154,6 +3301,75 @@ export interface CommercialPagesSelect<T extends boolean = true> {
         metaTitle?: T;
         metaDescription?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  headline?: T;
+  intro?: T;
+  heroImage?: T;
+  heroImageLabel?: T;
+  story?: T;
+  mission?: T;
+  values?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  community?: T;
+  certificates?:
+    | T
+    | {
+        title?: T;
+        file?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "careers-page_select".
+ */
+export interface CareersPageSelect<T extends boolean = true> {
+  headline?: T;
+  intro?: T;
+  whyWorkHere?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  benefits?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-pages_select".
+ */
+export interface LegalPagesSelect<T extends boolean = true> {
+  privacyUpdated?: T;
+  privacy?: T;
+  termsUpdated?: T;
+  terms?: T;
+  accessibilityUpdated?: T;
+  accessibility?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

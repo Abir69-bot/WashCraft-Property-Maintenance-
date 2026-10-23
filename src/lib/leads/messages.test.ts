@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  applicantEmail,
+  applicationBackupEmail,
+  applicationOwnerEmail,
+  applicationOwnerSms,
   backupEmail,
   customerEmail,
   customerSms,
@@ -8,6 +12,7 @@ import {
   ownerSms,
   priceRange,
   reviewRequest,
+  type ApplicationSummary,
   type LeadSummary,
 } from './messages'
 
@@ -95,5 +100,51 @@ describe('quoteUpdate', async () => {
     expect(quoteUpdate(lead, 'callback', 'https://x/7').email.subject).toBe(
       'Maria Gomez asked for a call-back about their estimate',
     )
+  })
+})
+
+describe('job application messages', () => {
+  const application: ApplicationSummary = {
+    name: 'Chris Diaz',
+    email: 'chris@example.com',
+    phone: '(303) 555-0123',
+    role: 'Exterior Cleaning Technician',
+    message: 'Two seasons of pressure washing.',
+    files: [{ name: 'resume.pdf', url: 'https://example.com/api/lead-files/9/download' }],
+  }
+
+  it('alerts the owner with the role and admin link', () => {
+    expect(applicationOwnerSms(application, 'https://example.com/admin/x')).toBe(
+      'New job application: Chris Diaz, Exterior Cleaning Technician — https://example.com/admin/x',
+    )
+    const email = applicationOwnerEmail(application, null)
+    expect(email.subject).toBe('New job application: Chris Diaz (Exterior Cleaning Technician)')
+    expect(email.text).toContain('Phone: (303) 555-0123')
+    expect(email.text).toContain('Message: Two seasons of pressure washing.')
+    expect(email.text).toContain('- resume.pdf: https://example.com/api/lead-files/9/download')
+  })
+
+  it('handles general applications without a role or résumé', () => {
+    const general = { ...application, role: null, files: [], message: '' }
+    expect(applicationOwnerSms(general, null)).toBe('New job application: Chris Diaz, any role')
+    const email = applicationOwnerEmail(general, null)
+    expect(email.text).toContain('Role: any role')
+    expect(email.text).not.toContain('Message:')
+    expect(email.text).not.toContain('Résumé')
+  })
+
+  it('confirms to the applicant without promising a reply time', () => {
+    const email = applicantEmail(application, site)
+    expect(email.subject).toBe('We got your application – WashCraft')
+    expect(email.text).toContain('Hi Chris,')
+    expect(email.text).toContain('for the Exterior Cleaning Technician role')
+    expect(email.text).toContain('Call or text (720) 555-0142')
+    expect(applicantEmail({ ...application, role: null }, site).text).not.toContain(' role')
+  })
+
+  it('puts the full record in the backup email', () => {
+    const email = applicationBackupEmail(application, { id: 'abc' })
+    expect(email.subject).toBe('New job application (saved to backup): Chris Diaz')
+    expect(email.text).toContain('"id": "abc"')
   })
 })

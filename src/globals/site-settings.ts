@@ -135,6 +135,18 @@ export const SiteSettings: GlobalConfig = {
               'The "Leave us a review" link from your Google Business Profile.',
             ),
             {
+              type: 'row',
+              fields: [
+                {
+                  name: 'googleRating',
+                  type: 'number',
+                  admin: { readOnly: true, description: 'From Google, refreshed daily.' },
+                },
+                { name: 'googleReviewCount', type: 'number', admin: { readOnly: true } },
+                { name: 'googleSyncedAt', type: 'date', admin: { readOnly: true } },
+              ],
+            },
+            {
               name: 'social',
               type: 'group',
               fields: ['facebook', 'instagram', 'linkedin', 'youtube', 'tiktok', 'nextdoor'].map(

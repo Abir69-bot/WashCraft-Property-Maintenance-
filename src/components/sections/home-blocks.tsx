@@ -16,7 +16,7 @@ import { QuickQuoteForm, type ServiceGroup } from '@/components/quote/quick-quot
 import { SampleBadge } from '@/components/sample-badge'
 import { ServiceCard } from '@/components/service-card'
 import { ServiceIcon } from '@/components/service-icon'
-import { Badge, type BadgeTone } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { SEASON_LABELS, type Season } from '@/config/catalog'
 import type { SiteConfig } from '@/config/site'
@@ -25,9 +25,9 @@ import { planPrice } from '@/lib/pricing/plans'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { fillTokens, smsHref, telHref } from '@/lib/text'
-import { formatDate } from '@/lib/view'
 import type { ClientLogo, Homepage, Plan, Post, TeamMember } from '@/payload-types'
 
+import { PostCard } from './article'
 import { credentials } from './commercial-blocks'
 import { Section, type SectionTone } from './section'
 import { ServiceExplorer, type ExplorerService } from './service-explorer'
@@ -516,53 +516,14 @@ export function Founder({ founder, region }: { founder: TeamMember | null; regio
   )
 }
 
-const CATEGORY_TONES: Record<string, BadgeTone> = {
-  seasonal: 'winter',
-  'how-to': 'exterior',
-  guides: 'interior',
-  news: 'neutral',
-}
-const CATEGORY_LABELS: Record<string, string> = {
-  seasonal: 'Seasonal tips',
-  'how-to': 'How-to',
-  guides: 'Guide',
-  news: 'News',
-}
-
 export function LatestArticles({ posts }: { posts: Post[] }) {
   if (posts.length === 0) return null
   return (
     <Section id="articles" eyebrow="From the blog" title="Tips for every season">
       <ul className="grid gap-6 md:grid-cols-3">
         {posts.map((post) => (
-          <li
-            key={post.id}
-            className="flex flex-col overflow-hidden rounded-card border border-border bg-white"
-          >
-            <CmsImage
-              media={post.heroImage}
-              label={post.heroImageLabel}
-              ratio="16/9"
-              sizes="(min-width: 768px) 33vw, 100vw"
-              className="rounded-none"
-            />
-            <div className="flex flex-1 flex-col p-6">
-              <Badge tone={CATEGORY_TONES[post.category]} className="w-fit">
-                {CATEGORY_LABELS[post.category]}
-              </Badge>
-              <h3 className="mt-3 text-h3">
-                <Link
-                  href={routes.post(post.slug)}
-                  className="text-primary no-underline hover:underline"
-                >
-                  {post.title}
-                </Link>
-              </h3>
-              <p className="mt-2 text-muted">{post.excerpt}</p>
-              <p className="mt-auto pt-4 text-small text-muted">
-                <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-              </p>
-            </div>
+          <li key={post.id}>
+            <PostCard post={post} />
           </li>
         ))}
       </ul>

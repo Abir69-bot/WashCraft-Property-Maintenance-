@@ -40,7 +40,7 @@ production deploys stay blocked until each one is confirmed or replaced:
 | `insuranceCoverage`                | Insurance badge and compliance block                         |
 | `workersCompRegistration`          | Workers' comp badge (state workers' comp policy)             |
 | `licenceNumbers`                   | License list in the footer and commercial pages              |
-| `googlePlaceId`, `googleReviewUrl` | Live Google reviews and the "Leave us a review" button       |
+| `googlePlaceId`, `googleReviewUrl` | Daily Google rating and reviews, "Leave us a review" button  |
 | `responseTimePromise`              | "We reply within …" on forms and the thank-you page          |
 | `guarantee`                        | The satisfaction-guarantee band (your own wording)           |
 | `social.*`                         | Footer social icons                                          |
@@ -86,6 +86,7 @@ Hero Variants → the Holiday row → Image**. You can also change the season da
 - [ ] Yard & Exterior Care: Neat front yard with edged beds and a freshly stained fence
 - [ ] Commercial & HOA: Crew on a lift washing a three-story condo building
 - [ ] HOA & condo page: Crew washing the siding of a condo building while residents walk past
+- [ ] About page: The WashCraft crew in front of a freshly washed home
 
 **Service pages**
 
@@ -287,7 +288,25 @@ The starter text was written for you, but only you know your methods and policie
       thank-you page, and the confirmation email/text customers get (`src/lib/leads/messages.ts`).
       They promise only that you'll be in touch; add your reply time in Site settings to show it.
 
-## 7. Services to set up before launch
+## 7. Pages to fill in (Admin → Pages, Company)
+
+Each of these stays hidden until you add it; nothing has been made up for you.
+
+- [ ] **About → Our story:** how WashCraft started and who is behind it, in your own words.
+- [ ] **About → Community involvement:** local teams, causes or events you support.
+- [ ] **About → Downloadable certificates:** e.g. your certificate of insurance or a license, as
+      PDFs (upload to Media first). Only documents you are happy to publish.
+- [ ] **Careers → Benefits:** pay, schedule, equipment, training. Only what you actually offer.
+- [ ] **Team:** replace the four sample team members (Company → Team) with real people and
+      photos, and tick "Meet the founder" on yours. Then choose yourself as the author of each
+      blog post (the author box stays hidden until the author is a real team member).
+- [ ] **Job openings:** the two seeded roles are samples and never show on the live site. Add
+      real roles when you're hiring; with none, the careers page invites general applications.
+- [ ] **Legal pages:** the privacy policy, terms of use and accessibility statement describe how
+      this website actually works, but have them reviewed (ideally by a lawyer) before launch,
+      and update the "Last updated" dates when they change.
+
+## 8. Services to set up before launch
 
 Step-by-step instructions are in README.md → "Services setup". `pnpm check-config` blocks a
 production deploy until the first two are done.
@@ -299,13 +318,16 @@ production deploy until the first two are done.
       before texting customers.
 - [ ] **Cloudflare Turnstile** (recommended): invisible spam check on every form.
 - [ ] **Lead alerts** (admin → Site settings → Lead alerts): the phone numbers and email addresses
-      that should hear about new leads.
+      that should hear about new leads and job applications.
+- [ ] **Google reviews** (recommended): a Google Places API key (`GOOGLE_PLACES_API_KEY`), a
+      random `CRON_SECRET`, and your Place ID in Site settings. The site then copies your rating
+      and latest reviews once a day (README → "Google reviews").
 
-## 8. Infrastructure decisions
+## 9. Infrastructure decisions
 
 - [x] **Neon region.** Recreated in AWS US East 2 (Ohio).
 
-## 9. Local SEO setup (do once, keep name/address/phone identical everywhere)
+## 10. Local SEO setup (do once, keep name/address/phone identical everywhere)
 
 1. **Google Business Profile:** create or claim the profile at business.google.com. Use the
    exact business name, phone and address (or service areas) from section 1. Choose a primary

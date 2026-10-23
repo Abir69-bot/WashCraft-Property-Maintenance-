@@ -1,8 +1,9 @@
-import { ArrowRight, ExternalLink, Quote, Star } from 'lucide-react'
+import { ArrowRight, ExternalLink, Quote } from 'lucide-react'
 import Link from 'next/link'
 
 import { CmsImage } from '@/components/cms-image'
 import { SampleBadge } from '@/components/sample-badge'
+import { Stars } from '@/components/stars'
 import type { SiteConfig } from '@/config/site'
 import { routes } from '@/lib/routes'
 import { asMedia, mediaSrc } from '@/lib/view'
@@ -10,20 +11,6 @@ import type { City, GalleryItem, Service, Testimonial } from '@/payload-types'
 
 import { BeforeAfterSlider } from './before-after-slider'
 import { Section, type SectionTone } from './section'
-
-function Stars({ rating }: { rating: number }) {
-  return (
-    <span role="img" aria-label={`${rating} out of 5 stars`} className="flex gap-0.5">
-      {Array.from({ length: 5 }, (_, i) => (
-        <Star
-          key={i}
-          aria-hidden
-          className={`size-4 ${i < rating ? 'fill-cta text-cta' : 'text-border-strong'}`}
-        />
-      ))}
-    </span>
-  )
-}
 
 const nameOf = (value: number | City | Service | null | undefined) =>
   value && typeof value === 'object' ? ('name' in value ? value.name : value.title) : null
@@ -47,6 +34,20 @@ function Attribution({ testimonial }: { testimonial: Testimonial }) {
         </a>
       )}
     </footer>
+  )
+}
+
+/** A testimonial: stars, quote, who said it, and the source link for Google reviews. */
+export function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  return (
+    <figure className="h-full rounded-card border border-border bg-white p-6">
+      <div className="flex items-center justify-between gap-2">
+        <Stars rating={testimonial.rating} />
+        <SampleBadge show={testimonial.isSample} />
+      </div>
+      <blockquote className="mt-3">{testimonial.quote}</blockquote>
+      <Attribution testimonial={testimonial} />
+    </figure>
   )
 }
 
@@ -110,14 +111,7 @@ export function Testimonials({
         <ul className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {rest.map((testimonial) => (
             <li key={testimonial.id}>
-              <figure className="h-full rounded-card border border-border bg-white p-6">
-                <div className="flex items-center justify-between gap-2">
-                  <Stars rating={testimonial.rating} />
-                  <SampleBadge show={testimonial.isSample} />
-                </div>
-                <blockquote className="mt-3">{testimonial.quote}</blockquote>
-                <Attribution testimonial={testimonial} />
-              </figure>
+              <TestimonialCard testimonial={testimonial} />
             </li>
           ))}
         </ul>

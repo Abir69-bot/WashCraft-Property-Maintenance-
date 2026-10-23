@@ -12,6 +12,7 @@ import { posts, solutions } from '../src/seed/data/articles'
 import { categories } from '../src/seed/data/categories'
 import { cities } from '../src/seed/data/cities'
 import { commercialPages, homepage } from '../src/seed/data/globals'
+import { aboutPage } from '../src/seed/data/pages'
 import { discounts, plans, pricingRules } from '../src/seed/data/pricing'
 import {
   homeHeroImages,
@@ -50,6 +51,7 @@ const photos = [
   ...section('Category and commercial pages', [
     ...categories.map((category) => `${category.title}: ${category.heroImageLabel}`),
     `HOA & condo page: ${commercialPages.hoa.heroImageLabel}`,
+    `About page: ${aboutPage.heroImageLabel}`,
   ]),
   ...section(
     'Service pages',

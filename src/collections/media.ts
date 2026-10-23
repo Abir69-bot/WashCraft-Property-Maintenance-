@@ -25,7 +25,8 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    mimeTypes: ['image/*'],
+    // Photos, plus PDFs for public downloads such as certificates on the About page.
+    mimeTypes: ['image/*', 'application/pdf'],
     staticDir: path.resolve(process.cwd(), env.UPLOADS_DIR),
   },
 }

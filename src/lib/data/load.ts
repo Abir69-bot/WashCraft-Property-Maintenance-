@@ -1,5 +1,15 @@
 import { draftMode } from 'next/headers'
 
+import {
+  getJobPage,
+  getJobs,
+  getPostList,
+  getPostPage,
+  getSolutionList,
+  getSolutionPage,
+  getTeam,
+  getTeamMemberPage,
+} from './content'
 import { getLayoutData } from './layout'
 import { getCategoryPage, getCityPage, getServicePage } from './pages'
 
@@ -30,3 +40,19 @@ export async function loadCity(slug: string) {
   const known = layout.cities.some((city) => city.slug === slug)
   return { layout, page: known || draft ? await getCityPage(slug, draft) : null }
 }
+
+/** Content pages: the slug is checked against the cached listing first. */
+async function loadFrom<T>(
+  slug: string,
+  list: () => Promise<{ slug: string }[]>,
+  read: (slug: string, draft: boolean) => Promise<T | null>,
+) {
+  const { layout, draft } = await context()
+  const known = draft || (await list()).some((doc) => doc.slug === slug)
+  return { layout, page: known ? await read(slug, draft) : null }
+}
+
+export const loadPost = (slug: string) => loadFrom(slug, getPostList, getPostPage)
+export const loadSolution = (slug: string) => loadFrom(slug, getSolutionList, getSolutionPage)
+export const loadTeamMember = (slug: string) => loadFrom(slug, getTeam, getTeamMemberPage)
+export const loadJob = (slug: string) => loadFrom(slug, getJobs, getJobPage)

@@ -47,8 +47,9 @@ export function toSiteConfig(settings: SiteSetting, cityNames: string[]): SiteCo
     stats: {
       jobsCompleted: settings.stats?.jobsCompleted ?? null,
       happyClients: settings.stats?.happyClients ?? null,
-      rating: settings.stats?.rating ?? null,
-      reviewCount: settings.stats?.reviewCount ?? null,
+      // Google's own numbers (synced daily) win over anything typed in by hand.
+      rating: settings.googleRating ?? settings.stats?.rating ?? null,
+      reviewCount: settings.googleReviewCount ?? settings.stats?.reviewCount ?? null,
     },
     demo: (settings.demo ?? []) as DemoField[],
   }

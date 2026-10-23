@@ -1,35 +1,11 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import { site } from '../src/config/site'
 import { categories } from '../src/seed/data/categories'
 import { cities } from '../src/seed/data/cities'
 import { allServices } from '../src/seed/data/services'
 import { toSlug } from '../src/lib/text'
-import { expectAccessible, skipCookieBanner } from './helpers'
-
-const suffix = ` | ${site.shortName}`
-const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
-/** Status, one H1, title pattern, description, canonical URL, Open Graph and breadcrumbs. */
-async function expectTemplate(page: Page, path: string, heading: string) {
-  const response = await page.goto(path)
-  expect(response?.status(), path).toBe(200)
-  await expect(page.locator('h1')).toHaveCount(1)
-  await expect(page.locator('h1')).toHaveText(heading)
-  await expect(page).toHaveTitle(heading + suffix)
-  const description = await page.locator('meta[name="description"]').getAttribute('content')
-  expect(description?.length, `${path} description`).toBeGreaterThan(50)
-  expect(description!.length, `${path} description`).toBeLessThanOrEqual(160)
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-    'href',
-    new RegExp(`${escape(path)}$`),
-  )
-  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
-    'content',
-    heading + suffix,
-  )
-  await expect(page.getByRole('navigation', { name: 'Breadcrumb' })).toBeVisible()
-}
+import { expectAccessible, expectTemplate, skipCookieBanner } from './helpers'
 
 test.describe('every seeded page renders with correct metadata', () => {
   test.beforeEach(({ isMobile }) => {
