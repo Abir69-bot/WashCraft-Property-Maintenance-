@@ -16,7 +16,7 @@ export const CONTENT_TAG = 'content'
  * the cached page while it rebuilds, so a save never blocks the site. Pass
  * `context: { disableRevalidate: true }` to skip (bulk scripts).
  */
-function revalidateSite(context: RequestContext) {
+export function revalidateSite(context: RequestContext = {}) {
   if (context.disableRevalidate) return
   try {
     revalidateTag(CONTENT_TAG, 'max')

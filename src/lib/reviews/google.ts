@@ -101,7 +101,7 @@ export async function syncGoogleReviews({
 
   const place = await fetchPlace(placeId, apiKey, fetcher)
   const fetchedAt = now.toISOString()
-  // One cache refresh at the end (the settings update), not one per review.
+  // The caller refreshes the site cache once at the end, not once per review.
   const context = { disableRevalidate: true }
 
   const kept = new Set<string>()
@@ -135,7 +135,9 @@ export async function syncGoogleReviews({
 
   const rating = place.rating ?? null
   const count = place.userRatingCount ?? null
-  await payload.updateGlobal({
+  // Column-level write: the sync touches only its own fields, so it never fails over (or
+  // re-validates) anything else in Site settings.
+  await payload.db.updateGlobal({
     slug: 'site-settings',
     data: { googleRating: rating, googleReviewCount: count, googleSyncedAt: fetchedAt },
   })

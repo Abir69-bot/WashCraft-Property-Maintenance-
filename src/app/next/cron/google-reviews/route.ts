@@ -1,5 +1,6 @@
 import { timingSafeEqual } from 'crypto'
 
+import { revalidateSite } from '@/hooks/revalidate'
 import { getPayloadClient } from '@/lib/data/cache'
 import { env } from '@/lib/env'
 import { syncGoogleReviews } from '@/lib/reviews/google'
@@ -24,6 +25,7 @@ export async function GET(request: Request) {
       apiKey: env.GOOGLE_PLACES_API_KEY,
     })
     console.info('[google-reviews]', result)
+    if (result.status === 'synced') revalidateSite()
     return Response.json(result)
   } catch (error) {
     console.error('[google-reviews] sync failed', error)

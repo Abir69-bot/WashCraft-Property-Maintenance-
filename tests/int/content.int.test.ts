@@ -22,7 +22,7 @@ afterAll(async () => {
   await payload.delete({ collection: 'applications', where: { name: { equals: APPLICANT } } })
   await payload.delete({ collection: 'lead-files', where: { filename: { equals: 'cv.pdf' } } })
   await payload.delete({ collection: 'google-reviews', where: { id: { exists: true } } })
-  await payload.updateGlobal({
+  await payload.db.updateGlobal({
     slug: 'site-settings',
     data: {
       googlePlaceId: null,
@@ -101,14 +101,17 @@ describe('Google reviews sync', () => {
       status: 'skipped',
       reason: 'GOOGLE_PLACES_API_KEY is not set',
     })
-    await payload.updateGlobal({ slug: 'site-settings', data: { googlePlaceId: null } })
+    await payload.db.updateGlobal({ slug: 'site-settings', data: { googlePlaceId: null } })
     expect(await syncGoogleReviews({ payload, apiKey: 'key', fetcher: google({}) })).toMatchObject({
       status: 'skipped',
     })
   })
 
   it('copies the rating and reviews, keeps hidden ones and drops the rest', async () => {
-    await payload.updateGlobal({ slug: 'site-settings', data: { googlePlaceId: 'ChIJtest' } })
+    await payload.db.updateGlobal({
+      slug: 'site-settings',
+      data: { googlePlaceId: 'ChIJtest' },
+    })
     const first = await syncGoogleReviews({
       payload,
       apiKey: 'key',
