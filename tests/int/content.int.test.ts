@@ -8,6 +8,7 @@ import { syncGoogleReviews, type PlaceResponse } from '@/lib/reviews/google'
 import { privateStore } from '@/lib/storage'
 import { migrations } from '@/migrations'
 import config from '@/payload.config'
+import { seed } from '@/seed/seed'
 
 let payload: Payload
 const APPLICANT = 'Integration Applicant'
@@ -16,6 +17,9 @@ const PDF = new TextEncoder().encode('%PDF-1.4\n%test résumé\n')
 beforeAll(async () => {
   payload = await getPayload({ config })
   await payload.db.migrate({ migrations: migrations as unknown as Migration[] })
+  // Site settings must exist (with their required fields) before the Google sync can update
+  // them. The seed is idempotent, so the test files can run in any order.
+  await seed(payload, { log: () => {} })
 }, 300_000)
 
 afterAll(async () => {
