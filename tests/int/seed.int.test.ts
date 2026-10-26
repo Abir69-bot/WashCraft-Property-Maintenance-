@@ -12,9 +12,11 @@ import { publicRead } from '@/access/public-read'
 import { site } from '@/config/site'
 import { migrations } from '@/migrations'
 import config from '@/payload.config'
+import type { Media } from '@/payload-types'
 import { faqs } from '@/seed/data/faqs'
 import { commercialPages } from '@/seed/data/globals'
 import { gallery, mediaFiles } from '@/seed/data/media'
+import { sampleClientLogos } from '@/seed/data/samples'
 import { allServices, seed } from '@/seed/seed'
 
 let payload: Payload
@@ -133,10 +135,18 @@ describe('seed', () => {
     )
   })
 
-  it("uploads the owner's photos and fills empty photo slots", async () => {
+  it("uploads the owner's photos and the sample logos, and fills empty photo slots", async () => {
     expect((await payload.count({ collection: 'media' })).totalDocs).toBe(
-      Object.keys(mediaFiles).length,
+      Object.keys(mediaFiles).length + sampleClientLogos.length,
     )
+    const logos = await payload.find({ collection: 'client-logos', depth: 1, pagination: false })
+    expect(logos.docs.every((client) => (client.logo as Media | null)?.filename)).toBe(true)
+    const featured = await payload.find({
+      collection: 'testimonials',
+      where: { featured: { equals: true } },
+      depth: 1,
+    })
+    expect(featured.docs[0].photo).toMatchObject({ filename: 'siding-after.jpg' })
     const { docs } = await payload.find({
       collection: 'services',
       where: { slug: { equals: 'gutter-cleaning' } },

@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { FilteredList } from '@/components/filtered-list'
 import { FinalCta } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
+import { SampleBadge } from '@/components/sample-badge'
 import { TestimonialCard } from '@/components/sections/proof'
 import { Section } from '@/components/sections/section'
 import { Stars } from '@/components/stars'
@@ -11,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import type { SiteConfig } from '@/config/site'
 import { getReviews } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
+import { shownRating } from '@/lib/proof'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { formatDate } from '@/lib/view'
@@ -82,7 +84,7 @@ function GoogleReviewCard({ review }: { review: GoogleReview }) {
  */
 export default async function ReviewsPage() {
   const [{ site }, { testimonials, google }] = await Promise.all([getLayoutData(), getReviews()])
-  const { rating, reviewCount } = site.stats
+  const rated = shownRating(site)
   const serviceOf = (value: number | Service | null | undefined) =>
     value && typeof value === 'object' ? value : null
   const services = [
@@ -113,10 +115,11 @@ export default async function ReviewsPage() {
         eyebrow="Reviews"
         title={title(site.region)}
         intro={
-          rating && reviewCount ? (
+          rated ? (
             <p className="flex flex-wrap items-center gap-2 font-semibold text-ink">
-              <Stars rating={Math.round(rating)} /> {rating.toFixed(1)} out of 5 from {reviewCount}{' '}
-              Google reviews
+              <Stars rating={Math.round(rated.rating)} /> {rated.rating.toFixed(1)} out of 5 from{' '}
+              {rated.reviewCount} Google reviews
+              <SampleBadge show={rated.sample} />
             </p>
           ) : (
             intro

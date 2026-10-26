@@ -146,10 +146,8 @@ export async function seed(
     demo: site.demo,
   })
 
-  // The owner's job photos (src/seed/media), matched by file name.
-  const mediaIds = new Map<MediaKey, number>()
-  for (const [key, alt] of Object.entries(mediaFiles) as [MediaKey, string][]) {
-    const filename = `${key}.jpg`
+  /** Uploads a file from src/seed/media once, matched by file name. Returns its id. */
+  async function seedMedia(filename: string, alt: string): Promise<number> {
     const existing = await payload.find({
       collection: 'media',
       where: { filename: { equals: filename } },
@@ -157,9 +155,8 @@ export async function seed(
       depth: 0,
     })
     if (existing.docs[0]) {
-      mediaIds.set(key, existing.docs[0].id)
       tally('media', 'skipped')
-      continue
+      return existing.docs[0].id
     }
     const created = await payload.create({
       collection: 'media',
@@ -167,8 +164,14 @@ export async function seed(
       filePath: path.resolve(process.cwd(), 'src/seed/media', filename),
       depth: 0,
     })
-    mediaIds.set(key, created.id)
     tally('media', 'created')
+    return created.id
+  }
+
+  // The owner's job photos.
+  const mediaIds = new Map<MediaKey, number>()
+  for (const [key, alt] of Object.entries(mediaFiles) as [MediaKey, string][]) {
+    mediaIds.set(key, await seedMedia(`${key}.jpg`, alt))
   }
   const mediaId = (key: MediaKey) => mediaIds.get(key)!
 
@@ -393,6 +396,7 @@ export async function seed(
         service: idsFor(serviceIds, [testimonial.service])[0],
         city: optionalCity(testimonial.city),
         featured: testimonial.featured ?? false,
+        photo: testimonial.photo && mediaId(testimonial.photo),
         isSample: true,
         order: (index + 1) * 10,
       },
@@ -416,12 +420,13 @@ export async function seed(
     )
   }
 
-  for (const [index, name] of sampleClientLogos.entries()) {
+  for (const [index, client] of sampleClientLogos.entries()) {
     await upsert(
       'client-logos',
-      { name: { equals: name } },
+      { name: { equals: client.name } },
       {
-        name,
+        name: client.name,
+        logo: await seedMedia(client.logo, `${client.name} logo`),
         isSample: true,
         order: (index + 1) * 10,
       },

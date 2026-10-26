@@ -85,6 +85,18 @@ export const site: SiteConfig = {
   demo: ['tagline', 'phone', 'email', 'address', 'hours', 'region', 'serviceAreas'],
 }
 
+/**
+ * Sample proof (brief §3.2), so the rating badge, trust strip and guarantee band can be checked
+ * in development and preview before the owner has real ones. Used only while the real value is
+ * unset, always with a "Sample" badge, and never on the live site (`lib/proof.ts`).
+ */
+export const sampleProof = {
+  rating: 4.9,
+  reviewCount: 48,
+  guarantee:
+    'Sample guarantee. If any part of the job isn’t right, tell us within 7 days and we’ll come back to fix it. Write your own wording in Site settings.',
+} as const
+
 export function isPlaceholder(value: unknown): value is Placeholder {
   return typeof value === 'string' && /^\[.+\]$/.test(value.trim())
 }

@@ -28,6 +28,7 @@ import type { HOME_SECTIONS } from '@/globals/settings'
 import { getHomeData } from '@/lib/data/home'
 import { getLayoutData } from '@/lib/data/layout'
 import { seasonNow } from '@/lib/data/season'
+import { shownGuarantee } from '@/lib/proof'
 import { inSeasonNow } from '@/lib/seasons'
 import { fillTokens } from '@/lib/text'
 import { asMedia, mediaSrc, serviceGroups } from '@/lib/view'
@@ -87,7 +88,7 @@ export default async function HomePage() {
       <HowItWorks steps={home.homepage.howItWorks} upsell={home.homepage.recurringUpsell} />
     ),
     'before-after': <BeforeAfter items={home.gallery} />,
-    guarantee: <GuaranteeBand guarantee={site.guarantee} />,
+    guarantee: <GuaranteeBand guarantee={shownGuarantee(site)} />,
     'need-us-now': <NeedUsNow phone={site.phone} />,
     testimonials: <Testimonials testimonials={home.testimonials} site={site} />,
     'why-choose-us': <WhyChooseUs cards={home.homepage.whyChooseUs} region={region} />,

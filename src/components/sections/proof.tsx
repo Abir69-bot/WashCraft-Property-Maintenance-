@@ -5,6 +5,7 @@ import { CmsImage } from '@/components/cms-image'
 import { SampleBadge } from '@/components/sample-badge'
 import { Stars } from '@/components/stars'
 import type { SiteConfig } from '@/config/site'
+import { shownRating } from '@/lib/proof'
 import { routes } from '@/lib/routes'
 import { asMedia, mediaSrc } from '@/lib/view'
 import type { City, GalleryItem, Service, Testimonial } from '@/payload-types'
@@ -37,16 +38,27 @@ function Attribution({ testimonial }: { testimonial: Testimonial }) {
   )
 }
 
-/** A testimonial: stars, quote, who said it, and the source link for Google reviews. */
+/** A testimonial: its photo if any, stars, quote, who said it, and the Google source link. */
 export function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  const photo = asMedia(testimonial.photo)
   return (
-    <figure className="h-full rounded-card border border-border bg-white p-6">
-      <div className="flex items-center justify-between gap-2">
-        <Stars rating={testimonial.rating} />
-        <SampleBadge show={testimonial.isSample} />
+    <figure className="h-full overflow-hidden rounded-card border border-border bg-white">
+      {photo && (
+        <CmsImage
+          media={photo}
+          ratio="16/9"
+          sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+          className="rounded-none"
+        />
+      )}
+      <div className="p-6">
+        <div className="flex items-center justify-between gap-2">
+          <Stars rating={testimonial.rating} />
+          <SampleBadge show={testimonial.isSample} />
+        </div>
+        <blockquote className="mt-3">{testimonial.quote}</blockquote>
+        <Attribution testimonial={testimonial} />
       </div>
-      <blockquote className="mt-3">{testimonial.quote}</blockquote>
-      <Attribution testimonial={testimonial} />
     </figure>
   )
 }
@@ -62,7 +74,7 @@ export function Testimonials({
   if (testimonials.length === 0) return null
   const featured = testimonials.find((item) => item.featured) ?? testimonials[0]
   const rest = testimonials.filter((item) => item.id !== featured.id).slice(0, 6)
-  const { rating, reviewCount } = site.stats
+  const rated = shownRating(site)
 
   return (
     <Section
@@ -71,10 +83,11 @@ export function Testimonials({
       eyebrow="Reviews"
       title="What customers say"
       intro={
-        rating && reviewCount ? (
+        rated ? (
           <p className="flex flex-wrap items-center gap-2 font-semibold text-ink">
-            <Stars rating={Math.round(rating)} /> {rating.toFixed(1)} from {reviewCount} Google
-            reviews
+            <Stars rating={Math.round(rated.rating)} /> {rated.rating.toFixed(1)} from{' '}
+            {rated.reviewCount} Google reviews
+            <SampleBadge show={rated.sample} />
             {site.googleReviewUrl && (
               <a
                 href={site.googleReviewUrl}

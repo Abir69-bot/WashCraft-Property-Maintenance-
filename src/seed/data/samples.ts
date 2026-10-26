@@ -4,13 +4,25 @@
  * live site. Replace with real content before launch.
  */
 
-export const sampleTestimonials = [
+import type { MediaKey } from './media'
+
+/** Photos are the owner's real job photos of the service each sample is about. */
+export const sampleTestimonials: {
+  name: string
+  city: string
+  service: string
+  rating: number
+  featured?: boolean
+  photo?: MediaKey
+  quote: string
+}[] = [
   {
     name: 'Sample customer, Maria G.',
     city: 'Aurora',
     service: 'house-washing',
     rating: 5,
     featured: true,
+    photo: 'siding-after',
     quote:
       'The crew showed up when they said, protected every plant and left the house looking freshly painted. The black streaks under the gutters are gone too.',
   },
@@ -19,6 +31,7 @@ export const sampleTestimonials = [
     city: 'Denver',
     service: 'gutter-cleaning',
     rating: 5,
+    photo: 'gutter-2-after',
     quote:
       'Before and after photos of every gutter, plus a heads-up about a loose downspout. Very thorough.',
   },
@@ -27,6 +40,7 @@ export const sampleTestimonials = [
     city: 'Centennial',
     service: 'window-cleaning',
     rating: 5,
+    photo: 'window-cleaning-pole',
     quote:
       'Our second-story windows haven’t been this clear since we moved in. No streaks anywhere.',
   },
@@ -96,13 +110,14 @@ export const sampleTeam = [
   },
 ]
 
+/** Generic logos drawn for the demo (src/seed/media/sample-logo-*.png), not real companies. */
 export const sampleClientLogos = [
-  'Sample Property Group',
-  'Sample HOA Community',
-  'Sample Retail Plaza',
-  'Sample Office Park',
-  'Sample Condo Association',
-  'Sample Townhome Village',
+  { name: 'Sample Property Group', logo: 'sample-logo-property-group.png' },
+  { name: 'Sample HOA Community', logo: 'sample-logo-hoa-community.png' },
+  { name: 'Sample Retail Plaza', logo: 'sample-logo-retail-plaza.png' },
+  { name: 'Sample Office Park', logo: 'sample-logo-office-park.png' },
+  { name: 'Sample Condo Association', logo: 'sample-logo-condo-association.png' },
+  { name: 'Sample Townhome Village', logo: 'sample-logo-townhome-village.png' },
 ]
 
 export const sampleJobs = [

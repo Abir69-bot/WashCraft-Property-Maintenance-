@@ -2,9 +2,11 @@ import { Star } from 'lucide-react'
 import Link from 'next/link'
 
 import { CallLink } from '@/components/layout/contact-links'
+import { SampleBadge } from '@/components/sample-badge'
 import { Button } from '@/components/ui/button'
 import { PhotoPlaceholder } from '@/components/ui/photo-placeholder'
 import type { SiteConfig } from '@/config/site'
+import { shownRating } from '@/lib/proof'
 import { fillTokens, telHref } from '@/lib/text'
 import type { Homepage } from '@/payload-types'
 
@@ -31,17 +33,18 @@ export function Hero({
   site: SiteConfig
   images: HeroImage[]
 }) {
-  const { rating, reviewCount } = site.stats
+  const rated = shownRating(site)
   const points = proofPoints(site)
 
   return (
     <section aria-labelledby="hero-heading" className="overflow-hidden bg-surface">
       <div className="container grid items-center gap-10 py-12 lg:grid-cols-[1.05fr_1fr] lg:py-20">
         <div>
-          {rating && reviewCount ? (
+          {rated ? (
             <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-small font-semibold shadow-sm">
               <Star aria-hidden className="size-4 fill-cta text-cta" />
-              {rating.toFixed(1)} from {reviewCount} reviews
+              {rated.rating.toFixed(1)} from {rated.reviewCount} reviews
+              <SampleBadge show={rated.sample} />
             </p>
           ) : (
             variant.eyebrow && (

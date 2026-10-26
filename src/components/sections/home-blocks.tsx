@@ -7,6 +7,7 @@ import {
   ClipboardList,
   Sparkles,
 } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { TONE_BORDER } from '@/components/category-tone'
@@ -22,9 +23,11 @@ import { SEASON_LABELS, type Season } from '@/config/catalog'
 import type { SiteConfig } from '@/config/site'
 import type { NavCategory, NavService } from '@/lib/data/layout'
 import { planPrice } from '@/lib/pricing/plans'
+import { shownGuarantee, shownRating, type ShownGuarantee } from '@/lib/proof'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { fillTokens, smsHref, telHref } from '@/lib/text'
+import { asMedia, mediaSrc } from '@/lib/view'
 import type { ClientLogo, Homepage, Plan, Post, TeamMember } from '@/payload-types'
 
 import { PostCard } from './article'
@@ -54,6 +57,7 @@ export function QuickQuoteStrip({
   )
 }
 
+/** Client logos in a marquee (brief §9.1.3); the name stands in for a missing logo file. */
 export function ClientLogos({ logos }: { logos: ClientLogo[] }) {
   if (logos.length === 0) return null
   return (
@@ -68,15 +72,29 @@ export function ClientLogos({ logos }: { logos: ClientLogo[] }) {
             aria-hidden={copy === 1}
             className="flex shrink-0 animate-marquee items-center gap-12 pr-12 group-hover:[animation-play-state:paused] motion-reduce:animate-none"
           >
-            {logos.map((logo) => (
-              <li
-                key={logo.id}
-                className="flex items-center gap-2 font-heading font-bold whitespace-nowrap text-muted"
-              >
-                {logo.name}
-                <SampleBadge show={logo.isSample} />
-              </li>
-            ))}
+            {logos.map((client) => {
+              const logo = asMedia(client.logo)
+              return (
+                <li
+                  key={client.id}
+                  className="flex items-center gap-2 font-heading font-bold whitespace-nowrap text-muted"
+                >
+                  {logo?.width && logo.height ? (
+                    <Image
+                      src={mediaSrc(logo)}
+                      alt={client.name}
+                      width={logo.width}
+                      height={logo.height}
+                      sizes="240px"
+                      className="h-10 w-auto opacity-80 grayscale"
+                    />
+                  ) : (
+                    client.name
+                  )}
+                  <SampleBadge show={client.isSample} />
+                </li>
+              )
+            })}
           </ul>
         ))}
       </div>
@@ -86,24 +104,28 @@ export function ClientLogos({ logos }: { logos: ClientLogo[] }) {
 
 /** Up to four checkmarks, each only when site settings back it up (brief §9.1.4, §9.3.8). */
 export function TrustStrip({ site }: { site: SiteConfig }) {
+  const guarantee = shownGuarantee(site)
+  const rated = shownRating(site)
   const items = [
-    site.insuranceCoverage && `Insured: ${site.insuranceCoverage}`,
-    site.workersCompRegistration && 'Workers’ comp registered',
-    site.licenceNumbers.length > 0 && 'Licensed',
-    site.guarantee && 'Satisfaction guarantee',
-    site.responseTimePromise && `Replies ${site.responseTimePromise}`,
-    site.stats.rating &&
-      site.stats.reviewCount &&
-      `${site.stats.rating.toFixed(1)}★ from ${site.stats.reviewCount} reviews`,
-  ].filter(Boolean) as string[]
+    site.insuranceCoverage && { label: `Insured: ${site.insuranceCoverage}` },
+    site.workersCompRegistration && { label: 'Workers’ comp registered' },
+    site.licenceNumbers.length > 0 && { label: 'Licensed' },
+    guarantee && { label: 'Satisfaction guarantee', sample: guarantee.sample },
+    site.responseTimePromise && { label: `Replies ${site.responseTimePromise}` },
+    rated && {
+      label: `${rated.rating.toFixed(1)}★ from ${rated.reviewCount} reviews`,
+      sample: rated.sample,
+    },
+  ].filter(Boolean) as { label: string; sample?: boolean }[]
   if (items.length === 0) return null
   return (
     <section aria-label="Why customers trust us" className="bg-surface">
       <ul className="container grid gap-4 py-6 sm:grid-cols-2 lg:grid-cols-4">
         {items.slice(0, 4).map((item) => (
-          <li key={item} className="flex items-center gap-2 font-semibold text-ink">
+          <li key={item.label} className="flex items-center gap-2 font-semibold text-ink">
             <BadgeCheck aria-hidden className="size-6 shrink-0 text-success-strong" />
-            {item}
+            {item.label}
+            <SampleBadge show={item.sample} />
           </li>
         ))}
       </ul>
@@ -239,17 +261,17 @@ export function HowItWorks({
   )
 }
 
-export function GuaranteeBand({ guarantee }: { guarantee: string | null }) {
+export function GuaranteeBand({ guarantee }: { guarantee: ShownGuarantee }) {
   if (!guarantee) return null
   return (
     <section aria-labelledby="guarantee-heading" className="bg-success-strong text-white">
       <div className="container flex flex-col items-start gap-3 py-10 md:flex-row md:items-center md:gap-6">
         <BadgeCheck aria-hidden className="size-12 shrink-0" />
         <div>
-          <h2 id="guarantee-heading" className="text-h3 text-white">
-            Our guarantee
+          <h2 id="guarantee-heading" className="flex items-center gap-3 text-h3 text-white">
+            Our guarantee <SampleBadge show={guarantee.sample} />
           </h2>
-          <p className="mt-1 text-white">{guarantee}</p>
+          <p className="mt-1 text-white">{guarantee.text}</p>
         </div>
       </div>
     </section>

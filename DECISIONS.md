@@ -600,3 +600,21 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
   header menu (Radix), the quick quote form (React Hook Form) and small widgets. Zod, the mobile
   menu, the slide-in panel, the map and the 404 index already load only when used. Getting under
   150 KB would mean dropping React Hook Form or Radix from the quick quote form and header.
+
+### Sample proof (2026-10-26)
+
+- **Demo data for the empty proof sections, at the owner's request.** The rating badge, trust
+  strip and guarantee band had nothing to show, so they couldn't be reviewed. A sample rating
+  (4.9 from 48 reviews) and a sample guarantee are now constants in code (`sampleProof` in
+  `config/site.ts`), not settings, so they can't be mistaken for real facts or saved as them.
+  `lib/proof.ts` uses them only while the real value is unset and never on the live site, and
+  every place that shows them adds the "Sample" badge. Real values (Google, Site settings) always
+  win.
+- **Sample client logos are drawn for the demo**, not borrowed: six generic marks with "Sample …"
+  names (`src/seed/media/sample-logo-*.png`). The marquee shows a client's logo file, or its name
+  when there is none.
+- **Testimonial cards show the testimonial's photo** when it has one. Three samples, including
+  the featured one, use the owner's own job photos of the service they describe; no photos of
+  people are used.
+- Neon `dev` was patched with a one-off script for the logos and photos, because the seed never
+  overwrites existing documents.
