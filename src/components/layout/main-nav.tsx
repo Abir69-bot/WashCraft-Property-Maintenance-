@@ -98,11 +98,17 @@ export function MainNav({
   const commercial = categories.find((category) => category.slug === 'commercial')
 
   return (
-    <NavigationMenu.Root aria-label="Main" className="hidden lg:block">
+    // Radix wraps the list in a `position: relative` div, which would make the Services panel
+    // only as wide as the menu triggers. Making it static lets the panel span the header row
+    // (header.tsx), while the other panels stay under their own `relative` items.
+    <NavigationMenu.Root aria-label="Main" className="hidden lg:block [&>div]:static!">
       <NavigationMenu.List className="flex items-center gap-1">
         <NavigationMenu.Item>
           <Trigger>Services</Trigger>
-          <NavigationMenu.Content className={cn(panelClass, 'right-0 left-0')}>
+          {/* The header is sticky, so a panel taller than the screen scrolls inside itself. */}
+          <NavigationMenu.Content
+            className={cn(panelClass, 'inset-x-6 max-h-[calc(100dvh-12rem)] overflow-y-auto')}
+          >
             <div className="grid grid-cols-[repeat(3,minmax(0,1fr))_17rem] gap-x-6 gap-y-5">
               {categories.map((category) => (
                 <div key={category.id}>
@@ -133,7 +139,7 @@ export function MainNav({
                 </div>
               ))}
               {featured && (
-                <div className="row-span-2 flex flex-col rounded-card bg-surface p-5">
+                <div className="col-start-4 row-span-2 row-start-1 flex flex-col rounded-card bg-surface p-5">
                   {featured.eyebrow && (
                     <p className="text-small font-semibold tracking-wide text-secondary-strong uppercase">
                       {featured.eyebrow}

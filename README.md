@@ -107,6 +107,10 @@ nothing and the reviews page shows your own testimonials only.
 
 ## Working with leads (admin)
 
+- **Dashboard** (the first screen after signing in): shortcuts to everyday jobs, the leads waiting
+  for a reply and the latest requests, and a "Before you go live" checklist with the database
+  size. Rearrange, resize or remove the boxes from the **Dashboard** menu at the top; **View
+  website** (top right) opens the live site.
 - **Leads** lists every request, newest first. Change a status straight from the list; open a
   lead for its answers, estimate, notes, consent and where the visitor came from.
 - **Photos and documents** are under each lead (and in **Lead files**). Open one and click

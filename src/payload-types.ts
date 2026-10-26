@@ -67,6 +67,9 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    leads: Lead;
+    applications: Application;
+    'lead-files': LeadFile;
     services: Service;
     'service-categories': ServiceCategory;
     'pricing-rules': PricingRule;
@@ -84,9 +87,6 @@ export interface Config {
     'team-members': TeamMember;
     'job-openings': JobOpening;
     media: Media;
-    leads: Lead;
-    applications: Application;
-    'lead-files': LeadFile;
     users: User;
     redirects: Redirect;
     exports: Export;
@@ -99,6 +99,9 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    leads: LeadsSelect<false> | LeadsSelect<true>;
+    applications: ApplicationsSelect<false> | ApplicationsSelect<true>;
+    'lead-files': LeadFilesSelect<false> | LeadFilesSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     'service-categories': ServiceCategoriesSelect<false> | ServiceCategoriesSelect<true>;
     'pricing-rules': PricingRulesSelect<false> | PricingRulesSelect<true>;
@@ -116,9 +119,6 @@ export interface Config {
     'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     'job-openings': JobOpeningsSelect<false> | JobOpeningsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    leads: LeadsSelect<false> | LeadsSelect<true>;
-    applications: ApplicationsSelect<false> | ApplicationsSelect<true>;
-    'lead-files': LeadFilesSelect<false> | LeadFilesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
@@ -161,6 +161,9 @@ export interface Config {
   };
   locale: null;
   widgets: {
+    welcome: WelcomeWidget;
+    leads: LeadsWidget;
+    'go-live': GoLiveWidget;
     collections: CollectionsWidget;
   };
   user: User;
@@ -193,6 +196,218 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  name: string;
+  phone: string;
+  email?: string | null;
+  address?: string | null;
+  postalCode?: string | null;
+  cityName?: string | null;
+  city?: (number | null) | City;
+  propertyType?: ('house' | 'townhouse' | 'condo' | 'commercial') | null;
+  frequency?: ('one-time' | 'twice-yearly' | 'quarterly' | 'monthly') | null;
+  services?: (number | Service)[] | null;
+  plan?: (number | null) | Plan;
+  lineItems?:
+    | {
+        service?: (number | null) | Service;
+        serviceName?: string | null;
+        answers?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        priceLow?: number | null;
+        priceHigh?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  totalLow?: number | null;
+  totalHigh?: number | null;
+  preferredDates?: string | null;
+  notes?: string | null;
+  /**
+   * Answers specific to the form used (snow contract, holiday lights, ...).
+   */
+  details?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  files?: (number | LeadFile)[] | null;
+  consent?: boolean | null;
+  consentAt?: string | null;
+  consentText?: string | null;
+  utm?: {
+    source?: string | null;
+    medium?: string | null;
+    campaign?: string | null;
+    term?: string | null;
+    content?: string | null;
+  };
+  referrer?: string | null;
+  landingPage?: string | null;
+  device?: string | null;
+  notificationStatus?: ('pending' | 'sent' | 'partial' | 'failed') | null;
+  notificationLog?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  reviewRequestedAt?: string | null;
+  type:
+    | 'quick'
+    | 'instant'
+    | 'custom'
+    | 'snow_contract'
+    | 'holiday_lights'
+    | 'junk'
+    | 'commercial_bid'
+    | 'subscription'
+    | 'contact';
+  status: 'new' | 'estimate_viewed' | 'booking_requested' | 'contacted' | 'quoted' | 'booked' | 'won' | 'lost';
+  /**
+   * The customer asked for a call after seeing the estimate.
+   */
+  callbackRequested?: boolean | null;
+  /**
+   * ZIP code outside your cities.
+   */
+  outOfArea?: boolean | null;
+  assignedTo?: (number | null) | User;
+  internalNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Each city you serve gets a landing page at /areas/<slug>.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cities".
+ */
+export interface City {
+  id: number;
+  name: string;
+  /**
+   * Write this for this city only: what homes and weather are like, and how you help.
+   */
+  intro: string;
+  heroImage?: (number | null) | Media;
+  /**
+   * What the photo should show. Displayed until a real photo is uploaded.
+   */
+  heroImageLabel?: string | null;
+  neighborhoods?:
+    | {
+        name: string;
+        blurb: string;
+        image?: (number | null) | Media;
+        /**
+         * What the photo should show. Displayed until a real photo is uploaded.
+         */
+        imageLabel?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Facts like average snowfall, each with its source. Never estimate: leave empty if unsure.
+   */
+  localStats?:
+    | {
+        label: string;
+        value: string;
+        sourceName: string;
+        sourceUrl: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional local angle for the "Why choose us" section.
+   */
+  whyChooseUs?: string | null;
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * e.g. CO
+   */
+  state: string;
+  /**
+   * Full ZIP codes or prefixes (e.g. 802) used by the "Do you serve my area?" checker.
+   */
+  zipPrefixes?: string[] | null;
+  lat: number;
+  lng: number;
+  /**
+   * Services that get a page at /areas/<city>/<service>. Needs the "City service pages" feature flag.
+   */
+  servicePages?: (number | Service)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Describe the photo for screen-reader users, e.g. "Clean cedar deck after washing".
+   */
+  alt: string;
+  prefix?: string | null;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * Each service has its own page at /services/<slug>. Write {region} to insert your service region.
@@ -384,30 +599,6 @@ export interface Service {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * Describe the photo for screen-reader users, e.g. "Clean cedar deck after washing".
-   */
-  alt: string;
-  prefix?: string | null;
-  _objectKey?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * Problem-and-fix pages at /solutions/<slug>, e.g. "Ice dam prevention". Write {region} to insert your service region.
@@ -692,6 +883,172 @@ export interface ServiceCategory {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Maintenance plans and seasonal packages on /maintenance-plans.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "plans".
+ */
+export interface Plan {
+  id: number;
+  name: string;
+  kind: 'tier' | 'package';
+  season?: ('all-year' | 'spring' | 'summer' | 'fall' | 'winter' | 'holiday') | null;
+  tagline: string;
+  /**
+   * Blank shows "Custom quote".
+   */
+  price?: number | null;
+  /**
+   * e.g. "per year"
+   */
+  priceUnit?: string | null;
+  features: {
+    text: string;
+    id?: string | null;
+  }[];
+  /**
+   * Pre-selected in the instant-price wizard.
+   */
+  services?: (number | Service)[] | null;
+  highlighted?: boolean | null;
+  /**
+   * Placeholder numbers. While ticked, the live site shows "Request a quote" instead of a price.
+   */
+  needsReview?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Photos and documents customers sent with their requests. Staff only.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lead-files".
+ */
+export interface LeadFile {
+  id: number;
+  filename: string;
+  mimeType: string;
+  size: number;
+  /**
+   * Where the file is kept in private storage.
+   */
+  key: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name?: string | null;
+  /**
+   * Owners manage users, pricing and settings. Staff work leads.
+   */
+  role: 'owner' | 'staff';
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "applications".
+ */
+export interface Application {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  jobOpening?: (number | null) | JobOpening;
+  resume?: (number | null) | LeadFile;
+  message?: string | null;
+  consent?: boolean | null;
+  status?: ('new' | 'reviewing' | 'interview' | 'hired' | 'declined') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Open roles at /careers/<slug>. Untick "Accepting applications" to close one.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "job-openings".
+ */
+export interface JobOpening {
+  id: number;
+  title: string;
+  summary: string;
+  location: string;
+  /**
+   * e.g. "$20–$24/hour". Leave blank to hide.
+   */
+  payRange?: string | null;
+  responsibilities?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  requirements?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  niceToHave?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  employmentType: 'full-time' | 'part-time' | 'seasonal';
+  active?: boolean | null;
+  /**
+   * Samples show a "Sample" badge in development and preview, and never appear on the live site.
+   */
+  isSample?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * How the instant-price wizard prices each service. Only owners can change these.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -757,134 +1114,6 @@ export interface Discount {
   needsReview?: boolean | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * Maintenance plans and seasonal packages on /maintenance-plans.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "plans".
- */
-export interface Plan {
-  id: number;
-  name: string;
-  kind: 'tier' | 'package';
-  season?: ('all-year' | 'spring' | 'summer' | 'fall' | 'winter' | 'holiday') | null;
-  tagline: string;
-  /**
-   * Blank shows "Custom quote".
-   */
-  price?: number | null;
-  /**
-   * e.g. "per year"
-   */
-  priceUnit?: string | null;
-  features: {
-    text: string;
-    id?: string | null;
-  }[];
-  /**
-   * Pre-selected in the instant-price wizard.
-   */
-  services?: (number | Service)[] | null;
-  highlighted?: boolean | null;
-  /**
-   * Placeholder numbers. While ticked, the live site shows "Request a quote" instead of a price.
-   */
-  needsReview?: boolean | null;
-  /**
-   * Lower numbers appear first.
-   */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Each city you serve gets a landing page at /areas/<slug>.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cities".
- */
-export interface City {
-  id: number;
-  name: string;
-  /**
-   * Write this for this city only: what homes and weather are like, and how you help.
-   */
-  intro: string;
-  heroImage?: (number | null) | Media;
-  /**
-   * What the photo should show. Displayed until a real photo is uploaded.
-   */
-  heroImageLabel?: string | null;
-  neighborhoods?:
-    | {
-        name: string;
-        blurb: string;
-        image?: (number | null) | Media;
-        /**
-         * What the photo should show. Displayed until a real photo is uploaded.
-         */
-        imageLabel?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Facts like average snowfall, each with its source. Never estimate: leave empty if unsure.
-   */
-  localStats?:
-    | {
-        label: string;
-        value: string;
-        sourceName: string;
-        sourceUrl: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Optional local angle for the "Why choose us" section.
-   */
-  whyChooseUs?: string | null;
-  faqs?:
-    | {
-        question: string;
-        answer: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * e.g. CO
-   */
-  state: string;
-  /**
-   * Full ZIP codes or prefixes (e.g. 802) used by the "Do you serve my area?" checker.
-   */
-  zipPrefixes?: string[] | null;
-  lat: number;
-  lng: number;
-  /**
-   * Services that get a page at /areas/<city>/<service>. Needs the "City service pages" feature flag.
-   */
-  servicePages?: (number | Service)[] | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  /**
-   * Lower numbers appear first.
-   */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * Questions for the FAQ page, category hubs and the home page. Service pages have their own FAQs. Write {region} to insert your service region.
@@ -1065,232 +1294,6 @@ export interface CaseStudy {
    * Lower numbers appear first.
    */
   order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Open roles at /careers/<slug>. Untick "Accepting applications" to close one.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "job-openings".
- */
-export interface JobOpening {
-  id: number;
-  title: string;
-  summary: string;
-  location: string;
-  /**
-   * e.g. "$20–$24/hour". Leave blank to hide.
-   */
-  payRange?: string | null;
-  responsibilities?:
-    | {
-        text: string;
-        id?: string | null;
-      }[]
-    | null;
-  requirements?:
-    | {
-        text: string;
-        id?: string | null;
-      }[]
-    | null;
-  niceToHave?:
-    | {
-        text: string;
-        id?: string | null;
-      }[]
-    | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  employmentType: 'full-time' | 'part-time' | 'seasonal';
-  active?: boolean | null;
-  /**
-   * Samples show a "Sample" badge in development and preview, and never appear on the live site.
-   */
-  isSample?: boolean | null;
-  /**
-   * Lower numbers appear first.
-   */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "leads".
- */
-export interface Lead {
-  id: number;
-  name: string;
-  phone: string;
-  email?: string | null;
-  address?: string | null;
-  postalCode?: string | null;
-  cityName?: string | null;
-  city?: (number | null) | City;
-  propertyType?: ('house' | 'townhouse' | 'condo' | 'commercial') | null;
-  frequency?: ('one-time' | 'twice-yearly' | 'quarterly' | 'monthly') | null;
-  services?: (number | Service)[] | null;
-  plan?: (number | null) | Plan;
-  lineItems?:
-    | {
-        service?: (number | null) | Service;
-        serviceName?: string | null;
-        answers?:
-          | {
-              [k: string]: unknown;
-            }
-          | unknown[]
-          | string
-          | number
-          | boolean
-          | null;
-        priceLow?: number | null;
-        priceHigh?: number | null;
-        id?: string | null;
-      }[]
-    | null;
-  totalLow?: number | null;
-  totalHigh?: number | null;
-  preferredDates?: string | null;
-  notes?: string | null;
-  /**
-   * Answers specific to the form used (snow contract, holiday lights, ...).
-   */
-  details?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  files?: (number | LeadFile)[] | null;
-  consent?: boolean | null;
-  consentAt?: string | null;
-  consentText?: string | null;
-  utm?: {
-    source?: string | null;
-    medium?: string | null;
-    campaign?: string | null;
-    term?: string | null;
-    content?: string | null;
-  };
-  referrer?: string | null;
-  landingPage?: string | null;
-  device?: string | null;
-  notificationStatus?: ('pending' | 'sent' | 'partial' | 'failed') | null;
-  notificationLog?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  reviewRequestedAt?: string | null;
-  type:
-    | 'quick'
-    | 'instant'
-    | 'custom'
-    | 'snow_contract'
-    | 'holiday_lights'
-    | 'junk'
-    | 'commercial_bid'
-    | 'subscription'
-    | 'contact';
-  status: 'new' | 'estimate_viewed' | 'booking_requested' | 'contacted' | 'quoted' | 'booked' | 'won' | 'lost';
-  /**
-   * The customer asked for a call after seeing the estimate.
-   */
-  callbackRequested?: boolean | null;
-  /**
-   * ZIP code outside your cities.
-   */
-  outOfArea?: boolean | null;
-  assignedTo?: (number | null) | User;
-  internalNotes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Photos and documents customers sent with their requests. Staff only.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "lead-files".
- */
-export interface LeadFile {
-  id: number;
-  filename: string;
-  mimeType: string;
-  size: number;
-  /**
-   * Where the file is kept in private storage.
-   */
-  key: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  name?: string | null;
-  /**
-   * Owners manage users, pricing and settings. Staff work leads.
-   */
-  role: 'owner' | 'staff';
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  resetPasswordRequestedAt?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "applications".
- */
-export interface Application {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  jobOpening?: (number | null) | JobOpening;
-  resume?: (number | null) | LeadFile;
-  message?: string | null;
-  consent?: boolean | null;
-  status?: ('new' | 'reviewing' | 'interview' | 'hired' | 'declined') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1521,6 +1524,18 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'leads';
+        value: number | Lead;
+      } | null)
+    | ({
+        relationTo: 'applications';
+        value: number | Application;
+      } | null)
+    | ({
+        relationTo: 'lead-files';
+        value: number | LeadFile;
+      } | null)
+    | ({
         relationTo: 'services';
         value: number | Service;
       } | null)
@@ -1589,18 +1604,6 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'leads';
-        value: number | Lead;
-      } | null)
-    | ({
-        relationTo: 'applications';
-        value: number | Application;
-      } | null)
-    | ({
-        relationTo: 'lead-files';
-        value: number | LeadFile;
-      } | null)
-    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -1649,6 +1652,93 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  email?: T;
+  address?: T;
+  postalCode?: T;
+  cityName?: T;
+  city?: T;
+  propertyType?: T;
+  frequency?: T;
+  services?: T;
+  plan?: T;
+  lineItems?:
+    | T
+    | {
+        service?: T;
+        serviceName?: T;
+        answers?: T;
+        priceLow?: T;
+        priceHigh?: T;
+        id?: T;
+      };
+  totalLow?: T;
+  totalHigh?: T;
+  preferredDates?: T;
+  notes?: T;
+  details?: T;
+  files?: T;
+  consent?: T;
+  consentAt?: T;
+  consentText?: T;
+  utm?:
+    | T
+    | {
+        source?: T;
+        medium?: T;
+        campaign?: T;
+        term?: T;
+        content?: T;
+      };
+  referrer?: T;
+  landingPage?: T;
+  device?: T;
+  notificationStatus?: T;
+  notificationLog?: T;
+  reviewRequestedAt?: T;
+  type?: T;
+  status?: T;
+  callbackRequested?: T;
+  outOfArea?: T;
+  assignedTo?: T;
+  internalNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "applications_select".
+ */
+export interface ApplicationsSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  jobOpening?: T;
+  resume?: T;
+  message?: T;
+  consent?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lead-files_select".
+ */
+export interface LeadFilesSelect<T extends boolean = true> {
+  filename?: T;
+  mimeType?: T;
+  size?: T;
+  key?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2168,93 +2258,6 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "leads_select".
- */
-export interface LeadsSelect<T extends boolean = true> {
-  name?: T;
-  phone?: T;
-  email?: T;
-  address?: T;
-  postalCode?: T;
-  cityName?: T;
-  city?: T;
-  propertyType?: T;
-  frequency?: T;
-  services?: T;
-  plan?: T;
-  lineItems?:
-    | T
-    | {
-        service?: T;
-        serviceName?: T;
-        answers?: T;
-        priceLow?: T;
-        priceHigh?: T;
-        id?: T;
-      };
-  totalLow?: T;
-  totalHigh?: T;
-  preferredDates?: T;
-  notes?: T;
-  details?: T;
-  files?: T;
-  consent?: T;
-  consentAt?: T;
-  consentText?: T;
-  utm?:
-    | T
-    | {
-        source?: T;
-        medium?: T;
-        campaign?: T;
-        term?: T;
-        content?: T;
-      };
-  referrer?: T;
-  landingPage?: T;
-  device?: T;
-  notificationStatus?: T;
-  notificationLog?: T;
-  reviewRequestedAt?: T;
-  type?: T;
-  status?: T;
-  callbackRequested?: T;
-  outOfArea?: T;
-  assignedTo?: T;
-  internalNotes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "applications_select".
- */
-export interface ApplicationsSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  phone?: T;
-  jobOpening?: T;
-  resume?: T;
-  message?: T;
-  consent?: T;
-  status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "lead-files_select".
- */
-export interface LeadFilesSelect<T extends boolean = true> {
-  filename?: T;
-  mimeType?: T;
-  size?: T;
-  key?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3405,6 +3408,36 @@ export interface PricingSettingsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "welcome_widget".
+ */
+export interface WelcomeWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_widget".
+ */
+export interface LeadsWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "go-live_widget".
+ */
+export interface GoLiveWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'small' | 'medium' | 'large' | 'x-large' | 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -3423,6 +3456,9 @@ export interface TaskCreateCollectionExport {
     name: string;
     batchSize?: number | null;
     collectionSlug:
+      | 'leads'
+      | 'applications'
+      | 'lead-files'
       | 'services'
       | 'service-categories'
       | 'pricing-rules'
@@ -3440,9 +3476,6 @@ export interface TaskCreateCollectionExport {
       | 'team-members'
       | 'job-openings'
       | 'media'
-      | 'leads'
-      | 'applications'
-      | 'lead-files'
       | 'users'
       | 'redirects'
       | 'exports'

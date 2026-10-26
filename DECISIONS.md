@@ -656,3 +656,19 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
 - **404 search:** among equal matches, titles that start with the query now come first ("gutter"
   finds Gutter Cleaning before Commercial Gutter Cleaning). The browser test waits for the index,
   which loads on first use since Phase 7, and picks from the results instead of the footer.
+
+## After handover (2026-10-26)
+
+- **Services mega-menu spans the header.** Radix wraps the menu list in a `position: relative`
+  div, so the panel (`left-0 right-0`) was only as wide as the four menu buttons and its six
+  category columns overlapped. The wrapper is made static, so the panel is laid out against the
+  header row like the design intended; the smaller menus stay under their own buttons.
+- **The admin dashboard uses Payload's modular dashboard** (`admin.dashboard`, marked
+  experimental in Payload 3.91): a welcome box with shortcuts to everyday jobs, a leads box (who
+  is waiting for a reply, booking requests, this week by source, the latest six requests) and a
+  "Before you go live" checklist worked out from the database (business details, prices, lead
+  alerts, real reviews, team, seasonal hero photos) with the storage meter. Staff can rearrange
+  or remove the boxes; the warning banners stay above them and can't be removed. Check the
+  dashboard after Payload updates, since the widget API may still change.
+- **Leads come first in the admin menu**, ahead of the content collections, and every admin
+  screen has a "View website" link.

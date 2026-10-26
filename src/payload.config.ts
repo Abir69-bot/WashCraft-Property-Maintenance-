@@ -51,14 +51,49 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: ' · WashCraft admin' },
     components: {
-      beforeDashboard: ['@/components/admin/lead-dashboard#LeadDashboard'],
+      actions: ['@/components/admin/brand#ViewSiteAction'],
+      beforeDashboard: ['@/components/admin/lead-dashboard#DashboardAlerts'],
       graphics: {
         Logo: '@/components/admin/brand#AdminLogo',
         Icon: '@/components/admin/brand#AdminIcon',
       },
     },
+    // Dashboard widgets (Payload's modular dashboard): staff can rearrange, resize or remove
+    // them from the "Dashboard" menu; this is the layout everyone starts with.
+    dashboard: {
+      widgets: [
+        {
+          slug: 'welcome',
+          label: 'Welcome and shortcuts',
+          Component: '@/components/admin/welcome-widget#WelcomeWidget',
+          minWidth: 'medium',
+        },
+        {
+          slug: 'leads',
+          label: 'Leads',
+          Component: '@/components/admin/lead-dashboard#LeadsWidget',
+          minWidth: 'medium',
+        },
+        {
+          slug: 'go-live',
+          label: 'Before you go live',
+          Component: '@/components/admin/checklist-widget#ChecklistWidget',
+          minWidth: 'small',
+        },
+      ],
+      defaultLayout: [
+        { widgetSlug: 'welcome', width: 'full' },
+        { widgetSlug: 'leads', width: 'large' },
+        { widgetSlug: 'go-live', width: 'small' },
+        { widgetSlug: 'collections', width: 'full' },
+      ],
+    },
   },
   collections: [
+    // First in the admin menu: what the owner checks every day.
+    Leads,
+    Applications,
+    LeadFiles,
     // Content shown on public pages: saving any of these refreshes the cached site.
     ...[
       Services,
@@ -79,9 +114,6 @@ export default buildConfig({
       JobOpenings,
       Media,
     ].map(withRevalidation),
-    Leads,
-    Applications,
-    LeadFiles,
     Users,
   ],
 

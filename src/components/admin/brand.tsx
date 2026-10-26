@@ -12,3 +12,13 @@ export function AdminLogo() {
 export function AdminIcon() {
   return <Image src={icon} alt="WashCraft" width={28} height={28} />
 }
+
+/** "View website" in the admin's top bar, on every screen. */
+export function ViewSiteAction() {
+  return (
+    <a href="/" target="_blank" rel="noopener" className="wc-view-site">
+      View website
+      <span className="wc-sr-only"> (opens in a new tab)</span>
+    </a>
+  )
+}

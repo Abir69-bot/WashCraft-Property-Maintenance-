@@ -83,7 +83,8 @@ src/
   lib/leads/            actions.ts (server actions), pipeline.ts (submitLead), save.ts (retry, backup,
                         re-import), create.ts, lead-files.ts, guard.ts (spam), messages.ts, admin.ts
   lib/storage/          private ObjectStore (R2 or local folder), signed upload URLs
-  components/admin/     dashboard, banners, status cell, re-import button, file download
+  components/admin/     dashboard widgets (welcome, leads, go-live checklist; styles in
+                        app/(payload)/custom.scss), alerts, status cell, re-import, file download
   lib/seo/              metadata + JSON-LD builders
   lib/schemas/          shared Zod schemas
   lib/data/             cached public queries (cachedQuery, tag `content`; content.ts for blog, solutions,

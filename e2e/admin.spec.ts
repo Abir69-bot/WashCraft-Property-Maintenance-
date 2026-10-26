@@ -56,12 +56,22 @@ test.describe('staff tools', () => {
     }
   })
 
-  test('the dashboard summarises leads and the database size', async ({ page }) => {
+  test('the dashboard shows shortcuts, leads, the go-live checklist and the database size', async ({
+    page,
+  }) => {
     await page.goto('/admin')
-    await expect(page.getByRole('heading', { name: /This week’s leads/ })).toBeVisible()
-    await expect(page.getByText('By source')).toBeVisible()
+    await expect(page.getByRole('heading', { name: /^Welcome back/ })).toBeVisible()
+    await expect(page.getByRole('link', { name: /Answer leads/ })).toBeVisible()
+    const leads = page.getByRole('region', { name: 'Leads', exact: true })
+    await expect(leads.getByText('waiting for a reply')).toBeVisible()
+    await expect(leads.getByRole('heading', { name: 'Latest requests' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Before you go live' })).toBeVisible()
+    await expect(page.getByRole('progressbar', { name: 'Go-live checklist' })).toBeVisible()
     await expect(page.getByText(/MB of \d+ MB/)).toBeVisible()
     await expect(page.getByText(/still use placeholder numbers/)).toBeVisible()
+    // The shortcut opens the Leads list filtered to the ones waiting for a reply.
+    await page.getByRole('link', { name: /Answer leads/ }).click()
+    await expect(page).toHaveURL(/\/admin\/collections\/leads\?.*where/)
   })
 
   test('a lead’s status can be changed from the list', async ({ page, baseURL }) => {
