@@ -1,0 +1,78 @@
+name: Production database
+
+# Run by hand: Actions → Production database → Run workflow. Applies the committed migrations to
+# the Neon `production` branch and, if ticked, adds the starter content. GitHub's runners are in
+# the US, close to Neon in Ohio, so the first seed takes minutes instead of the 40 it takes from
+# another continent (DECISIONS.md, Phase 2). Vercel also migrates on every production build;
+# this workflow is for the first setup and for seeding.
+
+on:
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: Also add the starter content (existing documents are kept)
+        type: boolean
+        default: false
+
+concurrency:
+  group: production-db
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      # Repository → Settings → Secrets and variables → Actions (README → "Deploying").
+      DATABASE_URI: ${{ secrets.PRODUCTION_DATABASE_URI }}
+      DATABASE_URI_DIRECT: ${{ secrets.PRODUCTION_DATABASE_URI_DIRECT }}
+      PAYLOAD_SECRET: ${{ secrets.PRODUCTION_PAYLOAD_SECRET }}
+      # Seeded photos go to the public R2 bucket, like uploads on the live site.
+      R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_PUBLIC_BUCKET: ${{ secrets.R2_PUBLIC_BUCKET }}
+      R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+      NEXT_TELEMETRY_DISABLED: 1
+
+    steps:
+      - name: Check the secrets are set
+        env:
+          SEED: ${{ inputs.seed }}
+        run: |
+          needed="DATABASE_URI DATABASE_URI_DIRECT PAYLOAD_SECRET"
+          # Without R2 the seeded photos would land on the runner's disk and be lost.
+          if [ "$SEED" = "true" ]; then
+            needed="$needed R2_ENDPOINT R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY R2_PUBLIC_BUCKET R2_PUBLIC_URL"
+          fi
+          missing=0
+          for name in $needed; do
+            if [ -z "${!name}" ]; then echo "::error::Secret for $name is not set"; missing=1; fi
+          done
+          exit $missing
+
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Apply committed migrations
+        run: pnpm db:migrate
+
+      - name: Migration status
+        run: pnpm db:migrate:status
+
+      # Plain `payload run` (no NODE_ENV=development), so the schema is never pushed.
+      - name: Add the starter content
+        if: inputs.seed
+        run: pnpm payload run src/seed/index.ts

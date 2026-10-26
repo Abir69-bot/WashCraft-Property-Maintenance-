@@ -3,6 +3,26 @@ import { expect, type Page } from '@playwright/test'
 
 import { site } from '../src/config/site'
 
+const ACCOUNT = { email: 'e2e@example.com', password: 'e2e-preview-password' }
+
+/**
+ * Signs in as the staff test account. On an empty database (CI) the account is created through
+ * Payload's first-register endpoint; anywhere else sign-in fails and staff tests skip, so they
+ * never touch a real account.
+ */
+export async function signIn(page: Page): Promise<boolean> {
+  const init = await page.request.get('/api/users/init')
+  const { initialized } = (await init.json()) as { initialized: boolean }
+  if (!initialized) {
+    const register = await page.request.post('/api/users/first-register', {
+      data: { ...ACCOUNT, role: 'owner' },
+    })
+    return register.ok()
+  }
+  const login = await page.request.post('/api/users/login', { data: ACCOUNT })
+  return login.ok()
+}
+
 /** Pretend the visitor already answered the cookie banner, so it doesn't cover the page. */
 export async function skipCookieBanner(page: Page) {
   await page.addInitScript(() => {

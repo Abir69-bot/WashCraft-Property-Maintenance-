@@ -1,0 +1,111 @@
+name: Weekly database backup
+
+# pg_dump of the Neon `production` branch (the brief's `main`) to the private R2 bucket, keeping
+# the last 8 (brief §4A). Every dump is restored into a throwaway Postgres before it is uploaded,
+# so a backup that can't be restored fails the run instead of sitting in the bucket.
+# Restore steps: README → "Backups and restore".
+
+on:
+  schedule:
+    - cron: '0 8 * * 1' # Mondays 08:00 UTC (1–2am in Denver)
+  workflow_dispatch:
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    # Same major version as the Neon project. Only used to test the restore.
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: restore_check
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Repository → Settings → Secrets and variables → Actions (README → "Backups and restore").
+      DATABASE_URI_DIRECT: ${{ secrets.PRODUCTION_DATABASE_URI_DIRECT }}
+      R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+      R2_PRIVATE_BUCKET: ${{ secrets.R2_PRIVATE_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      # libpq checks Neon's certificate against the runner's CA store (sslmode=verify-full).
+      PGSSLROOTCERT: system
+      RESTORE_URI: postgresql://postgres:postgres@localhost:5432/restore_check
+      KEEP: 8
+      PG_BIN: /usr/lib/postgresql/18/bin
+
+    steps:
+      - name: Check the secrets are set
+        run: |
+          missing=0
+          for name in DATABASE_URI_DIRECT R2_ENDPOINT R2_PRIVATE_BUCKET AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY; do
+            if [ -z "${!name}" ]; then echo "::error::Secret for $name is not set"; missing=1; fi
+          done
+          exit $missing
+
+      - name: Install the Postgres 18 client
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-18
+          "$PG_BIN/pg_dump" --version
+
+      - name: Dump the production database
+        run: |
+          FILE="washcraft-$(date -u +%Y-%m-%d-%H%M).dump"
+          # Custom format is compressed and lets pg_restore pick tables, or restore in parallel.
+          "$PG_BIN/pg_dump" --format=custom --compress=9 --no-owner --no-privileges \
+            --file="$FILE" "$DATABASE_URI_DIRECT"
+          echo "FILE=$FILE" >> "$GITHUB_ENV"
+          ls -lh "$FILE"
+
+      - name: Restore it into a throwaway database
+        run: |
+          "$PG_BIN/pg_restore" --no-owner --no-privileges --exit-on-error \
+            --dbname="$RESTORE_URI" "$FILE"
+          for table in payload_migrations services cities site_settings; do
+            source=$("$PG_BIN/psql" "$DATABASE_URI_DIRECT" -tAc "select count(*) from $table")
+            restored=$("$PG_BIN/psql" "$RESTORE_URI" -tAc "select count(*) from $table")
+            echo "$table: $source in production, $restored restored"
+            if [ "$source" != "$restored" ] || [ "$restored" = "0" ]; then
+              echo "::error::$table did not restore correctly"
+              exit 1
+            fi
+          done
+
+      - name: Upload to R2
+        run: |
+          aws s3 cp "$FILE" "s3://$R2_PRIVATE_BUCKET/backups/$FILE" \
+            --endpoint-url "$R2_ENDPOINT" --no-progress
+
+      - name: Keep the last ${{ env.KEEP }} backups
+        run: |
+          aws s3api list-objects-v2 --bucket "$R2_PRIVATE_BUCKET" --prefix backups/ \
+            --endpoint-url "$R2_ENDPOINT" --query 'Contents[].Key' --output text \
+            | tr '\t' '\n' | grep '\.dump$' | sort | head -n -"$KEEP" \
+            | while read -r key; do
+                echo "Deleting $key"
+                aws s3 rm "s3://$R2_PRIVATE_BUCKET/$key" --endpoint-url "$R2_ENDPOINT"
+              done

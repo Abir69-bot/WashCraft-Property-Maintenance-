@@ -270,7 +270,12 @@ The starter text was written for you, but only you know your methods and policie
       local conditions (snowfall, rainfall) only with a source link.
 - [ ] **Sample content.** Testimonials, client logos, team members and the two job openings are
       samples. They never appear on the live site. Replace them with real ones. (The 23 job photos
-      you sent are real and already in use: before/after gallery, home hero, "Why choose us".)
+      you sent are real and already in use: before/after gallery, home hero, "Why choose us", and
+      as photos on three sample testimonials.)
+- [ ] **Sample rating and guarantee.** The development site shows a sample rating (4.9 from 48
+      reviews) and a sample guarantee, both badged "Sample", so you can see where they go. The
+      live site shows neither until you connect Google reviews or fill in **Stats** and
+      **Guarantee** in Site settings (your own wording).
 - [ ] **Comparison table and "Why choose us"** (admin, **Home page**). Make sure every point is
       true for your business.
 - [ ] **Commercial and HOA pages** (admin, **Commercial pages**). The four "Why managers work with
@@ -322,6 +327,11 @@ production deploy until the first two are done.
 - [ ] **Google reviews** (recommended): a Google Places API key (`GOOGLE_PLACES_API_KEY`), a
       random `CRON_SECRET`, and your Place ID in Site settings. The site then copies your rating
       and latest reviews once a day (README → "Google reviews").
+- [ ] **GitHub secrets** (required): the production database strings, `PAYLOAD_SECRET` and the
+      R2 keys, so the weekly backup can run and the production database can be set up from
+      GitHub (README → "Deploying", step 5, and "Backups and restore").
+- [ ] **Analytics** (optional): a Google Tag Manager container with GA4, and Microsoft Clarity
+      (README → "Analytics"). Nothing is tracked until these IDs are set.
 
 ## 9. Infrastructure decisions
 

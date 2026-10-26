@@ -618,3 +618,41 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
   people are used.
 - Neon `dev` was patched with a one-off script for the logos and photos, because the seed never
   overwrites existing documents.
+
+## Phase 8 — QA and handover (2026-10-26)
+
+### Backups
+
+- **Every backup is restored before it's kept.** The weekly workflow restores the dump into a
+  Postgres 18 service container and compares row counts of key tables with production before
+  uploading it, so a dump that can't be restored fails the run instead of sitting in the bucket.
+  Dumps use pg_dump's custom format (compressed, and pg_restore can pick tables). The newest 8
+  are kept under `backups/` in the private bucket.
+- **pg_dump 18 comes from the PostgreSQL apt repository.** Ubuntu runners ship an older client,
+  and pg_dump refuses to dump a newer server. `PGSSLROOTCERT=system` lets libpq check Neon's
+  certificate, keeping `sslmode=verify-full`.
+- **Test restore, 2026-10-26:** a pg_dump 18 of Neon `dev` (750 KB) restored into a local
+  Postgres 18 with `--exit-on-error`, and the row counts matched (49 services, 6 cities, 6 posts,
+  6 testimonials, 6 client logos, 29 media, migrations). The first scheduled run repeats this
+  against `production`.
+
+### Production setup
+
+- **The production database is set up from GitHub** (`production-db.yml`, run by hand): the
+  committed migrations, then the seed if ticked, from a US runner next to Neon. It refuses to
+  seed without R2, because the seeded photos would otherwise be written to the runner's disk and
+  lost. Vercel still migrates on every production build.
+- **Vercel functions run in `cle1`** (Cleveland), next to Neon in us-east-2 (Ohio).
+
+### Tests
+
+- **Link check as a browser test** (`e2e/links.spec.ts`): every internal link on every page in
+  the sitemap must answer 200 directly. A link that redirects counts as broken, so menus and copy
+  always point at final addresses.
+- **Seasonal hero switching is tested end to end by forcing the season** in Seasonal settings (a
+  staff test, so CI only). A mocked browser clock can't change a page rendered on the server; the
+  date logic itself is unit tested. Forcing a season also changes the announcement bar on every
+  page, so the test has its own Playwright project that runs after all the others.
+- **404 search:** among equal matches, titles that start with the query now come first ("gutter"
+  finds Gutter Cleaning before Commercial Gutter Cleaning). The browser test waits for the index,
+  which loads on first use since Phase 7, and picks from the results instead of the footer.

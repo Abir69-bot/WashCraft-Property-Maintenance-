@@ -45,7 +45,11 @@ pnpm seed [--force]      # idempotent starter content (pushes schema: sets NODE_
 pnpm db:reset-dev        # migrate:fresh + seed on the DB in .env (asks to confirm)
 pnpm content-todo        # regenerate photo + pricing lists in CONTENT_TODO.md
 pnpm test:e2e            # Playwright + axe on desktop + Pixel 7, against `pnpm build` (port 3100)
+pnpm test:lighthouse     # Lighthouse CI on home, a service and a city page (port 3000, after build)
 ```
+
+Workflows: `ci.yml` (every push), `backup.yml` (weekly `pg_dump` of Neon `production` to R2,
+restore-checked), `production-db.yml` (manual: migrate and optionally seed production).
 
 Payload CLI commands load the config, so `DATABASE_URI` must be set (`.env` or inline) even for
 `generate:types`. Integration tests must pass `migrations` from `@/migrations` to
@@ -86,6 +90,7 @@ src/
                         FAQ, gallery, reviews, team, jobs, page globals), page loaders (load.ts), seasonNow()
   lib/rich-text.ts      table of contents, mid-article split, {region} filling inside rich text
   lib/reviews/google.ts daily Google Places sync (app/next/cron/google-reviews, vercel.json cron)
+  lib/proof.ts          shownRating()/shownGuarantee(): real values, or sample ones outside production
   lib/search.ts         404 page search ranking
   lib/quote/flow.ts     quoteCta(): where each service's / category's quote button goes
   lib/preview.ts        admin Preview button URLs; app/next/preview turns on draft mode
@@ -127,6 +132,7 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 
 ## Conventions
 
+- Show the rating and the guarantee through `shownRating()` / `shownGuarantee()` (`lib/proof.ts`), never `site.stats` / `site.guarantee` directly: outside production they fall back to `sampleProof` and need a `<SampleBadge>`.
 - Never invent business facts. Read them from site settings (`getSite()`); placeholders in `[BRACKETS]` render as a yellow "TODO" chip in dev and fail `check-config` for prod. Fields in `site.demo` are owner-approved demo stand-ins: render them normally, never treat them as confirmed facts (e.g. no "call us" urgency copy that depends on a real number), and they also fail `check-config`.
 - Every third-party integration is optional: missing env var → console fallback, feature still works or hides itself. Only `DATABASE_URI` is required.
 - Read env vars only through `src/lib/env.ts` (server) or `src/lib/public-env.ts` (`NEXT_PUBLIC_` values the browser needs, read as literal `process.env.NAME`).

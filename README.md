@@ -3,9 +3,6 @@
 Marketing and lead-generation site with an embedded admin. Built with Next.js 16, Payload CMS 3
 and Neon serverless Postgres. The full specification is in [docs/BRIEF.md](docs/BRIEF.md).
 
-> This README grows with each build phase. Deployment, backups and restore, and how to add a
-> service, city or season land in Phase 8.
-
 ## Requirements
 
 - Node.js 22.12+ (24 recommended)
@@ -193,6 +190,67 @@ sample testimonials, team and gallery items (samples never appear on the live si
   save any document in the admin. Pages are cached, and only admin saves and new builds refresh
   that cache.
 
+## Deploying (Vercel)
+
+Do the [Neon setup](#neon-setup-one-time) and the [services setup](#services-setup) (at least R2
+and Resend) first.
+
+1. **Import the repository** in Vercel (Add New → Project). Framework: Next.js. Under **Build and
+   Output Settings**, set the build command to
+   `pnpm db:migrate && pnpm check-config && pnpm build`.
+2. **Environment variables** (Settings → Environment Variables), for **Production**: everything in
+   `.env.example` that you use. At minimum `DATABASE_URI` and `DATABASE_URI_DIRECT` (the Neon
+   `production` strings), a new random `PAYLOAD_SECRET` (`openssl rand -hex 32`),
+   `NEXT_PUBLIC_SITE_URL` (`https://www.yourdomain.com`), the R2 and Resend values, and
+   `CRON_SECRET`. For **Preview**, use the Neon `dev` strings so previews never touch production.
+3. **Region:** `vercel.json` runs functions in `cle1` (Cleveland), next to Neon in Ohio. If your
+   Neon project is elsewhere, pick the nearest Vercel region.
+4. **Business facts:** the build stops at `check-config` until every placeholder and demo value
+   is replaced (CONTENT_TODO.md, section 1). Set them in `src/config/site.ts` before the first
+   deploy, or in the admin under Site settings once the site runs.
+5. **First production database setup** (from GitHub, close to Neon): in the repository, add these
+   secrets under Settings → Secrets and variables → Actions: `PRODUCTION_DATABASE_URI`,
+   `PRODUCTION_DATABASE_URI_DIRECT`, `PRODUCTION_PAYLOAD_SECRET` (the same value as in Vercel),
+   `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_PUBLIC_BUCKET`, `R2_PUBLIC_URL` and
+   `R2_PRIVATE_BUCKET`. Then Actions → **Production database** → Run workflow, with "Also add the
+   starter content" ticked. It applies the migrations and seeds the content in a few minutes.
+6. **Deploy** (push to `main`, or Redeploy in Vercel). Open `/admin` on the live site and create
+   the first user straight away: it becomes the owner.
+7. **Domain:** Settings → Domains. Then finish the search engine and local SEO steps below and in
+   CONTENT_TODO.md (sections 8 and 10).
+
+## Backups and restore
+
+`.github/workflows/backup.yml` runs every Monday (and on demand from the Actions tab). It dumps the
+Neon `production` branch with `pg_dump` 18, **restores the dump into a throwaway database and
+compares row counts** (so a broken backup fails the run), uploads it to the private R2 bucket as
+`backups/washcraft-<date>.dump` and keeps the newest 8. It uses the GitHub secrets from step 5
+above. When a scheduled run fails, GitHub emails whoever last edited the workflow's schedule.
+
+To restore (needs the Postgres 18 client tools and the AWS CLI):
+
+```bash
+# 1. Download a backup (R2 dashboard → private bucket → backups/, or with the AWS CLI)
+aws s3 cp s3://washcraft-private/backups/washcraft-2026-11-02-0800.dump . \
+  --endpoint-url https://<account-id>.r2.cloudflarestorage.com
+
+# 2. In Neon, create a new branch to restore into (Branches → New branch), and copy its
+#    direct connection string. Restoring into a fresh branch keeps production untouched
+#    until you've checked the result.
+pg_restore --no-owner --no-privileges --exit-on-error \
+  --dbname="postgresql://…direct string of the new branch…" washcraft-2026-11-02-0800.dump
+
+# 3. Check it: point a local build at the new branch, or open it in Neon's SQL editor.
+```
+
+To put it live, either make the restored branch Neon's default branch, or restore straight into
+`production` with `--clean --if-exists` added (this replaces everything in it). Then redeploy in
+Vercel so the pages pick up the restored content. On a Mac or Linux, `PGSSLROOTCERT=system` lets
+`pg_restore` verify Neon's certificate with the connection strings' `sslmode=verify-full`.
+
+Photos in the public R2 bucket aren't in the database dump. R2 keeps them unless you delete them;
+copy the bucket now and then (for example with `rclone`) if you want a second copy.
+
 ## Content updates
 
 Saving in the admin updates the live pages within seconds. Services, categories, cities, blog
@@ -204,6 +262,51 @@ banner.
 added for you. Add your own for addresses from an old website, e.g. from `/gutters.html` to the
 Gutter Cleaning page. A redirect only applies where there is no page, and it starts working
 within a minute of saving.
+
+### Adding a service
+
+1. Admin → **Services → Create new**. Fill in the title, the slug (the address, e.g.
+   `paver-sealing`), the category and the **Page content** tab. Copy can use `{region}`.
+2. **Card & menu:** the summary, icon, three card bullets and the button text.
+3. **Quote & pricing:** pick how it's quoted. "Custom quote" works straight away. "Instant price"
+   also needs a pricing rule (Pricing → Pricing rules → the service), and questions if the
+   service needs its own; until the rule is checked and **Needs review** is unticked, the wizard
+   says "We'll price this with you". Tick the seasons when it's offered.
+4. **Related:** related services, solutions and articles. Add a hero photo (or a photo label
+   describing what to shoot), then **Publish**.
+
+The service appears in the menus, its category page, `/services`, the 404 search and the sitemap
+without a redeploy. Changing a slug later adds a redirect from the old address.
+
+### Adding a city
+
+1. Admin → **Cities → Create new**. Fill in the name, slug, the intro (at least 150 words of
+   genuinely local text; the editor counts them), neighborhoods and FAQs.
+2. **Location:** the state (e.g. `CO`), the ZIP codes it covers (used by the ZIP checker and to
+   match quotes to a city) and its latitude and longitude (for the map).
+3. **Local conditions** only with a source link. Then **Publish**.
+
+The city gets its page under `/areas`, joins the service-area lists, map, footer, ZIP checker and
+the business's structured data, and the sitemap. Cities are the service-area list, so there's
+nothing to change in Site settings.
+
+### Seasons
+
+The five seasons (spring, summer, fall, winter, holiday season) and their dates are set in
+Admin → **Seasonal settings**. For each season you can change:
+
+- **Dates** (Seasonal settings): when the season starts and ends. Overlaps are fine; the season
+  that started most recently leads.
+- **Home page hero** (Home page → Hero → Hero variants): headline, button and photo per season.
+  **Force a hero** in Seasonal settings to show one regardless of the date.
+- **Announcement bar** (Seasonal settings → Announcements): a message and link per season, each
+  switched on or off.
+- **Services in season:** tick seasons on each service (Quote & pricing); they lead the "In season
+  now" section and the mega-menu's featured card.
+
+Pages switch over within a day without a deploy (the site layout refreshes daily). A brand-new
+kind of season would be a code change: add it to `SEASONS` in `src/config/catalog.ts`, to the
+date ranges in `src/globals/settings.ts`, then create and commit a migration.
 
 ## Search engines
 
@@ -270,10 +373,16 @@ database, as in CI, where they create the first account; elsewhere they skip.
 
 CI (`.github/workflows/ci.yml`) runs lint, format check, typecheck, unit tests, migrations, the
 config check, integration tests (including a full seed run twice, in their own database), a seed
-of the app database, the production build, the browser tests, Lighthouse and a migration drift
-check. It uses a throwaway Postgres service container, so CI never uses Neon compute. When
-browser tests fail, the run keeps a `playwright-report` artifact for 7 days; Lighthouse reports
-are kept as a `lighthouse` artifact.
+of the app database, the production build, the browser tests (including a check of every
+internal link on every page in the sitemap), Lighthouse and a migration drift check. It uses a
+throwaway Postgres service container, so CI never uses Neon compute. When browser tests fail,
+the run keeps a `playwright-report` artifact for 7 days; Lighthouse reports are kept as a
+`lighthouse` artifact.
+
+To run the browser tests locally against a throwaway database instead of Neon `dev`, as CI does:
+`pnpm test:db:up`, create a `washcraft` database in that container, then set `DATABASE_URI` and
+`DATABASE_URI_DIRECT` to `postgresql://postgres:postgres@localhost:5433/washcraft` in your shell
+before `pnpm db:migrate`, `pnpm payload run src/seed/index.ts`, `pnpm build` and `pnpm test:e2e`.
 
 ## Project documents
 

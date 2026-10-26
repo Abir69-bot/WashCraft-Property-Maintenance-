@@ -1,27 +1,11 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
-import { skipCookieBanner } from './helpers'
+import { signIn, skipCookieBanner } from './helpers'
 
 /**
- * Staff tools. They need a signed-in user: on an empty database (CI) the first test account is
- * created through Payload's first-register endpoint; anywhere else these tests skip, so they
- * never touch a real account.
+ * Staff tools. They need a signed-in user, so they only run on an empty database (CI); see
+ * signIn(). The seasonal hero test, which changes site-wide settings, is in seasons.spec.ts.
  */
-const ACCOUNT = { email: 'e2e@example.com', password: 'e2e-preview-password' }
-
-async function signIn(page: Page): Promise<boolean> {
-  const init = await page.request.get('/api/users/init')
-  const { initialized } = (await init.json()) as { initialized: boolean }
-  if (!initialized) {
-    const register = await page.request.post('/api/users/first-register', {
-      data: { ...ACCOUNT, role: 'owner' },
-    })
-    return register.ok()
-  }
-  const login = await page.request.post('/api/users/login', { data: ACCOUNT })
-  return login.ok()
-}
-
 test.describe('staff tools', () => {
   test.describe.configure({ mode: 'serial' })
 

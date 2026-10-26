@@ -1,9 +1,10 @@
 # Features
 
 From brief §17. An item is ticked only when it works in the browser.
-☑ done everywhere listed · ◐ built and verified on the pages that exist so far; the rest arrive
-in later phases, or the section needs data the owner hasn't added yet (real reviews, insurance
-details, sourced local facts, or the owner's own Twilio / Turnstile / R2 keys to confirm live) · ☐ not started.
+☑ done everywhere listed · ◐ built and verified (with sample data where the section needs it),
+but the live site needs something only the owner can supply: real reviews, ratings, logos or a
+guarantee, insurance details, sourced local facts, or their own Twilio / Turnstile / R2 /
+Tag Manager keys and production secrets to confirm it live · ☐ not started.
 Source: HF = High Five, WT = WashTech, C = client request, N = new for WashCraft.
 
 | #   | Done | Feature                                                                                  | Source | Where                   |
@@ -13,14 +14,14 @@ Source: HF = High Five, WT = WashTech, C = client request, N = new for WashCraft
 | 3   | ☑    | Slide-in quick-quote popup                                                               | HF     | Global                  |
 | 4   | ☑    | Quick-quote form on home, service and city pages                                         | HF     | Sections                |
 | 5   | ☑    | Hero with photo carousel or background video                                             | HF, WT | Home                    |
-| 6   | ☐    | Star-rating badge in hero (real data only)                                               | WT     | Home, services          |
-| 7   | ☐    | Client logo marquee (real logos only)                                                    | WT     | Home, commercial        |
+| 6   | ◐    | Star-rating badge in hero (real data only)                                               | WT     | Home, services          |
+| 7   | ◐    | Client logo marquee (real logos only)                                                    | WT     | Home, commercial        |
 | 8   | ☑    | Three-step process with recurring upsell                                                 | HF, WT | Home, services, cities  |
-| 9   | ☐    | Satisfaction guarantee band                                                              | HF     | Home, services          |
+| 9   | ◐    | Satisfaction guarantee band                                                              | HF     | Home, services          |
 | 10  | ☑    | Before/after comparison sliders                                                          | HF, WT | Home, services, cities  |
 | 11  | ☑    | Filterable before & after gallery page                                                   | WT     | /before-and-after       |
 | 12  | ☑    | Call and text urgency block (tel:, sms:)                                                 | HF     | Home, services          |
-| 13  | ☐    | Featured testimonial with photo                                                          | HF     | Home                    |
+| 13  | ◐    | Featured testimonial with photo                                                          | HF     | Home                    |
 | 14  | ◐    | Testimonial cards with photo, city, service, "Verified Google review" link               | WT     | Home, services, reviews |
 | 15  | ◐    | Google rating and review count badge                                                     | WT     | Home, reviews           |
 | 16  | ◐    | Values story and trust badges                                                            | HF     | Home, about             |
@@ -62,8 +63,8 @@ Source: HF = High Five, WT = WashTech, C = client request, N = new for WashCraft
 | 52  | ☑    | Owner-editable pricing rules with review gate                                            | N      | /admin                  |
 | 53  | ◐    | Customer auto-replies and review-request automation                                      | N      | Notifications           |
 | 54  | ◐    | Cookie consent + GA4/Clarity events                                                      | N      | Global                  |
-| 55  | ☐    | Schema markup, sitemap, redirects, OG images                                             | N      | SEO                     |
+| 55  | ☑    | Schema markup, sitemap, redirects, OG images                                             | N      | SEO                     |
 | 56  | ☑    | Neon Postgres with branches, pooled/direct strings and committed migrations              | N      | Infrastructure          |
 | 57  | ◐    | Cold-start retry and R2 fallback so no lead is lost                                      | N      | Quote system            |
 | 58  | ☑    | Database size widget with warning at 80% of the free-plan limit                          | N      | /admin                  |
-| 59  | ☐    | Weekly `pg_dump` backup of Neon `main` to R2                                             | N      | GitHub Actions          |
+| 59  | ◐    | Weekly `pg_dump` backup of Neon `main` to R2                                             | N      | GitHub Actions          |

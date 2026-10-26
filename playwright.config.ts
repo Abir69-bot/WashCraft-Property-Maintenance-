@@ -20,8 +20,15 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    { name: 'desktop', use: { ...devices['Desktop Chrome'] }, testIgnore: /seasons\.spec\.ts/ },
+    { name: 'mobile', use: { ...devices['Pixel 7'] }, testIgnore: /seasons\.spec\.ts/ },
+    // Forces a season site-wide, so it waits until every other test has finished.
+    {
+      name: 'seasons',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /seasons\.spec\.ts/,
+      dependencies: ['desktop', 'mobile'],
+    },
   ],
   webServer: {
     command: `pnpm start --port ${PORT}`,
