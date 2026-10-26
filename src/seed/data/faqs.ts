@@ -22,7 +22,7 @@ export const faqs: FaqSeed[] = [
     showOnHome: true,
     question: 'What areas do you serve?',
     answer:
-      'We serve homes and businesses across {region}. Enter your ZIP code in the checker on our Areas page to confirm, or just ask. We’ll tell you if we can help.',
+      'We serve homes and businesses across {region}. Enter your postal code in the checker on our Areas page to confirm, or just ask. We’ll tell you if we can help.',
   },
   {
     category: 'general',

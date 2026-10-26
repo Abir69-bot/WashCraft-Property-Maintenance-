@@ -37,7 +37,7 @@ export function priceRange(low?: number | null, high?: number | null) {
 const known = (value?: string | null) => (value && !isPlaceholder(value) ? value : null)
 const firstName = (name: string) => name.trim().split(/\s+/)[0]
 const where = (lead: LeadSummary) =>
-  lead.cityName ?? (lead.postalCode ? `ZIP ${lead.postalCode}` : null)
+  lead.cityName ?? (lead.postalCode ? `postal code ${lead.postalCode}` : null)
 
 const nextStep = (site: Site) =>
   known(site.responseTimePromise)
@@ -98,7 +98,7 @@ export function ownerEmail(lead: LeadSummary, link: string | null) {
     ['Phone', lead.phone],
     ['Email', lead.email],
     ['Address', lead.address],
-    ['ZIP code', lead.postalCode],
+    ['Postal code', lead.postalCode],
     ['City', lead.cityName ?? (lead.outOfArea ? 'Outside your service area' : null)],
     ['Services', lead.services.join(', ')],
     ['Estimate', priceRange(lead.totalLow, lead.totalHigh)],

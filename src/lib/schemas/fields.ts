@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { e164 } from '@/lib/text'
-import { normalizeZip } from '@/lib/service-area'
+import { normalizePostalCode } from '@/lib/service-area'
 
 /** Field rules shared by every quote form, in the browser and on the server. */
 
@@ -19,7 +19,7 @@ export const phoneField = z
 export const zipField = z
   .string()
   .trim()
-  .refine((value) => normalizeZip(value) !== null, 'Enter a 5-digit ZIP code')
+  .refine((value) => normalizePostalCode(value) !== null, 'Enter a postal code, e.g. M1B 2K3')
 
 export const optionalEmailField = z.union([z.literal(''), z.email('Enter a valid email address')])
 export const emailField = z.email('Enter a valid email address')

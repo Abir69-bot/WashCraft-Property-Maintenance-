@@ -24,7 +24,7 @@ const lead = (overrides: Partial<LeadData> = {}): LeadData => ({
   name: NAME,
   phone: '(303) 555-0199',
   email: 'lead@example.com',
-  postalCode: '80202',
+  postalCode: 'M1B 2K3',
   consent: true,
   notes: 'An old couch',
   details: { load: '1/2 truck' },

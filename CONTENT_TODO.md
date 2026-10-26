@@ -6,31 +6,33 @@ development site, and production deploys stay blocked until the required facts a
 ## 1. Business facts — required before launch
 
 Set these in `src/config/site.ts` (or later in the admin under **Site settings**).
-`pnpm check-config` lists whatever is still missing. Country (US), currency (USD) and
-language (en-US) are already set.
+`pnpm check-config` lists whatever is still missing. Country (Canada), currency (CAD) and
+language (en-CA) are already set.
 
 **Demo values are in place for now** (listed in `site.demo`). The site looks complete, but
 production deploys stay blocked until each one is confirmed or replaced:
 
-| Field          | Demo value                                              |
-| -------------- | ------------------------------------------------------- |
-| `tagline`      | Exterior care, year-round (from your logo)              |
-| `phone`        | (720) 555-0142 (fictional number)                       |
-| `email`        | hello@example.com (fictional address)                   |
-| `address`      | none shown (service-area business)                      |
-| `hours`        | Mon–Sat 7am–6pm                                         |
-| `region`       | Denver Metro                                            |
-| `serviceAreas` | Denver, Aurora, Lakewood, Arvada, Littleton, Centennial |
+| Field     | Demo value                                 |
+| --------- | ------------------------------------------ |
+| `tagline` | Exterior care, year-round (from your logo) |
+| `phone`   | (416) 555-0142 (fictional number)          |
+| `email`   | hello@example.com (fictional address)      |
+| `address` | none shown (service-area business)         |
+| `hours`   | Mon–Sat 7am–6pm                            |
+| `region`  | the GTA (as it reads after “in”)           |
+
+The service areas are set (owner, 2026-10-27): Scarborough, North York, Etobicoke, Markham,
+Vaughan, Richmond Hill and Mississauga.
 
 | Field          | What to provide                                                       | Example format                                           |
 | -------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
 | `tagline`      | One short line under the logo and in search results                   | "Exterior, interior and seasonal care for your property" |
-| `phone`        | Main number for calls **and** texts                                   | (303) 555-0142                                           |
+| `phone`        | Main number for calls **and** texts                                   | (416) 555-0142                                           |
 | `email`        | Address leads and customers write to                                  | hello@yourdomain.com                                     |
-| `address`      | Street address, or tell us you work from home (service-area business) | 123 Main St, Denver, CO 80202                            |
+| `address`      | Street address, or tell us you work from home (service-area business) | 123 Main St, Toronto, ON M1B 2K3                         |
 | `hours`        | Office hours                                                          | Mon–Sat 8am–6pm                                          |
-| `region`       | How locals name your area                                             | Denver Metro                                             |
-| `serviceAreas` | Every city you serve (each gets its own page)                         | Aurora, Lakewood, …                                      |
+| `region`       | How locals name your area                                             | the GTA                                                  |
+| `serviceAreas` | Every city you serve (each gets its own page)                         | Scarborough, Markham, …                                  |
 
 ## 2. Optional facts — each section stays hidden until you set it
 
@@ -132,34 +134,41 @@ Hero Variants → the Holiday row → Image**. You can also change the season da
 
 **City pages**
 
-- [ ] Denver: Brick Denver Square home on a tree-lined street in fall
-- [ ] Denver, Washington Park: Brick home near Washington Park with mature trees
-- [ ] Denver, Highland: Row of Highland homes, old and new side by side
-- [ ] Denver, Park Hill: Park Hill Tudor home with a long front walkway
-- [ ] Denver, Central Park: Newer townhomes in Central Park with clean siding
-- [ ] Aurora: Two-story stucco home in an Aurora subdivision with a wide driveway
-- [ ] Aurora, Saddle Rock: Stucco and stone home in Saddle Rock
-- [ ] Aurora, Tallyn’s Reach: Wide driveway in Tallyn’s Reach after snow clearing
-- [ ] Aurora, Murphy Creek: Home in Murphy Creek with open views
-- [ ] Aurora, Hoffman Heights: Ranch home in Hoffman Heights with mature trees
-- [ ] Lakewood: Lakewood ranch home with the foothills in the background
-- [ ] Lakewood, Belmar: Townhomes near Belmar with clean windows
-- [ ] Lakewood, Green Mountain: Home on Green Mountain with trees and a foothills view
-- [ ] Lakewood, Bear Creek: Leaf-covered yard near Bear Creek in fall
-- [ ] Arvada: Historic storefronts and homes near Olde Town Arvada
-- [ ] Arvada, Olde Town Arvada: Older wood-sided home near Olde Town Arvada
-- [ ] Arvada, Candelas: New home in Candelas with large windows
-- [ ] Arvada, Ralston Valley: Backyard deck and fence in Ralston Valley
-- [ ] Arvada, Leyden Rock: Home in Leyden Rock backing onto open space
-- [ ] Littleton: Historic Main Street in Littleton with brick storefronts
-- [ ] Littleton, Downtown Littleton: Historic home near downtown Littleton
-- [ ] Littleton, Ken Caryl: Ken Caryl home with a deck and foothills behind
-- [ ] Littleton, Roxborough Park: Home among trees and red rocks near Roxborough
-- [ ] Centennial: Centennial two-story home with a manicured front yard
-- [ ] Centennial, Willow Creek: Two-story home in Willow Creek with tall trees
-- [ ] Centennial, Southglenn: Tidy front yard and siding in Southglenn
-- [ ] Centennial, Piney Creek: Home with a long driveway in Piney Creek
-- [ ] Centennial, Cherry Knolls: Cherry Knolls home with mature landscaping
+- [ ] Scarborough: Brick bungalow on a quiet Scarborough street with mature trees
+- [ ] Scarborough, Agincourt: Two-story brick home in Agincourt with a wide driveway
+- [ ] Scarborough, Guildwood: Guildwood home under tall trees in the fall
+- [ ] Scarborough, Birch Cliff: Older Birch Cliff home with a front porch
+- [ ] Scarborough, Malvern: Row of townhouses in Malvern after a fresh wash
+- [ ] North York: Detached North York home with large windows and a landscaped front yard
+- [ ] North York, Willowdale: New stone-front home in Willowdale with large windows
+- [ ] North York, Don Mills: Mid-century Don Mills home with a low roofline
+- [ ] North York, Bayview Village: Bayview Village home with a long driveway in winter
+- [ ] North York, York Mills: Large York Mills home surrounded by tall trees
+- [ ] Etobicoke: Tudor-style home in Etobicoke with a stone walkway in the fall
+- [ ] Etobicoke, The Kingsway: Brick and stone home in the Kingsway under tall trees
+- [ ] Etobicoke, Mimico: Mimico street with older homes near the lake
+- [ ] Etobicoke, Long Branch: Long Branch home with a wooden fence and deck
+- [ ] Etobicoke, Islington Village: Two-story home in Islington Village in winter
+- [ ] Markham: Two-story stone and brick home in a Markham subdivision
+- [ ] Markham, Unionville: Heritage home near Main Street Unionville
+- [ ] Markham, Markham Village: Older home on a treed street in Markham Village
+- [ ] Markham, Cornell: Townhouses with front porches in Cornell
+- [ ] Markham, Berczy Village: Berczy Village home with an interlock driveway
+- [ ] Vaughan: Large detached home in Vaughan with a stone front and interlock driveway
+- [ ] Vaughan, Woodbridge: Woodbridge home with a stone front and interlock driveway
+- [ ] Vaughan, Maple: Two-story homes on a street in Maple
+- [ ] Vaughan, Concord: Townhouses and a small business plaza in Concord
+- [ ] Vaughan, Thornhill: Thornhill home under mature trees in the fall
+- [ ] Richmond Hill: Richmond Hill home with a landscaped yard and a double garage
+- [ ] Richmond Hill, Oak Ridges: Oak Ridges home near Lake Wilcox
+- [ ] Richmond Hill, Mill Pond: Home on a treed street near Mill Pond
+- [ ] Richmond Hill, Bayview Hill: Large Bayview Hill home with a long driveway
+- [ ] Richmond Hill, Jefferson: Jefferson home with a deck backing onto trees
+- [ ] Mississauga: Two-story Mississauga home with a clean driveway and front garden
+- [ ] Mississauga, Port Credit: Port Credit home near the lake
+- [ ] Mississauga, Streetsville: Older home near Streetsville’s main street
+- [ ] Mississauga, Meadowvale: Meadowvale townhouses beside a park
+- [ ] Mississauga, Lorne Park: Lorne Park home on a large treed lot
 
 **Articles**
 
@@ -199,7 +208,7 @@ Also check these quote settings:
       services can be booked twice a year, quarterly or monthly in the instant-price wizard.
 - [ ] **Roofline estimate by home size** (`src/config/quote.ts`, `ROOFLINE_ESTIMATES`): used when a
       customer doesn't know their roofline length for holiday lights (120–240 ft).
-- [ ] **Snow contracts** (admin → Seasonal settings): the trigger depths offered (1, 2 or 3 inches
+- [ ] **Snow contracts** (admin → Seasonal settings): the trigger depths offered (2, 5 or 8 cm
       for now), how contracts are billed (the payment note; blank says "confirmed with your
       contract"), the sign-up deadline and routes left (both hidden until set).
 
@@ -266,8 +275,9 @@ The starter text was written for you, but only you know your methods and policie
 
 - [ ] **Service pages.** Read each service in the admin. Check the method, what's included, the
       safety notes and the FAQs, especially notice periods, what you haul and what you won't do.
-- [ ] **Demo cities.** Check each city's ZIP codes and neighborhoods (admin, **Cities**). Add
-      local conditions (snowfall, rainfall) only with a source link.
+- [ ] **Cities.** Check each city's postal code prefixes (the first three characters, e.g. M1B)
+      and neighborhoods, and read the intro (admin, **Cities**). Add local conditions (snowfall,
+      rainfall) only with a source link.
 - [ ] **Sample content.** Testimonials, client logos, team members and the two job openings are
       samples. They never appear on the live site. Replace them with real ones. (The 23 job photos
       you sent are real and already in use: before/after gallery, home hero, "Why choose us", and

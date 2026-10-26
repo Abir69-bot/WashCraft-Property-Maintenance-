@@ -200,7 +200,7 @@ async function checkedFiles(refs: FileRef[], kind: FileKind) {
   }
 }
 
-/** Quick quote: name, phone, ZIP, service (brief §10.1). */
+/** Quick quote: name, phone, postal code, service (brief §10.1). */
 export async function submitQuickQuote(input: unknown, tracking: unknown): Promise<FormResult> {
   const parsed = quickQuoteSchema.safeParse(input)
   if (!parsed.success) return invalid(fieldErrors(parsed.error))
@@ -612,7 +612,7 @@ export async function submitCommercialBid(input: unknown, tracking: unknown): Pr
   }
 }
 
-/** Contact page form: a lead of type "contact" (brief §9.7). The ZIP code is optional. */
+/** Contact page form: a lead of type "contact" (brief §9.7). The postal code is optional. */
 export async function submitContact(input: unknown, tracking: unknown): Promise<FormResult> {
   const parsed = contactSchema.safeParse(input)
   if (!parsed.success) return invalid(fieldErrors(parsed.error))

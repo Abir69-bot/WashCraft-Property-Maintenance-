@@ -95,7 +95,7 @@ export function NearbyAreas({ cities, current }: { cities: AreaCity[]; current: 
         ))}
       </ul>
       <Link href={routes.areas} className="mt-6 inline-block font-semibold">
-        All service areas and ZIP code checker
+        All service areas and postal code checker
       </Link>
     </Section>
   )

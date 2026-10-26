@@ -18,7 +18,7 @@ import { Section, type SectionTone } from './section'
 import { ServiceAreaMap } from './service-area-map'
 import { ZipChecker } from './zip-checker'
 
-/** City grid, map and ZIP checker (brief §9.1.17). */
+/** City grid, map and postal code checker (brief §9.1.17). */
 export function ServiceAreas({ cities, region }: { cities: AreaCity[]; region: string }) {
   if (cities.length === 0) return null
   return (
@@ -27,7 +27,7 @@ export function ServiceAreas({ cities, region }: { cities: AreaCity[]; region: s
       tone="surface"
       eyebrow="Service areas"
       title={`Proudly serving ${region}`}
-      intro="Find your city, or check your ZIP code."
+      intro="Find your city, or check your postal code."
     >
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="grid content-start gap-6">

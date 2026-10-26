@@ -57,7 +57,7 @@ This policy explains what information this website collects, why, and what you c
 
 ## What we collect
 
-- **What you send us.** When you ask for a quote, book a service, contact us or apply for a job, we collect what you type in: usually your name, phone number, email address, address or ZIP code, details about your property and the job, and any photos or documents you upload.
+- **What you send us.** When you ask for a quote, book a service, contact us or apply for a job, we collect what you type in: usually your name, phone number, email address, address or postal code, details about your property and the job, and any photos or documents you upload.
 - **Where you came from.** With a request we also record the page you landed on, the website that sent you (if any), campaign tags in the link (such as \`utm_source\`) and whether you used a phone, tablet or computer. This helps us understand which advertising works.
 - **Analytics, only if you agree.** If you accept analytics cookies, Google Analytics and Microsoft Clarity record how visitors use the site, such as pages viewed and clicks. If you decline, these tools are not loaded. You can change your choice at any time with the "Cookie settings" link at the bottom of every page.
 - **Security.** Cloudflare Turnstile checks that forms are sent by people rather than bots, and our servers keep short-lived technical logs (such as IP addresses) to protect the site.

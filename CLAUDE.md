@@ -154,7 +154,7 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 - Schema changes: `push` in dev only; production changes go through committed migrations, run over the direct (non-pooler) connection.
 - Tests never touch the Neon `production` branch. CI uses a Postgres service container.
 - TypeScript strict, no `any`, no dead code, no unused dependencies. Kebab-case filenames, `@/` → `src/`.
-- **US business.** Visitor-facing copy uses US English, "ZIP code", "HOA & condo" (not "strata"), "parking garage" (not "parkade"), USD and TCPA/CAN-SPAM consent. See DECISIONS.md for the slug changes from the brief.
+- **Canadian business in the GTA (Ontario).** Country CA, CAD, `en-CA` locale, postal codes (cities match on the first three characters, e.g. M1B) and the CASL-style consent line. Copy still uses US spelling and the "HOA & condo" wording from the earlier US setup until the owner decides (see DECISIONS.md); keep new copy consistent with it.
 - Copy: plain language, grade 6–8 reading level, `{region}` used naturally, no keyword stuffing, no prices, guarantees or payment terms.
 - Unit tests sit next to the code (`*.test.ts`); e2e specs live in `e2e/`.
 

@@ -30,12 +30,12 @@ const lead: LeadSummary = {
   name: 'Maria Gomez',
   phone: '(303) 555-0199',
   email: 'maria@example.com',
-  postalCode: '80202',
-  cityName: 'Denver',
+  postalCode: 'M1B 2K3',
+  cityName: 'Scarborough',
   services: ['Gutter Cleaning', 'Window Cleaning'],
   totalLow: 335,
   totalHigh: 1435.5,
-  details: { snowTrigger: '2 inches', addOns: ['Salting', 'Ice control'], storage: true },
+  details: { snowTrigger: '5 cm', addOns: ['Salting', 'Ice control'], storage: true },
   files: [{ name: 'front.jpg', url: 'https://example.com/api/lead-files/3/download' }],
 }
 
@@ -47,18 +47,18 @@ describe('lead messages', () => {
 
   it('alerts the owner by SMS with who, what, where, price and a link', () => {
     expect(ownerSms(lead, 'https://x/admin/collections/leads/7')).toBe(
-      'New instant price lead: Maria Gomez, Gutter Cleaning, Window Cleaning, Denver, $335–$1,436 — https://x/admin/collections/leads/7',
+      'New instant price lead: Maria Gomez, Gutter Cleaning, Window Cleaning, Scarborough, $335–$1,436 — https://x/admin/collections/leads/7',
     )
     expect(ownerSms({ ...lead, cityName: null, outOfArea: true, services: [] }, null)).toBe(
-      'New instant price lead: Maria Gomez, ZIP 80202, $335–$1,436 (outside your area)',
+      'New instant price lead: Maria Gomez, postal code M1B 2K3, $335–$1,436 (outside your area)',
     )
   })
 
   it('emails the owner every detail and file link', () => {
     const { subject, text } = ownerEmail(lead, 'https://x/admin/collections/leads/7')
-    expect(subject).toBe('New instant price lead: Maria Gomez (Denver)')
+    expect(subject).toBe('New instant price lead: Maria Gomez (Scarborough)')
     expect(text).toContain('Phone: (303) 555-0199')
-    expect(text).toContain('Snow Trigger: 2 inches')
+    expect(text).toContain('Snow Trigger: 5 cm')
     expect(text).toContain('Add Ons: Salting, Ice control')
     expect(text).toContain('Storage: Yes')
     expect(text).toContain('- front.jpg: https://example.com/api/lead-files/3/download')

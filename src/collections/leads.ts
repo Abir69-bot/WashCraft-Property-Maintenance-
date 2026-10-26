@@ -43,7 +43,7 @@ export const Leads: CollectionConfig = {
               type: 'row',
               fields: [
                 { name: 'address', type: 'text' },
-                { name: 'postalCode', label: 'ZIP code', type: 'text', index: true },
+                { name: 'postalCode', label: 'Postal code', type: 'text', index: true },
                 { name: 'cityName', label: 'City', type: 'text' },
               ],
             },
@@ -200,7 +200,11 @@ export const Leads: CollectionConfig = {
       name: 'outOfArea',
       type: 'checkbox',
       index: true,
-      admin: { position: 'sidebar', readOnly: true, description: 'ZIP code outside your cities.' },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Postal code outside your cities.',
+      },
     },
     {
       name: 'assignedTo',

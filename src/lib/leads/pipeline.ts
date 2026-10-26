@@ -8,7 +8,7 @@ import { env } from '@/lib/env'
 import { getNotifier } from '@/lib/notify'
 import { getPricingData } from '@/lib/pricing/load'
 import type { Tracking } from '@/lib/schemas/quick-quote'
-import { matchCity, normalizeZip } from '@/lib/service-area'
+import { matchCity, normalizePostalCode } from '@/lib/service-area'
 import { privateStore } from '@/lib/storage'
 import { e164 } from '@/lib/text'
 import type { Application, Lead } from '@/payload-types'
@@ -74,7 +74,7 @@ export function baseLeadData({
   country: string
   shortName: string
 }): LeadData {
-  const postalCode = normalizeZip(zip) ?? zip
+  const postalCode = normalizePostalCode(zip) ?? zip
   const city = matchCity(postalCode, cities)
   return {
     type,

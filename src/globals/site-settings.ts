@@ -44,7 +44,7 @@ export const SiteSettings: GlobalConfig = {
             text('hours', 'e.g. Mon–Sat 8am–6pm'),
             text(
               'region',
-              'How locals name your area, e.g. "Denver Metro". Fills {region} in text.',
+              'How locals name your area, as it reads after "in", e.g. "the GTA". Fills {region} in text.',
             ),
             {
               type: 'row',

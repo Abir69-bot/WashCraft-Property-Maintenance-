@@ -83,4 +83,4 @@ export const FLOW_SERVICES = {
 } as const
 
 /** Snow trigger choices until the owner sets their own in Seasonal settings. */
-export const DEFAULT_SNOW_TRIGGERS = ['1 inch', '2 inches', '3 inches'] as const
+export const DEFAULT_SNOW_TRIGGERS = ['2 cm', '5 cm', '8 cm'] as const

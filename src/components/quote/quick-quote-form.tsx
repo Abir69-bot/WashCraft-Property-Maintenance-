@@ -109,15 +109,9 @@ export function QuickQuoteForm({
             />
           )}
         </FormField>
-        <FormField id={field('zip')} label="ZIP code" error={errors.zip?.message}>
+        <FormField id={field('zip')} label="Postal code" error={errors.zip?.message}>
           {(control) => (
-            <Input
-              {...control}
-              {...register('zip')}
-              autoComplete="postal-code"
-              inputMode="numeric"
-              maxLength={10}
-            />
+            <Input {...control} {...register('zip')} autoComplete="postal-code" maxLength={10} />
           )}
         </FormField>
         <FormField id={field('service')} label="Service" error={errors.service?.message}>

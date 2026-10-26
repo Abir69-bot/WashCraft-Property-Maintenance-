@@ -286,7 +286,7 @@ export default function StyleguidePage() {
           </FormField>
           <FormField
             id="sg-zip"
-            label="ZIP code"
+            label="Postal code"
             hint="We use it to check that you're in our service area."
           >
             {(control) => <Input {...control} autoComplete="postal-code" />}

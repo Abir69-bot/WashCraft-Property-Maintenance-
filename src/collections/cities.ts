@@ -84,15 +84,21 @@ export const Cities: CollectionConfig = {
         {
           label: 'Location',
           fields: [
-            { name: 'state', type: 'text', required: true, admin: { description: 'e.g. CO' } },
+            {
+              name: 'state',
+              label: 'Province or state',
+              type: 'text',
+              required: true,
+              admin: { description: 'Two-letter code, e.g. ON' },
+            },
             {
               name: 'zipPrefixes',
-              label: 'ZIP codes',
+              label: 'Postal codes',
               type: 'text',
               hasMany: true,
               admin: {
                 description:
-                  'Full ZIP codes or prefixes (e.g. 802) used by the "Do you serve my area?" checker.',
+                  'The first three characters of each postal code the city covers (e.g. M1B), used by the "Do you serve my area?" checker and to match quotes to a city.',
               },
             },
             {

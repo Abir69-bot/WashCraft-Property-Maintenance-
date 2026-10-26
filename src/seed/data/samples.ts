@@ -18,7 +18,7 @@ export const sampleTestimonials: {
 }[] = [
   {
     name: 'Sample customer, Maria G.',
-    city: 'Aurora',
+    city: 'Scarborough',
     service: 'house-washing',
     rating: 5,
     featured: true,
@@ -28,7 +28,7 @@ export const sampleTestimonials: {
   },
   {
     name: 'Sample customer, Dan R.',
-    city: 'Denver',
+    city: 'North York',
     service: 'gutter-cleaning',
     rating: 5,
     photo: 'gutter-2-after',
@@ -37,7 +37,7 @@ export const sampleTestimonials: {
   },
   {
     name: 'Sample customer, Priya S.',
-    city: 'Centennial',
+    city: 'Markham',
     service: 'window-cleaning',
     rating: 5,
     photo: 'window-cleaning-pole',
@@ -46,7 +46,7 @@ export const sampleTestimonials: {
   },
   {
     name: 'Sample customer, Tom and Elise W.',
-    city: 'Lakewood',
+    city: 'Etobicoke',
     service: 'snow-removal',
     rating: 5,
     quote:
@@ -54,14 +54,14 @@ export const sampleTestimonials: {
   },
   {
     name: 'Sample customer, Kevin L.',
-    city: 'Littleton',
+    city: 'Vaughan',
     service: 'fence-deck-staining',
     rating: 5,
     quote: 'They cleaned the deck, let it dry and came back to stain it. It looks brand new.',
   },
   {
     name: 'Sample customer, Hannah M.',
-    city: 'Arvada',
+    city: 'Mississauga',
     service: 'christmas-light-installation',
     rating: 5,
     quote:

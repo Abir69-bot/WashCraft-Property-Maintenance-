@@ -7,7 +7,7 @@ import { useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { routes } from '@/lib/routes'
-import { matchCity, normalizeZip, type AreaCity } from '@/lib/service-area'
+import { matchCity, normalizePostalCode, type AreaCity } from '@/lib/service-area'
 
 type Result =
   { kind: 'served'; city: AreaCity } | { kind: 'unknown'; zip: string } | { kind: 'invalid' }
@@ -24,7 +24,7 @@ export function ZipChecker({ cities }: { cities: AreaCity[] }) {
         className="flex flex-wrap items-end gap-3"
         onSubmit={(event) => {
           event.preventDefault()
-          const normalized = normalizeZip(zip)
+          const normalized = normalizePostalCode(zip)
           if (!normalized) return setResult({ kind: 'invalid' })
           const city = matchCity(normalized, cities)
           setResult(city ? { kind: 'served', city } : { kind: 'unknown', zip: normalized })
@@ -38,9 +38,8 @@ export function ZipChecker({ cities }: { cities: AreaCity[] }) {
             id={`${id}-zip`}
             value={zip}
             onChange={(event) => setZip(event.target.value)}
-            inputMode="numeric"
             autoComplete="postal-code"
-            placeholder="ZIP code"
+            placeholder="Postal code"
             maxLength={10}
             aria-describedby={`${id}-result`}
           />
@@ -70,7 +69,9 @@ export function ZipChecker({ cities }: { cities: AreaCity[] }) {
             </span>
           </p>
         )}
-        {result?.kind === 'invalid' && <p className="text-error">Enter a 5-digit ZIP code.</p>}
+        {result?.kind === 'invalid' && (
+          <p className="text-error">Enter a postal code, e.g. M1B 2K3.</p>
+        )}
       </div>
     </div>
   )

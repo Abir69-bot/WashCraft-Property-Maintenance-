@@ -289,7 +289,7 @@ export interface Lead {
    */
   callbackRequested?: boolean | null;
   /**
-   * ZIP code outside your cities.
+   * Postal code outside your cities.
    */
   outOfArea?: boolean | null;
   assignedTo?: (number | null) | User;
@@ -351,11 +351,11 @@ export interface City {
       }[]
     | null;
   /**
-   * e.g. CO
+   * Two-letter code, e.g. ON
    */
   state: string;
   /**
-   * Full ZIP codes or prefixes (e.g. 802) used by the "Do you serve my area?" checker.
+   * The first three characters of each postal code the city covers (e.g. M1B), used by the "Do you serve my area?" checker and to match quotes to a city.
    */
   zipPrefixes?: string[] | null;
   lat: number;
@@ -2455,7 +2455,7 @@ export interface SiteSetting {
    */
   hours?: string | null;
   /**
-   * How locals name your area, e.g. "Denver Metro". Fills {region} in text.
+   * How locals name your area, as it reads after "in", e.g. "the GTA". Fills {region} in text.
    */
   region?: string | null;
   country: 'US' | 'CA';
@@ -2588,7 +2588,7 @@ export interface SeasonalSetting {
    */
   routesRemaining?: number | null;
   /**
-   * Choices on the snow contract form, e.g. "1 inch", "2 inches".
+   * Choices on the snow contract form, e.g. "2 cm", "5 cm".
    */
   snowTriggers?: string[] | null;
   /**

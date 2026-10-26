@@ -13,7 +13,7 @@ import { pageMetadata } from '@/lib/seo/metadata'
 
 const title = (region: string) => `Service Areas in ${region}`
 const intro = (region: string) =>
-  `We serve homes, HOAs and businesses across ${region}. Find your city, or enter your ZIP code to check.`
+  `We serve homes, HOAs and businesses across ${region}. Find your city, or enter your postal code to check.`
 
 export async function generateMetadata(): Promise<Metadata> {
   const { site } = await getLayoutData()
@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-/** Service-area overview with the map and ZIP checker (brief §6). */
+/** Service-area overview with the map and postal code checker (brief §6). */
 export default async function AreasPage() {
   const { site, cities } = await getLayoutData()
 

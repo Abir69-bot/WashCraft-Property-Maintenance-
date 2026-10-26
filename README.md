@@ -77,7 +77,7 @@ Put each value in `.env` locally and in Vercel → Project → Settings → Envi
    need A2P 10DLC registration before they can text customers; owner alerts to a verified number
    work on a trial account.
 2. Copy the **Account SID** and **Auth Token** from the console. Set `TWILIO_ACCOUNT_SID`,
-   `TWILIO_AUTH_TOKEN` and `TWILIO_FROM` (your Twilio number, e.g. `+17205550100`).
+   `TWILIO_AUTH_TOKEN` and `TWILIO_FROM` (your Twilio number, e.g. `+14165550100`).
 3. In the admin, **Site settings → Lead alerts → Text new leads to**: the mobile numbers that get
    a text for every new lead.
 
@@ -286,11 +286,12 @@ without a redeploy. Changing a slug later adds a redirect from the old address.
 
 1. Admin → **Cities → Create new**. Fill in the name, slug, the intro (at least 150 words of
    genuinely local text; the editor counts them), neighborhoods and FAQs.
-2. **Location:** the state (e.g. `CO`), the ZIP codes it covers (used by the ZIP checker and to
-   match quotes to a city) and its latitude and longitude (for the map).
+2. **Location:** the province (e.g. `ON`), the postal codes it covers as their first three
+   characters (e.g. `M1B`; used by the postal code checker and to match quotes to a city) and
+   its latitude and longitude (for the map).
 3. **Local conditions** only with a source link. Then **Publish**.
 
-The city gets its page under `/areas`, joins the service-area lists, map, footer, ZIP checker and
+The city gets its page under `/areas`, joins the service-area lists, map, footer, postal code checker and
 the business's structured data, and the sitemap. Cities are the service-area list, so there's
 nothing to change in Site settings.
 

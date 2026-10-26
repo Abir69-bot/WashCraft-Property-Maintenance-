@@ -55,7 +55,7 @@ test.describe('templates', () => {
   for (const path of [
     '/services/gutter-cleaning',
     '/exterior-cleaning',
-    '/areas/denver',
+    '/areas/scarborough',
     '/services',
     '/areas',
     '/commercial',
@@ -106,7 +106,7 @@ test.describe('templates', () => {
   })
 
   test('service-in-city pages stay off until the feature flag is on', async ({ page }) => {
-    const response = await page.goto('/areas/denver/gutter-cleaning')
+    const response = await page.goto('/areas/scarborough/gutter-cleaning')
     expect(response?.status()).toBe(404)
   })
 

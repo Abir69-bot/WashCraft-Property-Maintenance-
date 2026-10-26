@@ -305,7 +305,7 @@ export function FormAlert({ message }: { message: string | null }) {
   )
 }
 
-/** Name, phone, email, address and ZIP, plus the consent checkbox. */
+/** Name, phone, email, address and postal code, plus the consent checkbox. */
 export function ContactSection<T extends FieldValues>({
   form,
   consentLabel,
@@ -318,7 +318,7 @@ export function ContactSection<T extends FieldValues>({
   consentLabel: string
   emailRequired?: boolean
   address?: boolean
-  /** Off when the form already asked for the ZIP code (the wizard's first step). */
+  /** Off when the form already asked for the postal code (the wizard's first step). */
   zip?: boolean | 'optional'
   title?: string
 }) {
@@ -356,9 +356,8 @@ export function ContactSection<T extends FieldValues>({
           <TextField
             form={form}
             name={field('zip')}
-            label="ZIP code"
+            label="Postal code"
             autoComplete="postal-code"
-            inputMode="numeric"
             maxLength={10}
             optional={zip === 'optional'}
           />

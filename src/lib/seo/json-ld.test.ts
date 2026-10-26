@@ -62,6 +62,29 @@ describe('postalAddress', () => {
     })
   })
 
+  it('splits a full Canadian address', () => {
+    expect(postalAddress('12 Kingston Rd, Toronto, ON M1N 1T5', [], 'CA')).toEqual({
+      '@type': 'PostalAddress',
+      streetAddress: '12 Kingston Rd',
+      addressLocality: 'Toronto',
+      addressRegion: 'ON',
+      postalCode: 'M1N 1T5',
+      addressCountry: 'CA',
+    })
+  })
+
+  it('gives only the province and country for an Ontario service-area business', () => {
+    const ontario = [
+      { name: 'Scarborough', state: 'ON' },
+      { name: 'Mississauga', state: 'ON' },
+    ]
+    expect(postalAddress(null, ontario, 'CA')).toEqual({
+      '@type': 'PostalAddress',
+      addressRegion: 'ON',
+      addressCountry: 'CA',
+    })
+  })
+
   it('gives only the state and country for a service-area business', () => {
     expect(postalAddress(null, places, 'US')).toEqual({
       '@type': 'PostalAddress',
@@ -83,7 +106,7 @@ describe('localBusiness', () => {
       name: site.name,
       url: `${origin}/`,
       logo: `${origin}/logo.png`,
-      telephone: '+17205550142',
+      telephone: '+14165550142',
       address: { addressRegion: 'CO' },
     })
     expect(business).not.toHaveProperty('sameAs')

@@ -672,3 +672,30 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
   dashboard after Payload updates, since the widget API may still change.
 - **Leads come first in the admin menu**, ahead of the content collections, and every admin
   screen has a "View website" link.
+
+## Service areas move to the Greater Toronto Area (2026-10-27)
+
+- **The business serves the GTA.** The owner listed the service areas: Scarborough, North York,
+  Etobicoke, Markham, Vaughan, Richmond Hill and Mississauga. That replaces the US/Denver setup
+  from Phase 1: country CA, currency CAD, locale `en-CA`, region "the GTA" (written to read
+  after "in", e.g. "Gutter Cleaning in the GTA"), and the demo phone moves to the 416 area code
+  (still a fictional 555-01xx number). The service areas are no longer a demo value; the region
+  wording still is.
+- **Postal codes, not ZIP codes.** The checker, the forms and lead matching accept Canadian postal
+  codes however they're typed ("m1b2k3", "M1B-2K3") and store them as "M1B 2K3". Cities list the
+  first three characters (the FSA) they cover. US ZIP codes still work, so the code stays
+  country-neutral. Postal code fields no longer open a number-only keypad on phones.
+- **City pages are written from scratch** for each city (housing, trees, ravines, the lake,
+  winter), with four neighborhoods and three FAQs each and no statistics. FSAs and neighborhoods
+  come from general knowledge and are listed for the owner to check. Kleinburg (Vaughan) is
+  mentioned but its rural FSA (L0J) also covers places outside Vaughan, so the checker doesn't
+  match it; the Vaughan FAQ invites people to ask.
+- **Snow trigger depths default to centimetres** (2, 5 or 8 cm), still listed for the owner to
+  review. The Canadian (CASL-style) consent line now applies automatically, and structured data
+  reads Canadian street addresses ("…, Toronto, ON M1B 2K3") once one is set.
+- **Not changed yet (owner to decide):** the copy still uses US spelling (neighborhood, color)
+  and the "HOA & condo" wording. Ontario usually says "condo corporation" or "property
+  management", and workers' comp is WSIB. Changing these touches many services, slugs and pages,
+  so it's left for a separate pass.
+- Neon `dev` was updated with a one-off script: Site settings switched to Canada, the six Colorado
+  cities removed, the seven GTA cities seeded and the sample testimonials moved to them.

@@ -260,7 +260,7 @@ export function AreaLinks({
       title={`Where we offer ${service.title}`}
       intro={
         <>
-          Not sure if we cover you? <Link href={routes.areas}>Check your ZIP code</Link>.
+          Not sure if we cover you? <Link href={routes.areas}>Check your postal code</Link>.
         </>
       }
     >

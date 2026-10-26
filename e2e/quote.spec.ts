@@ -11,11 +11,11 @@ const E2E = 'utm_source=e2e&utm_medium=test'
 
 async function fillContact(page: Page, { address = true, zip = true } = {}) {
   await page.getByLabel('Name', { exact: true }).fill('E2E Test')
-  await page.getByLabel('Phone').fill('(303) 555-0199')
+  await page.getByLabel('Phone', { exact: true }).fill('(303) 555-0199')
   await page.getByLabel(/^Email/).fill('e2e@example.com')
   if (address) await page.getByLabel('Street address').fill('123 Test Street')
-  if (zip) await page.getByLabel('ZIP code').fill('80202')
-  await page.getByLabel(/I agree to receive/).check()
+  if (zip) await page.getByLabel('Postal code').fill('M1B 2K3')
+  await page.getByLabel(/may contact me/).check()
 }
 
 /** Answers every question on the wizard's details step: first choice, lowest number. */
@@ -54,8 +54,8 @@ test.describe('quote system', () => {
     await page.goto(`/?${E2E}`)
     const form = page.locator('#quick-quote-heading').locator('..')
     await form.getByLabel('Name').fill('E2E Test')
-    await form.getByLabel('Phone').fill('(303) 555-0199')
-    await form.getByLabel('ZIP code').fill('80202')
+    await form.getByLabel('Phone', { exact: true }).fill('(303) 555-0199')
+    await form.getByLabel('Postal code').fill('M1B 2K3')
     await form.getByLabel('Service').selectOption({ label: 'Gutter Cleaning' })
     await form.getByRole('button', { name: 'Get my quote' }).click()
     await expect(page).toHaveURL(/\/quote\/thank-you\?type=quick$/)
@@ -66,8 +66,8 @@ test.describe('quote system', () => {
 
   test('the instant wizard prices three services and books them', async ({ page }) => {
     await page.goto(`/quote/instant?${E2E}`)
-    await page.getByLabel('ZIP code').fill('80202')
-    await expect(page.getByText('Good news: we serve Denver.')).toBeVisible()
+    await page.getByLabel('Postal code').fill('M1B 2K3')
+    await expect(page.getByText('Good news: we serve Scarborough.')).toBeVisible()
     await page.getByRole('button', { name: 'Next', exact: true }).click()
 
     await expect(page.getByRole('heading', { name: 'What kind of property is it?' })).toBeFocused()
@@ -105,7 +105,7 @@ test.describe('quote system', () => {
 
   test('the wizard keeps progress after a reload', async ({ page }) => {
     await page.goto('/quote/instant')
-    await page.getByLabel('ZIP code').fill('80014')
+    await page.getByLabel('Postal code').fill('L5B 1M2')
     await page.getByRole('button', { name: 'Next', exact: true }).click()
     await page.getByLabel('Townhouse').check()
     await page.getByRole('button', { name: 'Next', exact: true }).click()
@@ -121,7 +121,7 @@ test.describe('quote system', () => {
     await page.goto(`/maintenance-plans?${E2E}`)
     await page.getByRole('link', { name: 'Get a price for Plus' }).click()
     await expect(page.getByText('You picked the Plus plan.')).toBeVisible()
-    await page.getByLabel('ZIP code').fill('80202')
+    await page.getByLabel('Postal code').fill('M1B 2K3')
     await page.getByRole('button', { name: 'Next', exact: true }).click()
     await page.getByLabel('House', { exact: true }).check()
     await page.getByRole('button', { name: 'Next', exact: true }).click()
@@ -139,7 +139,7 @@ test.describe('quote system', () => {
 
   test('a link from a service page preselects the service', async ({ page }) => {
     await page.goto('/quote/instant?service=window-cleaning')
-    await page.getByLabel('ZIP code').fill('80202')
+    await page.getByLabel('Postal code').fill('M1B 2K3')
     await page.getByRole('button', { name: 'Next', exact: true }).click()
     await page.getByLabel('House', { exact: true }).check()
     await page.getByRole('button', { name: 'Next', exact: true }).click()
@@ -148,7 +148,7 @@ test.describe('quote system', () => {
 
   test('commercial properties are sent to the bid form', async ({ page }) => {
     await page.goto('/quote/instant')
-    await page.getByLabel('ZIP code').fill('80202')
+    await page.getByLabel('Postal code').fill('M1B 2K3')
     await page.getByRole('button', { name: 'Next', exact: true }).click()
     await page.getByLabel(/Commercial, HOA/).check()
     await expect(page.getByRole('link', { name: 'Request a commercial bid' })).toBeVisible()
@@ -161,7 +161,7 @@ test.describe('quote system', () => {
     await page.getByLabel('Driveway size').selectOption('2 cars')
     await page.getByLabel(/Walkway and sidewalk length/).fill('60')
     await page.getByLabel('Salting & De-Icing').check()
-    await page.getByLabel('2 inches').check()
+    await page.getByLabel('5 cm').check()
     await page.getByLabel('Start date').fill('2026-11-15')
     await fillContact(page)
     await page.getByRole('button', { name: 'Request my snow contract' }).click()

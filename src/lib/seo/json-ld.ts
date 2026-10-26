@@ -84,8 +84,9 @@ export function parseHours(text: string): OpeningHoursSpecification[] | null {
 }
 
 /**
- * The business address. A full "street, city, ST 12345" address is split into its parts; a
- * service-area business without a public address gives only the state and country it works in.
+ * The business address. A full "street, city, ON M1B 2K3" (or "street, city, ST 12345") address
+ * is split into its parts; a service-area business without a public address gives only the
+ * province or state and the country it works in.
  */
 export function postalAddress(
   address: string | null,
@@ -95,7 +96,8 @@ export function postalAddress(
   const addressCountry = known(country)
   const street = known(address)
   if (street) {
-    const match = /^(.+?),\s*([^,]+),\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/.exec(street)
+    const match =
+      /^(.+?),\s*([^,]+),\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?|[A-Z]\d[A-Z] ?\d[A-Z]\d)$/.exec(street)
     return match
       ? {
           '@type': 'PostalAddress',

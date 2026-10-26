@@ -17,7 +17,7 @@ import { answersSchema, type QuoteQuestion } from '@/lib/quote/questions'
 import { sharedFrequencies } from '@/lib/quote/services'
 import { routes } from '@/lib/routes'
 import { instantQuoteSchema, type InstantQuoteInput } from '@/lib/schemas/quote'
-import { matchCity, normalizeZip } from '@/lib/service-area'
+import { matchCity, normalizePostalCode } from '@/lib/service-area'
 import { collectTracking, rememberLandingPage } from '@/lib/tracking'
 
 import { EstimateResult } from './estimate-result'
@@ -191,7 +191,7 @@ export function InstantWizard({
   ]
   const index = steps.indexOf(step)
   const commercial = step === 'property' && (values.propertyType as string) === 'commercial'
-  const zip = normalizeZip(values.zip ?? '')
+  const zip = normalizePostalCode(values.zip ?? '')
   const city = zip ? matchCity(zip, cities) : null
 
   useEffect(rememberLandingPage, [])
@@ -337,9 +337,8 @@ export function InstantWizard({
             <TextField
               form={form}
               name="zip"
-              label="ZIP code"
+              label="Postal code"
               autoComplete="postal-code"
-              inputMode="numeric"
               maxLength={10}
             />
             {zip && (

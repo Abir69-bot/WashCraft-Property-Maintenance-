@@ -34,7 +34,7 @@ test.describe('search engines', () => {
     const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => new URL(match[1]))
     const paths = urls.map((url) => url.pathname)
     expect(paths).toEqual(
-      expect.arrayContaining(['/', '/services/gutter-cleaning', '/areas/denver', '/blog']),
+      expect.arrayContaining(['/', '/services/gutter-cleaning', '/areas/scarborough', '/blog']),
     )
     expect(paths.join(' ')).not.toMatch(/thank-you|styleguide|\/team\//)
     for (const path of paths) {
@@ -104,8 +104,8 @@ test.describe('search engines', () => {
       'content',
       'exterior-cleaning',
     )
-    await page.goto('/areas/denver')
-    await expect(page.locator('meta[name="wc:city"]')).toHaveAttribute('content', 'denver')
+    await page.goto('/areas/scarborough')
+    await expect(page.locator('meta[name="wc:city"]')).toHaveAttribute('content', 'scarborough')
   })
 })
 

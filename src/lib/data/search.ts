@@ -31,7 +31,12 @@ const PAGES: SearchEntry[] = [
     kind: 'Page',
     text: 'plans packages subscription',
   },
-  { title: 'Service areas', href: routes.areas, kind: 'Page', text: 'cities zip code area' },
+  {
+    title: 'Service areas',
+    href: routes.areas,
+    kind: 'Page',
+    text: 'cities postal code zip code area',
+  },
   {
     title: 'Before & after',
     href: routes.beforeAndAfter,

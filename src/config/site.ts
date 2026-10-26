@@ -54,15 +54,24 @@ export const site: SiteConfig = {
   name: 'WashCraft Property Maintenance',
   shortName: 'WashCraft',
   tagline: 'Exterior care, year-round',
-  phone: '(720) 555-0142',
+  phone: '(416) 555-0142',
   email: 'hello@example.com',
   address: null,
   hours: 'Mon–Sat 7am–6pm',
-  country: 'US',
-  currency: 'USD',
-  locale: 'en-US',
-  region: 'Denver Metro',
-  serviceAreas: ['Denver', 'Aurora', 'Lakewood', 'Arvada', 'Littleton', 'Centennial'],
+  country: 'CA',
+  currency: 'CAD',
+  locale: 'en-CA',
+  region: 'the GTA',
+  // Confirmed by the owner 2026-10-27 (see DECISIONS.md).
+  serviceAreas: [
+    'Scarborough',
+    'North York',
+    'Etobicoke',
+    'Markham',
+    'Vaughan',
+    'Richmond Hill',
+    'Mississauga',
+  ],
   foundedYear: null,
   insuranceCoverage: null,
   workersCompRegistration: null,
@@ -80,9 +89,9 @@ export const site: SiteConfig = {
     nextdoor: null,
   },
   stats: { jobsCompleted: null, happyClients: null, rating: null, reviewCount: null },
-  // Demo stand-ins chosen 2026-10-21 at the owner's request (see DECISIONS.md).
+  // Demo stand-ins chosen at the owner's request (see DECISIONS.md).
   // 555-0100–0199 numbers and example.com are reserved for fiction and never reach anyone.
-  demo: ['tagline', 'phone', 'email', 'address', 'hours', 'region', 'serviceAreas'],
+  demo: ['tagline', 'phone', 'email', 'address', 'hours', 'region'],
 }
 
 /**

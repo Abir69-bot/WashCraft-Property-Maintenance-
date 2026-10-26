@@ -7,7 +7,7 @@
       "url": [
         "http://localhost:3000/",
         "http://localhost:3000/services/gutter-cleaning",
-        "http://localhost:3000/areas/denver"
+        "http://localhost:3000/areas/scarborough"
       ],
       "numberOfRuns": 5,
       "settings": {

@@ -128,7 +128,7 @@ export const SeasonalSettings: GlobalConfig = {
       label: 'Snow contract trigger depths',
       type: 'text',
       hasMany: true,
-      admin: { description: 'Choices on the snow contract form, e.g. "1 inch", "2 inches".' },
+      admin: { description: 'Choices on the snow contract form, e.g. "2 cm", "5 cm".' },
     },
     {
       name: 'snowPaymentNote',

@@ -32,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const rowClass = 'flex items-start gap-3'
 const iconClass = 'mt-1 size-5 shrink-0 text-secondary-strong'
 
-/** Contact (brief §9.7): form, phone, text, email, hours, address, map and ZIP checker. */
+/** Contact (brief §9.7): form, phone, text, email, hours, address, map and postal code checker. */
 export default async function ContactPage() {
   const { site, cities } = await getLayoutData()
 
