@@ -131,8 +131,11 @@ test.describe('content pages', () => {
     expect(response?.status()).toBe(404)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('We couldn’t find that page')
     await expect(page.getByRole('banner')).toBeVisible()
-    await page.getByLabel('Search the site').fill('gutter')
-    await page
+    // The index loads on first use: wait for the results, then pick from them (not the footer).
+    const search = page.locator('search')
+    await search.getByLabel('Search the site').fill('gutter')
+    await expect(search.getByRole('status')).toHaveText(/^\d+ results?$/)
+    await search
       .getByRole('link', { name: /Gutter Cleaning/ })
       .first()
       .click()

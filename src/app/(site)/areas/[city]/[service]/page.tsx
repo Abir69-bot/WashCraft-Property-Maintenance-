@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
 import { FaqList } from '@/components/sections/areas-and-faq'
@@ -19,6 +18,7 @@ import { consentText } from '@/config/consent'
 import { getLayoutData } from '@/lib/data/layout'
 import { loadCity, loadService } from '@/lib/data/load'
 import { getFeatureFlags } from '@/lib/data/pages'
+import { notFoundUnlessMoved } from '@/lib/data/redirects'
 import { mergeFaqs } from '@/lib/faqs'
 import { quoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
@@ -72,6 +72,7 @@ export async function generateMetadata({
     description: fillTokens(doc.summary, { region: local }),
     image: asMedia(doc.heroImage),
     siteName: data.layout.site.shortName,
+    context: { service: doc.slug, city: data.city.city.slug },
   })
 }
 
@@ -79,7 +80,7 @@ export async function generateMetadata({
 export default async function CityServicePage({ params }: PageProps<'/areas/[city]/[service]'>) {
   const { city: citySlug, service: serviceSlug } = await params
   const data = await load(citySlug, serviceSlug)
-  if (!data) notFound()
+  if (!data) return notFoundUnlessMoved(routes.cityService(citySlug, serviceSlug))
   const { site, categories } = data.layout
   const { city } = data.city
   const { service } = data.service

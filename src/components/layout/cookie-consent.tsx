@@ -4,24 +4,13 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { OPEN_CONSENT_EVENT, readConsent, saveConsent } from '@/lib/consent'
 import { routes } from '@/lib/routes'
 
 /**
- * Cookie choice (brief §8, §14). Analytics and Clarity load only after "Accept"; they listen for
- * the `wc-consent` event and read `wc-consent` from localStorage (Phase 7).
+ * Cookie choice (brief §8, §14). Analytics and Clarity load only after "Accept"
+ * (components/layout/analytics.tsx); "Cookie settings" in the footer reopens the banner.
  */
-const KEY = 'wc-consent'
-const OPEN_EVENT = 'wc-open-consent'
-
-type Choice = { analytics: boolean; at: string }
-
-function readChoice(): Choice | null {
-  try {
-    return JSON.parse(localStorage.getItem(KEY) ?? 'null')
-  } catch {
-    return null
-  }
-}
 
 export function CookieConsent() {
   const [open, setOpen] = useState(false)
@@ -29,20 +18,14 @@ export function CookieConsent() {
   useEffect(() => {
     // Reading localStorage must wait for the browser, so the banner appears after hydration.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (!readChoice()) setOpen(true)
+    if (!readConsent()) setOpen(true)
     const reopen = () => setOpen(true)
-    window.addEventListener(OPEN_EVENT, reopen)
-    return () => window.removeEventListener(OPEN_EVENT, reopen)
+    window.addEventListener(OPEN_CONSENT_EVENT, reopen)
+    return () => window.removeEventListener(OPEN_CONSENT_EVENT, reopen)
   }, [])
 
   function choose(analytics: boolean) {
-    const choice: Choice = { analytics, at: new Date().toISOString() }
-    try {
-      localStorage.setItem(KEY, JSON.stringify(choice))
-    } catch {
-      // Storage blocked: the choice applies to this page view only.
-    }
-    window.dispatchEvent(new CustomEvent('wc-consent', { detail: choice }))
+    saveConsent(analytics)
     setOpen(false)
   }
 
@@ -73,7 +56,7 @@ export function CookieSettingsButton({ className }: { className?: string }) {
     <button
       type="button"
       className={className}
-      onClick={() => window.dispatchEvent(new Event(OPEN_EVENT))}
+      onClick={() => window.dispatchEvent(new Event(OPEN_CONSENT_EVENT))}
     >
       Cookie settings
     </button>

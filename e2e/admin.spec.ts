@@ -41,6 +41,37 @@ test.describe('staff tools', () => {
     await expect(page.getByText('you’re seeing drafts')).toHaveCount(0)
   })
 
+  test('redirects from the admin send old addresses to the new page', async ({ page, baseURL }) => {
+    const headers = { Origin: baseURL! }
+    const create = (from: string) =>
+      page.request.post('/api/redirects', {
+        data: { from, type: '301', to: { type: 'custom', url: '/services/gutter-cleaning' } },
+        headers,
+      })
+    // One unknown path anywhere, one where a service used to be.
+    const created = [await create('/old-gutter-page'), await create('/services/old-gutters')]
+    const ids: number[] = []
+    for (const response of created) {
+      expect(response.ok(), await response.text()).toBe(true)
+      ids.push(((await response.json()) as { doc: { id: number } }).doc.id)
+    }
+    try {
+      for (const from of ['/old-gutter-page', '/services/old-gutters']) {
+        // Saving refreshes the cache in the background, so the new redirect may take a moment.
+        await expect
+          .poll(async () => {
+            const response = await page.request.get(from, { maxRedirects: 0 })
+            return `${response.status()} ${response.headers().location ?? ''}`
+          })
+          .toBe('308 /services/gutter-cleaning')
+      }
+      await page.goto('/Old-Gutter-Page')
+      await expect(page).toHaveURL(/\/services\/gutter-cleaning$/)
+    } finally {
+      for (const id of ids) await page.request.delete(`/api/redirects/${id}`, { headers })
+    }
+  })
+
   test('the dashboard summarises leads and the database size', async ({ page }) => {
     await page.goto('/admin')
     await expect(page.getByRole('heading', { name: /This week’s leads/ })).toBeVisible()

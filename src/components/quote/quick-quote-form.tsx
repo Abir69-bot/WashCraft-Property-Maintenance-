@@ -1,9 +1,8 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useEffect, useId, useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -13,7 +12,7 @@ import { NativeSelect } from '@/components/ui/native-select'
 import { track } from '@/lib/analytics'
 import { submitQuickQuote } from '@/lib/leads/actions'
 import { routes } from '@/lib/routes'
-import { quickQuoteSchema, type QuickQuoteInput } from '@/lib/schemas/quick-quote'
+import type { QuickQuoteInput } from '@/lib/schemas/quick-quote'
 import { collectTracking, rememberLandingPage } from '@/lib/tracking'
 import { cn } from '@/lib/utils'
 
@@ -21,6 +20,18 @@ import { applyServerErrors, FormAlert, Honeypot } from './fields'
 import { Turnstile } from './turnstile'
 
 export type ServiceGroup = { label: string; options: { value: string; label: string }[] }
+
+/**
+ * The shared Zod schema, loaded with the first check instead of with the page: this form sits
+ * on most pages, and Zod is the biggest part of its code.
+ */
+const resolver: Resolver<QuickQuoteInput> = async (values, context, options) => {
+  const [{ zodResolver }, { quickQuoteSchema }] = await Promise.all([
+    import('@hookform/resolvers/zod'),
+    import('@/lib/schemas/quick-quote'),
+  ])
+  return zodResolver(quickQuoteSchema)(values, context, options)
+}
 
 /**
  * The short quote form (brief §10.1), reused in the home strip, service and city pages and the
@@ -43,7 +54,7 @@ export function QuickQuoteForm({
   const [serverError, setServerError] = useState<string | null>(null)
   const [challenge, setChallenge] = useState(0)
   const form = useForm<QuickQuoteInput>({
-    resolver: zodResolver(quickQuoteSchema),
+    resolver,
     defaultValues: {
       name: '',
       phone: '',

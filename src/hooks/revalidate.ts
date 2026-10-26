@@ -41,6 +41,9 @@ const afterGlobalChange: GlobalAfterChangeHook = ({ doc, context }) => {
   return doc
 }
 
+/** Hooks that refresh the site, for collections configured elsewhere (e.g. plugin ones). */
+export const revalidationHooks = { afterChange: [afterChange], afterDelete: [afterDelete] }
+
 /** Adds site revalidation to a collection that feeds public pages. */
 export function withRevalidation(collection: CollectionConfig): CollectionConfig {
   return {

@@ -49,6 +49,21 @@ const schema = z.object({
   // the feature, so the site works with none of them (brief §3, CLAUDE.md).
   TURNSTILE_SECRET_KEY: optionalText,
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: optionalText,
+  /** Analytics, loaded only after cookie consent (read in the browser via lib/public-env.ts). */
+  NEXT_PUBLIC_GTM_ID: z.preprocess(
+    blankToUndefined,
+    z
+      .string()
+      .regex(/^GTM-[A-Z0-9]+$/, 'must look like GTM-ABC1234')
+      .optional(),
+  ),
+  NEXT_PUBLIC_CLARITY_ID: z.preprocess(
+    blankToUndefined,
+    z
+      .string()
+      .regex(/^[a-z0-9]+$/, 'must be the Clarity project ID')
+      .optional(),
+  ),
   TWILIO_ACCOUNT_SID: optionalText,
   TWILIO_AUTH_TOKEN: optionalText,
   /** Sending number in E.164 form, e.g. +17205550100. */

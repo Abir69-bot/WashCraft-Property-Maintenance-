@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 
 import { CmsImage } from '@/components/cms-image'
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
@@ -18,6 +17,7 @@ import { getLayoutData } from '@/lib/data/layout'
 import { loadCity } from '@/lib/data/load'
 import { getSharedBlocks } from '@/lib/data/pages'
 import { seasonNow } from '@/lib/data/season'
+import { notFoundUnlessMoved } from '@/lib/data/redirects'
 import { routes } from '@/lib/routes'
 import { inSeasonNow } from '@/lib/seasons'
 import { pageMetadata } from '@/lib/seo/metadata'
@@ -40,13 +40,16 @@ export async function generateMetadata({ params }: PageProps<'/areas/[city]'>): 
     seo: city.meta,
     image: asMedia(city.heroImage),
     siteName: layout.site.shortName,
+    eyebrow: 'Service area',
+    context: { city: city.slug },
   })
 }
 
 /** City landing page (brief §9.4). Shared copy is filled in with the city's name. */
 export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
-  const { layout, page } = await loadCity((await params).city)
-  if (!page) notFound()
+  const { city: slug } = await params
+  const { layout, page } = await loadCity(slug)
+  if (!page) return notFoundUnlessMoved(routes.city(slug))
   const shared = await getSharedBlocks()
   const { site, categories, services, cities } = layout
   const { city } = page

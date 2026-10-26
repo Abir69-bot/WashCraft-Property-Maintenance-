@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { FormField } from '@/components/ui/form-field'
 import { Input, Textarea } from '@/components/ui/input'
 import { NativeSelect } from '@/components/ui/native-select'
-import { answersSchema, type QuoteQuestion } from '@/lib/quote/questions'
+import type { QuoteQuestion } from '@/lib/quote/questions'
 import { cn } from '@/lib/utils'
 
 /**
@@ -386,21 +386,4 @@ export function FormSection({
       {children}
     </fieldset>
   )
-}
-
-/** Checks answers to a service's CMS questions, marking and focusing the first problem. */
-export function checkAnswers<T extends FieldValues>(
-  form: Form<T>,
-  questions: QuoteQuestion[],
-  values: unknown,
-  prefix: string,
-): boolean {
-  const result = answersSchema(questions).safeParse(values ?? {})
-  if (result.success) return true
-  const names = result.error.issues.map((issue) => `${prefix}.${issue.path.join('.')}` as Path<T>)
-  result.error.issues.forEach((issue, index) =>
-    form.setError(names[index], { message: issue.message }),
-  )
-  form.setFocus(names[0])
-  return false
 }

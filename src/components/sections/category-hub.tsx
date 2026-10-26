@@ -2,11 +2,14 @@ import { Check } from 'lucide-react'
 import Link from 'next/link'
 
 import { CmsImage } from '@/components/cms-image'
+import { JsonLd } from '@/components/json-ld'
 import { ServiceCard } from '@/components/service-card'
 import type { LayoutData, NavService } from '@/lib/data/layout'
 import type { CategoryPage } from '@/lib/data/pages'
+import { env } from '@/lib/env'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
+import { serviceLd } from '@/lib/seo/json-ld'
 import { categoryTitle } from '@/lib/seo/titles'
 import { fillTokens } from '@/lib/text'
 import type { Service, ServiceCategory } from '@/payload-types'
@@ -125,6 +128,20 @@ export function CategoryHub({
 
   return (
     <>
+      <JsonLd
+        data={serviceLd({
+          name: category.title,
+          description: fillTokens(category.intro, { region }),
+          path: routes.category(category.slug),
+          origin: env.NEXT_PUBLIC_SITE_URL,
+          places: layout.cities,
+          catalog: services.map((service) => ({
+            title: service.title,
+            path: routes.service(service.slug),
+            description: fillTokens(service.summary, { region }),
+          })),
+        })}
+      />
       <PageHero
         crumbs={[
           { label: 'Services', href: routes.services },

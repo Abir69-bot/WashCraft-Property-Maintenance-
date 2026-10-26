@@ -2,17 +2,40 @@
 
 import { Search } from 'lucide-react'
 import Link from 'next/link'
-import { useId, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 
 import { Input } from '@/components/ui/input'
-import { searchEntries, type SearchEntry } from '@/lib/search'
+import { SEARCH_INDEX_PATH, searchEntries, type SearchEntry } from '@/lib/search'
 
-/** Search box for the 404 page: services, articles, solutions and main pages, in the browser. */
-export function SiteSearch({ entries }: { entries: SearchEntry[] }) {
+/**
+ * Search box for the 404 page: services, articles, solutions and main pages. The index is
+ * fetched the first time the box is used, so pages that never show a 404 never load it.
+ */
+export function SiteSearch() {
   const id = useId()
   const [query, setQuery] = useState('')
-  const results = searchEntries(entries, query)
+  const [entries, setEntries] = useState<SearchEntry[] | null>(null)
+  const [failed, setFailed] = useState(false)
+  const requested = useRef(false)
+
+  const loadIndex = () => {
+    if (requested.current) return
+    requested.current = true
+    fetch(SEARCH_INDEX_PATH)
+      .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+      .then((index: SearchEntry[]) => setEntries(index))
+      .catch(() => setFailed(true))
+  }
+
+  const results = searchEntries(entries ?? [], query)
   const searching = query.trim().length > 1
+  const status = !searching
+    ? ''
+    : failed
+      ? 'Search isn’t available right now. Try the links below.'
+      : entries === null
+        ? 'Searching…'
+        : `${results.length} ${results.length === 1 ? 'result' : 'results'}`
 
   return (
     <search className="max-w-2xl">
@@ -28,14 +51,18 @@ export function SiteSearch({ entries }: { entries: SearchEntry[] }) {
           id={`${id}-q`}
           type="search"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onFocus={loadIndex}
+          onChange={(event) => {
+            loadIndex()
+            setQuery(event.target.value)
+          }}
           className="pl-10"
           autoComplete="off"
           placeholder="e.g. gutters, snow, windows"
         />
       </div>
       <p role="status" className="mt-2 text-small text-muted">
-        {searching ? `${results.length} ${results.length === 1 ? 'result' : 'results'}` : ''}
+        {status}
       </p>
       {results.length > 0 && (
         <ul className="mt-2 grid gap-2">

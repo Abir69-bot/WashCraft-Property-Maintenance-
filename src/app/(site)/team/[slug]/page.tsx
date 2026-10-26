@@ -1,6 +1,5 @@
 import { Check } from 'lucide-react'
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 
 import { CmsImage } from '@/components/cms-image'
 import { SampleBadge } from '@/components/sample-badge'
@@ -9,6 +8,7 @@ import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { Section } from '@/components/sections/section'
 import { getTeam } from '@/lib/data/content'
 import { loadTeamMember } from '@/lib/data/load'
+import { notFoundUnlessMoved } from '@/lib/data/redirects'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { fillTokens } from '@/lib/text'
@@ -36,8 +36,9 @@ export async function generateMetadata({ params }: PageProps<'/team/[slug]'>): P
 
 /** Team bio page (brief §9.7): photo, role, bio, specialities and a quote CTA. */
 export default async function TeamMemberPage({ params }: PageProps<'/team/[slug]'>) {
-  const { layout, page: member } = await loadTeamMember((await params).slug)
-  if (!member) notFound()
+  const { slug } = await params
+  const { layout, page: member } = await loadTeamMember(slug)
+  if (!member) return notFoundUnlessMoved(routes.teamMember(slug))
   const { site } = layout
   const region = site.region
   const paragraphs = fillTokens(member.bio, { region })

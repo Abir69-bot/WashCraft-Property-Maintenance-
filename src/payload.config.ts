@@ -38,7 +38,7 @@ import {
 } from './globals/settings'
 import { AboutPage, CareersPage, LegalPages } from './globals/pages'
 import { SiteSettings } from './globals/site-settings'
-import { withGlobalRevalidation, withRevalidation } from './hooks/revalidate'
+import { revalidationHooks, withGlobalRevalidation, withRevalidation } from './hooks/revalidate'
 import { env, r2Config } from './lib/env'
 import { generateSeoTitle, generateSeoUrl } from './lib/seo/generate'
 
@@ -126,6 +126,8 @@ export default buildConfig({
       overrides: {
         admin: { group: 'Admin' },
         access: { read: () => true, create: isSignedIn, update: isSignedIn, delete: isOwner },
+        // Redirects are read from the content cache, so saving one refreshes it.
+        hooks: revalidationHooks,
       },
     }),
     // Site photos on Cloudflare R2 in production (local disk otherwise). Customer files use a

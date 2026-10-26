@@ -17,7 +17,6 @@ import { snowContractSchema, type SnowContractInput } from '@/lib/schemas/quote'
 
 import { EstimateResult } from '../estimate-result'
 import {
-  checkAnswers,
   CheckboxGroupField,
   ContactSection,
   FormAlert,
@@ -28,6 +27,7 @@ import {
   TextAreaField,
   TextField,
 } from '../fields'
+import { checkAnswers } from '../check-answers'
 import { Turnstile } from '../turnstile'
 import { useQuoteForm } from '../use-quote-form'
 

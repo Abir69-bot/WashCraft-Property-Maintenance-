@@ -40,6 +40,19 @@ describe('searchEntries', () => {
     expect(searchEntries(entries, 'gutters')[0].title).toBe('Gutter Cleaning')
   })
 
+  it('puts titles that start with the query first among equals', () => {
+    const similar = [
+      entry('Commercial Gutter Cleaning'),
+      entry('Gutter Cleaning'),
+      entry('Gutter Brightening'),
+    ]
+    expect(searchEntries(similar, 'gutter').map((e) => e.title)).toEqual([
+      'Gutter Cleaning',
+      'Gutter Brightening',
+      'Commercial Gutter Cleaning',
+    ])
+  })
+
   it('returns at most eight results', () => {
     const many = Array.from({ length: 12 }, (_, i) => entry(`Window ${i}`))
     expect(searchEntries(many, 'window')).toHaveLength(8)

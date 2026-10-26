@@ -4,14 +4,14 @@ import dynamic from 'next/dynamic'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { routes } from '@/lib/routes'
 
 import type { ServiceGroup } from './quick-quote-form'
 
-// Loaded only when the panel opens, so pages without a form don't carry its JavaScript.
-const QuickQuoteForm = dynamic(() =>
-  import('./quick-quote-form').then((module) => module.QuickQuoteForm),
+// The dialog and form load only when the panel opens, so no page carries their JavaScript.
+const SlideInPanel = dynamic(
+  () => import('./slide-in-panel').then((module) => module.SlideInPanel),
+  { ssr: false },
 )
 
 const STORAGE_KEY = 'wc-slide-in'
@@ -80,17 +80,15 @@ export function SlideInQuote({
     return cleanup
   }, [quotePage])
 
+  const [shown, setShown] = useState(false)
+  if (open && !shown) setShown(true)
+  if (!shown) return null
   return (
-    <Dialog open={open && !quotePage} onOpenChange={setOpen}>
-      <DialogContent side="right" closeLabel="Close the quote form">
-        <DialogTitle>Get a quick quote</DialogTitle>
-        <DialogDescription>
-          Four quick details and we’ll get back to you with a price.
-        </DialogDescription>
-        <div className="mt-6">
-          <QuickQuoteForm groups={groups} consentLabel={consentLabel} />
-        </div>
-      </DialogContent>
-    </Dialog>
+    <SlideInPanel
+      open={open && !quotePage}
+      onOpenChange={setOpen}
+      groups={groups}
+      consentLabel={consentLabel}
+    />
   )
 }

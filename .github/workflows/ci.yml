@@ -38,6 +38,10 @@ jobs:
       PAYLOAD_SECRET: ci-only-secret-never-used-outside-ci-0123456789
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
       NEXT_TELEMETRY_DISABLED: 1
+      # Made-up analytics IDs: the browser tests check that nothing loads before consent and
+      # that the loader works after it, with every request to Google and Microsoft intercepted.
+      NEXT_PUBLIC_GTM_ID: GTM-E2ETEST
+      NEXT_PUBLIC_CLARITY_ID: e2etest
 
     steps:
       - uses: actions/checkout@v5
@@ -78,12 +82,24 @@ jobs:
           pnpm exec playwright install --with-deps chromium
           pnpm test:e2e
 
+      # Home, a service page and a city page on a simulated phone; 90+ in every category (§15).
+      - name: Lighthouse
+        run: pnpm test:lighthouse
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse
+          path: .lighthouseci/
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Migrations match the Payload config
         run: |

@@ -1,24 +1,16 @@
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
+import { JsonLd } from '@/components/json-ld'
 import { env } from '@/lib/env'
 import { routes } from '@/lib/routes'
+import { breadcrumbList } from '@/lib/seo/json-ld'
 
 export type Crumb = { label: string; href: string }
 
 /** Breadcrumb trail for inner pages, with BreadcrumbList structured data (brief §8, §13). */
 export function Breadcrumbs({ items }: { items: Crumb[] }) {
   const trail = [{ label: 'Home', href: routes.home }, ...items]
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: trail.map((crumb, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: crumb.label,
-      item: `${env.NEXT_PUBLIC_SITE_URL}${crumb.href}`,
-    })),
-  }
 
   return (
     <nav aria-label="Breadcrumb" className="container pt-6 text-small">
@@ -41,10 +33,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
           )
         })}
       </ol>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
-      />
+      <JsonLd data={breadcrumbList(trail, env.NEXT_PUBLIC_SITE_URL)} />
     </nav>
   )
 }

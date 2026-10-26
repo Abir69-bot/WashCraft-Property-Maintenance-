@@ -22,6 +22,7 @@ import {
 } from '@/components/sections/home-blocks'
 import { BeforeAfter, Testimonials } from '@/components/sections/proof'
 import type { ExplorerService } from '@/components/sections/service-explorer'
+import { ServiceIcon } from '@/components/service-icon'
 import { consentText } from '@/config/consent'
 import type { HOME_SECTIONS } from '@/globals/settings'
 import { getHomeData } from '@/lib/data/home'
@@ -63,7 +64,7 @@ export default async function HomePage() {
       slug: service.slug,
       title: service.title,
       summary: fillTokens(service.summary, { region }),
-      icon: service.icon,
+      icon: <ServiceIcon name={service.icon} />,
       bullets: (service.cardBullets ?? []).map((bullet) => bullet.text),
       outcomeLabel: service.outcomeLabel,
     }))

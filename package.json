@@ -18,6 +18,7 @@
     "test": "vitest run --project unit",
     "test:int": "vitest run --project int",
     "test:e2e": "playwright test",
+    "test:lighthouse": "lhci autorun",
     "test:db:up": "docker compose up -d --wait db",
     "test:db:down": "docker compose down",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
@@ -60,6 +61,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
+    "@lhci/cli": "0.15.1",
     "@next/env": "16.4.2",
     "@playwright/test": "1.64.1",
     "@tailwindcss/postcss": "4.3.3",
@@ -73,6 +75,7 @@
     "postcss": "8.5.31",
     "prettier": "3.9.10",
     "prettier-plugin-tailwindcss": "0.8.1",
+    "schema-dts": "2.1.0",
     "tailwindcss": "4.3.3",
     "tsx": "4.23.15",
     "typescript": "6.0.3",

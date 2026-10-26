@@ -528,3 +528,75 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
 - **Attribution:** each Google review shows the reviewer's name, "Google review", the date and a
   link to the review on Google, as Google's display rules require. Reviewer photos are not shown
   (they would need another image domain allowed).
+
+## Phase 7 — SEO, analytics and performance (2026-10-26)
+
+### Structured data
+
+- **JSON-LD is typed with `schema-dts`** and built in `lib/seo/json-ld.ts`. Every page carries the
+  business (`HomeAndConstructionBusiness`) and `WebSite`. Service pages add `Service`, category
+  hubs a `Service` with an `OfferCatalog` of their services (no prices), FAQ sections one
+  `FAQPage`, inner pages a `BreadcrumbList`, and blog posts and solutions an `Article` (the
+  business is the author until a real team member is chosen). Unset or placeholder facts are left
+  out, never guessed.
+- **Opening hours are read from the settings text** ("Mon–Sat 7am–6pm", or several ranges
+  separated by commas). Text the parser can't read exactly is left out of the markup rather than
+  marked up half right.
+- **A service-area business gives only its state.** With no street address, the address is the
+  state the cities are in (when they share one) plus the country, and `areaServed` lists the
+  cities.
+- **No review or rating markup at all.** Google ignores ratings a local business publishes about
+  itself ("self-serving reviews"), so even real ones would earn nothing. The browser tests check
+  that no `AggregateRating` or `Review` appears.
+
+### Sitemap, robots, redirects, share images
+
+- **`/sitemap.xml`** lists the indexable static pages plus every published category, service,
+  city, post, solution, team member and open job (service-in-city pages only when switched on),
+  with each document's last change. The thank-you page, styleguide and preview are left out, and
+  samples never appear because the queries use public access.
+- **`/robots.txt`:** development and preview deployments disallow everything. The live site keeps
+  the admin, APIs, internal `/next/` routes and the thank-you page out, but leaves media files and
+  share images crawlable.
+- **Admin redirects apply only where there's no page.** Dynamic pages and the catch-all route call
+  `notFoundUnlessMoved()`, which looks the path up in the cached redirect list before showing the
+  404, so real pages never pay for it. Paths are matched case- and slash-insensitively, and pasted
+  full URLs work. Saving a redirect clears the cache.
+- **Share images:** the SEO tab's image, else the page's photo, else a generated 1200×630 card
+  (`/next/og`, `next/og`) with the title on the brand color. The text travels in the URL with an
+  HMAC signature, so the route can't be used to draw anything the site didn't write.
+
+### Analytics
+
+- **Nothing before consent.** GTM and Clarity are added only after "Accept", and only when their
+  IDs are set. Consent Mode v2 marks analytics granted and all advertising denied (the banner only
+  asks about analytics). Declining later tells both tools to stop and deletes their cookies.
+- **Every event names its page's service, category and city.** Pages declare them in `wc:` meta
+  tags (`pageMetadata({ context })`) and `track()` adds them, so a form doesn't need to know where
+  it is shown. Call, text, email and review links are tracked by one listener on `data-track`.
+- **CI uses made-up IDs** (`GTM-E2ETEST`) with every request to Google and Microsoft intercepted,
+  so the loader is tested without sending anything anywhere.
+
+### Performance
+
+- **JavaScript only on first use.** The mobile menu, the slide-in quote panel and the 404 search
+  index load when first needed instead of with every page; Zod stays out of the quick quote form's
+  first download (`check-answers.ts`).
+- **Colour-scheme client hints only in the admin.** Payload sends `Critical-CH`/`Vary` on every
+  route for its theme. On public pages that made Chrome repeat the first request and split the
+  CDN cache, so the headers are limited to `/admin`.
+- **Lighthouse CI** (`lighthouserc.json`): the home page, a service page and a city page, five
+  runs each on a simulated phone, failing below 90 in any category (median run). It runs in CI
+  after the browser tests.
+- **Measured 2026-10-26** (production build, Linux Chrome in the `lhci-client` image):
+  accessibility and SEO 100 on all three pages; performance 93–96 on most runs (LCP about 2.6 s,
+  TBT 110–210 ms, CLS 0). Some runs show Chrome presenting its first frame about a second after
+  it was painted (seen in the traces; the page itself is idle by then), which Lighthouse's
+  simulation turns into an LCP of about 3.5 s and a score of 87–89. Five runs instead of three
+  keep the median away from those. On Windows the delay shows on nearly every run (scores in the
+  70s and 80s), so local Windows numbers aren't the reference; CI is.
+- **The JavaScript budget (< 150 KB compressed per content page, brief §15) isn't met:** about
+  210 KB loads up front, of which Next.js and React themselves are about 136 KB. The rest is the
+  header menu (Radix), the quick quote form (React Hook Form) and small widgets. Zod, the mobile
+  menu, the slide-in panel, the map and the 404 index already load only when used. Getting under
+  150 KB would mean dropping React Hook Form or Radix from the quick quote form and header.

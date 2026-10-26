@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { Media } from '@/payload-types'
 
 import { excerpt, pageMetadata } from './metadata'
+import { readOgCard } from './og'
 
 const photo = {
   id: 1,
@@ -42,8 +43,25 @@ describe('pageMetadata', () => {
         url: '/services/gutter-cleaning',
         title: 'Gutter Cleaning in Denver Metro | WashCraft',
         description: 'Gutters cleared by hand and flushed.',
+        images: [expect.objectContaining({ width: 1200, height: 630 })],
       },
     })
+  })
+
+  it('shares a signed, generated card when the page has no photo', () => {
+    const [card] = pageMetadata({ ...base, eyebrow: 'Exterior Cleaning' }).openGraph!.images as {
+      url: string
+      alt: string
+    }[]
+    const url = new URL(card.url, 'http://localhost')
+    expect(url.pathname).toBe('/next/og')
+    expect(card.alt).toBe('Gutter Cleaning in Denver Metro')
+    expect(readOgCard(url.searchParams)).toEqual({
+      title: 'Gutter Cleaning in Denver Metro',
+      eyebrow: 'Exterior Cleaning',
+    })
+    url.searchParams.set('title', 'Something else')
+    expect(readOgCard(url.searchParams)).toBeNull()
   })
 
   it('lets the SEO tab override the title, description and image', () => {

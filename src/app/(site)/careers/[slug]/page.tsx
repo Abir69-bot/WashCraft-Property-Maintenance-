@@ -1,7 +1,6 @@
 import { Briefcase, Check, DollarSign, MapPin } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 
 import { SampleBadge } from '@/components/sample-badge'
 import { ApplySection, EMPLOYMENT_LABELS } from '@/components/sections/careers'
@@ -11,6 +10,7 @@ import { Section } from '@/components/sections/section'
 import { Button } from '@/components/ui/button'
 import { getJobs } from '@/lib/data/content'
 import { loadJob } from '@/lib/data/load'
+import { notFoundUnlessMoved } from '@/lib/data/redirects'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { fillTokens } from '@/lib/text'
@@ -56,8 +56,9 @@ function List({ title, items }: { title: string; items: { id?: string | null; te
 
 /** Job opening (brief §9.7) with the application form, the role already chosen. */
 export default async function JobPage({ params }: PageProps<'/careers/[slug]'>) {
-  const { layout, page: job } = await loadJob((await params).slug)
-  if (!job) notFound()
+  const { slug } = await params
+  const { layout, page: job } = await loadJob(slug)
+  if (!job) return notFoundUnlessMoved(routes.job(slug))
   const { site } = layout
   const region = site.region
   const jobs = await getJobs()

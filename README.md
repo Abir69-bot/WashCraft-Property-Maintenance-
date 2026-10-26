@@ -195,9 +195,56 @@ sample testimonials, team and gallery items (samples never appear on the live si
 
 ## Content updates
 
-Saving in the admin updates the live pages within seconds. Services, categories and cities have
-a **Preview** button that shows unpublished drafts (and sample content) to signed-in staff, with
-an **Exit preview** button in the yellow banner.
+Saving in the admin updates the live pages within seconds. Services, categories, cities, blog
+posts, solutions, team members and job openings have a **Preview** button that shows unpublished
+drafts (and sample content) to signed-in staff, with an **Exit preview** button in the yellow
+banner.
+
+**Redirects** (Admin → Redirects): when you change a page's slug, a 301 from the old address is
+added for you. Add your own for addresses from an old website, e.g. from `/gutters.html` to the
+Gutter Cleaning page. A redirect only applies where there is no page, and it starts working
+within a minute of saving.
+
+## Search engines
+
+- `/sitemap.xml` lists every live page (it updates itself) and `/robots.txt` points to it. Preview
+  and development deployments tell search engines to stay away.
+- After launch, add the site to [Google Search Console](https://search.google.com/search-console)
+  and [Bing Webmaster Tools](https://www.bing.com/webmasters), and submit
+  `https://<your-domain>/sitemap.xml` in both.
+- Every page carries structured data (business details, breadcrumbs, services, FAQs, articles).
+  Check any page with Google's [Rich Results Test](https://search.google.com/test/rich-results)
+  once the site is live. It only uses facts from Site settings: set the address (or leave it blank
+  as a service-area business), hours as "Mon–Sat 8am–6pm" and your social profile links.
+- Pages without a photo of their own get a generated share image with their title.
+
+## Analytics
+
+Nothing is loaded until a visitor clicks **Accept** in the cookie banner, and nothing at all
+without the IDs below.
+
+1. **Google Tag Manager + GA4.** Create a GA4 property and a Tag Manager container
+   (tagmanager.google.com). In the container add a **Google tag** with your GA4 measurement ID,
+   triggered on "Initialization – All Pages". GA4's enhanced measurement already counts page
+   views when visitors move between pages. Set `NEXT_PUBLIC_GTM_ID` (e.g. `GTM-ABC1234`).
+2. **Events.** The site pushes these to the data layer, each with `service`, `category` and `city`
+   where the page has them: `quick_form_submit`, `quote_start`, `quote_step`,
+   `quote_contact_submitted`, `quote_estimate_viewed`, `booking_requested`, `snow_contract_submit`,
+   `holiday_lights_submit`, `junk_quote_submit`, `commercial_bid_submit`, `call_click`,
+   `sms_click`, `email_click`, `review_link_click`, `careers_apply`, `contact_submit`. In Tag
+   Manager, add a **Custom Event** trigger matching them all (regex
+   `^(quick_form_submit|quote_.*|booking_requested|.*_submit|.*_click|careers_apply)$`) and a
+   **GA4 Event** tag with event name `{{Event}}` and the three parameters as data layer variables.
+3. **Conversions.** In GA4 → Admin → Key events, mark `quick_form_submit`,
+   `quote_contact_submitted`, `booking_requested`, `snow_contract_submit`,
+   `holiday_lights_submit`, `junk_quote_submit`, `commercial_bid_submit` and `call_click`.
+4. **Microsoft Clarity** (optional, heatmaps and recordings): create a project at clarity.microsoft.com
+   and set `NEXT_PUBLIC_CLARITY_ID`. In Clarity → Settings → Masking, choose **Strict** so
+   recordings never show what visitors type.
+
+Consent Mode v2 tells Google that analytics was allowed and advertising was not (the banner only
+asks about analytics). "Cookie settings" in the footer lets visitors change their mind; declining
+then removes the analytics cookies.
 
 ## Testing
 
@@ -208,7 +255,13 @@ pnpm test:int         # integration (runs the committed migrations first)
 
 pnpm exec playwright install chromium   # once
 pnpm build && pnpm test:e2e             # browser tests on http://localhost:3100
+pnpm build && pnpm test:lighthouse      # Lighthouse on port 3000 (stop `pnpm dev` first)
 ```
+
+Lighthouse (`lighthouserc.json`) scores the home page, a service page and a city page five
+times each on a simulated phone, and fails below 90 in performance, accessibility, best
+practices or SEO (the median run counts). Reports are saved in `.lighthouseci/`. Scores from a
+Windows machine run low (see DECISIONS.md, Phase 7); CI's Linux runner is the reference.
 
 The browser tests use whatever database the build used (locally the Neon `dev` branch). The quote
 tests save leads named "E2E Test" with `utm_source=e2e` (delete them from the admin afterwards
@@ -217,9 +270,10 @@ database, as in CI, where they create the first account; elsewhere they skip.
 
 CI (`.github/workflows/ci.yml`) runs lint, format check, typecheck, unit tests, migrations, the
 config check, integration tests (including a full seed run twice, in their own database), a seed
-of the app database, the production build, the browser tests and a migration drift check. It
-uses a throwaway Postgres service container, so CI never uses Neon compute. When browser tests
-fail, the run keeps a `playwright-report` artifact for 7 days.
+of the app database, the production build, the browser tests, Lighthouse and a migration drift
+check. It uses a throwaway Postgres service container, so CI never uses Neon compute. When
+browser tests fail, the run keeps a `playwright-report` artifact for 7 days; Lighthouse reports
+are kept as a `lighthouse` artifact.
 
 ## Project documents
 

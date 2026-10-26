@@ -4,12 +4,24 @@ import { ArrowRight, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { NavigationMenu } from 'radix-ui'
 
-import { ServiceIcon } from '@/components/service-icon'
-import type { NavCategory } from '@/lib/data/layout'
 import { routes } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
 export type NavLink = { label: string; href: string }
+
+/**
+ * What the menus show of each category. Only these fields are sent to the browser: the menus
+ * are client components, so every prop is in every page's payload.
+ */
+export type MenuCategory = {
+  id: number
+  title: string
+  slug: string
+  /** Drawn on the server (see header.tsx), so the icon set never ships to the browser. */
+  icon: React.ReactNode
+  menuLabel?: string | null
+  services: { id: number; title: string; slug: string }[]
+}
 export type FeaturedCard = {
   eyebrow?: string | null
   title: string
@@ -77,7 +89,7 @@ export function MainNav({
   companyLinks,
   featured,
 }: {
-  categories: NavCategory[]
+  categories: MenuCategory[]
   commercialLinks: NavLink[]
   areaLinks: NavLink[]
   companyLinks: NavLink[]
@@ -98,7 +110,7 @@ export function MainNav({
                     href={routes.category(category.slug)}
                     className="mb-1 flex items-center gap-2 font-heading text-base font-bold text-primary"
                   >
-                    <ServiceIcon name={category.icon} className="size-5 text-secondary-strong" />
+                    {category.icon}
                     {category.menuLabel || category.title}
                   </MenuLink>
                   <ul className="grid gap-0.5">

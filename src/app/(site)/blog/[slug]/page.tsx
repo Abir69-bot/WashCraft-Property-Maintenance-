@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 
 import { CmsImage } from '@/components/cms-image'
+import { JsonLd } from '@/components/json-ld'
 import { ArticleBody, AuthorBox, PostCard } from '@/components/sections/article'
 import { FinalCta } from '@/components/sections/home-blocks'
 import { PageHero } from '@/components/sections/page-hero'
@@ -10,12 +10,16 @@ import { RelatedLinks } from '@/components/sections/service-blocks'
 import { postCategory } from '@/config/content'
 import { getPostList } from '@/lib/data/content'
 import { loadPost } from '@/lib/data/load'
+import { notFoundUnlessMoved } from '@/lib/data/redirects'
+import { env } from '@/lib/env'
 import { quoteCta } from '@/lib/quote/flow'
 import { fillContentTokens, type RichContent } from '@/lib/rich-text'
 import { routes } from '@/lib/routes'
+import { articleLd } from '@/lib/seo/json-ld'
 import { pageMetadata } from '@/lib/seo/metadata'
+import { ogCardPath } from '@/lib/seo/og'
 import { fillTokens } from '@/lib/text'
-import { asMedia, formatDate } from '@/lib/view'
+import { asMedia, formatDate, mediaSrc } from '@/lib/view'
 import type { Service } from '@/payload-types'
 
 export async function generateStaticParams() {
@@ -34,6 +38,7 @@ export async function generateMetadata({ params }: PageProps<'/blog/[slug]'>): P
     seo: page.meta,
     image: asMedia(page.heroImage),
     siteName: layout.site.shortName,
+    eyebrow: postCategory(page.category).label,
   })
 }
 
@@ -42,8 +47,9 @@ const docs = <T,>(items: (number | T)[] | null | undefined) =>
 
 /** Blog article (brief §9.7): contents, mid-article CTA, author, related services and posts. */
 export default async function PostPage({ params }: PageProps<'/blog/[slug]'>) {
-  const { layout, page: post } = await loadPost((await params).slug)
-  if (!post) notFound()
+  const { slug } = await params
+  const { layout, page: post } = await loadPost(slug)
+  if (!post) return notFoundUnlessMoved(routes.post(slug))
   const { site } = layout
   const region = site.region
   const services = docs<Service>(post.relatedServices).filter((service) => service.enabled)
@@ -62,16 +68,32 @@ export default async function PostPage({ params }: PageProps<'/blog/[slug]'>) {
     ...others.filter((other) => other.category !== post.category),
   ].slice(0, 3)
   const category = postCategory(post.category)
+  const title = fillTokens(post.title, { region })
+  const hero = asMedia(post.heroImage)
+  const author = typeof post.author === 'object' ? post.author : null
 
   return (
     <>
+      <JsonLd
+        data={articleLd({
+          headline: title,
+          description: fillTokens(post.excerpt, { region }),
+          path: routes.post(post.slug),
+          origin: env.NEXT_PUBLIC_SITE_URL,
+          image: hero ? mediaSrc(hero) : ogCardPath({ title, eyebrow: category.label }),
+          datePublished: post.publishedAt,
+          dateModified: post.updatedAt,
+          author: author && { name: author.name, path: routes.teamMember(author.slug) },
+          site,
+        })}
+      />
       <PageHero
         crumbs={[
           { label: 'Blog', href: routes.blog },
           { label: post.title, href: routes.post(post.slug) },
         ]}
         eyebrow={category.label}
-        title={fillTokens(post.title, { region })}
+        title={title}
         intro={
           <>
             <p>{fillTokens(post.excerpt, { region })}</p>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 
 import { CmsImage } from '@/components/cms-image'
+import { JsonLd } from '@/components/json-ld'
 import { FaqList } from '@/components/sections/areas-and-faq'
 import { ArticleBody } from '@/components/sections/article'
 import { FinalCta } from '@/components/sections/home-blocks'
@@ -9,12 +9,16 @@ import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { RelatedLinks } from '@/components/sections/service-blocks'
 import { getSolutionList } from '@/lib/data/content'
 import { loadSolution } from '@/lib/data/load'
+import { notFoundUnlessMoved } from '@/lib/data/redirects'
+import { env } from '@/lib/env'
 import { quoteCta } from '@/lib/quote/flow'
 import { fillContentTokens, type RichContent } from '@/lib/rich-text'
 import { routes } from '@/lib/routes'
+import { articleLd } from '@/lib/seo/json-ld'
 import { pageMetadata } from '@/lib/seo/metadata'
+import { ogCardPath } from '@/lib/seo/og'
 import { fillTokens } from '@/lib/text'
-import { asMedia } from '@/lib/view'
+import { asMedia, mediaSrc } from '@/lib/view'
 import type { Service } from '@/payload-types'
 
 export async function generateStaticParams() {
@@ -35,13 +39,15 @@ export async function generateMetadata({
     seo: page.meta,
     image: asMedia(page.heroImage),
     siteName: layout.site.shortName,
+    eyebrow: 'Problem & fix',
   })
 }
 
 /** Solution page (brief §9.7): the problem, the fix, FAQs and the services that solve it. */
 export default async function SolutionPage({ params }: PageProps<'/solutions/[slug]'>) {
-  const { layout, page: solution } = await loadSolution((await params).slug)
-  if (!solution) notFound()
+  const { slug } = await params
+  const { layout, page: solution } = await loadSolution(slug)
+  if (!solution) return notFoundUnlessMoved(routes.solution(slug))
   const { site } = layout
   const region = site.region
   const services = (solution.relatedServices ?? []).filter(
@@ -51,15 +57,31 @@ export default async function SolutionPage({ params }: PageProps<'/solutions/[sl
     ? quoteCta(services[0])
     : { href: routes.quoteCustom, label: 'Request a quote' }
 
+  const title = fillTokens(solution.title, { region })
+  const hero = asMedia(solution.heroImage)
+
   return (
     <>
+      <JsonLd
+        data={articleLd({
+          headline: title,
+          description: fillTokens(solution.problem, { region }),
+          path: routes.solution(solution.slug),
+          origin: env.NEXT_PUBLIC_SITE_URL,
+          image: hero ? mediaSrc(hero) : ogCardPath({ title, eyebrow: 'Problem & fix' }),
+          datePublished: solution.createdAt,
+          dateModified: solution.updatedAt,
+          author: null,
+          site,
+        })}
+      />
       <PageHero
         crumbs={[
           { label: 'Solutions', href: routes.solutions },
           { label: solution.title, href: routes.solution(solution.slug) },
         ]}
         eyebrow="Problem & fix"
-        title={fillTokens(solution.title, { region })}
+        title={title}
         intro={fillTokens(solution.problem, { region })}
         actions={<QuoteActions cta={cta} phone={site.phone} />}
         aside={

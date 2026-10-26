@@ -13,7 +13,6 @@ import { holidayLightsSchema, type HolidayLightsInput } from '@/lib/schemas/quot
 
 import { EstimateResult } from '../estimate-result'
 import {
-  checkAnswers,
   CheckboxField,
   ContactSection,
   FormAlert,
@@ -25,6 +24,7 @@ import {
   TextAreaField,
   TextField,
 } from '../fields'
+import { checkAnswers } from '../check-answers'
 import { Turnstile } from '../turnstile'
 import { useQuoteForm } from '../use-quote-form'
 

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 
+import { JsonLd } from '@/components/json-ld'
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
 import { FaqList } from '@/components/sections/areas-and-faq'
 import { proofPoints } from '@/components/sections/hero'
@@ -22,9 +22,12 @@ import { consentText } from '@/config/consent'
 import { getLayoutData } from '@/lib/data/layout'
 import { loadService } from '@/lib/data/load'
 import { getFeatureFlags, getSharedBlocks } from '@/lib/data/pages'
+import { notFoundUnlessMoved } from '@/lib/data/redirects'
+import { env } from '@/lib/env'
 import { mergeFaqs } from '@/lib/faqs'
 import { quoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
+import { serviceLd } from '@/lib/seo/json-ld'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { serviceTitle } from '@/lib/seo/titles'
 import { fillTokens } from '@/lib/text'
@@ -49,13 +52,19 @@ export async function generateMetadata({
     seo: service.meta,
     image: asMedia(service.heroImage),
     siteName: site.shortName,
+    eyebrow: typeof service.category === 'object' ? service.category.title : 'Services',
+    context: {
+      service: service.slug,
+      category: typeof service.category === 'object' ? service.category.slug : undefined,
+    },
   })
 }
 
 /** Service page (brief §9.3): one template for every service. */
 export default async function ServicePage({ params }: PageProps<'/services/[service]'>) {
-  const { layout, page } = await loadService((await params).service)
-  if (!page) notFound()
+  const { service: slug } = await params
+  const { layout, page } = await loadService(slug)
+  if (!page) return notFoundUnlessMoved(routes.service(slug))
   const [shared, flags] = await Promise.all([getSharedBlocks(), getFeatureFlags()])
   const { site, categories, cities } = layout
   const region = site.region
@@ -73,6 +82,16 @@ export default async function ServicePage({ params }: PageProps<'/services/[serv
 
   return (
     <>
+      <JsonLd
+        data={serviceLd({
+          name: service.title,
+          description: fillTokens(service.summary, { region }),
+          path: routes.service(service.slug),
+          origin: env.NEXT_PUBLIC_SITE_URL,
+          places: cities,
+          category: category?.title,
+        })}
+      />
       <PageHero
         crumbs={[
           { label: 'Services', href: routes.services },

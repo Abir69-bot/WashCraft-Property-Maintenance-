@@ -3,7 +3,6 @@
 import { ArrowRight, Check } from 'lucide-react'
 import Link from 'next/link'
 
-import { ServiceIcon } from '@/components/service-icon'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { routes } from '@/lib/routes'
@@ -12,7 +11,8 @@ export type ExplorerService = {
   slug: string
   title: string
   summary: string
-  icon?: string | null
+  /** Drawn on the server, so the icon set never ships to the browser. */
+  icon?: React.ReactNode
   bullets: string[]
   outcomeLabel: string
 }
@@ -25,7 +25,7 @@ export function ServiceExplorer({ services }: { services: ExplorerService[] }) {
       <TabsList aria-label="Featured services" className="w-full justify-start">
         {services.map((service) => (
           <TabsTrigger key={service.slug} value={service.slug}>
-            <ServiceIcon name={service.icon} />
+            {service.icon}
             {service.title}
           </TabsTrigger>
         ))}

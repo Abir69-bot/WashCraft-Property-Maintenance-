@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
 
 import { FaqSearch } from '@/components/faq-search'
+import { JsonLd } from '@/components/json-ld'
 import { FinalCta } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { FAQ_CATEGORIES } from '@/config/content'
 import { getFaqList } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
 import { routes } from '@/lib/routes'
+import { faqPage } from '@/lib/seo/json-ld'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { fillTokens } from '@/lib/text'
 
@@ -37,6 +39,7 @@ export default async function FaqPage() {
 
   return (
     <>
+      <JsonLd data={faqPage(groups.flatMap((group) => group.faqs))} />
       <PageHero
         crumbs={[{ label: 'FAQ', href: routes.faq }]}
         eyebrow="FAQ"

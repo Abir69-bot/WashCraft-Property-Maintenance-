@@ -2,17 +2,26 @@ import { Phone } from 'lucide-react'
 import Link from 'next/link'
 
 import { Logo } from '@/components/brand/logo'
+import { ServiceIcon } from '@/components/service-icon'
 import { Button } from '@/components/ui/button'
 import type { LayoutData } from '@/lib/data/layout'
 import { routes } from '@/lib/routes'
 import { smsHref, telHref } from '@/lib/text'
 
 import { HeaderShell } from './header-shell'
-import { MainNav, type FeaturedCard, type NavLink } from './main-nav'
+import { MainNav, type FeaturedCard, type MenuCategory, type NavLink } from './main-nav'
 import { MobileMenu } from './mobile-menu'
 
 export function Header({ data, featured }: { data: LayoutData; featured: FeaturedCard | null }) {
-  const { site, categories, cities, navigation } = data
+  const { site, cities, navigation } = data
+  const categories: MenuCategory[] = data.categories.map((category) => ({
+    id: category.id,
+    title: category.title,
+    slug: category.slug,
+    icon: <ServiceIcon name={category.icon} className="size-5 text-secondary-strong" />,
+    menuLabel: category.menuLabel,
+    services: category.services.map(({ id, title, slug }) => ({ id, title, slug })),
+  }))
   const cta = navigation.headerCta ?? { label: 'Get instant price', href: routes.quoteInstant }
   const areaLinks: NavLink[] = cities.map((city) => ({
     label: city.name,

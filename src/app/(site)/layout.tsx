@@ -2,11 +2,14 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import { draftMode } from 'next/headers'
 
+import logo from '@/assets/brand/washcraft-logo.png'
+import { JsonLd } from '@/components/json-ld'
 import {
   AnnouncementBar,
   announcementScript,
   pickAnnouncement,
 } from '@/components/layout/announcement'
+import { Analytics } from '@/components/layout/analytics'
 import { CallBand } from '@/components/layout/call-band'
 import { CookieConsent } from '@/components/layout/cookie-consent'
 import { Footer } from '@/components/layout/footer'
@@ -21,6 +24,7 @@ import { isPlaceholder } from '@/config/site'
 import { getLayoutData, type LayoutData } from '@/lib/data/layout'
 import { seasonNow } from '@/lib/data/season'
 import { env, isProductionSite } from '@/lib/env'
+import { localBusiness, webSite } from '@/lib/seo/json-ld'
 import { fillTokens } from '@/lib/text'
 import { serviceGroups } from '@/lib/view'
 
@@ -44,6 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: site.name, template: `%s | ${site.shortName}` },
     description: isPlaceholder(site.tagline) ? undefined : site.tagline,
     applicationName: site.shortName,
+    twitter: { card: 'summary_large_image' },
     // Only the live site is indexed; dev and preview deployments never are.
     robots: isProductionSite ? undefined : { index: false, follow: false },
   }
@@ -95,6 +100,18 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         >
           Skip to main content
         </a>
+        <JsonLd
+          data={[
+            localBusiness({
+              site,
+              origin: env.NEXT_PUBLIC_SITE_URL,
+              places: layout.cities,
+              logo: logo.src,
+              image: logo.src,
+            }),
+            webSite({ site, origin: env.NEXT_PUBLIC_SITE_URL }),
+          ]}
+        />
         {draft.isEnabled && <PreviewBanner />}
         <AnnouncementBar announcement={announcement} />
         <UtilityBar site={site} />
@@ -106,6 +123,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         <Footer data={layout} />
         <MobileActionBar phone={site.phone} />
         <CookieConsent />
+        <Analytics />
         <SlideInQuote
           groups={serviceGroups(layout.categories)}
           consentLabel={consentText(site.country, site.shortName)}

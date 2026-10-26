@@ -35,4 +35,18 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withPayload(nextConfig, { devBundleServerPackages: false })
+const config = withPayload(nextConfig, { devBundleServerPackages: false })
+const payloadHeaders = config.headers
+
+/**
+ * Payload sends colour-scheme client hints on every route, for the admin's light/dark theme.
+ * On public pages `Critical-CH` makes Chrome repeat each first request (an extra round trip) and
+ * `Vary` splits the CDN cache, so the hints apply to the admin only.
+ */
+export default {
+  ...config,
+  headers: async () =>
+    (payloadHeaders ? await payloadHeaders() : []).map((rule) =>
+      rule.source === '/:path*' ? { ...rule, source: '/admin/:path*' } : rule,
+    ),
+} satisfies NextConfig
