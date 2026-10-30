@@ -75,13 +75,19 @@ test.describe('quote request form', () => {
     await expect(page).toHaveURL(/\/quote$/)
   })
 
-  test('refuses files that aren’t photos, checked by their content', async ({ page }) => {
+  test('accepts real JPEG and PNG photos and refuses disguised files, checked by their content', async ({
+    page,
+  }) => {
     await page.goto('/quote')
     await page
       .locator('input[type="file"]')
-      .setInputFiles([fixture('photo.jpg'), fixture('not-a-photo.jpg')])
-    await expect(page.getByText('photo.jpg', { exact: true })).toBeVisible()
-    await expect(page.getByText(/^That file isn’t a photo we can open/)).toBeVisible()
+      .setInputFiles([fixture('photo.jpg'), fixture('photo.png'), fixture('not-a-photo.jpg')])
+    const item = (name: string) =>
+      page.getByRole('listitem').filter({ has: page.getByText(name, { exact: true }) })
+    // An accepted file shows its size; a refused one shows why.
+    await expect(item('photo.jpg')).toContainText(/\d+ KB/)
+    await expect(item('photo.png')).toContainText(/\d+ KB/)
+    await expect(item('not-a-photo.jpg')).toContainText(/That file isn’t a photo we can open/)
   })
 
   test('sends once, however often the button is pressed', async ({ page }) => {

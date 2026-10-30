@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
   // The custom quote form became the quote request form at /quote (query string kept).
   redirects: async () => [{ source: '/quote/custom', destination: '/quote', permanent: true }],
   env: { CONTENT_CACHE_VERSION: contentCacheVersion },
+  experimental: {
+    // Each static-generation worker loads Payload with its own pool of up to 5 connections.
+    // Next defaults to one worker per core, so a 16-core PC ran 15 workers and 75 connections
+    // and ran out of memory mid-build. Four matches a Vercel build machine.
+    cpus: 4,
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     localPatterns: [{ pathname: '/api/media/file/**' }],
