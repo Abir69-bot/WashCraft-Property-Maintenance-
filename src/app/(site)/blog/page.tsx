@@ -8,6 +8,7 @@ import { Section } from '@/components/sections/section'
 import { POST_CATEGORIES } from '@/config/content'
 import { getPostList } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 
@@ -27,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Blog listing with category filter (brief §9.7). */
 export default async function BlogPage() {
-  const [{ site }, posts] = await Promise.all([getLayoutData(), getPostList()])
+  const [{ site, quote }, posts] = await Promise.all([getLayoutData(), getPostList()])
 
   return (
     <>
@@ -36,12 +37,7 @@ export default async function BlogPage() {
         eyebrow="Blog"
         title={title(site.region)}
         intro={intro}
-        actions={
-          <QuoteActions
-            cta={{ href: routes.quoteInstant, label: 'Get instant price' }}
-            phone={site.phone}
-          />
-        }
+        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
       />
       <Section id="articles" title="All articles">
         {posts.length > 0 ? (
@@ -61,7 +57,7 @@ export default async function BlogPage() {
           </p>
         )}
       </Section>
-      <FinalCta region={site.region} />
+      <FinalCta region={site.region} cta={generalCta(quote)} />
     </>
   )
 }

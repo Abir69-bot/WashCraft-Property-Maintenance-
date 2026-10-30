@@ -5,6 +5,7 @@ import { Logo } from '@/components/brand/logo'
 import { ServiceIcon } from '@/components/service-icon'
 import { Button } from '@/components/ui/button'
 import type { LayoutData } from '@/lib/data/layout'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { smsHref, telHref } from '@/lib/text'
 
@@ -22,13 +23,19 @@ export function Header({ data, featured }: { data: LayoutData; featured: Feature
     menuLabel: category.menuLabel,
     services: category.services.map(({ id, title, slug }) => ({ id, title, slug })),
   }))
-  const cta = navigation.headerCta ?? { label: 'Get instant price', href: routes.quoteInstant }
+  // An owner-set header button wins; otherwise it follows the quote settings.
+  const cta =
+    navigation.headerCta?.href && navigation.headerCta.label
+      ? { href: navigation.headerCta.href, label: navigation.headerCta.label }
+      : generalCta(data.quote)
   const areaLinks: NavLink[] = cities.map((city) => ({
     label: city.name,
     href: routes.city(city.slug),
   }))
-  const companyLinks = navigation.companyLinks ?? []
-  const commercialLinks = navigation.commercialLinks ?? []
+  // The gallery link only shows once there are real before/after photos to see.
+  const pageLinks = (navigation.companyLinks ?? []).filter(
+    (link) => data.hasGallery || link.href !== routes.beforeAndAfter,
+  )
   const callHref = telHref(site.phone)
 
   return (
@@ -48,9 +55,8 @@ export function Header({ data, featured }: { data: LayoutData; featured: Feature
         </Link>
         <MainNav
           categories={categories}
-          commercialLinks={commercialLinks}
           areaLinks={areaLinks}
-          companyLinks={companyLinks}
+          pageLinks={pageLinks}
           featured={featured}
         />
         <div className="ml-auto flex items-center gap-2">
@@ -70,8 +76,7 @@ export function Header({ data, featured }: { data: LayoutData; featured: Feature
           <MobileMenu
             categories={categories}
             areaLinks={areaLinks}
-            companyLinks={companyLinks}
-            commercialLinks={commercialLinks}
+            pageLinks={pageLinks}
             cta={cta}
             callHref={callHref}
             textHref={smsHref(site.phone)}

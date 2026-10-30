@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 import { SnowContractForm } from '@/components/quote/flows/snow-contract-form'
 import { QuotePage } from '@/components/quote/quote-page'
@@ -26,6 +27,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Seasonal snow contract sign-up (brief §10.5). */
 export default async function SnowContractPage() {
+  // Off until switched on under Feature switches (Dedicated quote forms); the quote form covers it.
+  if (!(await getLayoutData()).quote.dedicatedForms) redirect(routes.quote)
   const [{ site, seasonal }, services] = await Promise.all([getLayoutData(), getQuoteServices()])
   const snow = services.find((service) => service.slug === FLOW_SERVICES.snow)
   const triggers = seasonal.snowTriggers?.length

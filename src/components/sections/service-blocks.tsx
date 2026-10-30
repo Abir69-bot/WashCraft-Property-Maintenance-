@@ -1,4 +1,15 @@
-import { ArrowRight, CalendarClock, Check, MapPin, Plus, ShieldCheck } from 'lucide-react'
+import {
+  ArrowRight,
+  CalendarClock,
+  Check,
+  ClipboardCheck,
+  FileText,
+  MapPin,
+  Plus,
+  ShieldCheck,
+  TriangleAlert,
+  Users,
+} from 'lucide-react'
 import Link from 'next/link'
 
 import { CmsImage } from '@/components/cms-image'
@@ -10,6 +21,8 @@ import type { AreaCity } from '@/lib/data/layout'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { fillTokens } from '@/lib/text'
+import { cn } from '@/lib/utils'
+import { asMedia } from '@/lib/view'
 import type { Post, Service, Solution } from '@/payload-types'
 
 import { Section, type SectionTone } from './section'
@@ -28,7 +41,9 @@ export function ServiceIntro({
 }) {
   return (
     <Section id="overview">
-      <div className="grid items-center gap-10 lg:grid-cols-2">
+      <div
+        className={cn('grid items-center gap-10', asMedia(service.heroImage) && 'lg:grid-cols-2')}
+      >
         <div>
           <h2>Why it matters</h2>
           <p className="mt-4 text-lg text-muted">{fillTokens(service.problem, { region })}</p>
@@ -47,14 +62,85 @@ export function ServiceIntro({
             <p className="mt-6 text-small font-semibold text-ink">{trust.join(' · ')}</p>
           )}
         </div>
-        <CmsImage
-          media={service.heroImage}
-          label={service.heroImageLabel}
-          ratio="4/3"
-          sizes="(min-width: 1024px) 50vw, 100vw"
-        />
+        {asMedia(service.heroImage) && (
+          <CmsImage
+            media={service.heroImage}
+            ratio="4/3"
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="shadow-raised"
+          />
+        )}
       </div>
     </Section>
+  )
+}
+
+const POINT_LISTS = {
+  suitableFor: { icon: Users, eyebrow: 'Who it’s for', iconClass: 'text-secondary-strong' },
+  exclusions: {
+    icon: TriangleAlert,
+    eyebrow: 'Good to know',
+    iconClass: 'text-secondary-strong',
+  },
+  preparation: {
+    icon: ClipboardCheck,
+    eyebrow: 'Before we arrive',
+    iconClass: 'text-success-strong',
+  },
+} as const
+
+/**
+ * A titled list of short points: who the service suits, what it doesn't cover and access
+ * limits, or how to prepare. Hidden while the list is empty.
+ */
+export function PointList({
+  kind,
+  title,
+  items,
+  intro,
+  tone,
+}: {
+  kind: keyof typeof POINT_LISTS
+  title: string
+  items: { id?: string | null; item: string }[] | null | undefined
+  intro?: React.ReactNode
+  tone?: SectionTone
+}) {
+  if (!items?.length) return null
+  const { icon: Icon, eyebrow, iconClass } = POINT_LISTS[kind]
+  return (
+    <Section id={kind} tone={tone} eyebrow={eyebrow} title={title} intro={intro}>
+      <ul className="grid gap-4 md:grid-cols-2">
+        {items.map((point) => (
+          <li key={point.id ?? point.item} className="flex items-start gap-3 card-raised p-5">
+            <Icon aria-hidden className={cn('mt-0.5 size-5 shrink-0', iconClass)} />
+            {point.item}
+          </li>
+        ))}
+      </ul>
+    </Section>
+  )
+}
+
+/** The service hero's side card: what the quote covers and the button to request one. */
+export function QuoteCard({ cta, service }: { cta: QuoteCta; service?: string }) {
+  return (
+    <div className="card-raised p-6 sm:p-8">
+      <FileText aria-hidden className="size-8 text-secondary-strong" />
+      <h2 className="mt-4 text-h3">Get a written estimate</h2>
+      <p className="mt-2 text-muted">
+        Tell us about the job and add photos if you can. We review every request and send a written
+        estimate with the scope, exclusions, price and conditions before anything is booked.
+      </p>
+      <Button asChild size="lg" className="mt-6 w-full">
+        <Link href={cta.href}>{cta.label}</Link>
+      </Button>
+      {service && (
+        <p className="mt-3 text-center text-small text-muted">
+          The form opens with {service} already picked.
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -158,11 +244,8 @@ export function ProcessSteps({
     <Section id="process" eyebrow="The process" title={title}>
       <ol className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {steps.map((step, index) => (
-          <li key={step.id ?? step.title} className="rounded-card border border-border p-6">
-            <span
-              aria-hidden
-              className="flex size-10 items-center justify-center rounded-full bg-primary font-heading font-bold text-white"
-            >
+          <li key={step.id ?? step.title} className="card-raised p-6">
+            <span aria-hidden className="step-number">
               {index + 1}
             </span>
             <h3 className="mt-4">
@@ -260,7 +343,8 @@ export function AreaLinks({
       title={`Where we offer ${service.title}`}
       intro={
         <>
-          Not sure if we cover you? <Link href={routes.areas}>Check your postal code</Link>.
+          We currently serve these communities. Not sure if we cover you?{' '}
+          <Link href={routes.areas}>Check your postal code</Link>.
         </>
       }
     >
@@ -275,7 +359,7 @@ export function AreaLinks({
             <li key={city.id}>
               <Link
                 href={local ? routes.cityService(city.slug, service.slug) : routes.city(city.slug)}
-                className="flex min-h-12 items-center gap-2 rounded-card border border-border bg-white px-4 font-semibold no-underline hover:border-primary"
+                className="flex min-h-12 card-lift items-center gap-2 card-raised px-4 font-semibold no-underline"
               >
                 <MapPin aria-hidden className="size-4 shrink-0 text-secondary-strong" />
                 {local ? `${service.title} in ${city.name}` : city.name}

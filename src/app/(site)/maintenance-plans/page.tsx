@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 import { FinalCta } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { PlanCards, PlanTable } from '@/components/sections/plans'
 import { getLayoutData } from '@/lib/data/layout'
 import { getPlans } from '@/lib/data/pages'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 
@@ -24,7 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Maintenance plans and seasonal packages, from the Plans collection (brief §9.6). */
 export default async function MaintenancePlansPage() {
-  const [{ site }, plans] = await Promise.all([getLayoutData(), getPlans()])
+  // Off until switched on under Feature switches (Instant prices and plans); the quote form covers it.
+  if (!(await getLayoutData()).quote.instantPricing) redirect(routes.quote)
+  const [{ site, quote }, plans] = await Promise.all([getLayoutData(), getPlans()])
   const tiers = plans.filter((plan) => plan.kind === 'tier')
   const packages = plans.filter((plan) => plan.kind === 'package')
 
@@ -36,12 +40,7 @@ export default async function MaintenancePlansPage() {
         icon="sparkles"
         title={title(site.region)}
         intro={intro}
-        actions={
-          <QuoteActions
-            cta={{ href: routes.quoteInstant, label: 'Get instant price' }}
-            phone={site.phone}
-          />
-        }
+        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
       />
       <PlanCards
         id="plans"
@@ -64,7 +63,7 @@ export default async function MaintenancePlansPage() {
         title="Compare seasonal packages"
         tone="surface"
       />
-      <FinalCta region={site.region} />
+      <FinalCta region={site.region} cta={generalCta(quote)} />
     </>
   )
 }

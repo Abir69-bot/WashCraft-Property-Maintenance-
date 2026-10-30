@@ -1,79 +1,106 @@
 import type { CategorySeed } from '../types'
 
+/**
+ * Service groups, in menu order (2026-10 update): residential, commercial and restaurant, and
+ * post-construction cleaning first, then exterior and seasonal maintenance. A category only shows
+ * once it has a published service; with exactly one, its link goes straight to that service.
+ * Copy makes no claims about availability, timing or prices.
+ */
 export const categories: CategorySeed[] = [
+  {
+    slug: 'interior-cleaning',
+    title: 'Residential Cleaning',
+    menuLabel: 'Residential cleaning',
+    tone: 'interior',
+    icon: 'sparkles',
+    headline: 'Interior cleaning for homes and rentals',
+    intro:
+      'Kitchens, bathrooms, floors and living spaces cleaned to a checklist agreed with you up front. For homeowners, tenants and landlords getting a home ready between tenants.',
+    summary: 'Interior house cleaning for kitchens, bathrooms, floors and living spaces.',
+    outcomeLabel: 'Get a cleaner home',
+    heroImageLabel: 'Bright, freshly cleaned kitchen with clear counters',
+    bundles: [
+      {
+        title: 'Moving day bundle',
+        description:
+          'Move-out cleaning, garage cleaning and junk removal, so you leave the old place empty and clean.',
+        services: ['move-in-move-out-cleaning', 'garage-cleaning', 'junk-removal'],
+      },
+    ],
+  },
+  {
+    slug: 'commercial',
+    title: 'Commercial & Restaurant Cleaning',
+    menuLabel: 'Commercial & restaurant',
+    tone: 'commercial',
+    icon: 'building',
+    headline: 'Cleaning for offices, shops and restaurants',
+    intro:
+      'Commercial and restaurant cleaning with the areas, tasks and visit times set out in a written estimate. For offices, retail spaces, common areas, dining rooms and front-of-house spaces.',
+    summary: 'Commercial cleaning for offices and shops, and restaurant front-of-house cleaning.',
+    outcomeLabel: 'Get a commercial quote',
+    heroImageLabel: 'Clean office reception and a restaurant dining room before opening',
+    bundles: [],
+  },
+  {
+    slug: 'post-construction',
+    title: 'Post-Construction Cleaning',
+    menuLabel: 'Post-construction',
+    tone: 'interior',
+    icon: 'construction',
+    headline: 'Cleanup after renovations and new builds',
+    intro:
+      'Construction dust, debris and residue cleared from surfaces, fixtures and floors so a renovated or newly built space is ready to use.',
+    summary: 'Cleanup after renovations and new builds, for homes and businesses.',
+    outcomeLabel: 'Get a post-construction clean',
+    heroImageLabel: 'Newly renovated room, dust-free and ready to use',
+    bundles: [],
+  },
   {
     slug: 'exterior-cleaning',
     title: 'Exterior Cleaning',
     menuLabel: 'Exterior cleaning',
     tone: 'exterior',
     icon: 'droplets',
-    headline: 'Exterior cleaning that makes the whole property shine',
+    headline: 'Exterior cleaning, matched to each surface',
     intro:
-      'Siding, roofs, gutters, windows, driveways and decks all collect grime in their own way. We clean each one with the right method: gentle soft washing for siding and roofs, and pressure washing for concrete and stone. Book one service or bundle a few and get the whole outside done in one visit.',
+      'Siding, windows, gutters, roofs, driveways, patios and balconies all collect grime in their own way. Each one gets a method that suits the surface, and every job is scoped in writing before it’s booked.',
     summary:
-      'House washing, roof and gutter cleaning, windows, driveways, decks and more, each with the right method for the surface.',
+      'Pressure and soft washing, windows, gutters, roofs, driveway sealing, patios and balconies.',
     outcomeLabel: 'Get a cleaner exterior',
     heroImageLabel:
       'Two-story home with freshly washed siding, clean windows and a bright driveway',
-    bookingNote:
-      'Spring and early fall fill up fast. Book 2–3 weeks ahead for your preferred date.',
     bundles: [
       {
-        title: 'Curb appeal bundle',
+        title: 'Exterior refresh',
         description:
-          'House wash, window cleaning and driveway cleaning in one visit. The fastest way to make a home look cared for.',
-        services: ['house-washing', 'window-cleaning', 'driveway-cleaning'],
+          'Soft washing for the siding, window cleaning and pressure washing for the walkways, quoted together.',
+        services: ['soft-washing', 'window-cleaning', 'pressure-washing'],
       },
       {
-        title: 'Roof-to-gutter bundle',
+        title: 'Roofline care',
         description:
-          'Roof cleaning, gutter cleaning and gutter brightening together, so water flows freely and the roofline looks new.',
-        services: ['roof-cleaning', 'gutter-cleaning', 'gutter-brightening'],
-      },
-    ],
-  },
-  {
-    slug: 'interior-cleaning',
-    title: 'Interior Cleaning',
-    menuLabel: 'Interior cleaning',
-    tone: 'interior',
-    icon: 'sparkles',
-    headline: 'Interior cleaning and hauling, done properly',
-    intro:
-      'From weekly house cleaning to the deep clean before you hand over the keys, we bring the same checklist and care inside as we do outside. We also clean out garages, haul away junk and handle the small maintenance jobs that never seem to get done.',
-    summary:
-      'House cleaning, move-in and move-out cleaning, post-construction cleanup, garages, junk removal and general maintenance.',
-    outcomeLabel: 'Get a spotless home',
-    heroImageLabel: 'Bright, freshly cleaned kitchen with clear counters',
-    bundles: [
-      {
-        title: 'Moving day bundle',
-        description:
-          'Move-out cleaning, garage cleaning and junk removal, so you leave the old place empty and spotless.',
-        services: ['move-in-move-out-cleaning', 'garage-cleaning', 'junk-removal'],
+          'Roof cleaning and gutter cleaning together, so the roof and gutters are clear.',
+        services: ['roof-cleaning', 'gutter-cleaning'],
       },
     ],
   },
   {
     slug: 'winter-services',
-    title: 'Winter Services',
-    menuLabel: 'Snow & ice',
+    title: 'Snow Removal',
+    menuLabel: 'Snow removal',
     tone: 'winter',
     icon: 'snowflake',
-    headline: 'Snow and ice handled before you need to leave',
+    headline: 'Snow removal for homes and businesses',
     intro:
-      'A seasonal snow contract puts your property on our route for the whole winter. We clear driveways, walkways and sidewalks after each qualifying snowfall, add salting or ice control if you want it, and haul away snowbanks when they pile up. Routes fill up, so sign up before the first storm.',
-    summary:
-      'Seasonal snow contracts for driveways and walkways, plus salting, ice control and snowbank removal.',
-    outcomeLabel: 'Get on a snow route',
-    heroImageLabel: 'Crew member clearing a residential driveway at dawn after a snowfall',
-    bookingNote:
-      'Snow routes are planned in the fall. Sign up by early November for full-season service.',
+      'Driveways, walkways and entrances cleared in winter. The areas, timing and options for your property are set out in your written estimate before the season starts.',
+    summary: 'Snow removal for driveways, walkways and entrances.',
+    outcomeLabel: 'Ask about snow removal',
+    heroImageLabel: 'Residential driveway cleared after a snowfall',
     bundles: [
       {
-        title: 'Worry-free winter bundle',
-        description:
-          'Driveway and walkway clearing plus salting after every visit. Nothing to shovel, nothing to salt.',
+        title: 'Winter bundle',
+        description: 'Driveway and walkway clearing with salting, so there’s nothing to shovel.',
         services: ['driveway-snow-clearing', 'walkway-sidewalk-snow-clearing', 'salting-de-icing'],
       },
     ],
@@ -84,19 +111,16 @@ export const categories: CategorySeed[] = [
     menuLabel: 'Holiday lights',
     tone: 'holiday',
     icon: 'gift',
-    headline: 'Holiday lights, hung for you and taken down in January',
+    headline: 'Christmas lights, hung for you',
     intro:
-      'Skip the ladder this year. We design, install and maintain your holiday lights, then take them down in January and store them until next season if you like. Use your own lights or let us supply commercial-grade ones.',
-    summary: 'Christmas light installation, January removal and off-season storage.',
-    outcomeLabel: 'Book your lights',
-    heroImageLabel: 'Home at dusk with warm white roofline lights and lit shrubs',
-    bookingNote:
-      'Install dates book up by mid-November. Reserve early for a pre-Thanksgiving install.',
+      'Christmas light installation for homes and businesses. What’s included, such as supplying lights or taking them down, is confirmed in your written estimate.',
+    summary: 'Christmas light installation for rooflines, trees and shrubs.',
+    outcomeLabel: 'Ask about holiday lights',
+    heroImageLabel: 'Home at dusk with warm white roofline lights',
     bundles: [
       {
         title: 'Full-season lighting',
-        description:
-          'Installation, a mid-season check, January removal and storage until next year.',
+        description: 'Installation, January removal and storage until next year.',
         services: [
           'christmas-light-installation',
           'christmas-light-removal',
@@ -111,47 +135,19 @@ export const categories: CategorySeed[] = [
     menuLabel: 'Yard care',
     tone: 'yard',
     icon: 'leaf',
-    headline: 'Yard cleanups and exterior upkeep through the seasons',
+    headline: 'Yard cleanups and exterior upkeep',
     intro:
-      'Spring and fall cleanups, leaf removal, garden beds, garbage bin cleaning and the small exterior jobs that keep a home in good shape: caulking, minor repairs, staining and painting. Plan them once and let us keep the outside of your home on schedule.',
+      'Spring and fall cleanups, leaf removal, garden beds and small exterior jobs that keep a property in good shape.',
     summary:
-      'Seasonal yard cleanups, leaf removal, bin cleaning, staining, painting, caulking and minor repairs.',
+      'Seasonal yard cleanups, leaf removal, staining, painting, caulking and small repairs.',
     outcomeLabel: 'Get a tidy yard',
     heroImageLabel: 'Neat front yard with edged beds and a freshly stained fence',
-    bookingNote:
-      'Fall cleanups book up in October. Spring cleanups start as soon as the snow melts.',
     bundles: [
       {
         title: 'Fence refresh bundle',
         description:
           'Fence cleaning followed by staining. Cleaning first helps the stain soak in and last longer.',
         services: ['fence-cleaning', 'fence-deck-staining', 'yard-cleanup'],
-      },
-    ],
-  },
-  {
-    slug: 'commercial',
-    title: 'Commercial & HOA',
-    menuLabel: 'Commercial & HOA',
-    tone: 'commercial',
-    icon: 'building',
-    headline: 'Property maintenance for HOAs, property managers and businesses',
-    intro:
-      'One contact for building washing, windows, gutters, parking garages, snow and holiday lighting across one property or many. We work to your schedule, keep residents and customers informed, and confirm the paperwork your board needs up front.',
-    summary:
-      'Building washing, windows, gutters, roofs, parking garages, graffiti removal, solar panels and permanent lighting for HOAs and businesses.',
-    outcomeLabel: 'Request a commercial bid',
-    heroImageLabel: 'Crew on a lift washing a three-story condo building',
-    bundles: [
-      {
-        title: 'Year-round HOA contract',
-        description:
-          'Building washing and gutters in spring and fall, windows twice a year and snow clearing all winter, under one contract.',
-        services: [
-          'hoa-building-washing',
-          'commercial-gutter-cleaning',
-          'commercial-snow-clearing',
-        ],
       },
     ],
   },

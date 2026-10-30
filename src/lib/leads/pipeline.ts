@@ -28,7 +28,7 @@ import {
   type ApplicationSummary,
   type LeadSummary,
 } from './messages'
-import { backupLead, failedLeadRecord, persistLead } from './save'
+import { backupLead, describeError, failedLeadRecord, persistLead } from './save'
 
 const adminLink = (id: number) => `${env.NEXT_PUBLIC_SITE_URL}/admin/collections/leads/${id}`
 const applicationLink = (id: number) =>
@@ -67,7 +67,7 @@ export function baseLeadData({
   shortName,
 }: {
   type: LeadData['type']
-  form: { name: string; phone: string; email?: string; consent: boolean }
+  form: { name: string; phone?: string; email?: string; consent: boolean }
   zip: string
   tracking: Tracking
   cities: AreaCity[]
@@ -75,17 +75,18 @@ export function baseLeadData({
   shortName: string
 }): LeadData {
   const postalCode = normalizePostalCode(zip) ?? zip
-  const city = matchCity(postalCode, cities)
+  const city = postalCode ? matchCity(postalCode, cities) : null
   return {
     type,
     status: 'new',
     name: form.name,
-    phone: form.phone,
+    phone: form.phone || undefined,
     email: form.email || undefined,
-    postalCode,
+    postalCode: postalCode || undefined,
     city: city?.id,
     cityName: city?.name,
-    outOfArea: !city,
+    // Without a postal code (street address only) the owner checks the area by hand.
+    outOfArea: Boolean(postalCode) && !city,
     consent: form.consent,
     consentAt: form.consent ? new Date().toISOString() : undefined,
     consentText: form.consent ? consentText(country, shortName) : undefined,
@@ -132,6 +133,10 @@ async function runJobs(jobs: Job[], notifier: { sms: string; email: string }) {
     }
   })
 }
+
+/** The notification log without phone numbers or email addresses, for the server log. */
+const withoutAddresses = (log: Awaited<ReturnType<typeof runJobs>>) =>
+  log.map(({ channel, via, ok, error }) => ({ channel, via, ok, error }))
 
 const layoutSite = () =>
   getLayoutData()
@@ -201,7 +206,7 @@ async function sendNotifications(
   const log = await runJobs(jobs, notifier)
   const sent = log.filter((entry) => entry.ok).length
   const status = sent === log.length ? 'sent' : sent > 0 ? 'partial' : 'failed'
-  if (status !== 'sent') console.error('[lead] some notifications failed', log)
+  if (status !== 'sent') console.error('[lead] some notifications failed', withoutAddresses(log))
   if (!lead) return
 
   try {
@@ -213,7 +218,7 @@ async function sendNotifications(
       data: { notificationStatus: status, notificationLog: log },
     })
   } catch (error) {
-    console.error(`[lead] could not record notifications for lead ${lead.id}`, error)
+    console.error(`[lead] could not record notifications for lead ${lead.id}`, describeError(error))
   }
 }
 
@@ -303,7 +308,9 @@ async function sendApplicationNotifications(
       }),
   })
   const log = await runJobs(jobs, notifier)
-  if (log.some((entry) => !entry.ok)) console.error('[application] some notifications failed', log)
+  if (log.some((entry) => !entry.ok)) {
+    console.error('[application] some notifications failed', withoutAddresses(log))
+  }
 }
 
 /**

@@ -50,6 +50,19 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 export type PersistResult<T> =
   { saved: true; result: T } | { saved: false; backedUp: boolean; error: string }
 
+/**
+ * An error for the server log without customer details: database errors can list the values
+ * being saved after "params:", so only the error's name and first part are kept.
+ */
+export function describeError(error: unknown): string {
+  if (!(error instanceof Error)) return 'Unknown error'
+  const message = error.message
+    .split(/\n\s*params:/)[0]
+    .replace(/\s+/g, ' ')
+    .slice(0, 300)
+  return `${error.name}: ${message}`
+}
+
 /** Saves with one retry on connection errors, then falls back to `backup`. */
 export async function persistLead<T>({
   save,
@@ -68,7 +81,7 @@ export async function persistLead<T>({
       return { saved: true, result: await save() }
     } catch (error) {
       lastError = error
-      console.error(`[lead] save attempt ${attempt} failed`, error)
+      console.error(`[lead] save attempt ${attempt} failed`, describeError(error))
       if (attempt === 1 && isConnectionError(error)) await wait(retryDelayMs)
       else break
     }
@@ -78,7 +91,7 @@ export async function persistLead<T>({
     await backup(message)
     return { saved: false, backedUp: true, error: message }
   } catch (backupError) {
-    console.error('[lead] backup failed too', backupError)
+    console.error('[lead] backup failed too', describeError(backupError))
     return { saved: false, backedUp: false, error: message }
   }
 }
@@ -127,11 +140,15 @@ export async function backupLead(
   ])
   results.forEach((result, index) => {
     if (result.status === 'rejected') {
-      console.error(`[lead] backup ${index === 0 ? 'to storage' : 'email'} failed`, result.reason)
+      console.error(
+        `[lead] backup ${index === 0 ? 'to storage' : 'email'} failed`,
+        describeError(result.reason),
+      )
     }
   })
+  // Nowhere safe to keep it: the visitor is told the request wasn't sent, so they can try again
+  // or get in touch another way. Customer details are never written to the server log.
   if (results.every((result) => result.status === 'rejected')) {
-    console.error(`[lead] FULL LEAD (not saved anywhere else): ${JSON.stringify(record)}`)
     throw new Error('Lead backup failed')
   }
 }
@@ -164,7 +181,7 @@ export async function reimportFailedLeads(
       await store.delete(key)
       imported.push(key)
     } catch (error) {
-      console.error(`[lead] could not re-import ${key}`, error)
+      console.error(`[lead] could not re-import ${key}`, describeError(error))
       failed.push(key)
     }
   }

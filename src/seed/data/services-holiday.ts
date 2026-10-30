@@ -10,47 +10,74 @@ export const holidayServices: ServiceSeed[] = [
     quoteMode: 'instant',
     dedicatedFlow: 'holiday-lights',
     seasons: ['holiday'],
-    bookingWindowNote:
-      'Installs run from late October. Book by mid-November for a pre-Thanksgiving install.',
-    headline: 'The brightest house on the block, without the ladder',
-    promise: 'Holiday lights designed, installed and maintained across {region}.',
+    headline: 'Holiday lights, hung for you',
+    promise: 'Christmas light installation for homes and businesses in {region}.',
     summary:
-      'Professional Christmas light installation for rooflines, trees and shrubs, with your lights or ours.',
-    outcomeLabel: 'Book your lights',
-    bullets: ['Rooflines, trees and shrubs', 'Your lights or ours', 'Removal in January'],
+      'Christmas light installation for rooflines, windows, trees and shrubs. What’s included, and whether take-down is part of it, is confirmed in your written estimate.',
+    outcomeLabel: 'Ask about holiday lights',
+    bullets: [
+      'Rooflines, trees and shrubs',
+      'Homes and storefronts',
+      'Inclusions confirmed in writing',
+    ],
     heroImageLabel: 'Two-story home at dusk with warm white roofline lights and lit trees',
     problem:
-      'Hanging lights means hours on a ladder in the cold, tangled strands and half a string that won’t light. Then you do it all again in reverse in January.',
+      'Hanging lights means ladders, cold hands and hours of untangling. Rooflines and tall trees are the hardest part, and the most risky to do yourself.',
     benefits: [
-      { title: 'No ladders for you', body: 'We do the climbing, clipping and plugging in.' },
       {
-        title: 'A clean, even look',
-        body: 'Lights are clipped in straight lines along the roofline and wrapped evenly on trees.',
+        title: 'No ladder for you',
+        body: 'Skip the climbing and the untangling.',
       },
       {
-        title: 'Taken care of all season',
-        body: 'If a strand goes out, we fix it. In January we take everything down.',
+        title: 'A neat display',
+        body: 'Lights hung evenly along the lines of the house and garden.',
+      },
+      {
+        title: 'Clear inclusions',
+        body: 'Your estimate spells out the lights, areas and any take-down.',
       },
     ],
     included: [
-      'Design to suit your home',
-      'Roofline, trees, shrubs and railings',
-      'Clips that don’t damage shingles or gutters',
-      'Timers set up',
-      'Repair visits for strand outages during the season',
+      'Installation on the areas listed in your estimate',
+      'A test of the lights once they’re up',
+      'Lights and any take-down as set out in your estimate',
+    ],
+    suitableFor: [
+      'Homeowners who want a holiday display without the ladder',
+      'Storefronts, restaurants and small businesses',
+      'Landlords and property managers decorating shared entrances',
+    ],
+    exclusions: [
+      'Whether we supply the lights, use yours, take them down or store them is confirmed in your estimate. Nothing is included unless it’s listed there.',
+      'Electrical work, new outlets and timers wired into your electrical system are not included.',
+      'Rooflines we can’t reach safely are confirmed case by case when we quote.',
+    ],
+    preparation: [
+      'Request a quote early in the season and send photos of the house.',
+      'If we’re using your lights, test them and have them ready.',
+      'Make sure there are working outdoor outlets near the display.',
     ],
     method:
-      'We measure the roofline and plan where lights, timers and outlets go. Lights are clipped to gutters or shingles with clips that don’t damage them, never nailed or stapled. Trees and shrubs are wrapped evenly. Use your own lights or choose commercial-grade LEDs from us.',
+      'We plan the display with you, install along the areas in your estimate and test everything before we leave.',
     safety:
-      'Roof work uses fall protection. We use outdoor-rated cords and timers, keep connections off the ground and never overload outlets.',
+      'We only work on rooflines and trees we can reach safely, and we keep cords tidy and clear of walkways.',
     process: [
       {
-        title: 'Get a price',
-        body: 'Tell us the roofline length, stories and what you’d like lit.',
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
       },
-      { title: 'Pick a style', body: 'Warm white, multicolor or custom.' },
-      { title: 'Install', body: 'We hang and test everything on your install date.' },
-      { title: 'January removal', body: 'We take everything down and store it if you like.' },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: [
       'Roofline length',
@@ -64,27 +91,21 @@ export const holidayServices: ServiceSeed[] = [
     ],
     faqs: [
       {
+        question: 'Do you supply the lights?',
+        answer: 'We confirm whether we supply lights or use yours in your written estimate.',
+      },
+      {
+        question: 'Do you take the lights down after the holidays?',
+        answer:
+          'Take-down is only included if your estimate says so. Ask about it when you request a quote.',
+      },
+      {
         question: 'When should I book?',
-        answer: 'As early as September. Install dates fill up through November.',
-      },
-      {
-        question: 'Can you use my lights?',
-        answer: 'Yes. We test them first. Strands that don’t work can be replaced with ours.',
-      },
-      {
-        question: 'Will clips damage my roof or gutters?',
-        answer: 'No. We use clips made for shingles and gutters, never nails or staples.',
-      },
-      {
-        question: 'What if a strand goes out?',
-        answer: 'Let us know and we’ll fix it during the season.',
-      },
-      {
-        question: 'When do you take them down?',
-        answer: 'In January, after the holidays, on a date that suits you.',
+        answer:
+          'Early in the season is best. Send your request as soon as you know what you’d like.',
       },
     ],
-    related: ['christmas-light-removal', 'christmas-light-storage', 'permanent-led-lighting'],
+    related: ['snow-removal', 'gutter-cleaning', 'window-cleaning'],
     questions: [
       ask.number('roofline', 'Roofline to light', {
         min: 0,

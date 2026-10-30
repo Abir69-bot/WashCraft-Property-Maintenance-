@@ -38,10 +38,11 @@ const link = (name: string): Field => ({
   ],
 })
 
-const links = (name: string, label?: string): Field => ({
+const links = (name: string, label?: string, description?: string): Field => ({
   name,
   label,
   type: 'array',
+  admin: description ? { description } : undefined,
   fields: [
     {
       type: 'row',
@@ -149,9 +150,29 @@ export const Navigation: GlobalConfig = {
   },
   access: publicGlobal,
   fields: [
-    link('headerCta'),
-    links('companyLinks', 'Company menu'),
-    links('commercialLinks', 'Commercial menu (extra links)'),
+    {
+      name: 'headerCta',
+      label: 'Header button',
+      type: 'group',
+      admin: {
+        description:
+          'Leave both blank to follow the quote settings ("Request a Free Quote" or "Request a Quote").',
+      },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'label', type: 'text' },
+            { name: 'href', type: 'text' },
+          ],
+        },
+      ],
+    },
+    links(
+      'companyLinks',
+      'Menu links',
+      'Plain links after Services and Service Areas, e.g. About, FAQs, Contact. The Before & After link hides itself until there are real photos.',
+    ),
     {
       name: 'featuredCard',
       type: 'group',
@@ -201,6 +222,7 @@ export const Footer: GlobalConfig = {
 
 export const HOME_SECTIONS = [
   'hero',
+  'intro',
   'quick-quote',
   'client-logos',
   'trust-strip',
@@ -270,6 +292,16 @@ export const Homepage: GlobalConfig = {
           label: 'Hero',
           fields: [
             {
+              name: 'introduction',
+              label: 'Introduction',
+              type: 'group',
+              admin: { description: `The short introduction under the hero. ${TOKENS_HINT}` },
+              fields: [
+                { name: 'title', type: 'text' },
+                { name: 'body', type: 'textarea' },
+              ],
+            },
+            {
               name: 'heroVariants',
               type: 'array',
               admin: { description: 'One per season. The site picks the one for today’s date.' },
@@ -292,7 +324,8 @@ export const Homepage: GlobalConfig = {
               name: 'howItWorks',
               type: 'array',
               minRows: 3,
-              maxRows: 3,
+              maxRows: 6,
+              admin: { description: 'The quote process, shown on the home and quote pages.' },
               fields: [
                 { name: 'title', type: 'text', required: true },
                 { name: 'body', type: 'textarea', required: true },
@@ -301,7 +334,10 @@ export const Homepage: GlobalConfig = {
             {
               name: 'recurringUpsell',
               type: 'text',
-              admin: { description: 'Shown under step 3.' },
+              admin: {
+                description:
+                  'Shown under the last step, linking to maintenance plans (only with instant prices switched on).',
+              },
             },
             {
               name: 'whyChooseUs',
@@ -356,6 +392,33 @@ export const FeatureFlags: GlobalConfig = {
   admin: { group: 'Settings' },
   access: ownerGlobal,
   fields: [
+    {
+      name: 'instantPricing',
+      label: 'Instant prices and plans',
+      type: 'checkbox',
+      admin: {
+        description:
+          'The instant-price wizard, price ranges, maintenance plans and recurring discounts. Leave off until every price under Pricing is confirmed: with it off, every quote button goes to the quote request form.',
+      },
+    },
+    {
+      name: 'dedicatedQuoteForms',
+      label: 'Dedicated quote forms',
+      type: 'checkbox',
+      admin: {
+        description:
+          'The separate snow contract, holiday lights, junk removal and commercial bid forms. Leave off until their options (contract terms, light packages, etc.) are confirmed.',
+      },
+    },
+    {
+      name: 'comparisonTable',
+      label: 'Comparison table',
+      type: 'checkbox',
+      admin: {
+        description:
+          'The "how we compare" table. Only turn it on if every claim in it is true and can be shown.',
+      },
+    },
     {
       name: 'cityServicePages',
       label: 'City service pages',

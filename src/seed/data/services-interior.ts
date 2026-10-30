@@ -4,48 +4,81 @@ import type { ServiceSeed } from '../types'
 export const interiorServices: ServiceSeed[] = [
   {
     slug: 'house-cleaning',
-    title: 'House Cleaning',
+    title: 'Interior House Cleaning',
     category: 'interior-cleaning',
     icon: 'sparkles',
     quoteMode: 'instant',
     seasons: ['all-year'],
-    headline: 'Come home to a clean house',
-    promise: 'One-time or recurring house cleaning on a checklist you can see.',
+    headline: 'A cleaner home, room by room',
+    promise: 'Interior house cleaning in {region}, with the checklist agreed up front.',
     summary:
-      'One-time, every-other-week or monthly house cleaning, with kitchens, bathrooms, floors and dusting on a set checklist.',
-    outcomeLabel: 'Get a clean home',
+      'Interior house cleaning for kitchens, bathrooms, floors and living spaces, with the rooms and checklist agreed in your written estimate.',
+    outcomeLabel: 'Get a cleaner home',
     bullets: [
-      'One-time or recurring',
-      'Same checklist every visit',
-      'Inside fridge and oven available',
+      'Kitchens and bathrooms',
+      'Floors, dusting and surfaces',
+      'Checklist agreed up front',
     ],
     heroImageLabel: 'Bright living room with freshly vacuumed rug and dusted shelves',
     problem:
-      'Between work, kids and everything else, cleaning slips. Bathrooms and kitchens need attention every week, and the deep corners and baseboards never get done.',
+      'Busy weeks leave little time for proper cleaning. Kitchens, bathrooms and floors take the most wear, and dust builds up in the places that are easy to skip.',
     benefits: [
-      { title: 'Time back', body: 'Spend your weekend on something other than scrubbing.' },
       {
-        title: 'Consistent results',
-        body: 'We follow the same room-by-room checklist every visit.',
+        title: 'Time back',
+        body: 'Spend your evenings and weekends on something other than cleaning.',
       },
-      { title: 'Flexible schedule', body: 'Book once, or set a regular schedule that suits you.' },
+      {
+        title: 'Clear expectations',
+        body: 'The rooms and tasks are agreed in writing, so you know what’s covered.',
+      },
+      {
+        title: 'Respect for your home',
+        body: 'We treat your home and belongings with care and follow your instructions.',
+      },
     ],
     included: [
-      'Kitchen counters, sink, stovetop and outside of appliances',
-      'Bathrooms: toilets, tubs, showers, sinks and mirrors',
-      'Dusting of reachable surfaces and baseboards',
-      'Vacuuming and mopping of all floors',
-      'Beds made and trash emptied',
+      'Kitchen counters, sink, outside of appliances and cabinet fronts',
+      'Bathrooms: toilet, sink, tub or shower, mirrors and floors',
+      'Dusting of reachable surfaces',
+      'Vacuuming and mopping of hard floors, and vacuuming of rugs',
+      'Any extra tasks listed in your estimate',
+    ],
+    suitableFor: [
+      'Homeowners and tenants who want help keeping up',
+      'Landlords preparing a home between tenants',
+      'Owners getting a house ready for a sale or a visit',
+    ],
+    exclusions: [
+      'Carpet cleaning is not offered.',
+      'Inside appliances, inside cabinets and walls are only included when your estimate lists them.',
+      'We don’t move heavy furniture or clean at heights that need a ladder.',
+      'Biohazards, mold remediation and pest-related cleanup are not included.',
+    ],
+    preparation: [
+      'Pick up clothes, toys and clutter so surfaces and floors are clear.',
+      'Tell us about pets, alarm codes, parking and how we’ll get in.',
+      'Point out any surfaces or items that need special care.',
     ],
     method:
-      'We work top to bottom and room by room, so dust falls onto areas we haven’t cleaned yet. Each room has a checklist, and we use separate cloths for kitchens and bathrooms. First visits take longer because we catch up on built-up dirt.',
-    safety:
-      'We bring our own supplies and can use yours if you prefer specific products. Let us know about pets and anything fragile or off-limits.',
+      'We work room by room through the checklist in your estimate, top to bottom so dust falls onto floors we clean last. Tell us about any products or surfaces you want us to avoid.',
+    safety: 'Tell us about allergies, pets and any products you prefer us to use or avoid.',
     process: [
-      { title: 'Get a price', body: 'Tell us bedrooms, bathrooms and any add-ons.' },
-      { title: 'Choose a schedule', body: 'One-time, every other week or monthly.' },
-      { title: 'We clean', body: 'Room by room, following the checklist.' },
-      { title: 'Walk-through', body: 'Tell us anything you’d like done differently next time.' },
+      {
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
+      },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: [
       'Bedrooms and bathrooms',
@@ -60,31 +93,22 @@ export const interiorServices: ServiceSeed[] = [
     ],
     faqs: [
       {
+        question: 'Do you bring your own supplies?',
+        answer:
+          'We’ll confirm supplies and equipment in your estimate. If you’d like us to use your own products, tell us when you send your request.',
+      },
+      {
+        question: 'Do you clean carpets?',
+        answer:
+          'No, we don’t offer carpet cleaning. We vacuum carpets and rugs as part of a clean.',
+      },
+      {
         question: 'Do I need to be home?',
         answer:
-          'No. Many customers give us a door code or key. We’ll message you when we arrive and leave.',
-      },
-      {
-        question: 'Do you bring supplies?',
-        answer:
-          'Yes, all supplies and equipment. If you prefer certain products, leave them out and we’ll use them.',
-      },
-      {
-        question: 'Is the first clean different?',
-        answer:
-          'It usually takes longer because we catch up on built-up dirt. Regular visits after that are quicker.',
-      },
-      {
-        question: 'Can I skip or reschedule a visit?',
-        answer: 'Yes. Give us 48 hours’ notice and we’ll move it.',
-      },
-      {
-        question: 'Do you clean homes with pets?',
-        answer:
-          'Yes. Tell us about pets so we can bring the right vacuum attachments and keep doors closed.',
+          'No, as long as we have a safe way in. We’ll agree access with you before the visit.',
       },
     ],
-    related: ['move-in-move-out-cleaning', 'garage-cleaning', 'window-cleaning'],
+    related: ['post-construction-cleaning', 'window-cleaning', 'patio-balcony-cleaning'],
     questions: [
       bedrooms,
       bathrooms,
@@ -174,66 +198,101 @@ export const interiorServices: ServiceSeed[] = [
   {
     slug: 'post-construction-cleaning',
     title: 'Post-Construction Cleaning',
-    category: 'interior-cleaning',
+    category: 'post-construction',
     icon: 'construction',
     quoteMode: 'custom',
     seasons: ['all-year'],
-    headline: 'From construction dust to move-in ready',
-    promise: 'Fine dust, paint flecks and stickers cleared after renovations and new builds.',
+    headline: 'From construction site to move-in ready',
+    promise: 'Post-construction and renovation cleanup in {region}.',
     summary:
-      'Cleaning after renovations and new builds: fine dust, debris, paint specks, labels and window residue.',
-    outcomeLabel: 'Get a post-construction quote',
-    bullets: ['Fine dust removal', 'Stickers and paint specks', 'Rough or final clean'],
+      'Cleaning after renovations and new builds: construction dust, debris and residue cleared from surfaces, fixtures and floors so the space is ready to use.',
+    outcomeLabel: 'Get a post-construction clean',
+    bullets: [
+      'Construction dust and residue',
+      'Fixtures, surfaces and floors',
+      'For homes and businesses',
+    ],
     heroImageLabel: 'Newly renovated room with dust-free floors and windows',
     problem:
-      'Construction dust gets everywhere: inside cabinets, on top of door frames and in window tracks. It keeps settling for days, and regular cleaning just moves it around.',
+      'Renovations leave fine dust on every surface, plus stickers, splatter and debris. It settles again as you clean, and it gets into vents, tracks and corners that a regular clean misses.',
     benefits: [
-      { title: 'Truly dust-free', body: 'HEPA vacuums and repeated wipe-downs remove fine dust.' },
       {
-        title: 'Details handled',
-        body: 'Labels, tape residue and paint specks are removed carefully.',
+        title: 'Ready to use',
+        body: 'Move in, open up or hand over the keys without the dust.',
       },
-      { title: 'Builder-friendly', body: 'We schedule around trades and final inspections.' },
+      {
+        title: 'Detail work',
+        body: 'Fixtures, frames, sills, cabinets and floors get attention, not just a quick wipe.',
+      },
+      {
+        title: 'Planned with your timeline',
+        body: 'We agree when we come in so it fits the end of the job.',
+      },
     ],
     included: [
-      'HEPA vacuuming of all surfaces',
-      'Wipe-down of walls, trim, doors and cabinets inside and out',
-      'Removal of stickers, tape and light paint specks',
-      'Windows, sills and tracks',
-      'Floors vacuumed and mopped',
+      'Dust removed from reachable surfaces, ledges, frames and sills',
+      'Cabinets, counters and fixtures wiped inside and out as listed in your estimate',
+      'Stickers and light residue removed where safe for the surface',
+      'Hard floors vacuumed and mopped',
+      'Bathrooms and kitchens cleaned',
+    ],
+    suitableFor: [
+      'Homeowners at the end of a renovation',
+      'Contractors and builders handing over a finished project',
+      'Landlords and businesses reopening a renovated space',
+    ],
+    exclusions: [
+      'Large debris, leftover materials and garbage removal are only included when your estimate says so.',
+      'Carpet cleaning is not offered.',
+      'Paint, grout or adhesive that can’t come off safely is left alone and pointed out.',
+      'Work at height that needs ladders or lifts is confirmed case by case.',
+    ],
+    preparation: [
+      'Make sure construction work in the area is finished and tools are cleared out.',
+      'Confirm that water and power are on.',
+      'Tell us the size of the space and share photos or a floor plan if you have one.',
     ],
     method:
-      'We vacuum with HEPA filters first so dust is captured, not spread. Then we wipe every surface from top to bottom, including inside cabinets. Stickers and paint specks are removed with the right tools for each surface.',
+      'We work top to bottom so dust that falls is picked up last, and we go back over surfaces where dust settles again. Delicate finishes get products and tools suited to them.',
+    safety:
+      'We need the site to be safe to work in. If construction is still underway in an area, we’ll arrange another time for it.',
     process: [
-      { title: 'Send photos', body: 'Tell us the size and stage of the project.' },
-      { title: 'Get a quote', body: 'We price a rough clean, a final clean or both.' },
-      { title: 'Clean', body: 'We clean around your schedule and trades.' },
-      { title: 'Touch-up', body: 'A quick follow-up for dust that settled later, if needed.' },
+      {
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
+      },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: ['Square footage', 'Stage: rough or final clean', 'Amount of dust and debris'],
     faqs: [
       {
         question: 'When should I book?',
-        answer: 'After the last trade finishes and before you move furniture in.',
+        answer:
+          'Book for when the trades are finished in the area, or close to it. Tell us your timeline and we’ll plan around it.',
       },
       {
-        question: 'Do you haul construction debris?',
-        answer: 'Small amounts, yes. For larger loads, add junk removal.',
+        question: 'Do you remove construction debris?',
+        answer:
+          'Only if it’s listed in your estimate. Tell us what’s left on site when you send your request.',
       },
       {
-        question: 'Can you work for builders?',
-        answer: 'Yes. We clean new builds and remodels for contractors and homeowners.',
-      },
-      {
-        question: 'Will you clean inside cabinets?',
-        answer: 'Yes, inside and out.',
-      },
-      {
-        question: 'How long does it take?',
-        answer: 'Most single-room remodels take a few hours. Whole homes take a day or more.',
+        question: 'Do you work for contractors?',
+        answer:
+          'Yes. Contractors and builders can request a quote for a handover clean on a finished project.',
       },
     ],
-    related: ['junk-removal', 'house-cleaning', 'window-cleaning'],
+    related: ['house-cleaning', 'commercial-cleaning', 'window-cleaning'],
   },
   {
     slug: 'garage-cleaning',

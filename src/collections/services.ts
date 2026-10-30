@@ -23,6 +23,15 @@ import { redirectOnSlugChange } from '@/hooks/redirect-on-slug-change'
 import { previewUrl } from '@/lib/preview'
 import { validateQuoteQuestions } from '@/lib/quote/questions'
 
+/** A list of short points (stored as `{ item }` rows). */
+const pointList = (name: string, label: string, description: string): ArrayField => ({
+  name,
+  label,
+  type: 'array',
+  admin: { description: `${description} The section hides while the list is empty.` },
+  fields: [{ name: 'item', type: 'text', required: true }],
+})
+
 const titledItems = (
   name: string,
   label: string,
@@ -97,6 +106,21 @@ export const Services: CollectionConfig = {
               minRows: 3,
               fields: [{ name: 'item', type: 'text', required: true }],
             },
+            pointList(
+              'suitableFor',
+              'Who it’s for',
+              'The customers and properties this service suits.',
+            ),
+            pointList(
+              'exclusions',
+              'Not included and access limits',
+              'What this service doesn’t cover, and access or height limits. Only list limits you have confirmed.',
+            ),
+            pointList(
+              'preparation',
+              'How to prepare',
+              'What the customer should do before the visit.',
+            ),
             { name: 'method', type: 'textarea', required: true, label: 'How we do it' },
             { name: 'safety', type: 'textarea', label: 'Safety notes' },
             titledItems('process', 'Process steps', 4, 6),
@@ -238,7 +262,11 @@ export const Services: CollectionConfig = {
       type: 'checkbox',
       defaultValue: true,
       index: true,
-      admin: { position: 'sidebar', description: 'Untick to hide this service everywhere.' },
+      admin: {
+        position: 'sidebar',
+        description:
+          'Untick to hide this service everywhere. Services you haven’t confirmed should stay unpublished (drafts).',
+      },
     },
     orderField,
   ],

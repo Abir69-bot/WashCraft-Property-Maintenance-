@@ -26,8 +26,8 @@ export function ServiceAreas({ cities, region }: { cities: AreaCity[]; region: s
       id="service-areas"
       tone="surface"
       eyebrow="Service areas"
-      title={`Proudly serving ${region}`}
-      intro="Find your city, or check your postal code."
+      title="Where we work"
+      intro={`We currently serve these communities in ${region}. Not on the list? Send a quote request anyway and we’ll tell you honestly whether we can help.`}
     >
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="grid content-start gap-6">
@@ -36,7 +36,7 @@ export function ServiceAreas({ cities, region }: { cities: AreaCity[]; region: s
               <li key={city.id}>
                 <Link
                   href={routes.city(city.slug)}
-                  className="flex min-h-12 items-center gap-2 rounded-card border border-border bg-white px-4 font-semibold no-underline hover:border-primary"
+                  className="flex min-h-12 card-lift items-center gap-2 card-raised px-4 font-semibold no-underline"
                 >
                   <MapPin aria-hidden className="size-4 shrink-0 text-secondary-strong" />
                   {city.name}

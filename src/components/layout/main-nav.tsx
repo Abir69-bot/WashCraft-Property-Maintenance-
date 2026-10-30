@@ -4,7 +4,7 @@ import { ArrowRight, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { NavigationMenu } from 'radix-ui'
 
-import { routes } from '@/lib/routes'
+import { categoryHref, routes } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
 export type NavLink = { label: string; href: string }
@@ -33,7 +33,7 @@ export type FeaturedCard = {
 const MAX_PER_CATEGORY = 6
 
 const triggerClass =
-  'group inline-flex min-h-11 items-center gap-1 rounded-full px-4 font-semibold text-ink hover:bg-surface hover:text-primary data-[state=open]:bg-surface data-[state=open]:text-primary'
+  'group inline-flex min-h-11 items-center gap-1 rounded-full px-3 font-semibold text-ink transition-colors hover:bg-surface hover:text-primary data-[state=open]:bg-surface data-[state=open]:text-primary xl:px-4'
 const panelClass =
   'absolute top-full z-50 mt-2 animate-fade-in rounded-card border border-border bg-white p-6 text-ink shadow-xl'
 const linkClass =
@@ -84,36 +84,39 @@ function LinkList({ links }: { links: NavLink[] }) {
 /** Desktop navigation (lg and up). Radix handles hover, keyboard, Escape and focus. */
 export function MainNav({
   categories,
-  commercialLinks,
   areaLinks,
-  companyLinks,
+  pageLinks,
   featured,
 }: {
   categories: MenuCategory[]
-  commercialLinks: NavLink[]
   areaLinks: NavLink[]
-  companyLinks: NavLink[]
+  /** Plain top-level links (About, FAQs, Contact…), set under Navigation in the admin. */
+  pageLinks: NavLink[]
   featured: FeaturedCard | null
 }) {
-  const commercial = categories.find((category) => category.slug === 'commercial')
-
+  const columns = Math.min(categories.length, 3)
   return (
     // Radix wraps the list in a `position: relative` div, which would make the Services panel
     // only as wide as the menu triggers. Making it static lets the panel span the header row
     // (header.tsx), while the other panels stay under their own `relative` items.
     <NavigationMenu.Root aria-label="Main" className="hidden lg:block [&>div]:static!">
-      <NavigationMenu.List className="flex items-center gap-1">
+      <NavigationMenu.List className="flex items-center gap-0.5">
         <NavigationMenu.Item>
           <Trigger>Services</Trigger>
           {/* The header is sticky, so a panel taller than the screen scrolls inside itself. */}
           <NavigationMenu.Content
             className={cn(panelClass, 'inset-x-6 max-h-[calc(100dvh-12rem)] overflow-y-auto')}
           >
-            <div className="grid grid-cols-[repeat(3,minmax(0,1fr))_17rem] gap-x-6 gap-y-5">
+            <div
+              className="grid gap-x-6 gap-y-5"
+              style={{
+                gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))${featured ? ' 17rem' : ''}`,
+              }}
+            >
               {categories.map((category) => (
                 <div key={category.id}>
                   <MenuLink
-                    href={routes.category(category.slug)}
+                    href={categoryHref(category)}
                     className="mb-1 flex items-center gap-2 font-heading text-base font-bold text-primary"
                   >
                     {category.icon}
@@ -139,7 +142,10 @@ export function MainNav({
                 </div>
               ))}
               {featured && (
-                <div className="col-start-4 row-span-2 row-start-1 flex flex-col rounded-card bg-surface p-5">
+                <div
+                  className="row-span-2 row-start-1 flex flex-col rounded-card bg-surface p-5 shadow-inset"
+                  style={{ gridColumnStart: columns + 1 }}
+                >
                   {featured.eyebrow && (
                     <p className="text-small font-semibold tracking-wide text-secondary-strong uppercase">
                       {featured.eyebrow}
@@ -157,51 +163,36 @@ export function MainNav({
                       {featured.cta} <ArrowRight aria-hidden className="size-4" />
                     </Link>
                   </NavigationMenu.Link>
-                  <NavigationMenu.Link asChild>
-                    <Link href={routes.services} className="mt-1 text-small font-semibold">
-                      Browse all services
-                    </Link>
-                  </NavigationMenu.Link>
                 </div>
               )}
             </div>
+            <NavigationMenu.Link asChild>
+              <Link
+                href={routes.services}
+                className="mt-5 inline-flex min-h-11 items-center gap-2 border-t border-border pt-4 font-semibold"
+              >
+                See all services <ArrowRight aria-hidden className="size-4" />
+              </Link>
+            </NavigationMenu.Link>
           </NavigationMenu.Content>
         </NavigationMenu.Item>
 
         <NavigationMenu.Item className="relative">
-          <Trigger>Commercial</Trigger>
-          <NavigationMenu.Content className={cn(panelClass, 'left-0 w-80')}>
-            <MenuLink
-              href={routes.category('commercial')}
-              className="mb-1 font-heading text-base font-bold text-primary"
-            >
-              Commercial & HOA overview
-            </MenuLink>
-            <LinkList
-              links={[
-                ...(commercial?.services ?? []).map((service) => ({
-                  label: service.title,
-                  href: routes.service(service.slug),
-                })),
-                ...commercialLinks,
-              ]}
-            />
-          </NavigationMenu.Content>
-        </NavigationMenu.Item>
-
-        <NavigationMenu.Item className="relative">
-          <Trigger>Areas</Trigger>
+          <Trigger>Service Areas</Trigger>
           <NavigationMenu.Content className={cn(panelClass, 'left-0 w-64')}>
             <LinkList links={[...areaLinks, { label: 'All service areas', href: routes.areas }]} />
           </NavigationMenu.Content>
         </NavigationMenu.Item>
 
-        <NavigationMenu.Item className="relative">
-          <Trigger>Company</Trigger>
-          <NavigationMenu.Content className={cn(panelClass, 'left-0 w-60')}>
-            <LinkList links={companyLinks} />
-          </NavigationMenu.Content>
-        </NavigationMenu.Item>
+        {pageLinks.map((link) => (
+          <NavigationMenu.Item key={link.href}>
+            <NavigationMenu.Link asChild>
+              <Link href={link.href} className={cn(triggerClass, 'px-3 no-underline')}>
+                {link.label}
+              </Link>
+            </NavigationMenu.Link>
+          </NavigationMenu.Item>
+        ))}
       </NavigationMenu.List>
     </NavigationMenu.Root>
   )

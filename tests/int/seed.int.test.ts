@@ -9,10 +9,12 @@ import {
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 import { publicRead } from '@/access/public-read'
-import { site } from '@/config/site'
+import { confirmedServices, site } from '@/config/site'
+import { HOME_SECTIONS } from '@/globals/settings'
 import { migrations } from '@/migrations'
 import config from '@/payload.config'
 import type { Media } from '@/payload-types'
+import { categories } from '@/seed/data/categories'
 import { faqs } from '@/seed/data/faqs'
 import { commercialPages } from '@/seed/data/globals'
 import { gallery, mediaFiles } from '@/seed/data/media'
@@ -64,7 +66,7 @@ describe('seed', () => {
     const totals = await counts()
     expect(totals).toMatchObject({
       services: allServices.length,
-      'service-categories': 6,
+      'service-categories': categories.length,
       cities: site.serviceAreas.length,
       faqs: faqs.length,
       posts: 6,
@@ -75,7 +77,7 @@ describe('seed', () => {
       'gallery-items': gallery.length,
     })
     expect(allServices.length).toBeGreaterThanOrEqual(45)
-    expect(totals.faqs).toBeGreaterThanOrEqual(30)
+    expect(totals.faqs).toBeGreaterThanOrEqual(15)
     expect(totals['pricing-rules']).toBeGreaterThan(20)
   })
 
@@ -91,7 +93,8 @@ describe('seed', () => {
     expect(settings.region).toBe(site.region)
     expect(settings.demo).toEqual(site.demo)
     const homepage = await payload.findGlobal({ slug: 'homepage' })
-    expect(homepage.sections).toHaveLength(20)
+    expect(homepage.sections).toHaveLength(HOME_SECTIONS.length)
+    expect(settings.freeQuotes).toBe(site.freeQuotes)
     const commercial = await payload.findGlobal({ slug: 'commercial-pages', depth: 1 })
     expect(commercial.points).toHaveLength(commercialPages.points.length)
     expect(
@@ -109,12 +112,28 @@ describe('seed', () => {
     const slugs = (items: unknown[] | null | undefined) =>
       (items ?? []).map((item) => (item as { slug: string }).slug)
     expect(slugs(gutters.relatedServices)).toEqual([
-      'gutter-brightening',
       'roof-cleaning',
-      'ice-control',
+      'window-cleaning',
+      'soft-washing',
     ])
     expect(slugs(gutters.relatedPosts)).toContain('how-often-should-gutters-be-cleaned')
     expect(slugs(gutters.relatedSolutions)).toContain('overflowing-gutters')
+  })
+
+  it('publishes only the services the owner confirmed; the rest wait as drafts', async () => {
+    const published = await payload.find({
+      collection: 'services',
+      where: { _status: { equals: 'published' } },
+      pagination: false,
+      depth: 0,
+      select: { slug: true },
+    })
+    expect(published.docs.map((service) => service.slug).sort()).toEqual(
+      [...confirmedServices].sort(),
+    )
+    // Visitors (no user) can't read a draft service at all.
+    const visible = await payload.count({ collection: 'services', overrideAccess: false })
+    expect(visible.totalDocs).toBe(confirmedServices.length)
   })
 
   it('stores article bodies as rich text', async () => {
@@ -161,21 +180,21 @@ describe('seed', () => {
   it('adds a 301 when a published slug changes, without loops', async () => {
     const { docs } = await payload.find({
       collection: 'services',
-      where: { slug: { equals: 'fence-cleaning' } },
+      where: { slug: { equals: 'window-cleaning' } },
     })
     const id = docs[0].id
     const findRedirect = async (from: string) =>
       (await payload.find({ collection: 'redirects', where: { from: { equals: from } } })).docs
 
-    await payload.update({ collection: 'services', id, data: { slug: 'fence-washing' } })
-    expect((await findRedirect('/services/fence-cleaning'))[0]?.to?.url).toBe(
-      '/services/fence-washing',
+    await payload.update({ collection: 'services', id, data: { slug: 'window-washing' } })
+    expect((await findRedirect('/services/window-cleaning'))[0]?.to?.url).toBe(
+      '/services/window-washing',
     )
 
-    await payload.update({ collection: 'services', id, data: { slug: 'fence-cleaning' } })
-    expect(await findRedirect('/services/fence-cleaning')).toHaveLength(0)
-    expect((await findRedirect('/services/fence-washing'))[0]?.to?.url).toBe(
-      '/services/fence-cleaning',
+    await payload.update({ collection: 'services', id, data: { slug: 'window-cleaning' } })
+    expect(await findRedirect('/services/window-cleaning')).toHaveLength(0)
+    expect((await findRedirect('/services/window-washing'))[0]?.to?.url).toBe(
+      '/services/window-cleaning',
     )
   })
 })

@@ -11,63 +11,76 @@ export const exteriorServices: ServiceSeed[] = [
     icon: 'spray',
     quoteMode: 'instant',
     seasons: [...SPRING_TO_FALL],
-    bookingWindowNote: 'Best from April to October, when surfaces dry quickly.',
-    headline: 'Hard surfaces that look new again',
-    promise: 'Deep cleaning for concrete, pavers, brick and stone across {region}.',
+    headline: 'Cleaner concrete, pavers and stone',
+    promise: 'Pressure washing for hard outdoor surfaces in {region}.',
     summary:
-      'Pressure washing for driveways, walkways, patios and other hard surfaces, with the pressure matched to each material.',
-    outcomeLabel: 'Get clean concrete',
+      'Pressure washing for driveways, walkways, steps, patios and other hard surfaces, with the pressure matched to each material.',
+    outcomeLabel: 'Get cleaner hard surfaces',
     bullets: [
-      'Driveways, walkways and patios',
-      'Pressure matched to each surface',
-      'Oil and rust pre-treatment',
+      'Driveways, walkways and steps',
+      'Patios and paver areas',
+      'Pressure matched to the surface',
     ],
     heroImageLabel: 'Concrete walkway half cleaned, showing a sharp line between dirty and clean',
     problem:
-      'Hard surfaces take a beating. Winter salt, tire marks, oil drips, moss in the joints and summer dust build up a little at a time. One day the driveway looks gray and tired and the walkway is slick after rain. A garden hose can’t lift grime that has soaked into concrete and stone.',
+      'Dirt, winter salt, tire marks, algae and moss build up on hard surfaces a little at a time. Over time a driveway or path looks dark and tired, and shady spots can get slippery when wet. A garden hose rarely lifts grime that has worked into concrete, brick and stone.',
     benefits: [
       {
-        title: 'Safer footing',
-        body: 'Removing algae, mud and grime cuts down on slippery spots on steps and walkways.',
+        title: 'A fresher look',
+        body: 'Clean concrete, brick and pavers make the whole property look cared for.',
       },
       {
-        title: 'Instant curb appeal',
-        body: 'Clean concrete and pavers make the whole property look cared for. It’s one of the quickest upgrades you can make.',
+        title: 'Better footing',
+        body: 'Removing algae, moss and grime cuts down on slick spots on paths and steps.',
       },
       {
-        title: 'Surfaces last longer',
-        body: 'Dirt, salt and moss hold moisture that wears surfaces down. Washing them off slows that damage.',
-      },
-      {
-        title: 'Ready for sealing',
-        body: 'A deep clean is the first step before sealing a driveway or staining wood.',
+        title: 'Ready for what’s next',
+        body: 'A clean surface is the first step before sealing a driveway or staining wood.',
       },
     ],
     included: [
-      'Sweep of loose debris before washing',
-      'Pre-treatment of oil, rust and organic stains',
-      'Rotary surface cleaner for an even, stripe-free finish',
-      'Detail work along edges, steps and drains',
-      'Rinse of nearby walls and plants',
-      'Walk-through with you at the end',
+      'Driveways, walkways, steps and patios agreed in your estimate',
+      'Pressure set for each surface, lower for pavers and softer stone',
+      'Extra attention on edges, corners and steps',
+      'A rinse of nearby walls and walkways when we finish',
+      'A final look at the work with you, if you’re home',
+    ],
+    suitableFor: [
+      'Homeowners getting ready for spring, a sale or a family event',
+      'Landlords and property managers preparing units between tenants',
+      'Businesses with entrances, walkways or patios open to customers',
+    ],
+    exclusions: [
+      'Siding, roofs, painted wood and other delicate surfaces are not pressure washed. Ask about soft washing instead.',
+      'Very old oil, rust or paint stains may lighten but not disappear. We tell you what to expect before we start.',
+      'Cracked, loose or crumbling surfaces can be damaged by washing. We point these out and may leave them alone.',
+      'We need an outdoor water tap. If there isn’t one, tell us when you send your request.',
+    ],
+    preparation: [
+      'Move vehicles, planters, furniture and toys off the areas to be cleaned.',
+      'Close nearby windows and doors.',
+      'Make sure we can reach an outdoor tap and the areas being washed (gates unlocked, pets inside).',
     ],
     method:
-      'Flat areas get a rotary surface cleaner: two spinning jets under a hood give an even clean and keep the spray contained. Steps, edges and corners get a wand with a fan tip. We set pressure and nozzle for each material. Concrete takes more, pavers and soft stone take less. Tough stains get a pre-treatment that sits for a few minutes before we wash.',
+      'We check each surface first, then set the pressure and spray pattern for that material. Concrete can take more; pavers, brick and softer stone get less so the surface and the joint sand stay in place. Stubborn spots get extra attention, and we rinse splash off nearby walls and walkways at the end.',
     safety:
-      'We wet down plants, cover outdoor outlets and keep spray away from windows and doors. Pavers and soft stone get lower pressure so the surface and joint sand stay put. Siding, roofs and wood are never pressure washed. Those get soft washing instead.',
+      'Delicate surfaces like siding, roofs and painted wood are never pressure washed. We keep spray away from windows, doors and outlets, and stop to ask if a surface looks damaged or fragile.',
     process: [
       {
-        title: 'Get a price',
-        body: 'Tell us the surfaces and rough size. Most homes get an instant price range online.',
-      },
-      { title: 'Prep', body: 'We move light items, cover outlets and wet down nearby plants.' },
-      {
-        title: 'Treat and wash',
-        body: 'Stains are pre-treated, then we clean flat areas and detail the edges.',
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
       },
       {
-        title: 'Rinse and review',
-        body: 'We rinse everything, including splash on walls, and check the job with you.',
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
       },
     ],
     priceFactors: [
@@ -85,32 +98,22 @@ export const exteriorServices: ServiceSeed[] = [
     ],
     faqs: [
       {
-        question: 'Will pressure washing damage my concrete?',
+        question: 'Will pressure washing damage my driveway?',
         answer:
-          'Not when it’s done right. A surface cleaner keeps the jets at an even height, and we lower the pressure for older or softer concrete. Etched lines and stripes come from holding a wand too close, which the surface cleaner avoids.',
+          'Not when the pressure suits the surface. We use less pressure on pavers, brick and older concrete. If a surface is already cracked or crumbling, we’ll tell you before we start.',
+      },
+      {
+        question: 'Can you remove oil stains?',
+        answer:
+          'Oil and rust can often be lightened, but deep or old stains may not come out completely. We’ll be honest about what to expect when we quote.',
       },
       {
         question: 'Do I need to be home?',
         answer:
-          'No. We need an outdoor water tap and access to the areas we’re cleaning. We’ll send a message when we’re done.',
-      },
-      {
-        question: 'Can you get oil stains out?',
-        answer:
-          'We pre-treat oil and rust and can usually lighten them a lot. Very old stains that have soaked deep into concrete may not disappear completely. We’ll tell you what to expect before we start.',
-      },
-      {
-        question: 'How often should hard surfaces be washed?',
-        answer:
-          'Once a year is enough for most driveways and walkways. Shady spots that grow algae may need it twice. Spring is popular for washing off winter salt.',
-      },
-      {
-        question: 'What’s the difference between pressure washing and soft washing?',
-        answer:
-          'Pressure washing uses force to clean hard surfaces like concrete. Soft washing uses low pressure and cleaning solutions for siding, roofs and anything delicate. We pick the right one for each surface.',
+          'Not always. We need access to the areas being cleaned and an outdoor tap. We’ll confirm the details with you before the visit.',
       },
     ],
-    related: ['driveway-cleaning', 'patio-balcony-cleaning', 'garage-driveway-pressure-cleaning'],
+    related: ['soft-washing', 'driveway-sealing', 'patio-balcony-cleaning'],
     questions: [
       ask.select('surface', 'Main surface', ['Concrete', 'Pavers', 'Brick', 'Natural stone']),
       ask.number('area', 'Approximate area', {
@@ -130,82 +133,96 @@ export const exteriorServices: ServiceSeed[] = [
     quoteMode: 'instant',
     seasons: ['all-year'],
     headline: 'Gentle cleaning for surfaces that can’t take pressure',
-    promise: 'Low-pressure washing that removes algae, mildew and grime without damage.',
+    promise: 'Low-pressure exterior cleaning for siding and other delicate surfaces in {region}.',
     summary:
-      'Soft washing cleans siding, stucco, painted wood and other delicate surfaces with low pressure and cleaning solutions instead of force.',
-    outcomeLabel: 'Get a gentle, deep clean',
+      'Soft washing cleans siding, stucco, painted surfaces and other delicate exteriors with low pressure and cleaning solution instead of force.',
+    outcomeLabel: 'Get a gentle, thorough clean',
     bullets: [
-      'Safe for stucco, vinyl and paint',
-      'Kills algae and mildew at the root',
-      'Results last longer',
+      'Vinyl, stucco and painted surfaces',
+      'Low pressure, not force',
+      'Plants protected and rinsed',
     ],
     heroImageLabel: 'Technician soft washing stucco with a low-pressure hose',
     problem:
-      'Green and black streaks on siding are usually algae, mildew or mold. Blasting them with high pressure can force water behind siding, strip paint, crack stucco and leave marks. It also leaves the roots behind, so the growth comes back fast.',
+      'Green and black streaks on siding and trim are usually algae, mildew and dirt. High pressure can force water behind siding, strip paint and mark softer materials, so these surfaces need a gentler approach.',
     benefits: [
       {
-        title: 'No damage',
-        body: 'Low pressure, about what a garden hose puts out, is safe on stucco, vinyl, painted wood and window seals.',
+        title: 'Gentle on surfaces',
+        body: 'Low pressure is kinder to siding, stucco, paint and window seals than a pressure washer.',
       },
       {
-        title: 'Cleans at the root',
-        body: 'The cleaning solution kills algae and mildew instead of just knocking off the top layer.',
+        title: 'Thorough on grime',
+        body: 'A cleaning solution loosens algae, mildew and dirt so it rinses away.',
       },
       {
-        title: 'Stays clean longer',
-        body: 'Because the growth is killed, not just rinsed, surfaces stay clean for much longer.',
+        title: 'Careful around gardens',
+        body: 'Plants are wet down before and rinsed after, and delicate ones are covered.',
       },
     ],
     included: [
-      'Inspection of the surface and nearby plants',
-      'Pre-wetting of plants and landscaping',
-      'Low-pressure application of a cleaning solution mixed for the surface',
-      'Dwell time so the solution can work',
-      'Thorough low-pressure rinse',
-      'Final rinse of plants and walkways',
+      'A look at the surface and the plants nearby before we start',
+      'Plants wet down and delicate ones covered',
+      'Cleaning solution applied at low pressure and given time to work',
+      'A full low-pressure rinse of the surface',
+      'A final rinse of plants, walkways and windows below',
+    ],
+    suitableFor: [
+      'Homes with vinyl, aluminum, fiber cement or stucco siding',
+      'Painted trim, soffits, fences and other surfaces that pressure could damage',
+      'Rental and commercial buildings that need a cleaner exterior',
+    ],
+    exclusions: [
+      'Peeling paint, rot or damaged siding won’t be fixed by washing, and loose paint can come off. We point it out first.',
+      'Some stains, such as rust, paint or hard-water marks, may need other treatment or may not come out.',
+      'Areas we can only reach by working at height are confirmed when we quote, after we’ve seen photos or the property.',
+      'Roofs are quoted separately under roof cleaning.',
+    ],
+    preparation: [
+      'Close all windows and doors, including garage doors and vents you can close.',
+      'Move outdoor furniture, decorations and anything fragile away from the walls.',
+      'Make sure we can reach an outdoor tap and every side of the building being washed.',
     ],
     method:
-      'We mix a cleaning solution for the surface and the type of growth, then apply it at low pressure. It sits for several minutes to break down algae, mildew and dirt. Then we rinse everything with plenty of clean water at low pressure. Soft washing is the method we use inside our house washing and roof cleaning services.',
+      'We choose a cleaning solution for the surface and the type of grime, apply it at low pressure and give it a few minutes to work. Then we rinse the surface thoroughly at low pressure, along with plants, walkways and windows below.',
     safety:
-      'We soak plants before, during and after the wash, and cover delicate ones. Doors and windows stay closed and outdoor outlets are covered. Nothing is sprayed at high pressure near seals, vents or light fixtures.',
+      'Plants are soaked before and after and delicate ones covered. Windows and doors stay closed, and we keep water away from vents, outlets and light fixtures.',
     process: [
-      { title: 'Assess', body: 'We check the surface, the type of staining and nearby plants.' },
-      { title: 'Protect', body: 'Plants are soaked and delicate areas covered.' },
       {
-        title: 'Apply',
-        body: 'The cleaning solution goes on at low pressure and sits for a few minutes.',
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
       },
-      { title: 'Rinse', body: 'We rinse the surface, plants and walkways with clean water.' },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: ['Surface area', 'Surface type', 'Height and access', 'How heavy the growth is'],
     faqs: [
       {
         question: 'Is soft washing safe for my plants?',
         answer:
-          'Yes, when plants are protected. We soak them before and after, cover delicate ones, and rinse everything at the end. The solution is diluted and washed away.',
+          'We protect them by wetting them down before and after, covering delicate ones, and rinsing everything at the end. Tell us about any plants you’re worried about.',
       },
       {
-        question: 'Will it really clean without pressure?',
+        question: 'What’s the difference from pressure washing?',
         answer:
-          'Yes. The cleaning solution does the work that pressure would otherwise do, and it reaches into the surface to kill growth. The rinse removes what’s left.',
+          'Pressure washing uses force for hard surfaces like concrete. Soft washing uses low pressure and a cleaning solution for surfaces that force could damage.',
       },
       {
-        question: 'What surfaces is soft washing for?',
+        question: 'How often should siding be washed?',
         answer:
-          'Vinyl and fiber cement siding, stucco, painted wood, brick, roofs, fences and outdoor furniture. Basically anything that could be damaged by high pressure.',
-      },
-      {
-        question: 'How long do results last?',
-        answer:
-          'Usually one to two years, depending on shade and moisture. North-facing walls and shady spots tend to come back sooner.',
-      },
-      {
-        question: 'Do I need to do anything before you arrive?',
-        answer:
-          'Close windows, move fragile items away from the walls and make sure we can reach an outdoor tap. We take care of the rest.',
+          'It depends on shade, trees and moisture around the house. Many homes are fine every year or two. We can suggest timing once we see the property.',
       },
     ],
-    related: ['house-washing', 'roof-cleaning', 'fence-cleaning'],
+    related: ['pressure-washing', 'window-cleaning', 'gutter-cleaning'],
     questions: [
       ask.select('surface', 'What needs cleaning?', [
         'Vinyl siding',
@@ -437,71 +454,96 @@ export const exteriorServices: ServiceSeed[] = [
     icon: 'sun',
     quoteMode: 'instant',
     seasons: [...SPRING_TO_FALL],
-    headline: 'Outdoor living space, ready for summer',
-    promise: 'Clean patios and balconies you’ll actually want to use.',
+    headline: 'Outdoor spaces ready to use again',
+    promise: 'Patio and balcony cleaning in {region}, planned around building rules.',
     summary:
-      'Cleaning for ground-level patios and upper balconies: stone, pavers, concrete, tile and composite.',
-    outcomeLabel: 'Get your patio back',
+      'Cleaning for patios, balconies and outdoor living areas, with the method chosen for the surface and any building rules on water and access.',
+    outcomeLabel: 'Get a cleaner patio',
     bullets: [
-      'Patios, pavers and tile',
-      'Upper balconies, no mess below',
-      'Furniture moved and replaced',
+      'Patios, balconies and railings',
+      'Method suited to the surface',
+      'Building rules respected',
     ],
     heroImageLabel: 'Clean stone patio with outdoor furniture set back in place',
     problem:
-      'Patios and balconies collect pollen, bird droppings, grill grease, algae in shady corners and dirt in the joints. Balconies are hard to clean yourself without soaking the one below.',
+      'Patios and balconies collect dirt, pollen, bird droppings, algae and grime from the city. Balconies are especially tricky: water can run onto the units below, and many buildings have rules about cleaning them.',
     benefits: [
-      { title: 'Ready to enjoy', body: 'A clean, fresh space for meals, guests and relaxing.' },
-      { title: 'Less slippery', body: 'Removing algae makes shady patios safer to walk on.' },
       {
-        title: 'Considerate on balconies',
-        body: 'We control water and runoff so neighbors below stay dry.',
+        title: 'Space you’ll use',
+        body: 'A clean patio or balcony is far more inviting.',
+      },
+      {
+        title: 'Considerate of neighbors',
+        body: 'For balconies we plan the method so water and dirt don’t end up below.',
+      },
+      {
+        title: 'The right method',
+        body: 'Concrete, pavers, tile and wood each get an approach that suits them.',
       },
     ],
     included: [
-      'Moving light furniture and putting it back',
-      'Pre-treatment of grease and organic stains',
-      'Cleaning of the surface, steps and edges',
-      'Railings and glass panels wiped down on balconies',
-      'Runoff control on upper balconies',
+      'Floors, railings and glass panels listed in your estimate',
+      'A method suited to the surface and to your building’s rules',
+      'Care to limit runoff to the units or areas below',
+      'Furniture moved and put back if it’s light enough to move safely',
+    ],
+    suitableFor: [
+      'Homeowners with patios, decks or outdoor living areas',
+      'Condo and apartment owners or tenants with balconies',
+      'Restaurants and businesses with outdoor seating',
+    ],
+    exclusions: [
+      'Balcony cleaning depends on your building’s rules. Some buildings don’t allow water on balconies, and some need notice or approval first.',
+      'We need access through your unit to reach a balcony; we don’t clean balconies from outside the building unless your estimate says so.',
+      'Repairs, sealing and staining aren’t included unless your estimate says so.',
+      'Heavy furniture, hot tubs and built-in items stay where they are.',
+    ],
+    preparation: [
+      'For a balcony, check your building rules and let us know what’s allowed. Get any approval needed before the visit.',
+      'Remove plants, small items and anything fragile.',
+      'Arrange elevator access or parking for us if your building needs it.',
     ],
     method:
-      'Ground-level patios get a surface cleaner and careful edge work. Balconies are washed at low pressure with controlled water flow so runoff goes to the drain, not over the edge. Wood and composite get the gentle approach used for decks.',
+      'We choose how to clean based on the surface and where the water will go. On balconies that usually means low water use and careful containment, following your building’s rules.',
     safety:
-      'On balconies we check the drain first and keep water volume low. We never use high pressure on tile grout, wood or composite.',
+      'We don’t lean over railings or work outside the balcony. If the railing or surface looks unsafe, we stop and tell you.',
     process: [
-      { title: 'Get a price', body: 'Tell us the space, surface and rough size.' },
-      { title: 'Clear', body: 'We move light furniture and planters out of the way.' },
-      { title: 'Clean', body: 'Stains are treated and the surface is washed.' },
-      { title: 'Reset', body: 'Everything is rinsed and your furniture goes back.' },
+      {
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
+      },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: ['Size', 'Surface type', 'Ground level or balcony', 'Furniture to move'],
     faqs: [
       {
-        question: 'Can you clean a condo balcony?',
+        question: 'Can you clean my condo balcony?',
         answer:
-          'Yes. We use low pressure and control runoff. Check your building’s rules, as some HOAs set cleaning days or times.',
+          'Often yes, but it depends on your building’s rules about water, noise and contractors. Check with your building and tell us what’s allowed when you send your request.',
       },
       {
-        question: 'Will you clean the patio furniture?',
-        answer: 'We move it and put it back. Washing the furniture itself can be added on request.',
-      },
-      {
-        question: 'Is it safe for stone and tile?',
-        answer: 'Yes. Natural stone and tile get low pressure and a gentle cleaner.',
-      },
-      {
-        question: 'Can you remove grill grease?',
+        question: 'Will water drip onto the balcony below?',
         answer:
-          'We pre-treat grease and can usually remove most of it. Old, soaked-in stains may leave a shadow.',
+          'We plan the method to keep runoff to a minimum and follow your building’s rules. Some balconies need a mostly dry clean for this reason.',
       },
       {
-        question: 'Do you need water from my unit?',
+        question: 'Do you clean balcony glass?',
         answer:
-          'For balconies, yes, from an outdoor tap if there is one, or we bring water in for small jobs.',
+          'We can include glass panels and railings you can reach from the balcony. List them in your request so they’re in your estimate.',
       },
     ],
-    related: ['deck-cleaning', 'pressure-washing', 'window-cleaning'],
+    related: ['pressure-washing', 'window-cleaning', 'soft-washing'],
     questions: [
       ask.select('space', 'What needs cleaning?', ['Ground-level patio', 'Upper balcony']),
       ask.select('surface', 'Surface', [
@@ -683,50 +725,76 @@ export const exteriorServices: ServiceSeed[] = [
     icon: 'wind',
     quoteMode: 'instant',
     seasons: ['spring', 'fall'],
-    bookingWindowNote:
-      'Book fall cleaning after most leaves drop, usually late October to November.',
-    headline: 'Gutters that drain, not overflow',
-    promise: 'Clogs cleared and downspouts flushed before the next storm.',
-    summary: 'Gutter cleaning by hand, with downspouts flushed and debris bagged and hauled away.',
-    outcomeLabel: 'Get flowing gutters',
+    headline: 'Gutters cleared so water can drain',
+    promise: 'Gutter and downspout cleaning in {region}.',
+    summary:
+      'Gutter cleaning that removes leaves, needles and debris from gutters, with downspouts checked so water can drain away from the building.',
+    outcomeLabel: 'Get clear gutters',
     bullets: [
-      'Cleaned by hand, then flushed',
-      'Downspouts checked and cleared',
-      'Debris bagged and hauled away',
+      'Leaves, needles and debris removed',
+      'Downspouts checked',
+      'Debris bagged or removed',
     ],
     heroImageLabel: 'Technician on a ladder scooping leaves from a gutter into a bucket',
     problem:
-      'Clogged gutters overflow. Water spills down siding, pools against the foundation and can freeze into ice dams along the roof edge in winter. Leaves, seeds and roof grit build up every season, and most people only notice when water pours over the edge.',
+      'Leaves, seeds, needles and roof grit settle in gutters every season. Once gutters or downspouts block, water can spill over the edge, run down walls and pool near the foundation, and in winter it can freeze into ice along the roof edge.',
     benefits: [
       {
-        title: 'Protects your foundation',
-        body: 'Water goes down the downspouts and away from the house.',
+        title: 'Water goes where it should',
+        body: 'Clear gutters and downspouts carry rain away from walls and foundations.',
       },
       {
-        title: 'Fewer ice dams',
-        body: 'Clear gutters drain before winter, so less meltwater freezes at the roof edge.',
+        title: 'Fewer surprises',
+        body: 'We point out loose sections, leaks or damage we notice while we work.',
       },
-      { title: 'No ladder for you', body: 'We do the climbing, scooping and hauling.' },
+      {
+        title: 'No ladder for you',
+        body: 'Gutter cleaning is one of the riskiest jobs homeowners do themselves.',
+      },
     ],
     included: [
-      'Hand removal of leaves and debris',
-      'Flush of every gutter run',
-      'Downspouts tested and cleared',
-      'Debris bagged and hauled away',
-      'Photos of anything that needs repair',
+      'Leaves, needles and debris cleared from the gutters in your estimate',
+      'Downspouts checked for flow, and simple blockages cleared',
+      'Debris bagged or removed as agreed in your estimate',
+      'A note of anything loose, leaking or damaged that we notice',
+    ],
+    suitableFor: [
+      'Homes with trees nearby, especially in fall and spring',
+      'Landlords and property managers keeping up with seasonal maintenance',
+      'Small commercial buildings with reachable gutters',
+    ],
+    exclusions: [
+      'Gutter repairs, replacement and new guards are not included.',
+      'Which gutters we can reach depends on height and roof access. This is confirmed in your estimate.',
+      'Underground drains and blockages below ground level are not included.',
+      'Roof cleaning is a separate service.',
+    ],
+    preparation: [
+      'Move vehicles, furniture and planters away from the walls under the gutters.',
+      'Unlock gates and keep pets inside.',
+      'Tell us about any known leaks, loose sections or gutter guards.',
     ],
     method:
-      'We scoop gutters by hand so nothing gets pushed into downspouts, then flush each run with water to check the flow. Blocked downspouts are cleared with a plumber’s snake or water. Loose brackets and leaking seams are photographed so you know what needs attention.',
+      'We clear debris from the gutters by hand or with suitable tools for the access we’ve agreed, check each downspout for flow and deal with simple blockages. We tidy up debris that falls during the work.',
     safety:
-      'Ladders are set on stable ground with stand-offs so they don’t rest on the gutter. We use roof-edge safety gear on steep or tall homes and never work in high wind or lightning.',
+      'We only work where we can do so safely. If part of a roofline needs equipment or access that isn’t in your estimate, we’ll tell you rather than take the risk.',
     process: [
       {
-        title: 'Get a price',
-        body: 'Tell us the home size, stories and whether you have gutter guards.',
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
       },
-      { title: 'Clean', body: 'We remove debris by hand around the whole house.' },
-      { title: 'Flush', body: 'Every gutter and downspout is flushed and tested.' },
-      { title: 'Report', body: 'You get photos of before, after and anything that needs repair.' },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: [
       'Length of gutters',
@@ -748,28 +816,20 @@ export const exteriorServices: ServiceSeed[] = [
       {
         question: 'How often should gutters be cleaned?',
         answer:
-          'Twice a year for most homes: late spring after trees drop seeds and late fall after the leaves. Homes under big trees may need it more.',
+          'Many homes need it at least once a year, often in late fall after the leaves drop. Homes under lots of trees may need it more often.',
       },
       {
-        question: 'Do you clean gutters with guards?',
+        question: 'Do you take the debris away?',
         answer:
-          'Yes. Guards still let small debris through. We remove them, clean underneath and put them back.',
+          'We’ll agree what happens to the debris in your written estimate, whether that’s bagged on site or taken away.',
       },
       {
-        question: 'Do I need to be home?',
-        answer: 'No. We’ll send before and after photos when we’re done.',
-      },
-      {
-        question: 'What happens to the debris?',
-        answer: 'We bag it and take it away. Nothing gets left on your lawn.',
-      },
-      {
-        question: 'Can you fix leaks too?',
+        question: 'Do you repair gutters?',
         answer:
-          'We’ll flag leaks and loose brackets. Small fixes can be quoted as minor exterior repairs.',
+          'No. We clean them and tell you about any damage we notice so you can arrange a repair.',
       },
     ],
-    related: ['gutter-brightening', 'roof-cleaning', 'ice-control'],
+    related: ['roof-cleaning', 'window-cleaning', 'soft-washing'],
     questions: [homeSize, stories, ask.yesNo('guards', 'Do you have gutter guards?')],
   },
   {
@@ -856,74 +916,97 @@ export const exteriorServices: ServiceSeed[] = [
     icon: 'house',
     quoteMode: 'instant',
     seasons: ['all-year'],
-    headline: 'Black streaks and moss gone, shingles intact',
-    promise: 'Soft-wash roof cleaning that protects your shingles and your warranty.',
+    headline: 'Moss and debris cleared from your roof',
+    promise: 'Roof cleaning in {region}, quoted after we’ve seen your roof.',
     summary:
-      'Soft-wash roof cleaning that removes black algae streaks, moss and lichen without high pressure.',
-    outcomeLabel: 'Get a clean roof',
-    bullets: ['Removes black streaks and moss', 'No pressure on shingles', 'Gutters rinsed after'],
+      'Roof cleaning to clear moss, debris and buildup, with the approach and any access limits agreed in writing after we’ve seen photos or the roof itself.',
+    outcomeLabel: 'Ask about roof cleaning',
+    bullets: [
+      'Moss and debris cleared',
+      'Quoted after we see the roof',
+      'Approach agreed in writing',
+    ],
     heroImageLabel:
       'Shingle roof with black algae streaks on one side and clean shingles on the other',
     problem:
-      'Black streaks on a roof are usually algae feeding on the shingles. Moss and lichen grow in shady spots and hold water against the roof. Pressure washing a roof knocks off the granules that protect shingles, which shortens their life.',
+      'Moss, leaves and debris collect on shaded roofs and hold moisture against the shingles. Left alone, buildup can block water from running off and spill into gutters.',
     benefits: [
       {
-        title: 'Protects shingles',
-        body: 'Soft washing removes growth without stripping protective granules.',
+        title: 'A cleaner roofline',
+        body: 'Clearing moss and debris improves how the whole house looks.',
       },
       {
-        title: 'Better curb appeal',
-        body: 'The roof is a big part of what people see. A clean roof makes the home look newer.',
+        title: 'Water runs off',
+        body: 'Less buildup means water can drain off the roof and into the gutters.',
       },
       {
-        title: 'Prevents damage',
-        body: 'Moss holds moisture that can lift shingles and lead to leaks.',
+        title: 'Planned for your roof',
+        body: 'Every roof is different, so the approach is agreed with you before work starts.',
       },
     ],
     included: [
-      'Roof inspection from the ground and ladder',
-      'Soft-wash treatment of streaks, moss and lichen',
-      'Gentle removal of loose moss',
-      'Rinse of gutters, siding and plants',
-      'Photos of any damage we notice',
+      'A review of photos or the roof itself before we quote',
+      'Moss, debris and buildup cleared from the areas in your estimate',
+      'Fallen debris tidied up around the house',
+      'A note of any damaged, missing or loose shingles we notice',
+    ],
+    suitableFor: [
+      'Homes with shaded or north-facing roofs where moss grows',
+      'Owners preparing a house for sale',
+      'Landlords keeping up with exterior maintenance',
+    ],
+    exclusions: [
+      'Roof repairs, shingle replacement and leak repairs are not included.',
+      'Steep, high or fragile roofs may not be suitable. Whether we can take on your roof is confirmed in your estimate.',
+      'The cleaning method is chosen for your roof and agreed in writing before any work starts.',
+      'Gutter cleaning is quoted separately, or alongside if you ask.',
+    ],
+    preparation: [
+      'Send clear photos of the roof from the ground with your request.',
+      'Move vehicles, furniture and planters away from the walls.',
+      'Tell us about any known leaks or damage.',
     ],
     method:
-      'We apply a cleaning solution at low pressure that kills algae, moss and lichen. Loose moss is brushed off by hand. Algae streaks fade during treatment, and the last traces wash away with the next rains. We never walk a roof more than we need to and never use high pressure on shingles.',
+      'Every roof is different, so we decide how to clean yours after seeing it and explain the approach in your written estimate before anything is booked. If we don’t think a roof can be cleaned safely or without risking damage, we’ll say so.',
     safety:
-      'Roof work uses fall protection and ladder stand-offs. Plants are soaked and covered and gutters are flushed so runoff doesn’t sit in them. We stay off roofs in wet, icy or windy weather.',
+      'We only work on roofs we can access safely. Roof work is confirmed case by case; we won’t start a roof that isn’t covered by your written estimate.',
     process: [
-      { title: 'Get a price', body: 'Tell us the home size, roof type and pitch.' },
-      { title: 'Inspect', body: 'We check the roof’s condition before we start.' },
-      { title: 'Treat', body: 'The roof gets a soft-wash treatment and loose moss is removed.' },
-      { title: 'Rinse and report', body: 'We rinse gutters and plants and share photos.' },
+      {
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
+      },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: ['Roof size', 'Pitch (how steep)', 'Roof material', 'Amount of moss'],
     faqs: [
       {
-        question: 'Will roof cleaning void my shingle warranty?',
+        question: 'How do you clean roofs?',
         answer:
-          'Soft washing follows the cleaning methods most shingle makers recommend. Pressure washing is the method that can cause problems, and we don’t use it on roofs.',
+          'We choose the approach for each roof after seeing photos or the roof itself, and explain it in your written estimate before any work is booked.',
       },
       {
-        question: 'Why does my roof have black streaks?',
+        question: 'Can every roof be cleaned?',
         answer:
-          'It’s usually a type of algae that spreads with wind and grows on shady, damp sections of the roof.',
+          'No. Very steep, high or fragile roofs may not be suitable. We’ll tell you honestly when we quote.',
       },
       {
-        question: 'How long until the streaks are gone?',
-        answer: 'Most fade the same day. Heavy growth can take a few rains to rinse away fully.',
-      },
-      {
-        question: 'Can you clean cedar shake or tile roofs?',
+        question: 'Will the moss come back?',
         answer:
-          'Yes, each with its own cleaner and approach. Tell us your roof type when you get a price.',
-      },
-      {
-        question: 'How often does a roof need cleaning?',
-        answer: 'Every two to four years for most homes, depending on shade and trees.',
+          'Moss grows back over time on shaded, damp roofs. Trimming overhanging branches and keeping gutters clear can help slow it down.',
       },
     ],
-    related: ['gutter-cleaning', 'soft-washing', 'gutter-brightening'],
+    related: ['gutter-cleaning', 'soft-washing', 'window-cleaning'],
     questions: [
       homeSize,
       ask.select('pitch', 'How steep is the roof?', ['Low (walkable)', 'Medium', 'Steep']),
@@ -937,42 +1020,72 @@ export const exteriorServices: ServiceSeed[] = [
     icon: 'window',
     quoteMode: 'instant',
     seasons: ['all-year'],
-    headline: 'Streak-free windows, inside and out',
-    promise: 'Clear glass, clean frames and fresh screens for {region} homes.',
-    summary: 'Window cleaning inside and out, with screens, sills and tracks available.',
-    outcomeLabel: 'Get streak-free windows',
-    bullets: [
-      'Inside, outside or both',
-      'Screens and tracks available',
-      'Pure-water finish outside',
-    ],
+    headline: 'Clearer windows, inside and out',
+    promise: 'Window cleaning for homes and businesses in {region}.',
+    summary:
+      'Window cleaning for glass, frames and sills, with the exact windows, sides and access confirmed in your written estimate.',
+    outcomeLabel: 'Get clearer windows',
+    bullets: ['Glass, frames and sills', 'Outside, inside or both', 'Scope confirmed in writing'],
     heroImageLabel: 'Technician squeegeeing a large living room window',
     problem:
-      'Dust, pollen, hard water spots and fingerprints build up on glass. Upper-story windows are hard to reach safely, and household cleaners often leave streaks that show up as soon as the sun hits them.',
+      'Dust, pollen, road grime and rain spots build up on glass faster than most people notice. Dirty windows make rooms darker and a building look neglected, and the hard-to-reach ones rarely get cleaned.',
     benefits: [
-      { title: 'More light', body: 'Clean glass lets in noticeably more daylight.' },
-      { title: 'No streaks', body: 'Professional squeegees and pure water leave glass clear.' },
       {
-        title: 'Longer-lasting screens and tracks',
-        body: 'Clean tracks slide easily and screens hold up better.',
+        title: 'More light',
+        body: 'Clean glass lets more daylight into every room.',
+      },
+      {
+        title: 'Better first impressions',
+        body: 'Clear windows make a home or storefront look well kept.',
+      },
+      {
+        title: 'One less chore',
+        body: 'No ladders or step stools for you.',
       },
     ],
     included: [
-      'Glass cleaned with squeegee or pure-water pole system',
+      'Glass cleaned on the windows and sides listed in your estimate',
       'Frames and sills wiped',
-      'Screens brushed and rinsed (if selected)',
-      'Tracks vacuumed and wiped (if selected)',
-      'Drop cloths and shoe covers indoors',
+      'Screens brushed off if you ask for it',
+      'Drips and smudges checked before we leave',
+    ],
+    suitableFor: [
+      'Homeowners and tenants who want brighter rooms',
+      'Landlords preparing a unit for new tenants',
+      'Storefronts, offices and other ground-level commercial glass',
+    ],
+    exclusions: [
+      'Which windows we can reach depends on height and access. Upper floors and hard-to-reach glass are confirmed case by case in your estimate.',
+      'We don’t work from rope access, swing stages or lifts unless your estimate says so.',
+      'Scratches, etching, hard-water stains and seal failure (fog between panes) can’t be cleaned away.',
+      'Interior cleaning needs clear access to the windows inside.',
+    ],
+    preparation: [
+      'Tell us which windows you want cleaned and whether you want inside, outside or both. Photos of the house help.',
+      'Clear sills and move furniture and blinds away from windows being cleaned inside.',
+      'Unlock gates and keep pets inside or away from the work.',
     ],
     method:
-      'Outside, we use a water-fed pole with purified water. It dries spot-free, so it’s perfect for upper floors. Inside, we squeegee by hand and detail the edges with a microfiber towel. Screens are brushed and rinsed, and tracks are vacuumed and wiped.',
+      'We clean the glass, then detail the edges, frames and sills. Windows that need special access are agreed with you in advance, and we never use a method on a window that your estimate doesn’t cover.',
     safety:
-      'Pure-water poles mean fewer ladders. When we do need them, they’re secured and padded. Indoors we use drop cloths and shoe covers.',
+      'We only clean windows we can reach safely. If a window is above what we can safely access, we’ll tell you when we quote rather than on the day.',
     process: [
-      { title: 'Get a price', body: 'Tell us how many windows and what you want cleaned.' },
-      { title: 'Outside', body: 'Glass and frames are cleaned with pure water.' },
-      { title: 'Inside', body: 'Glass is squeegeed and sills are wiped.' },
-      { title: 'Check', body: 'We look for streaks in the light before we leave.' },
+      {
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
+      },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: [
       'Number of windows',
@@ -988,29 +1101,22 @@ export const exteriorServices: ServiceSeed[] = [
     ],
     faqs: [
       {
-        question: 'How do you count windows?',
+        question: 'Do you clean upper-floor windows?',
         answer:
-          'Count each separate pane of glass that opens or sits in its own frame. A double-hung window counts as one. When in doubt, a rough count is fine.',
+          'It depends on the height and the access around your building. Send photos with your request and we’ll confirm which windows we can clean in your written estimate.',
       },
       {
-        question: 'Do you clean in winter?',
-        answer: 'Inside cleaning, yes. Outside cleaning needs temperatures above freezing.',
-      },
-      {
-        question: 'What if it rains after you clean?',
+        question: 'Do you clean inside and outside?',
         answer:
-          'Pure water leaves no residue, so rain dries mostly clean. Heavy dust storms are another story.',
+          'We can quote outside only, inside only or both. Inside cleaning needs clear access to each window.',
       },
       {
-        question: 'Do you clean skylights?',
-        answer: 'Yes, if we can reach them safely. Let us know when you book.',
-      },
-      {
-        question: 'How often should windows be cleaned?',
-        answer: 'Twice a year for most homes: spring and fall.',
+        question: 'Do you clean condo or apartment windows?',
+        answer:
+          'Many condo and apartment windows can only be reached from inside or by the building’s own contractor. Tell us your unit and building, and check your building rules, before you book.',
       },
     ],
-    related: ['house-washing', 'gutter-brightening', 'patio-balcony-cleaning'],
+    related: ['gutter-cleaning', 'soft-washing', 'pressure-washing'],
     questions: [
       ask.number('windows', 'How many windows?', { min: 1, max: 200, unit: 'windows' }),
       ask.select('scope', 'What should we clean?', ['Outside only', 'Inside and outside']),
@@ -1097,70 +1203,92 @@ export const exteriorServices: ServiceSeed[] = [
     icon: 'paint-bucket',
     quoteMode: 'instant',
     seasons: ['summer'],
-    bookingWindowNote: 'Sealing needs warm, dry days. We book June through early September.',
-    headline: 'Seal the driveway before winter gets to it',
-    promise: 'Sealcoating that protects concrete and asphalt from water, salt and sun.',
+    headline: 'A cleaned and sealed driveway',
+    promise: 'Driveway sealing in {region}, quoted for your surface.',
     summary:
-      'Driveway sealing and sealcoating for concrete and asphalt, with crack filling available.',
-    outcomeLabel: 'Protect your driveway',
-    bullets: ['Concrete and asphalt', 'Crack filling available', 'Cleaned first, then sealed'],
+      'Driveway sealing for suitable surfaces, starting with a clean so the sealer can bond. The surface type and product are confirmed in your written estimate.',
+    outcomeLabel: 'Ask about driveway sealing',
+    bullets: ['Cleaned first so sealer bonds', 'Suited to your surface', 'Drying time explained'],
     heroImageLabel: 'Freshly sealcoated asphalt driveway with a crisp edge',
     problem:
-      'Water seeps into unsealed concrete and asphalt, freezes, expands and cracks the surface. Road salt speeds this up, and sun dries out asphalt so it turns gray and brittle.',
+      'Sun, rain, freeze-thaw cycles and road salt wear driveways down. An unsealed surface soaks up stains and water, and faded or patchy driveways make the whole property look tired.',
     benefits: [
       {
-        title: 'Slows freeze-thaw damage',
-        body: 'Sealer keeps water out of the surface so less of it freezes inside.',
+        title: 'A refreshed look',
+        body: 'A sealed driveway looks more even and better kept.',
       },
       {
-        title: 'Resists salt and oil',
-        body: 'A sealed surface is easier to clean and stains less.',
+        title: 'Easier upkeep',
+        body: 'A sealed surface can make spills and dirt easier to clean.',
       },
-      { title: 'Fresh look', body: 'Asphalt gets its deep black color back; concrete looks even.' },
+      {
+        title: 'Prepared properly',
+        body: 'Cleaning first helps the sealer bond to the surface.',
+      },
     ],
     included: [
-      'Full driveway cleaning before sealing',
-      'Crack filling (if selected)',
-      'Edges cut in by hand',
-      'Sealer applied evenly',
-      'Barricade until dry',
+      'A look at the surface type and condition when we quote',
+      'Cleaning and drying of the driveway before sealing',
+      'Sealer suited to your surface, as named in your estimate',
+      'Clear instructions on when you can walk and drive on it',
+    ],
+    suitableFor: [
+      'Homeowners with asphalt, concrete or paver driveways in fair condition',
+      'Owners preparing a home for sale',
+      'Landlords and small businesses with private driveways or lots',
+    ],
+    exclusions: [
+      'Crack repair, resurfacing and replacing damaged pavers are not included unless your estimate says so.',
+      'Sealing can’t hide deep stains, cracks or unevenness.',
+      'Sealing needs dry weather and suitable temperatures, so dates can move if the weather turns.',
+      'Large parking lots are quoted as commercial work.',
+    ],
+    preparation: [
+      'Keep vehicles off the driveway on the day and until we say it’s ready.',
+      'Turn off sprinklers that reach the driveway.',
+      'Tell us what the surface is and send photos, including any cracks or stains.',
     ],
     method:
-      'A sealer only works on a clean, dry surface, so we wash the drive first and let it dry. Cracks are filled if selected. We cut in edges by hand and apply the sealer evenly, then block off the drive while it cures.',
+      'We clean the driveway, let it dry, then apply a sealer suited to the surface. Your estimate names the surface and product, and we tell you how long to keep off it afterwards.',
     safety:
-      'We tape off garage doors and walkways and post signs so no one walks or drives on wet sealer.',
+      'We block off the driveway while the sealer cures and tell you when it’s ready for feet and for vehicles.',
     process: [
-      { title: 'Get a price', body: 'Tell us the surface, size and whether cracks need filling.' },
-      { title: 'Clean', body: 'We wash the driveway and let it dry.' },
-      { title: 'Repair', body: 'Cracks are filled if selected.' },
-      { title: 'Seal', body: 'Sealer goes on and the drive is closed off to cure.' },
+      {
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
+      },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: ['Driveway size', 'Concrete or asphalt', 'Crack filling', 'Condition'],
     faqs: [
       {
+        question: 'Which driveways can you seal?',
+        answer:
+          'It depends on the surface and its condition. Send photos with your request and we’ll confirm what we can do in your estimate.',
+      },
+      {
         question: 'How long before I can drive on it?',
         answer:
-          'Usually 24–48 hours, depending on temperature and the sealer. We’ll tell you exactly.',
+          'It depends on the product and the weather. We’ll tell you before the job and again when we finish.',
       },
       {
-        question: 'How often should I seal?',
-        answer: 'Asphalt every two to three years, concrete every three to five.',
-      },
-      {
-        question: 'Can you seal in fall?',
+        question: 'Can you seal in any weather?',
         answer:
-          'Only on warm days. Most sealers need temperatures above about 50°F for a full day.',
-      },
-      {
-        question: 'Will sealing fix cracks?',
-        answer: 'Crack filling seals them against water. It won’t level sunken or broken slabs.',
-      },
-      {
-        question: 'Is the driveway cleaned first?',
-        answer: 'Yes, always. It’s included.',
+          'No. Sealing needs dry weather and suitable temperatures, so we may need to move the date if rain is coming.',
       },
     ],
-    related: ['driveway-cleaning', 'pressure-washing', 'garage-driveway-pressure-cleaning'],
+    related: ['pressure-washing', 'patio-balcony-cleaning', 'snow-removal'],
     questions: [
       ask.select('surface', 'Driveway surface', ['Concrete', 'Asphalt']),
       ask.number('area', 'Approximate size', { min: 100, max: 10000, unit: 'sq ft' }),

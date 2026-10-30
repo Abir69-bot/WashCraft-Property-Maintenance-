@@ -4,11 +4,11 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { BUDGETS, TIMELINES } from '@/config/quote'
+import { TIMELINES } from '@/config/quote'
 import { track } from '@/lib/analytics'
-import { submitCustomQuote } from '@/lib/leads/actions'
+import { submitQuoteRequest } from '@/lib/leads/actions'
 import { routes } from '@/lib/routes'
-import { customQuoteSchema, type CustomQuoteInput } from '@/lib/schemas/quote'
+import { OTHER_SERVICE, quoteRequestSchema, type QuoteRequestInput } from '@/lib/schemas/quote'
 
 import {
   ContactSection,
@@ -16,34 +16,37 @@ import {
   FormSection,
   Honeypot,
   RadioGroupField,
-  SelectField,
   TextAreaField,
-} from '../fields'
-import { FileUploadField } from '../file-upload'
-import { Turnstile } from '../turnstile'
-import { useQuoteForm } from '../use-quote-form'
-import { ServiceChecklist, type ServiceOptionGroup } from './service-checklist'
+} from './fields'
+import { FileUploadField } from './file-upload'
+import { ServiceChecklist, type ServiceOptionGroup } from './flows/service-checklist'
+import { Turnstile } from './turnstile'
+import { useQuoteForm } from './use-quote-form'
 
-/** Custom quote with photos, for large or unusual jobs (brief §10.5). */
-export function CustomQuoteForm({
+/**
+ * The quote request form (/quote). Service buttons link here with ?service=<slug>, which ticks
+ * that service. The thank-you page only shows once the server has saved or backed up the request.
+ */
+export function QuoteRequestForm({
   groups,
   consentLabel,
+  submitLabel,
 }: {
   groups: ServiceOptionGroup[]
   consentLabel: string
+  submitLabel: string
 }) {
   const router = useRouter()
   const { form, onSubmit, pending, serverError, challenge, setUploading } = useQuoteForm<
-    CustomQuoteInput,
+    QuoteRequestInput,
     object
   >({
-    schema: customQuoteSchema,
+    schema: quoteRequestSchema,
     defaultValues: {
       services: [],
       description: '',
       photos: [],
-      timeline: '' as CustomQuoteInput['timeline'],
-      budget: '',
+      timeline: '' as QuoteRequestInput['timeline'],
       name: '',
       phone: '',
       email: '',
@@ -53,19 +56,23 @@ export function CustomQuoteForm({
       fax: '',
       turnstile: '',
     },
-    submit: submitCustomQuote,
+    submit: submitQuoteRequest,
     onSuccess: (_result, values) => {
-      track('quote_contact_submitted', { flow: 'custom', services: values.services.length })
+      track('quote_contact_submitted', { flow: 'request', services: values.services.length })
       router.push(`${routes.quoteThankYou}?type=custom`)
     },
   })
 
-  // Service pages link here with ?service=<slug>.
   useEffect(() => {
     const slug = new URLSearchParams(window.location.search).get('service')
     const known = groups.some((group) => group.services.some((service) => service.slug === slug))
     if (slug && known) form.setValue('services', [slug])
   }, [form, groups])
+
+  const options: ServiceOptionGroup[] = [
+    ...groups,
+    { title: 'Other', services: [{ slug: OTHER_SERVICE, title: 'Something else, or not sure' }] },
+  ]
 
   return (
     <form onSubmit={onSubmit} noValidate aria-busy={pending} className="grid gap-10">
@@ -73,41 +80,34 @@ export function CustomQuoteForm({
         <ServiceChecklist
           form={form}
           name="services"
-          legend="Which services?"
-          hint="Pick any that apply, or leave it to us."
-          groups={groups}
+          legend="Service needed"
+          hint="Tick everything that applies."
+          groups={options}
+          open={options.map((group) => group.title)}
         />
         <TextAreaField
           form={form}
           name="description"
-          label="Tell us about the job"
-          hint="What needs doing, how big it is, and anything unusual about access."
+          label="Describe the job"
+          hint="What needs doing, roughly how big it is, and anything we should know about access (stairs, gates, building rules, parking)."
           rows={5}
         />
-        <FileUploadField form={form} name="photos" label="Photos" onBusyChange={setUploading} />
         <RadioGroupField
           form={form}
           name="timeline"
-          legend="When do you need it done?"
+          legend="Preferred timing"
           options={TIMELINES}
           columns={2}
         />
-        <SelectField
-          form={form}
-          name="budget"
-          label="Budget"
-          options={BUDGETS}
-          placeholder="Prefer not to say"
-          optional
-        />
+        <FileUploadField form={form} name="photos" label="Photos" onBusyChange={setUploading} />
       </FormSection>
 
-      <ContactSection form={form} consentLabel={consentLabel} />
+      <ContactSection form={form} consentLabel={consentLabel} either />
       <Turnstile key={challenge} onToken={(token) => form.setValue('turnstile', token)} />
       <Honeypot form={form} />
       <FormAlert message={serverError} />
       <Button type="submit" size="lg" disabled={pending} className="w-fit">
-        {pending ? 'Sending…' : 'Request my quote'}
+        {pending ? 'Sending your request…' : submitLabel}
       </Button>
     </form>
   )

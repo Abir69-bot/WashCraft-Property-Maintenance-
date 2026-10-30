@@ -10,7 +10,14 @@ import type {
 
 import { toSlug } from '@/lib/text'
 import type { Season } from '@/config/catalog'
-import { isPlaceholder, site, type Country, type Currency, type Locale } from '@/config/site'
+import {
+  confirmedServices,
+  isPlaceholder,
+  site,
+  type Country,
+  type Currency,
+  type Locale,
+} from '@/config/site'
 
 import { posts, solutions } from './data/articles'
 import { categories } from './data/categories'
@@ -52,6 +59,7 @@ export type SeedOptions = {
 export type SeedReport = Record<string, { created: number; updated: number; skipped: number }>
 
 const PUBLISHED = { _status: 'published' as const }
+const DRAFT = { _status: 'draft' as const }
 
 /**
  * Idempotent seed (brief §16). Documents are matched by a natural key (slug, question, name);
@@ -130,6 +138,7 @@ export async function seed(
     address: site.address ?? '',
     hours: site.hours,
     region: site.region,
+    freeQuotes: site.freeQuotes,
     ...(isPlaceholder(site.country) ? {} : { country: site.country as Country }),
     ...(isPlaceholder(site.currency) ? {} : { currency: site.currency as Currency }),
     ...(isPlaceholder(site.locale) ? {} : { locale: site.locale as Locale }),
@@ -202,8 +211,9 @@ export async function seed(
   const serviceIds = new Map<string, number>()
   const newServices = new Set<string>()
   for (const [index, service] of allServices.entries()) {
+    // Only services the owner confirmed are published; the rest wait as drafts (brief §4).
     const { id, isNew } = await upsert('services', bySlug(service.slug), {
-      ...PUBLISHED,
+      _status: confirmedServices.includes(service.slug) ? 'published' : 'draft',
       title: service.title,
       slug: service.slug,
       generateSlug: false,
@@ -217,6 +227,9 @@ export async function seed(
       problem: service.problem,
       benefits: service.benefits,
       included: service.included.map((item) => ({ item })),
+      suitableFor: (service.suitableFor ?? []).map((item) => ({ item })),
+      exclusions: (service.exclusions ?? []).map((item) => ({ item })),
+      preparation: (service.preparation ?? []).map((item) => ({ item })),
       method: service.method,
       safety: service.safety,
       process: service.process,
@@ -259,10 +272,14 @@ export async function seed(
   }
   const founderId = teamIds.get(sampleTeam.find((member) => member.isFounder)!.slug)
 
+  // Articles go live only when they relate to a service the owner confirmed.
+  const articleStatus = (related: string[]) =>
+    related.some((slug) => confirmedServices.includes(slug)) ? PUBLISHED : DRAFT
+
   const postIds = new Map<string, number>()
   for (const post of posts) {
     const { id } = await upsert('posts', bySlug(post.slug), {
-      ...PUBLISHED,
+      ...articleStatus(post.relatedServices),
       title: post.title,
       slug: post.slug,
       generateSlug: false,
@@ -280,7 +297,7 @@ export async function seed(
   const solutionIds = new Map<string, number>()
   for (const solution of solutions) {
     const { id } = await upsert('solutions', bySlug(solution.slug), {
-      ...PUBLISHED,
+      ...articleStatus(solution.relatedServices),
       title: solution.title,
       slug: solution.slug,
       generateSlug: false,
@@ -328,11 +345,13 @@ export async function seed(
     })
   }
 
-  // Cities: one per service area. Unknown names get a placeholder page to fill in.
+  // Cities: one per service area. Unknown names get an unpublished draft to fill in, so no
+  // thin placeholder page ever goes live.
   const cityIds = new Map<string, number>()
   for (const [index, name] of site.serviceAreas.entries()) {
     if (isPlaceholder(name)) continue
-    const city: CitySeed = cities.find((candidate) => candidate.name === name) ?? {
+    const written = cities.find((candidate) => candidate.name === name)
+    const city: CitySeed = written ?? {
       name,
       state: 'TODO',
       lat: 0,
@@ -348,7 +367,7 @@ export async function seed(
       'cities',
       { name: { equals: name } },
       {
-        ...PUBLISHED,
+        _status: written ? 'published' : 'draft',
         name: city.name,
         slug: toSlug(city.name),
         generateSlug: false,

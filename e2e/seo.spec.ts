@@ -43,7 +43,7 @@ test.describe('search engines', () => {
   })
 
   test('every page describes the business, and no page marks up reviews', async ({ page }) => {
-    for (const path of ['/', '/contact', '/reviews']) {
+    for (const path of ['/', '/contact', '/quote']) {
       await page.goto(path)
       const items = await structuredData(page)
       expect(types(items)).toEqual(

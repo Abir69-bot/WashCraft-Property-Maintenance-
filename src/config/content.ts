@@ -12,12 +12,12 @@ export const postCategory = (value: string) =>
 /** FAQ page groups, in page order. */
 export const FAQ_CATEGORIES = [
   { label: 'General', value: 'general' },
-  { label: 'Pricing & payment', value: 'pricing' },
+  { label: 'Quotes & estimates', value: 'pricing' },
   { label: 'Booking & scheduling', value: 'scheduling' },
   { label: 'Exterior cleaning', value: 'exterior' },
   { label: 'Interior cleaning', value: 'interior' },
-  { label: 'Winter services', value: 'winter' },
+  { label: 'Snow removal', value: 'winter' },
   { label: 'Holiday lighting', value: 'holiday' },
   { label: 'Yard care', value: 'yard' },
-  { label: 'Commercial & HOA', value: 'commercial' },
+  { label: 'Commercial & restaurant', value: 'commercial' },
 ] as const

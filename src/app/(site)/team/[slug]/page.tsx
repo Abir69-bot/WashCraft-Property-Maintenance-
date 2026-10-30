@@ -9,6 +9,7 @@ import { Section } from '@/components/sections/section'
 import { getTeam } from '@/lib/data/content'
 import { loadTeamMember } from '@/lib/data/load'
 import { notFoundUnlessMoved } from '@/lib/data/redirects'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { fillTokens } from '@/lib/text'
@@ -39,7 +40,7 @@ export default async function TeamMemberPage({ params }: PageProps<'/team/[slug]
   const { slug } = await params
   const { layout, page: member } = await loadTeamMember(slug)
   if (!member) return notFoundUnlessMoved(routes.teamMember(slug))
-  const { site } = layout
+  const { site, quote } = layout
   const region = site.region
   const paragraphs = fillTokens(member.bio, { region })
     .split(/\n\s*\n/)
@@ -56,12 +57,7 @@ export default async function TeamMemberPage({ params }: PageProps<'/team/[slug]
         title={title(member.name, member.role)}
         intro={fillTokens(member.shortBio, { region })}
         badge={<SampleBadge show={member.isSample} />}
-        actions={
-          <QuoteActions
-            cta={{ href: routes.quoteInstant, label: 'Get instant price' }}
-            phone={site.phone}
-          />
-        }
+        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
         aside={
           <CmsImage
             media={member.photo}
@@ -95,7 +91,7 @@ export default async function TeamMemberPage({ params }: PageProps<'/team/[slug]
           )}
         </div>
       </Section>
-      <FinalCta region={region} />
+      <FinalCta region={region} cta={generalCta(quote)} />
     </>
   )
 }

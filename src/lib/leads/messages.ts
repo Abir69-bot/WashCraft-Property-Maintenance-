@@ -11,7 +11,8 @@ export type LeadSummary = {
   id?: number | string
   type: LeadType
   name: string
-  phone: string
+  /** The visitor gives a phone number, an email address, or both. */
+  phone?: string | null
   email?: string | null
   address?: string | null
   postalCode?: string | null
@@ -187,7 +188,7 @@ export function quoteUpdate(
   link: string,
 ) {
   const what = action === 'book' ? 'wants to book' : 'asked for a call-back about'
-  const text = `${lead.name} ${what} their ${LEAD_TYPE_LABELS[lead.type]} estimate. Phone: ${lead.phone} — ${link}`
+  const text = `${lead.name} ${what} their ${LEAD_TYPE_LABELS[lead.type]} estimate. Phone: ${lead.phone || 'not given'} — ${link}`
   return { sms: text, email: { subject: `${lead.name} ${what} their estimate`, text } }
 }
 

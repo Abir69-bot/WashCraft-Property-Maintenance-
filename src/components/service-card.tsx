@@ -22,13 +22,10 @@ export function ServiceCard({
   className?: string
 }) {
   return (
-    <article
-      className={cn(
-        'flex flex-col rounded-card border border-border bg-white p-6 transition-shadow hover:shadow-lg',
-        className,
-      )}
-    >
-      <ServiceIcon name={icon} className="size-8 text-secondary-strong" />
+    <article className={cn('flex card-lift flex-col card-raised p-6', className)}>
+      <span className="icon-chip">
+        <ServiceIcon name={icon} className="size-6" />
+      </span>
       <h3 className="mt-4 text-h3">
         <Link href={routes.service(slug)} className="text-primary no-underline hover:underline">
           {title}

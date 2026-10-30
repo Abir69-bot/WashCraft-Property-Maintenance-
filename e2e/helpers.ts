@@ -3,6 +3,9 @@ import { expect, type Page } from '@playwright/test'
 
 import { site } from '../src/config/site'
 
+/** Every lead made by the tests is named "E2E Test" and tagged utm_source=e2e. */
+export const E2E = 'utm_source=e2e&utm_medium=test'
+
 const ACCOUNT = { email: 'e2e@example.com', password: 'e2e-preview-password' }
 
 /**

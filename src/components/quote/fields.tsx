@@ -48,7 +48,7 @@ export function TextField<T extends FieldValues>({
   name: Path<T>
   label: React.ReactNode
   hint?: React.ReactNode
-  optional?: boolean
+  optional?: boolean | string
   className?: string
 } & Pick<
   React.ComponentProps<'input'>,
@@ -312,6 +312,7 @@ export function ContactSection<T extends FieldValues>({
   emailRequired = false,
   address = true,
   zip = true,
+  either = false,
   title = 'Your details',
 }: {
   form: Form<T>
@@ -320,14 +321,29 @@ export function ContactSection<T extends FieldValues>({
   address?: boolean
   /** Off when the form already asked for the postal code (the wizard's first step). */
   zip?: boolean | 'optional'
+  /** Phone or email, and street address or postal code: one of each is enough. */
+  either?: boolean
   title?: string
 }) {
   const field = (name: string) => name as Path<T>
   return (
     <fieldset className="grid gap-4">
       <legend className="mb-2 text-h3 font-heading font-bold text-primary">{title}</legend>
+      {either && (
+        <p className="-mt-2 text-muted">
+          Give us a phone number or an email address (or both)
+          {address ? ', and the property’s postal code or street address.' : '.'}
+        </p>
+      )}
       <div className="grid gap-4 md:grid-cols-2">
-        <TextField form={form} name={field('name')} label="Name" autoComplete="name" />
+        <TextField
+          form={form}
+          name={field('name')}
+          label="Name"
+          autoComplete="name"
+          maxLength={80}
+          className="md:col-span-2"
+        />
         <TextField
           form={form}
           name={field('phone')}
@@ -335,6 +351,8 @@ export function ContactSection<T extends FieldValues>({
           type="tel"
           inputMode="tel"
           autoComplete="tel"
+          maxLength={20}
+          optional={either && 'or email'}
         />
         <TextField
           form={form}
@@ -342,7 +360,8 @@ export function ContactSection<T extends FieldValues>({
           label="Email"
           type="email"
           autoComplete="email"
-          optional={!emailRequired}
+          maxLength={254}
+          optional={either ? 'or phone' : !emailRequired}
         />
         {address && (
           <TextField
@@ -350,6 +369,8 @@ export function ContactSection<T extends FieldValues>({
             name={field('address')}
             label="Street address"
             autoComplete="street-address"
+            maxLength={200}
+            optional={either && 'or postal code'}
           />
         )}
         {zip && (
@@ -359,7 +380,7 @@ export function ContactSection<T extends FieldValues>({
             label="Postal code"
             autoComplete="postal-code"
             maxLength={10}
-            optional={zip === 'optional'}
+            optional={either && address ? 'or street address' : zip === 'optional'}
           />
         )}
       </div>

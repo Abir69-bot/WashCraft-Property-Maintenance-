@@ -21,7 +21,7 @@ export const mediaFiles = {
   'gutter-2-before': 'Gutter packed with pine needles, leaves and moss',
   'gutter-2-after': 'The same gutter emptied and flushed clean',
   'roof-before': 'Shingle roof with clumps of moss along the rows',
-  'roof-after': 'The same roof after moss treatment and cleanup',
+  'roof-after': 'The same roof after cleaning, with the moss cleared',
   'railing-before': 'Black metal railing covered in yellow and gray lichen',
   'railing-after': 'The same railing after cleaning, glossy black',
   'skylight-before': 'Glass skylight covered with leaves, seeds and water stains',
@@ -50,8 +50,8 @@ export const gallery: {
     featured: true,
   },
   {
-    caption: 'Siding cleared of algae with a soft wash',
-    service: 'house-washing',
+    caption: 'Siding cleared of green and black streaks',
+    service: 'soft-washing',
     before: 'siding-before',
     after: 'siding-after',
     featured: true,
@@ -71,7 +71,7 @@ export const gallery: {
     featured: true,
   },
   {
-    caption: 'Moss treated on a shingle roof',
+    caption: 'Shingle roof cleared of moss',
     service: 'roof-cleaning',
     before: 'roof-before',
     after: 'roof-after',
@@ -92,13 +92,13 @@ export const gallery: {
   },
   {
     caption: 'Lichen washed off a metal railing',
-    service: 'exterior-surface-cleaning',
+    service: 'patio-balcony-cleaning',
     before: 'railing-before',
     after: 'railing-after',
   },
   {
     caption: 'Skylight glass cleared of debris',
-    service: 'glass-awning-cleaning',
+    service: 'window-cleaning',
     before: 'skylight-before',
     after: 'skylight-after',
   },
@@ -112,7 +112,7 @@ export const serviceHeroImages: Record<string, MediaKey> = {
   'patio-balcony-cleaning': 'pavers-after',
   'gutter-cleaning': 'gutter-after',
   'roof-cleaning': 'roof-after',
-  'window-cleaning': 'window-cleaning-pole',
+  // 'window-cleaning-pole' shows high windows; not used as a hero until heights are confirmed.
   'exterior-surface-cleaning': 'railing-after',
   'glass-awning-cleaning': 'skylights-roof',
   'commercial-gutter-cleaning': 'gutter-2-after',
@@ -131,17 +131,15 @@ export const homeHeroImages: Partial<Record<Season, MediaKey>> = {
   'all-year': 'brick-steps-half',
 }
 
-export const whyChooseUsImages: Record<string, MediaKey> = {
-  'Damage-free methods': 'siding-split',
-  'Safety-trained crews': 'window-cleaning-pole',
-}
+/** "Why choose us" card photos by card title. The cards lead with icons until real photos exist. */
+export const whyChooseUsImages: Record<string, MediaKey> = {}
 
 /** Home page service explorer tabs. */
 export const featuredServices = [
-  'house-washing',
-  'gutter-cleaning',
-  'window-cleaning',
+  'house-cleaning',
+  'commercial-cleaning',
+  'post-construction-cleaning',
+  'soft-washing',
   'snow-removal',
   'christmas-light-installation',
-  'yard-cleanup',
 ]

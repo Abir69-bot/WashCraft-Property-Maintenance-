@@ -14,8 +14,8 @@ import {
 
 const origin = 'https://washcraft.example'
 const places = [
-  { name: 'Denver', state: 'CO' },
-  { name: 'Aurora', state: 'CO' },
+  { name: 'Scarborough', state: 'ON' },
+  { name: 'Markham', state: 'ON' },
 ]
 
 describe('parseHours', () => {
@@ -86,20 +86,26 @@ describe('postalAddress', () => {
   })
 
   it('gives only the state and country for a service-area business', () => {
-    expect(postalAddress(null, places, 'US')).toEqual({
+    expect(postalAddress(null, places, 'CA')).toEqual({
       '@type': 'PostalAddress',
-      addressRegion: 'CO',
-      addressCountry: 'US',
+      addressRegion: 'ON',
+      addressCountry: 'CA',
     })
     expect(
-      postalAddress(null, [...places, { name: 'Cheyenne', state: 'WY' }], 'US'),
+      postalAddress(null, [...places, { name: 'Gatineau', state: 'QC' }], 'CA'),
     ).toBeUndefined()
   })
 })
 
 describe('localBusiness', () => {
   it('uses only facts from settings', () => {
-    const business = localBusiness({ site, origin, places, logo: '/logo.png', image: '/og.png' })
+    const business = localBusiness({
+      site: { ...site, phone: '(416) 555-0142' },
+      origin,
+      places,
+      logo: '/logo.png',
+      image: '/og.png',
+    })
     expect(business).toMatchObject({
       '@type': 'HomeAndConstructionBusiness',
       '@id': businessId(origin),
@@ -107,7 +113,7 @@ describe('localBusiness', () => {
       url: `${origin}/`,
       logo: `${origin}/logo.png`,
       telephone: '+14165550142',
-      address: { addressRegion: 'CO' },
+      address: { addressRegion: 'ON' },
     })
     expect(business).not.toHaveProperty('sameAs')
     expect(business).not.toHaveProperty('aggregateRating')

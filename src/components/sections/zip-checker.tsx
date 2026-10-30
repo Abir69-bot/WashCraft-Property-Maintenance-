@@ -54,8 +54,8 @@ export function ZipChecker({ cities }: { cities: AreaCity[] }) {
             <CircleCheck aria-hidden className="mt-0.5 size-5 shrink-0 text-success-strong" />
             <span>
               Yes, we serve <Link href={routes.city(result.city.slug)}>{result.city.name}</Link>.{' '}
-              <Link href={routes.quoteInstant} className="font-semibold">
-                Get an instant price
+              <Link href={routes.quote} className="font-semibold">
+                Request a quote
               </Link>
             </span>
           </p>

@@ -32,7 +32,7 @@ export const cities: CitySeed[] = [
     ],
     heroImageLabel: 'Brick bungalow on a quiet Scarborough street with mature trees',
     intro:
-      'Scarborough stretches from the Bluffs along Lake Ontario up to the Rouge Valley, and its homes are just as varied. Many streets are lined with brick bungalows, back-splits and side-splits built after the war, next to two-story homes from the 1970s and 1980s and newer houses in the north end. Townhouse complexes are common too, and each one has its own rules for exterior work. Deep ravines and big trees bring shade, leaves and seeds, so gutters fill quickly in the fall and north-facing walls and roofs grow green algae. Homes near the lake catch more wind and moisture. Decks, fences and interlock walkways also need a clean each spring. Winter brings snow and freeze-thaw days that leave driveways and front steps icy by morning. We plan Scarborough jobs around all of this: gentle soft washing for older brick and siding, gutter cleaning after the leaves come down, and snow routes that reach every part of Scarborough after a storm.',
+      'Scarborough stretches from the Bluffs along Lake Ontario up to the Rouge Valley, and its homes are just as varied. Many streets are lined with brick bungalows, back-splits and side-splits built after the war, next to two-story homes from the 1970s and 1980s and newer houses in the north end. Townhouse complexes are common too, and each one has its own rules for exterior work. Deep ravines and big trees bring shade, leaves and seeds, so gutters fill quickly in the fall and north-facing walls and roofs grow green algae. Homes near the lake catch more wind and moisture. Patios and interlock walkways also need a clean each spring. Winter brings snow and freeze-thaw days that leave driveways and front steps icy by morning. We plan Scarborough jobs around all of this: gentle soft washing for older brick and siding, gutter cleaning after the leaves come down, and snow removal in winter.',
     neighborhoods: [
       {
         name: 'Agincourt',
@@ -55,12 +55,12 @@ export const cities: CitySeed[] = [
       {
         name: 'Malvern',
         blurb:
-          'Townhouses and semis next to the Rouge, where house washing, bin cleaning and snow clearing are popular.',
+          'Townhouses and semis next to the Rouge, where siding, windows and driveways need regular care.',
         imageLabel: 'Row of townhouses in Malvern after a fresh wash',
       },
     ],
     whyChooseUs:
-      'Scarborough homes range from postwar bungalows to new builds. We match the method to each one, and we plan snow routes so every neighborhood gets cleared in order.',
+      'Scarborough homes range from postwar bungalows to new builds. We match the method to each one, and we put the plan for every property in writing.',
     faqs: [
       {
         question: 'Do you serve all of Scarborough?',
@@ -70,7 +70,7 @@ export const cities: CitySeed[] = [
       {
         question: 'Do you work on homes that back onto a ravine?',
         answer:
-          'Yes. We protect plants and slopes, and we plan gutter and yard work around the big trees most ravine lots have.',
+          'Yes. We protect plants and slopes, and we plan gutter and roof work around the big trees most ravine lots have.',
       },
       {
         question: 'Can you clean townhouse complexes?',
@@ -112,7 +112,7 @@ export const cities: CitySeed[] = [
     ],
     heroImageLabel: 'Detached North York home with large windows and a landscaped front yard',
     intro:
-      'North York runs from the Humber in the west to the Don Valley in the east, and from the 401 up to Steeles. It mixes many kinds of homes. Older bungalows sit beside large new houses with stone, stucco and big windows, mid-century homes line the curving streets of Don Mills, and townhouses and condo buildings cluster near Yonge Street. Each type needs a different approach. Stucco and stone need a gentle soft wash, large glass needs streak-free window cleaning, and new interlock driveways and patios stay sharp with a regular surface clean. Mature trees shade many streets, so gutters fill in the fall and moss can creep onto shaded roofs. Ravines bring wildlife and extra leaves. In winter, long driveways and front walks need clearing early, before people head to work. We plan North York jobs around all of it, from spring house washing to fall gutter cleaning and winter snow routes.',
+      'North York runs from the Humber in the west to the Don Valley in the east, and from the 401 up to Steeles. It mixes many kinds of homes. Older bungalows sit beside large new houses with stone, stucco and big windows, mid-century homes line the curving streets of Don Mills, and townhouses and condo buildings cluster near Yonge Street. Each type needs a different approach. Stucco and stone need a gentle soft wash, large glass needs streak-free window cleaning, and new interlock driveways and patios stay sharp with a regular surface clean. Mature trees shade many streets, so gutters fill in the fall and moss can creep onto shaded roofs. Ravines bring wildlife and extra leaves. In winter, long driveways and front walks need clearing early, before people head to work. We plan North York jobs around all of it, from spring soft washing to fall gutter cleaning and winter snow removal.',
     neighborhoods: [
       {
         name: 'Willowdale',
@@ -180,7 +180,7 @@ export const cities: CitySeed[] = [
     ],
     heroImageLabel: 'Tudor-style home in Etobicoke with a stone walkway in the fall',
     intro:
-      'Etobicoke sits between the Humber River and Etobicoke Creek, from the Lake Ontario shoreline up to Rexdale. Its homes span about a century. Brick, stone and stucco houses from the 1920s to the 1940s fill neighborhoods like the Kingsway, postwar bungalows and side-splits line much of central Etobicoke, and newer townhouses and condo buildings rise along the lake. Older homes need a careful hand, with low-pressure soft washing that protects old mortar, paint and wood trim. Tall, mature trees are everywhere, so gutters fill quickly in the fall and shaded roofs and decks turn green. Lakeside homes deal with more wind and moisture, which leaves windows and siding dirty sooner. Winter brings snow and icy mornings, and steep driveways near the valleys need clearing and salting. We plan Etobicoke jobs around all of it: gentle cleaning for older homes, gutters after the leaves fall, and snow routes from the lakeshore to the north end.',
+      'Etobicoke sits between the Humber River and Etobicoke Creek, from the Lake Ontario shoreline up to Rexdale. Its homes span about a century. Brick, stone and stucco houses from the 1920s to the 1940s fill neighborhoods like the Kingsway, postwar bungalows and side-splits line much of central Etobicoke, and newer townhouses and condo buildings rise along the lake. Older homes need a careful hand, with low-pressure soft washing that protects old mortar, paint and wood trim. Tall, mature trees are everywhere, so gutters fill quickly in the fall and shaded roofs and decks turn green. Lakeside homes deal with more wind and moisture, which leaves windows and siding dirty sooner. Winter brings snow and icy mornings, and steep driveways near the valleys need clearing and salting. We plan Etobicoke jobs around all of it: gentle cleaning for older homes, gutters after the leaves fall, and snow removal in winter.',
     neighborhoods: [
       {
         name: 'The Kingsway',
@@ -191,13 +191,13 @@ export const cities: CitySeed[] = [
       {
         name: 'Mimico',
         blurb:
-          'Older homes and new condos near the lake, where wind and moisture make window and house washing worth booking twice a year.',
+          'Older homes and new condos near the lake, where wind and moisture make window and soft washing worth keeping up with.',
         imageLabel: 'Mimico street with older homes near the lake',
       },
       {
         name: 'Long Branch',
         blurb:
-          'Lakeside homes on leafy streets, with decks, fences and driveways that benefit from a spring clean.',
+          'Lakeside homes on leafy streets, with patios and driveways that benefit from a spring clean.',
         imageLabel: 'Long Branch home with a wooden fence and deck',
       },
       {
@@ -235,7 +235,7 @@ export const cities: CitySeed[] = [
     zipPrefixes: ['L3P', 'L3R', 'L3S', 'L3T', 'L6B', 'L6C', 'L6E', 'L6G'],
     heroImageLabel: 'Two-story stone and brick home in a Markham subdivision',
     intro:
-      'Markham has historic main streets in Unionville and Markham Village, planned neighborhoods like Cornell, and many subdivisions built since the 1980s. Most homes are two-story detached houses and townhouses with brick, stone, stucco and vinyl siding, often with interlock driveways and walkways. Each surface needs its own approach: a gentle soft wash for stucco and siding, a surface cleaner for interlock, and careful work on the wood and older brick of heritage homes. Young trees in newer areas drop fewer leaves, but seeds and spring blossoms still find their way into gutters, and the older parts of town have big mature trees. Decks and wood fences turn gray without a yearly clean. Shared driveways and tight side yards in townhouse rows call for careful scheduling. Winter brings snow and icy mornings, and wide driveways need clearing before the morning rush. We plan Markham jobs around all of it, from spring washing to fall gutter cleaning and winter snow routes.',
+      'Markham has historic main streets in Unionville and Markham Village, planned neighborhoods like Cornell, and many subdivisions built since the 1980s. Most homes are two-story detached houses and townhouses with brick, stone, stucco and vinyl siding, often with interlock driveways and walkways. Each surface needs its own approach: a gentle soft wash for stucco and siding, a surface cleaner for interlock, and careful work on the wood and older brick of heritage homes. Young trees in newer areas drop fewer leaves, but seeds and spring blossoms still find their way into gutters, and the older parts of town have big mature trees. Patios and walkways darken without a yearly clean. Shared driveways and tight side yards in townhouse rows call for careful scheduling. Winter brings snow and icy mornings, and wide driveways need clearing before the morning rush. We plan Markham jobs around all of it, from spring washing to fall gutter cleaning and winter snow removal.',
     neighborhoods: [
       {
         name: 'Unionville',
@@ -252,18 +252,18 @@ export const cities: CitySeed[] = [
       {
         name: 'Cornell',
         blurb:
-          'Newer homes and townhouses with front porches and rear lanes, where house washing and window cleaning keep things looking new.',
+          'Newer homes and townhouses with front porches and rear lanes, where soft washing and window cleaning keep things looking new.',
         imageLabel: 'Townhouses with front porches in Cornell',
       },
       {
         name: 'Berczy Village',
         blurb:
-          'Two-story homes with interlock driveways, a good fit for driveway cleaning, window washing and snow contracts.',
+          'Two-story homes with interlock driveways, a good fit for pressure washing, window cleaning and snow removal.',
         imageLabel: 'Berczy Village home with an interlock driveway',
       },
     ],
     whyChooseUs:
-      'Markham homes mix stucco, stone, siding and interlock. We use the right method for each surface, and we plan winter routes so wide driveways are cleared early.',
+      'Markham homes mix stucco, stone, siding and interlock. We use the right method for each surface, and we agree the details of every job in writing.',
     faqs: [
       {
         question: 'Do you serve all of Markham?',
@@ -290,18 +290,18 @@ export const cities: CitySeed[] = [
     zipPrefixes: ['L4H', 'L4J', 'L4K', 'L4L', 'L6A'],
     heroImageLabel: 'Large detached home in Vaughan with a stone front and interlock driveway',
     intro:
-      'Vaughan includes Woodbridge, Maple, Concord, Thornhill west of Yonge and the village of Kleinburg, along with newer neighborhoods and the condo towers of the Vaughan Metropolitan Centre. Many homes are large detached houses with stone and stucco fronts, tall windows, big rooflines and wide interlock driveways. That size makes some jobs harder, like reaching high windows and second-story gutters or hanging holiday lights along a long roofline. Stone and stucco need a gentle soft wash so the finish stays intact, and interlock driveways and patios stay sharp with a regular surface clean. Newer streets have young trees, while older parts of Woodbridge and Thornhill have big mature ones that fill gutters every fall. Decks, fences and patios in big backyards benefit from a spring clean too. Winter brings snow and icy driveways, and long, wide driveways need clearing early. We plan Vaughan jobs around all of it, from spring washing to fall gutters, holiday lights and winter snow routes.',
+      'Vaughan includes Woodbridge, Maple, Concord, Thornhill west of Yonge and the village of Kleinburg, along with newer neighborhoods and the condo towers of the Vaughan Metropolitan Centre. Many homes are large detached houses with stone and stucco fronts, tall windows, big rooflines and wide interlock driveways. That size makes some jobs harder, like reaching high windows and second-story gutters or hanging holiday lights along a long roofline. Stone and stucco need a gentle soft wash so the finish stays intact, and interlock driveways and patios stay sharp with a regular surface clean. Newer streets have young trees, while older parts of Woodbridge and Thornhill have big mature ones that fill gutters every fall. Patios in big backyards benefit from a spring clean too. Winter brings snow and icy driveways, and long, wide driveways need clearing early. We plan Vaughan jobs around all of it, from spring washing to fall gutters, holiday lights and winter snow removal.',
     neighborhoods: [
       {
         name: 'Woodbridge',
         blurb:
-          'Large homes with stone fronts and interlock driveways, a good fit for soft washing, driveway cleaning and snow contracts.',
+          'Large homes with stone fronts and interlock driveways, a good fit for soft washing, pressure washing and snow removal.',
         imageLabel: 'Woodbridge home with a stone front and interlock driveway',
       },
       {
         name: 'Maple',
         blurb:
-          'Newer subdivisions with two-story homes and townhouses, where window cleaning and house washing keep them looking new.',
+          'Newer subdivisions with two-story homes and townhouses, where window cleaning and soft washing keep them looking new.',
         imageLabel: 'Two-story homes on a street in Maple',
       },
       {
@@ -318,7 +318,7 @@ export const cities: CitySeed[] = [
       },
     ],
     whyChooseUs:
-      'Vaughan homes are often big, with tall windows and long rooflines. We bring the right ladders and poles, and we measure every roofline before quoting holiday lights.',
+      'Vaughan homes are often big, with tall windows and long rooflines. We confirm what we can safely reach, including rooflines for holiday lights, before we quote.',
     faqs: [
       {
         question: 'Do you serve all of Vaughan?',
@@ -361,13 +361,13 @@ export const cities: CitySeed[] = [
       {
         name: 'Bayview Hill',
         blurb:
-          'Large homes with big windows and long driveways, a good fit for window cleaning, house washing and snow contracts.',
+          'Large homes with big windows and long driveways, a good fit for window cleaning, soft washing and snow removal.',
         imageLabel: 'Large Bayview Hill home with a long driveway',
       },
       {
         name: 'Jefferson',
         blurb:
-          'Newer homes near the forest, where decks, fences and windows benefit from a spring and fall clean.',
+          'Newer homes near the forest, where patios and windows benefit from a regular clean.',
         imageLabel: 'Jefferson home with a deck backing onto trees',
       },
     ],
@@ -422,12 +422,12 @@ export const cities: CitySeed[] = [
     ],
     heroImageLabel: 'Two-story Mississauga home with a clean driveway and front garden',
     intro:
-      'Mississauga stretches from the Lake Ontario shore in Port Credit and Lorne Park up to Meadowvale and Malton. Its homes cover several eras: postwar houses and large lots with mature trees in the south, subdivisions from the 1970s to the 1990s in areas like Erin Mills and Meadowvale, newer homes and townhouses across the city, and condo towers downtown. That means a wide mix of brick, siding, stucco, decks, fences and interlock driveways, each with its own cleaning needs. Homes near the lake and the Credit River see more moisture, so shaded walls, decks and roofs can turn green. Fences in shady backyards need a yearly clean too. Big trees in older neighborhoods fill gutters every fall, and townhouse complexes need work planned with the property manager. Winter brings snow and freeze-thaw days that leave driveways and steps icy. We plan Mississauga jobs around all of it, from spring house washing to fall gutters and winter snow routes.',
+      'Mississauga stretches from the Lake Ontario shore in Port Credit and Lorne Park up to Meadowvale and Malton. Its homes cover several eras: postwar houses and large lots with mature trees in the south, subdivisions from the 1970s to the 1990s in areas like Erin Mills and Meadowvale, newer homes and townhouses across the city, and condo towers downtown. That means a wide mix of brick, siding, stucco, decks, fences and interlock driveways, each with its own cleaning needs. Homes near the lake and the Credit River see more moisture, so shaded walls, decks and roofs can turn green. Patios in shady backyards need a yearly clean too. Big trees in older neighborhoods fill gutters every fall, and townhouse complexes need work planned with the property manager. Winter brings snow and freeze-thaw days that leave driveways and steps icy. We plan Mississauga jobs around all of it, from spring soft washing to fall gutters and winter snow removal.',
     neighborhoods: [
       {
         name: 'Port Credit',
         blurb:
-          'Lakeside homes on leafy streets, where moisture and wind make house washing and window cleaning worth booking twice a year.',
+          'Lakeside homes on leafy streets, where moisture and wind make soft washing and window cleaning worth keeping up with.',
         imageLabel: 'Port Credit home near the lake',
       },
       {
@@ -439,7 +439,7 @@ export const cities: CitySeed[] = [
       {
         name: 'Meadowvale',
         blurb:
-          'Family homes and townhouses near parks and trails, a good fit for gutter cleaning, bin cleaning and snow contracts.',
+          'Family homes and townhouses near parks and trails, a good fit for gutter cleaning and snow removal.',
         imageLabel: 'Meadowvale townhouses beside a park',
       },
       {

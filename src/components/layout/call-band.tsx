@@ -2,17 +2,29 @@ import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 import type { SiteConfig } from '@/config/site'
-import { routes } from '@/lib/routes'
+import type { QuoteCta } from '@/lib/quote/flow'
 import { smsHref, telHref } from '@/lib/text'
 import type { Footer } from '@/payload-types'
 
 import { CallLink } from './contact-links'
 import { HideOn, QUOTE_AND_LEGAL } from './route-visibility'
 
-/** "Let's talk" band before the footer, except on quote and legal pages (brief §8). */
-export function CallBand({ site, band }: { site: SiteConfig; band: Footer['callBand'] }) {
+/**
+ * "Let's talk" band before the footer, except on quote and legal pages (brief §8). Only shown
+ * with a confirmed phone number; without one it would just repeat the page's closing CTA.
+ */
+export function CallBand({
+  site,
+  band,
+  cta,
+}: {
+  site: SiteConfig
+  band: Footer['callBand']
+  cta: QuoteCta
+}) {
   const phrases = (band.marquee ?? []).map((item) => item.text)
   const text = smsHref(site.phone)
+  if (!telHref(site.phone)) return null
 
   return (
     <HideOn prefixes={QUOTE_AND_LEGAL}>
@@ -21,16 +33,14 @@ export function CallBand({ site, band }: { site: SiteConfig; band: Footer['callB
           <div>
             <h2 id="call-band-heading">{band.heading}</h2>
             {band.text && <p className="mt-3 text-white/90">{band.text}</p>}
-            {telHref(site.phone) && (
-              <CallLink
-                phone={site.phone}
-                className="mt-6 text-h2 font-heading font-extrabold text-white no-underline hover:underline"
-              />
-            )}
+            <CallLink
+              phone={site.phone}
+              className="mt-6 text-h2 font-heading font-extrabold text-white no-underline hover:underline"
+            />
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild size="lg">
-              <Link href={routes.quoteInstant}>Get instant price</Link>
+              <Link href={cta.href}>{cta.label}</Link>
             </Button>
             {text && (
               <Button asChild size="lg" variant="inverse">

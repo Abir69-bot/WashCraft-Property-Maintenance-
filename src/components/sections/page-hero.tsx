@@ -55,7 +55,7 @@ export function PageHero({
   return (
     <section
       aria-labelledby="page-heading"
-      className={cn('bg-surface', tone && ['border-t-4', TONE_BORDER[tone]])}
+      className={cn('hero-surface', tone && ['border-t-4', TONE_BORDER[tone]])}
     >
       <Breadcrumbs items={crumbs} />
       <div

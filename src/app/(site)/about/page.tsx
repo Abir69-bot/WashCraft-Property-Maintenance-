@@ -9,6 +9,7 @@ import { Section } from '@/components/sections/section'
 import { TeamGrid } from '@/components/sections/team'
 import { getAboutPage, getTeam } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { fillTokens } from '@/lib/text'
@@ -34,7 +35,11 @@ const paragraphs = (text: string) => text.split(/\n\s*\n/).filter((part) => part
  * certificates, and community involvement. Sections without real content are left out.
  */
 export default async function AboutPage() {
-  const [{ site }, about, team] = await Promise.all([getLayoutData(), getAboutPage(), getTeam()])
+  const [{ site, quote }, about, team] = await Promise.all([
+    getLayoutData(),
+    getAboutPage(),
+    getTeam(),
+  ])
   const region = site.region
   const fill = (text: string) => fillTokens(text, { region })
   const founder = team.find((member) => member.isFounder) ?? null
@@ -52,12 +57,7 @@ export default async function AboutPage() {
         title={title(site.shortName)}
         lead={fill(about.headline)}
         intro={fill(about.intro)}
-        actions={
-          <QuoteActions
-            cta={{ href: routes.quoteInstant, label: 'Get instant price' }}
-            phone={site.phone}
-          />
-        }
+        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
         aside={
           <CmsImage
             media={about.heroImage}
@@ -153,7 +153,7 @@ export default async function AboutPage() {
       )}
 
       <TrustStrip site={site} />
-      <FinalCta region={region} />
+      <FinalCta region={region} cta={generalCta(quote)} />
     </>
   )
 }

@@ -1,4 +1,5 @@
 import { HOME_SECTIONS } from '@/globals/settings'
+import { quoteFormHref } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 
 const range = (startMonth: number, startDay: number, endMonth: number, endDay: number) => ({
@@ -19,79 +20,71 @@ export const seasonalSettings = {
   },
   heroOverride: 'auto',
   snowTriggers: ['2 cm', '5 cm', '8 cm'],
+  // Plain seasonal reminders; no claims about availability or how fast dates fill up.
   announcements: [
     {
       season: 'winter',
-      message: 'Snow contracts for this winter are open. Routes are limited, so sign up early.',
-      linkLabel: 'Get on a route',
-      linkHref: routes.quoteSnowContract,
+      message: 'Snow removal: send a quote request before the season starts.',
+      linkLabel: 'Request a quote',
+      linkHref: quoteFormHref('snow-removal'),
       active: true,
     },
     {
       season: 'holiday',
-      message: 'Holiday light install dates are booking now.',
-      linkLabel: 'Book your lights',
-      linkHref: routes.quoteHolidayLights,
+      message: 'Planning holiday lights this year? Ask us about Christmas light installation.',
+      linkLabel: 'Request a quote',
+      linkHref: quoteFormHref('christmas-light-installation'),
       active: true,
     },
     {
       season: 'spring',
-      message: 'Spring cleaning season: house washing, windows and gutters.',
-      linkLabel: 'Get instant price',
-      linkHref: routes.quoteInstant,
+      message: 'Spring exterior cleaning: windows, gutters, soft washing and more.',
+      linkLabel: 'Request a quote',
+      linkHref: routes.quote,
       active: true,
     },
     {
       season: 'summer',
-      message: 'Summer is staining and sealing season. Book while the weather is dry.',
-      linkLabel: 'Get instant price',
-      linkHref: routes.quoteInstant,
+      message: 'Patio, balcony and driveway care for the warmer months.',
+      linkLabel: 'Request a quote',
+      linkHref: routes.quote,
       active: true,
     },
     {
       season: 'fall',
-      message: 'Book fall gutter cleaning and leaf removal before the first snow.',
-      linkLabel: 'Get instant price',
-      linkHref: routes.quoteInstant,
+      message: 'Fall gutter cleaning: send a quote request before the leaves pile up.',
+      linkLabel: 'Request a quote',
+      linkHref: quoteFormHref('gutter-cleaning'),
       active: true,
     },
   ],
 } as const
 
 export const navigation = {
-  headerCta: { label: 'Get instant price', href: routes.quoteInstant },
+  // No header button set: it follows the quote settings ("Request a Free Quote").
   companyLinks: [
-    { label: 'About us', href: routes.about },
-    { label: 'Our team', href: `${routes.about}#team` },
-    { label: 'Reviews', href: routes.reviews },
-    { label: 'Before & after', href: routes.beforeAndAfter },
-    { label: 'Careers', href: routes.careers },
-    { label: 'Blog', href: routes.blog },
-    { label: 'FAQ', href: routes.faq },
+    { label: 'Before & After', href: routes.beforeAndAfter },
+    { label: 'About', href: routes.about },
+    { label: 'FAQs', href: routes.faq },
+    { label: 'Contact', href: routes.contact },
   ],
-  commercialLinks: [
-    { label: 'HOA & condo services', href: routes.hoa },
-    { label: 'Request a commercial bid', href: routes.quoteCommercial },
-  ],
-  featuredCard: { automatic: true },
+  featuredCard: {
+    automatic: false,
+    title: 'Not sure which service you need?',
+    text: 'Send a quote request with a few photos and we’ll tell you what fits.',
+    href: routes.quote,
+  },
 }
 
 export const footer = {
   blurb:
-    'WashCraft keeps {region} homes and businesses clean, safe and looking their best in every season: exterior and interior cleaning, snow and ice, holiday lighting and yard care.',
+    'WashCraft Property Maintenance offers interior, commercial, restaurant and post-construction cleaning, exterior cleaning, snow removal and holiday lighting for homes and businesses in {region}.',
   servicesPerCategory: 5,
   callBand: {
     heading: 'Let’s talk about your property',
-    text: 'Call or text for a quick answer, or get an instant price online.',
-    marquee: [
-      'House washing',
-      'Gutter cleaning',
-      'Window cleaning',
-      'Snow removal',
-      'Holiday lights',
-      'Yard cleanups',
-      'Commercial & HOA',
-    ].map((text) => ({ text })),
+    text: 'Send a quote request and we’ll get back to you with a written estimate.',
+    // No scrolling marquee: it adds motion without adding information.
+    marquee: [],
   },
   legalLinks: [
     { label: 'Privacy', href: routes.privacy },
@@ -100,107 +93,127 @@ export const footer = {
   ],
 }
 
-const instantCta = { label: 'Get instant price', href: routes.quoteInstant }
+const HERO = {
+  headline: 'Year-Round Property Maintenance, Made Simple',
+  subline:
+    'From snow removal and seasonal lighting to interior cleaning, post-construction cleanup, commercial and restaurant cleaning, exterior cleaning, and property upkeep, WashCraft Property Maintenance helps Toronto-area customers keep their spaces clean, cared for, and ready for every season.',
+  cta: { label: 'Request a Free Quote', href: routes.quote },
+}
+
+/** Home sections in page order. Switched-off and sample-only sections come last, disabled. */
+const SHOWN = [
+  'hero',
+  'intro',
+  'services',
+  'why-choose-us',
+  'trust-strip',
+  'before-after',
+  'testimonials',
+  'commercial',
+  'how-it-works',
+  'service-areas',
+  'guarantee',
+  'need-us-now',
+  'client-logos',
+  'founder',
+  'faq',
+  'final-cta',
+] as const
 
 export const homepage = {
-  sections: HOME_SECTIONS.map((section) => ({ section, enabled: true })),
+  sections: [
+    ...SHOWN.map((section) => ({ section, enabled: true })),
+    ...HOME_SECTIONS.filter((section) => !(SHOWN as readonly string[]).includes(section)).map(
+      (section) => ({ section, enabled: false }),
+    ),
+  ],
+  introduction: {
+    title: 'Property care from one company, all year',
+    body: 'WashCraft Property Maintenance looks after homes, rentals and businesses in {region}. We handle interior, commercial, restaurant and post-construction cleaning, exterior cleaning, snow removal and holiday lighting, so you can call one company as your property’s needs change through the year.\n\nEvery job starts with your request and ends with work you agreed to in writing. Your estimate sets out what’s included, what isn’t, the price and the conditions before anything is booked.',
+  },
+  // One headline all year (2026-10 brief); the eyebrow changes with the season.
   heroVariants: [
     {
       season: 'spring',
-      eyebrow: 'Spring cleaning season',
-      headline: 'Exterior cleaning and yard care in {region}',
-      subline:
-        'Wash off winter: house washing, windows, gutters and spring cleanups, with a price range online in minutes.',
-      cta: instantCta,
-      imageLabel: 'Freshly washed house with spring flowers in the beds',
+      eyebrow: 'Spring exterior cleaning',
+      ...HERO,
+      imageLabel: 'Freshly washed house with clean windows',
     },
     {
       season: 'summer',
-      eyebrow: 'Summer projects',
-      headline: 'Deck, fence and driveway care in {region}',
-      subline: 'Cleaning, staining and sealing while the weather is warm and dry.',
-      cta: instantCta,
-      imageLabel: 'Freshly stained deck on a sunny afternoon',
+      eyebrow: 'Patios, balconies and driveways',
+      ...HERO,
+      imageLabel: 'Clean patio on a sunny afternoon',
     },
     {
       season: 'fall',
-      eyebrow: 'Get ready for winter',
-      headline: 'Gutters, leaves and driveways handled in {region}',
-      subline: 'Gutter cleaning, leaf removal and driveway sealing before the first snow.',
-      cta: instantCta,
-      imageLabel: 'Technician cleaning gutters with fall leaves on the lawn',
+      eyebrow: 'Gutters and fall cleanup',
+      ...HERO,
+      imageLabel: 'Clean gutters with fall leaves on the lawn',
     },
     {
       season: 'winter',
-      eyebrow: 'Snow contracts open',
-      headline: 'Snow and ice handled all winter in {region}',
-      subline: 'Seasonal snow contracts for driveways and walkways, with salting and ice control.',
-      cta: { label: 'Get on a snow route', href: routes.quoteSnowContract },
-      imageLabel: 'Cleared driveway and walkway at dawn after a snowfall',
+      eyebrow: 'Snow removal',
+      ...HERO,
+      imageLabel: 'Cleared driveway and walkway after a snowfall',
     },
     {
       season: 'holiday',
-      eyebrow: 'Holiday lighting',
-      headline: 'Holiday lights in {region}, hung for you',
-      subline: 'Design, installation, January removal and storage. Use your lights or ours.',
-      cta: { label: 'Book your lights', href: routes.quoteHolidayLights },
+      eyebrow: 'Christmas light installation',
+      ...HERO,
       imageLabel: 'Home at dusk with warm white roofline lights',
     },
     {
       season: 'all-year',
-      eyebrow: 'Property maintenance',
-      headline: 'Property maintenance in {region}, every season',
-      subline:
-        'Exterior and interior cleaning, snow and ice, holiday lighting and yard care from one local team.',
-      cta: instantCta,
-      imageLabel: 'Crew soft-washing a two-story house',
+      eyebrow: 'Property maintenance in {region}',
+      ...HERO,
+      imageLabel: 'Clean, well-kept home exterior',
     },
   ],
+  // The quote workflow (2026-10 brief §8). Information only: no payments or booking online.
   howItWorks: [
     {
-      title: 'Get a quote',
-      body: 'Answer a few questions for an instant price range, or send photos for a custom quote.',
+      title: 'Send a request',
+      body: 'Fill in the quote form, or call us if you prefer. A few photos help us understand the job.',
     },
     {
-      title: 'Pick a date',
-      body: 'Choose a time that suits you. We confirm the price before any work starts.',
+      title: 'We review the details',
+      body: 'We look over your request and may ask for more photos or a few questions.',
     },
     {
-      title: 'Relax',
-      body: 'We do the work, tidy up and send photos when we’re done.',
+      title: 'You get a written estimate',
+      body: 'It sets out the scope, what’s not included, the price and the conditions.',
+    },
+    {
+      title: 'Approve and schedule',
+      body: 'Once you approve the estimate, we confirm a date that works for you.',
+    },
+    {
+      title: 'After the job',
+      body: 'You receive an invoice or receipt, and we may ask for an honest review.',
     },
   ],
   recurringUpsell: 'Want it handled every season? Put it on a maintenance plan.',
   whyChooseUs: [
     {
-      title: 'Reliable',
-      body: 'We confirm your date, show up when we say and keep you posted by text.',
-      imageLabel: 'Crew arriving at a home in a branded truck',
+      title: 'Many services, one company',
+      body: 'Interior, commercial and post-construction cleaning, exterior cleaning, snow removal and holiday lighting, without a different contractor for every job.',
     },
     {
-      title: 'Safety-trained crews',
-      body: 'Ladder, roof and equipment safety are part of every job, for our crew and your home.',
-      imageLabel: 'Technician in safety harness on a roof',
+      title: 'Care for every season',
+      body: 'Your property’s needs change through the year. We cover cleaning in the warmer months, and snow and holiday lighting in winter.',
     },
     {
-      title: 'Careful with products',
-      body: 'We choose cleaners for each surface, dilute them properly and protect your plants.',
-      imageLabel: 'Technician soaking plants before washing',
+      title: 'Clear estimates and communication',
+      body: 'Every quote is a written estimate with the scope, exclusions, price and conditions, so you know what to expect before anything is booked.',
     },
     {
-      title: 'Damage-free methods',
-      body: 'Soft washing for siding and roofs, controlled pressure for concrete. The right method every time.',
-      imageLabel: 'Close-up of a soft-wash nozzle on siding',
+      title: 'Local service coverage',
+      body: 'We work in a set list of communities in {region}, so you can check right away whether we cover your property.',
     },
     {
-      title: 'Locally owned',
-      body: 'We live and work in {region}, and we’re here all year, not just one season.',
-      imageLabel: 'Owner shaking hands with a customer at the front door',
-    },
-    {
-      title: 'Clear pricing',
-      body: 'See a price range online in minutes and get the final price before we start.',
-      imageLabel: 'Customer checking a price on a phone',
+      title: 'Respect for your property',
+      body: 'We treat your home or business with care, follow your building’s rules and leave the site tidy.',
     },
   ],
   comparison: {
@@ -254,20 +267,20 @@ export const pricingSettings = {
 export const commercialPages = {
   points: [
     {
-      title: 'One point of contact',
-      body: 'One manager for every service and every site, so you always know who to call.',
+      title: 'One company for many jobs',
+      body: 'Commercial, restaurant and post-construction cleaning, plus exterior and seasonal work, can be quoted together.',
     },
     {
-      title: 'Year-round contracts',
-      body: 'Washing, windows and gutters in the warm months, snow and ice all winter, and lighting for the holidays, on one schedule.',
+      title: 'Everything in writing',
+      body: 'Your estimate sets out the scope, exclusions, price and conditions before any work is booked.',
     },
     {
-      title: 'Volume and multi-site pricing',
-      body: 'Several buildings or properties can be priced together under one proposal.',
+      title: 'Visits agreed in advance',
+      body: 'We agree visit times with you so the work fits around your opening hours, tenants and deliveries.',
     },
     {
-      title: 'Notices for residents and tenants',
-      body: 'We give you notices to share before each visit and work around entrances, parking and business hours.',
+      title: 'Clear communication',
+      body: 'Questions about your estimate or a visit go to the same people who prepared your quote.',
     },
   ],
   hoa: {

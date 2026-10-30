@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { getJobs } from '@/lib/data/content'
 import { loadJob } from '@/lib/data/load'
 import { notFoundUnlessMoved } from '@/lib/data/redirects'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { fillTokens } from '@/lib/text'
@@ -59,7 +60,7 @@ export default async function JobPage({ params }: PageProps<'/careers/[slug]'>) 
   const { slug } = await params
   const { layout, page: job } = await loadJob(slug)
   if (!job) return notFoundUnlessMoved(routes.job(slug))
-  const { site } = layout
+  const { site, quote } = layout
   const region = site.region
   const jobs = await getJobs()
   const facts = [
@@ -116,6 +117,7 @@ export default async function JobPage({ params }: PageProps<'/careers/[slug]'>) 
         </Section>
       )}
       <FinalCta
+        cta={generalCta(quote)}
         region={region}
         title="Looking for a quote instead?"
         text={`Get a price range in minutes for most homes in ${region}.`}

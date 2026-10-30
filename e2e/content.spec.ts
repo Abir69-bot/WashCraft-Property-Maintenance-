@@ -2,13 +2,18 @@ import path from 'path'
 
 import { expect, test } from '@playwright/test'
 
-import { site } from '../src/config/site'
-import { posts, solutions } from '../src/seed/data/articles'
+import { confirmedServices, site } from '../src/config/site'
+import { posts as allPosts, solutions as allSolutions } from '../src/seed/data/articles'
 import { faqs } from '../src/seed/data/faqs'
 import { gallery } from '../src/seed/data/media'
 import { expectAccessible, expectTemplate, quiet } from './helpers'
 
 const { region, shortName } = site
+// Articles are only published when they relate to a confirmed service.
+const live = <T extends { relatedServices: string[] }>(items: T[]) =>
+  items.filter((item) => item.relatedServices.some((slug) => confirmedServices.includes(slug)))
+const posts = live(allPosts)
+const solutions = live(allSolutions)
 const fill = (text: string) => text.replaceAll('{region}', region)
 const fixture = (name: string) => path.resolve('e2e', 'fixtures', name)
 
@@ -17,7 +22,6 @@ const PAGES: [string, string][] = [
   ['/solutions', `Common Property Problems in ${region}, and How to Fix Them`],
   ['/faq', 'Frequently Asked Questions'],
   ['/before-and-after', `Before and After Photos from ${region} Jobs`],
-  ['/reviews', `Customer Reviews from ${region}`],
   ['/about', `About ${shortName}`],
   ['/careers', `Careers at ${shortName} in ${region}`],
   ['/contact', `Contact ${shortName}`],
@@ -100,11 +104,12 @@ test.describe('content pages', () => {
     await page.goto('/faq')
     const status = page.getByRole('status').filter({ hasText: /questions/ })
     await expect(status).toHaveText(`${faqs.length} questions`)
-    await page.getByLabel('Search questions').fill('salting')
-    await expect(page.getByRole('button', { name: 'Is salting included?' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'How do you price your services?' })).toBeHidden()
-    await page.getByRole('button', { name: 'Is salting included?' }).click()
-    await expect(page.getByRole('region', { name: 'Is salting included?' })).toBeVisible()
+    const hoods = 'Do you clean restaurant kitchen exhaust hoods?'
+    await page.getByLabel('Search questions').fill('hood')
+    await expect(page.getByRole('button', { name: hoods })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'How do I get a quote?' })).toBeHidden()
+    await page.getByRole('button', { name: hoods }).click()
+    await expect(page.getByRole('region', { name: hoods })).toBeVisible()
     await page.getByLabel('Search questions').fill('zzzz')
     await expect(page.getByText('No questions match “zzzz”')).toBeVisible()
   })
@@ -150,7 +155,7 @@ test.describe('content pages', () => {
   })
 
   test('never shows sample content on the production build', async ({ page }) => {
-    for (const path of ['/about', '/reviews', '/careers', `/blog/${posts[0].slug}`]) {
+    for (const path of ['/about', '/careers', `/blog/${posts[0].slug}`]) {
       await page.goto(path)
       await expect(page.getByText('Sample', { exact: true }), path).toHaveCount(0)
     }
@@ -160,8 +165,8 @@ test.describe('content pages', () => {
     // With only samples seeded, the honest empty states show instead.
     await page.goto('/careers')
     await expect(page.getByText('There are no open roles right now')).toBeVisible()
-    await page.goto('/reviews')
-    await expect(page.getByText('We’re just getting started with online reviews')).toBeVisible()
+    // No real reviews yet, so there is no reviews page at all.
+    expect((await page.goto('/reviews'))?.status()).toBe(404)
     await page.goto(`/blog/${posts[0].slug}`)
     await expect(page.getByText('Written by')).toHaveCount(0)
   })
@@ -178,7 +183,8 @@ test.describe('contact and careers forms', () => {
     await expect(page.getByText('Tell us how we can help')).toBeVisible()
     await page.getByLabel('How can we help?').fill('Do you clean solar panels on flat roofs?')
     await page.getByLabel('Name', { exact: true }).fill('E2E Test')
-    await page.getByLabel('Phone', { exact: true }).fill('(303) 555-0199')
+    // A phone number or an email address is enough.
+    await page.getByLabel(/^Email/).fill('e2e@example.com')
     await page.getByLabel(/may contact me/).check()
     await page.getByRole('button', { name: 'Send message' }).click()
     const done = page.getByRole('heading', { name: 'Thanks, we got your message' })
@@ -191,7 +197,7 @@ test.describe('contact and careers forms', () => {
     const form = page.locator('#apply form')
     await form.getByLabel('Name', { exact: true }).fill('E2E Test')
     await form.getByLabel('Email', { exact: true }).fill('e2e@example.com')
-    await form.getByLabel('Phone', { exact: true }).fill('(303) 555-0199')
+    await form.getByLabel('Phone', { exact: true }).fill('(416) 555-0199')
     await form.locator('input[type="file"]').setInputFiles(fixture('rfp.pdf'))
     await expect(form.getByText('rfp.pdf uploaded.')).toBeAttached()
     await form.getByLabel(/Tell us about yourself/).fill('Two seasons of exterior cleaning.')

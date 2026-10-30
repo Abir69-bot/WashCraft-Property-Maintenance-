@@ -33,6 +33,7 @@ export function toSiteConfig(settings: SiteSetting, cityNames: string[]): SiteCo
     locale: settings.locale,
     region: required(settings.region, 'region'),
     serviceAreas: cityNames,
+    freeQuotes: settings.freeQuotes ?? false,
     foundedYear: settings.foundedYear ?? null,
     insuranceCoverage: optional(settings.insuranceCoverage),
     workersCompRegistration: optional(settings.workersCompRegistration),

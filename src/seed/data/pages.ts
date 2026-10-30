@@ -6,28 +6,28 @@
  */
 
 export const aboutPage = {
-  headline: 'One team for every season',
+  headline: 'Property care for every season',
   intro:
-    'WashCraft looks after homes and businesses across {region}: exterior and interior cleaning, snow and ice, holiday lighting and yard care, all from one team you can call all year.',
-  heroImageLabel: 'The WashCraft crew in front of a freshly washed home',
+    'WashCraft Property Maintenance looks after homes, rentals and businesses in {region}: interior, commercial, restaurant and post-construction cleaning, exterior cleaning, snow removal and holiday lighting, from one company you can contact all year.',
+  heroImageLabel: 'The WashCraft team in front of a freshly cleaned home',
   mission:
-    'To keep {region} homes and businesses clean, safe and cared for in every season, with clear prices and careful work.',
+    'To keep {region} homes and businesses clean, cared for and ready for every season, with clear written estimates and careful work.',
   values: [
     {
       title: 'Careful with your property',
-      body: 'We match the method to the surface, protect plants and fixtures, and check the work with you before we leave.',
+      body: 'We match the method to the surface, follow your building’s rules and leave the site tidy.',
     },
     {
-      title: 'Clear prices',
-      body: 'You see a price range before you book, and we agree the final price before any work starts.',
+      title: 'Everything in writing',
+      body: 'Your estimate sets out the scope, exclusions, price and conditions before any work is booked.',
     },
     {
       title: 'Straight answers',
-      body: 'If a job isn’t worth doing, or another service would suit you better, we’ll tell you.',
+      body: 'If a job isn’t something we can do well or safely, or another service would suit you better, we’ll tell you.',
     },
     {
       title: 'Here all year',
-      body: 'Washing and gutters in the warm months, snow and lights in winter: one team that knows your property.',
+      body: 'Cleaning in the warmer months, snow and holiday lighting in winter, from the same company.',
     },
   ],
 }
@@ -39,11 +39,11 @@ export const careersPage = {
   whyWorkHere: [
     {
       title: 'Work across the seasons',
-      body: 'Washing, windows and gutters in the warm months, snow clearing and holiday lighting in winter.',
+      body: 'Cleaning inside and out in the warmer months, snow clearing and holiday lighting in winter.',
     },
     {
       title: 'Different every day',
-      body: 'Homes, HOA communities and businesses across {region}, each with its own challenges.',
+      body: 'Homes, rentals and businesses across {region}, each with its own challenges.',
     },
     {
       title: 'Results you can see',
@@ -96,7 +96,7 @@ These terms apply to your use of this website. By using it, you agree to them.
 
 ## Quotes and prices
 
-Prices shown on this website, including instant price ranges, are estimates based on the details you give us. They are not offers. We confirm the price after seeing photos or visiting, and we agree the final price with you before any work starts. Taxes may apply.
+Quotes are written estimates based on the details and photos you give us, and sometimes a visit. An estimate describes the scope, what is not included, the price and the conditions. Work is only booked once you approve it. Taxes may apply.
 
 ## Bookings and payment
 

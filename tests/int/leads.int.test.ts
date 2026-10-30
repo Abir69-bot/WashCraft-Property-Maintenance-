@@ -64,7 +64,7 @@ describe('saving leads', () => {
     const files = await uploadPhoto()
     const before = await payload.count({ collection: 'lead-files' })
     await expect(
-      createLead(payload, lead({ phone: undefined as unknown as string }), files),
+      createLead(payload, lead({ name: undefined as unknown as string }), files),
     ).rejects.toThrow()
     expect((await payload.count({ collection: 'lead-files' })).totalDocs).toBe(before.totalDocs)
   })

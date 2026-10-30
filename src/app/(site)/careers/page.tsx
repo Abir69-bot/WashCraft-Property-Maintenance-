@@ -9,6 +9,7 @@ import { PageHero } from '@/components/sections/page-hero'
 import { Section } from '@/components/sections/section'
 import { getCareersPage, getJobs } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { fillTokens } from '@/lib/text'
@@ -27,7 +28,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Careers (brief §9.7): why work here, benefits, open roles and the application form. */
 export default async function CareersPage() {
-  const [{ site }, page, jobs] = await Promise.all([getLayoutData(), getCareersPage(), getJobs()])
+  const [{ site, quote }, page, jobs] = await Promise.all([
+    getLayoutData(),
+    getCareersPage(),
+    getJobs(),
+  ])
   const region = site.region
   const fill = (text: string) => fillTokens(text, { region })
   const reasons = page.whyWorkHere ?? []
@@ -84,6 +89,7 @@ export default async function CareersPage() {
       <OpenRoles jobs={jobs} region={region} />
       <ApplySection jobs={jobs} company={site.shortName} />
       <FinalCta
+        cta={generalCta(quote)}
         region={region}
         title="Looking for a quote instead?"
         text={`Get a price range in minutes for most homes in ${region}.`}

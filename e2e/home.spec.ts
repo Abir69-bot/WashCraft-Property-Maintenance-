@@ -7,15 +7,26 @@ test.describe('home page', () => {
     await skipCookieBanner(page)
   })
 
-  test('shows the seasonal hero and the main sections', async ({ page }) => {
+  test('shows the hero, its two buttons and the main sections', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('h1')).toHaveCount(1)
-    await expect(page.getByRole('link', { name: /instant price/i }).first()).toBeVisible()
+    await expect(page.locator('h1')).toHaveText('Year-Round Property Maintenance, Made Simple')
+    const hero = page.locator('section[aria-labelledby="hero-heading"]')
+    await expect(hero.getByRole('link', { name: /^Request a (Free )?Quote$/ })).toHaveAttribute(
+      'href',
+      '/quote',
+    )
+    await expect(hero.getByRole('link', { name: 'Explore Our Services' })).toHaveAttribute(
+      'href',
+      '/services',
+    )
     for (const heading of [
-      'Get a quick quote',
-      'Every season, one team',
-      'Three steps to a cleaner property',
+      'Property care from one company, all year',
+      'Services for every season',
+      'Why choose WashCraft',
+      'How getting a quote works',
+      'Where we work',
       'Questions people ask',
+      'Tell us about your property',
     ]) {
       await expect(page.getByRole('heading', { name: heading })).toBeVisible()
     }
@@ -30,6 +41,16 @@ test.describe('home page', () => {
   test('never shows sample content on the production build', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByText('Sample', { exact: true })).toHaveCount(0)
+  })
+
+  test('shows no placeholder or stand-in contact details', async ({ page }) => {
+    for (const path of ['/', '/quote', '/contact', '/about']) {
+      await page.goto(path)
+      const text = await page.locator('body').innerText()
+      expect(text, path).not.toMatch(/TODO|\[PHONE\]|\[EMAIL\]|\[HOURS\]|555-01\d\d|example\.com/)
+      // Call and email links only appear once real details are set (none are in the seed).
+      await expect(page.locator('a[href^="tel:"], a[href^="mailto:"]'), path).toHaveCount(0)
+    }
   })
 
   test('remembers a dismissed announcement', async ({ page }) => {
@@ -63,7 +84,7 @@ test.describe('navigation', () => {
     await expect(
       page
         .getByRole('navigation', { name: 'Main' })
-        .getByRole('link', { name: 'Exterior cleaning', exact: true }),
+        .getByRole('link', { name: 'Residential cleaning', exact: true }),
     ).toBeFocused()
     await page.keyboard.press('Escape')
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
@@ -90,21 +111,5 @@ test.describe('navigation', () => {
     await expectAccessible(page)
     await page.getByRole('button', { name: 'Close menu' }).click()
     await expect(menu).toBeHidden()
-  })
-})
-
-test.describe('quick quote form', () => {
-  test.beforeEach(async ({ page }) => {
-    await skipCookieBanner(page)
-  })
-
-  test('explains what is missing', async ({ page }) => {
-    await page.goto('/')
-    const form = page.locator('#quick-quote-heading').locator('..')
-    await form.getByRole('button', { name: 'Get my quote' }).click()
-    await expect(form.getByText('Enter your name')).toBeVisible()
-    await expect(form.getByText('Enter a 10-digit phone number')).toBeVisible()
-    await expect(form.getByLabel('Name')).toBeFocused()
-    await expect(form.getByLabel('Name')).toHaveAttribute('aria-invalid', 'true')
   })
 })

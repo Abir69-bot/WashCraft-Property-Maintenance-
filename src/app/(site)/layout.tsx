@@ -22,6 +22,8 @@ import { SlideInQuote } from '@/components/quote/slide-in-quote'
 import { consentText } from '@/config/consent'
 import { isPlaceholder } from '@/config/site'
 import { getLayoutData, type LayoutData } from '@/lib/data/layout'
+import { CLARITY_ID, GTM_ID } from '@/lib/public-env'
+import { generalCta } from '@/lib/quote/flow'
 import { seasonNow } from '@/lib/data/season'
 import { env, isProductionSite } from '@/lib/env'
 import { localBusiness, webSite } from '@/lib/seo/json-ld'
@@ -49,6 +51,9 @@ export async function generateMetadata(): Promise<Metadata> {
     description: isPlaceholder(site.tagline) ? undefined : site.tagline,
     applicationName: site.shortName,
     twitter: { card: 'summary_large_image' },
+    ...(env.GOOGLE_SITE_VERIFICATION && {
+      verification: { google: env.GOOGLE_SITE_VERIFICATION },
+    }),
     // Only the live site is indexed; dev and preview deployments never are.
     robots: isProductionSite ? undefined : { index: false, follow: false },
   }
@@ -82,6 +87,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const { site } = layout
   const { season, active, variant } = seasonNow(layout)
   const announcement = pickAnnouncement(layout.seasonal, season, active)
+  const hasAnalytics = Boolean(GTM_ID || CLARITY_ID)
 
   return (
     <html
@@ -119,15 +125,19 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         <main id="main" tabIndex={-1} className="focus:outline-none">
           {children}
         </main>
-        <CallBand site={site} band={layout.footer.callBand} />
-        <Footer data={layout} />
+        <CallBand site={site} band={layout.footer.callBand} cta={generalCta(layout.quote)} />
+        <Footer data={layout} analytics={hasAnalytics} />
         <MobileActionBar phone={site.phone} />
-        <CookieConsent />
-        <Analytics />
-        <SlideInQuote
-          groups={serviceGroups(layout.categories)}
-          consentLabel={consentText(site.country, site.shortName)}
-        />
+        {/* No analytics configured means no cookies to ask about. */}
+        {hasAnalytics && <CookieConsent />}
+        {hasAnalytics && <Analytics />}
+        {/* The quick-quote popup belongs to the instant-price flow (Feature switches). */}
+        {layout.quote.instantPricing && (
+          <SlideInQuote
+            groups={serviceGroups(layout.categories)}
+            consentLabel={consentText(site.country, site.shortName)}
+          />
+        )}
       </body>
     </html>
   )

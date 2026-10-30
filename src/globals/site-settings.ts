@@ -36,15 +36,21 @@ export const SiteSettings: GlobalConfig = {
             {
               type: 'row',
               fields: [
-                text('phone', 'Used for call and text links.'),
-                { name: 'email', type: 'text' },
+                text(
+                  'phone',
+                  'Used for call and text links. Leave blank until the number is confirmed: no call links show without it.',
+                ),
+                text(
+                  'email',
+                  'Shown as an email link and used for lead alerts when no alert email is set. Only enter a working, confirmed address.',
+                ),
               ],
             },
             text('address', 'Leave blank if you travel to customers and have no public address.'),
-            text('hours', 'e.g. Mon–Sat 8am–6pm'),
+            text('hours', 'e.g. Mon–Sat 8am–6pm. Hidden while blank.'),
             text(
               'region',
-              'How locals name your area, as it reads after "in", e.g. "the GTA". Fills {region} in text.',
+              'How locals name your area, as it reads after "in", e.g. "the Toronto area". Fills {region} in text. Don’t claim more than the cities you serve.',
             ),
             {
               type: 'row',
@@ -71,6 +77,16 @@ export const SiteSettings: GlobalConfig = {
                   defaultValue: 'en-US',
                 },
               ],
+            },
+            {
+              name: 'freeQuotes',
+              label: 'Quotes are free',
+              type: 'checkbox',
+              defaultValue: false,
+              admin: {
+                description:
+                  'Tick only if every quote is free. Buttons then read "Request a Free Quote" instead of "Request a Quote".',
+              },
             },
           ],
         },

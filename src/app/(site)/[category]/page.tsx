@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 import { CategoryHub } from '@/components/sections/category-hub'
 import { getLayoutData } from '@/lib/data/layout'
@@ -28,5 +28,10 @@ export default async function CategoryPage({ params }: PageProps<'/[category]'>)
   if (slug === COMMERCIAL_CATEGORY) notFound()
   const { layout, page } = await loadCategory(slug)
   if (!page) return notFoundUnlessMoved(routes.category(slug))
-  return <CategoryHub layout={layout} page={page} cta={categoryCta(page.category.tone)} />
+  // A category with a single published service has no hub of its own: go to the service.
+  const services = layout.categories.find((item) => item.id === page.category.id)?.services ?? []
+  if (services.length === 1) redirect(routes.service(services[0].slug))
+  return (
+    <CategoryHub layout={layout} page={page} cta={categoryCta(page.category.tone, layout.quote)} />
+  )
 }

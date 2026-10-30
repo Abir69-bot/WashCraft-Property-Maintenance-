@@ -50,6 +50,7 @@ export function ContactForm({ consentLabel }: { consentLabel: string }) {
         consentLabel={consentLabel}
         address={false}
         zip="optional"
+        either
         title="How to reach you"
       />
       <Turnstile key={challenge} onToken={(token) => form.setValue('turnstile', token)} />

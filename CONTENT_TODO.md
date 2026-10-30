@@ -1,38 +1,122 @@
 # Content to-do (for the owner)
 
-Everything the site still needs from you. Placeholders show as yellow **TODO** chips on the
-development site, and production deploys stay blocked until the required facts are set.
+Everything the site still needs from you. Nothing unconfirmed is shown on the live site:
+services you haven't confirmed are unpublished, and contact details you haven't given simply
+don't appear. `pnpm check-config` blocks production deploys until the required facts are set.
+
+## 0. Confirm before advertising (2026-10-30 update)
+
+You confirmed the services below and the seven service areas. Their **scope details** are still
+open, so the pages say these are confirmed in each written estimate. Answer these, then update
+the service's **Not included and access limits** list in the admin:
+
+- [ ] **Window cleaning:** which floors or heights can you clean safely, inside and out? Ladders,
+      water-fed poles, lifts? (Until then, upper floors are "confirmed case by case".)
+- [ ] **Roof cleaning:** which method do you use, which roof types and pitches do you take on,
+      and is it covered by your insurance? (The page names no method until you confirm one.)
+- [ ] **Snow removal:** seasonal contract, per visit or both? Trigger depth, timing, salting,
+      walkways, commercial lots? (The page advertises no options until confirmed.)
+- [ ] **Christmas lights:** do you supply lights, use the customer's, take them down, store them?
+      Any roofline height limit?
+- [ ] **Patio & balcony cleaning:** condo balconies included? Do you need building approval or
+      unit access? Any water-use limits?
+- [ ] **Restaurant cleaning:** which areas exactly? Any kitchen tasks? (Exhaust hood, duct and
+      grease trap cleaning are listed as **not offered**.)
+- [ ] **Commercial cleaning:** office, retail, common areas; after-hours visits?
+- [ ] **Interior house cleaning:** supplies included? (Carpet cleaning is listed as not offered.)
+- [ ] **Driveway sealing:** which surfaces (asphalt, concrete, pavers)?
+- [ ] **Photos:** confirm the before/after photos in the gallery are your own jobs. The window
+      cleaning photo (high windows with a pole) isn't used as a hero until heights are confirmed.
+
+<!-- confirmations:start -->
+
+**Published: confirmed by you on 2026-10-30**
+
+- [ ] Pressure Washing
+- [ ] Soft Washing
+- [ ] Patio & Balcony Cleaning
+- [ ] Gutter Cleaning
+- [ ] Roof Cleaning
+- [ ] Window Cleaning
+- [ ] Driveway Sealing
+- [ ] Interior House Cleaning
+- [ ] Post-Construction Cleaning
+- [ ] Snow Removal
+- [ ] Christmas Light Installation
+- [ ] Commercial Cleaning
+- [ ] Restaurant Cleaning
+
+**Unpublished drafts: publish one in the admin (Services → open it → Publish) only once you offer it**
+
+- [ ] House Washing
+- [ ] Driveway Cleaning
+- [ ] Deck Cleaning
+- [ ] Fence Cleaning
+- [ ] Gutter Brightening
+- [ ] Exterior Surface Cleaning
+- [ ] Move-In / Move-Out Cleaning
+- [ ] Garage Cleaning
+- [ ] Junk Removal & Hauling
+- [ ] General Property Maintenance
+- [ ] Driveway Snow Clearing
+- [ ] Walkway & Sidewalk Snow Clearing
+- [ ] Salting & De-Icing
+- [ ] Ice Control
+- [ ] Snowbank Removal
+- [ ] Commercial Snow Clearing
+- [ ] Christmas Light Removal
+- [ ] Christmas Light Storage
+- [ ] Spring & Fall Yard Cleanup
+- [ ] Leaf Removal
+- [ ] Garden & Bed Cleanup
+- [ ] Garbage Bin Cleaning
+- [ ] Exterior Caulking
+- [ ] Minor Exterior Repairs
+- [ ] Fence & Deck Staining
+- [ ] Exterior Painting
+- [ ] Garage & Driveway Pressure Cleaning
+- [ ] Commercial Property Maintenance
+- [ ] HOA & Condo Building Washing
+- [ ] HOA & Commercial Gutter Cleaning
+- [ ] Commercial Window Cleaning
+- [ ] HOA & Commercial Roof Cleaning
+- [ ] Commercial Pressure Washing
+- [ ] Parking Garage Cleaning
+- [ ] Graffiti Removal
+- [ ] Solar Panel Cleaning
+- [ ] Glass Awning Cleaning
+- [ ] Permanent LED Lighting
+
+**Possible service areas: add each as a city in the admin, with its own page copy, once confirmed**
+
+- [ ] Toronto
+- [ ] East York
+- [ ] York
+- [ ] Brampton
+- [ ] Pickering
+- [ ] Ajax
+
+<!-- confirmations:end -->
 
 ## 1. Business facts — required before launch
 
-Set these in `src/config/site.ts` (or later in the admin under **Site settings**).
-`pnpm check-config` lists whatever is still missing. Country (Canada), currency (CAD) and
-language (en-CA) are already set.
+Set these in the admin under **Site settings** (or `src/config/site.ts` before the first deploy).
+`pnpm check-config` lists whatever is still missing. Country (Canada), currency (CAD) and language
+(en-CA) are set.
 
-**Demo values are in place for now** (listed in `site.demo`). The site looks complete, but
-production deploys stay blocked until each one is confirmed or replaced:
+| Field        | Status                                                                                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `email`      | **Required.** Not set. Leads go here unless separate alert emails are set. The suggested `info@washcraft.ca` is unconfirmed: only enter it once the mailbox works. |
+| `tagline`    | Demo value "Exterior care, year-round" (from your logo). Confirm or replace it: the business now covers interior and seasonal work too.                            |
+| `phone`      | Optional. Not set, so no call or text links appear. Add it once the number is confirmed.                                                                           |
+| `hours`      | Optional. Not set, so no hours are shown.                                                                                                                          |
+| `address`    | Not shown (service-area business). Never published without your permission.                                                                                        |
+| `region`     | "the Toronto area" (your wording in the brief). Used in page titles.                                                                                               |
+| `freeQuotes` | Confirmed 2026-10-30: quotes are free ("Request a Free Quote").                                                                                                    |
+| Domain       | `washcraft.ca` is proposed. Confirm it's registered, then follow docs/HANDOVER.md.                                                                                 |
 
-| Field     | Demo value                                 |
-| --------- | ------------------------------------------ |
-| `tagline` | Exterior care, year-round (from your logo) |
-| `phone`   | (416) 555-0142 (fictional number)          |
-| `email`   | hello@example.com (fictional address)      |
-| `address` | none shown (service-area business)         |
-| `hours`   | Mon–Sat 7am–6pm                            |
-| `region`  | the GTA (as it reads after “in”)           |
-
-The service areas are set (owner, 2026-10-27): Scarborough, North York, Etobicoke, Markham,
+The service areas are confirmed (2026-10-27): Scarborough, North York, Etobicoke, Markham,
 Vaughan, Richmond Hill and Mississauga.
-
-| Field          | What to provide                                                       | Example format                                           |
-| -------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
-| `tagline`      | One short line under the logo and in search results                   | "Exterior, interior and seasonal care for your property" |
-| `phone`        | Main number for calls **and** texts                                   | (416) 555-0142                                           |
-| `email`        | Address leads and customers write to                                  | hello@yourdomain.com                                     |
-| `address`      | Street address, or tell us you work from home (service-area business) | 123 Main St, Toronto, ON M1B 2K3                         |
-| `hours`        | Office hours                                                          | Mon–Sat 8am–6pm                                          |
-| `region`       | How locals name your area                                             | the GTA                                                  |
-| `serviceAreas` | Every city you serve (each gets its own page)                         | Scarborough, Markham, …                                  |
 
 ## 2. Optional facts — each section stays hidden until you set it
 
@@ -72,65 +156,29 @@ Hero Variants → the Holiday row → Image**. You can also change the season da
 
 **Home page**
 
-- [ ] Hero (winter): Cleared driveway and walkway at dawn after a snowfall
+- [ ] Hero (winter): Cleared driveway and walkway after a snowfall
 - [ ] Hero (holiday): Home at dusk with warm white roofline lights
-- [ ] Why choose us, "Reliable": Crew arriving at a home in a branded truck
-- [ ] Why choose us, "Careful with products": Technician soaking plants before washing
-- [ ] Why choose us, "Locally owned": Owner shaking hands with a customer at the front door
-- [ ] Why choose us, "Clear pricing": Customer checking a price on a phone
 
 **Category and commercial pages**
 
-- [ ] Exterior Cleaning: Two-story home with freshly washed siding, clean windows and a bright driveway
-- [ ] Interior Cleaning: Bright, freshly cleaned kitchen with clear counters
-- [ ] Winter Services: Crew member clearing a residential driveway at dawn after a snowfall
-- [ ] Holiday Lighting: Home at dusk with warm white roofline lights and lit shrubs
-- [ ] Yard & Exterior Care: Neat front yard with edged beds and a freshly stained fence
-- [ ] Commercial & HOA: Crew on a lift washing a three-story condo building
-- [ ] HOA & condo page: Crew washing the siding of a condo building while residents walk past
-- [ ] About page: The WashCraft crew in front of a freshly washed home
+- [ ] Residential Cleaning (optional): Bright, freshly cleaned kitchen with clear counters
+- [ ] Commercial & Restaurant Cleaning (optional): Clean office reception and a restaurant dining room before opening
+- [ ] Post-Construction Cleaning (optional): Newly renovated room, dust-free and ready to use
+- [ ] Exterior Cleaning (optional): Two-story home with freshly washed siding, clean windows and a bright driveway
+- [ ] Snow Removal (optional): Residential driveway cleared after a snowfall
+- [ ] Holiday Lighting (optional): Home at dusk with warm white roofline lights
+- [ ] About page: The WashCraft team in front of a freshly cleaned home
 
 **Service pages**
 
-- [ ] Driveway Cleaning: Concrete driveway after cleaning, with a clean line where the work stopped
-- [ ] Deck Cleaning: Cedar deck with one half cleaned and the other still gray
-- [ ] Fence Cleaning: White vinyl fence half cleaned, with green algae on the other half
-- [ ] Gutter Brightening: Close-up of a white gutter, half streaked and half bright
-- [ ] Driveway Sealing: Freshly sealcoated asphalt driveway with a crisp edge
-- [ ] House Cleaning: Bright living room with freshly vacuumed rug and dusted shelves
-- [ ] Move-In / Move-Out Cleaning: Empty, freshly cleaned kitchen with open cabinets
-- [ ] Post-Construction Cleaning: Newly renovated room with dust-free floors and windows
-- [ ] Garage Cleaning: Organized two-car garage with a clean floor
-- [ ] Junk Removal & Hauling: Crew loading an old sofa into a trailer
-- [ ] General Property Maintenance: Technician replacing a furnace filter
-- [ ] Snow Removal: Snow blower clearing a long residential driveway
-- [ ] Driveway Snow Clearing: Freshly cleared driveway with neat snow edges
-- [ ] Walkway & Sidewalk Snow Clearing: Crew member shoveling front steps and a walkway
-- [ ] Salting & De-Icing: Ice melt being spread on a cleared walkway
-- [ ] Ice Control: Liquid anti-icing being sprayed on a walkway before a storm
-- [ ] Snowbank Removal: Loader moving a large snowbank at the end of a driveway
-- [ ] Commercial Snow Clearing: Plow clearing a retail parking lot at night
-- [ ] Christmas Light Installation: Two-story home at dusk with warm white roofline lights and lit trees
-- [ ] Christmas Light Removal: Technician coiling light strands into a labeled bin
-- [ ] Christmas Light Storage: Shelves of labeled storage bins in a dry storeroom
-- [ ] Spring & Fall Yard Cleanup: Freshly raked lawn with edged garden beds in spring
-- [ ] Leaf Removal: Leaves being blown into a tarp on a front lawn
-- [ ] Garden & Bed Cleanup: Garden bed with fresh mulch and crisp edges
-- [ ] Garbage Bin Cleaning: Freshly washed trash and recycling bins at the curb
-- [ ] Exterior Caulking: Technician applying a clean bead of caulk around a window frame
-- [ ] Minor Exterior Repairs: Technician replacing a broken fence picket
-- [ ] Fence & Deck Staining: Freshly stained cedar fence with rich color
-- [ ] Exterior Painting: Painter rolling fresh color onto wood siding
-- [ ] Garage & Driveway Pressure Cleaning: Garage floor with oil stain treated, next to a cleaned driveway
-- [ ] Commercial Property Maintenance: Clean storefront and walkway of a small retail plaza
-- [ ] HOA & Condo Building Washing: Crew on a lift soft-washing a three-story condo building
-- [ ] Commercial Window Cleaning: Technician cleaning a storefront window with a squeegee
-- [ ] HOA & Commercial Roof Cleaning: Townhome roofs with black streaks being treated
-- [ ] Commercial Pressure Washing: Surface cleaner on a busy store entrance at night
-- [ ] Parking Garage Cleaning: Underground parking level being scrubbed and rinsed
-- [ ] Graffiti Removal: Brick wall with graffiti partly removed
-- [ ] Solar Panel Cleaning: Technician cleaning rooftop solar panels with a soft brush pole
-- [ ] Permanent LED Lighting: Home with discreet permanent LED lights glowing along the roofline
+- [ ] Window Cleaning (optional): Technician squeegeeing a large living room window
+- [ ] Driveway Sealing (optional): Freshly sealcoated asphalt driveway with a crisp edge
+- [ ] Interior House Cleaning (optional): Bright living room with freshly vacuumed rug and dusted shelves
+- [ ] Post-Construction Cleaning (optional): Newly renovated room with dust-free floors and windows
+- [ ] Snow Removal (optional): Snow blower clearing a long residential driveway
+- [ ] Christmas Light Installation (optional): Two-story home at dusk with warm white roofline lights and lit trees
+- [ ] Commercial Cleaning (optional): Clean, bright office reception area
+- [ ] Restaurant Cleaning (optional): Clean restaurant dining room before opening
 
 **City pages**
 
@@ -182,12 +230,12 @@ Hero Variants → the Holiday row → Image**. You can also change the season da
 - [ ] Oil stains on the driveway or garage floor: Oil stain on a concrete garage floor, partly treated
 - [ ] Icy walkways and steps: Icy front steps with ice melt being applied
 
-**More before & after pairs (same angle and distance for both shots)**
+**More before & after pairs, from your own jobs only (same angle for both shots)**
 
-- [ ] Winter: a driveway and walkway before and after snow clearing
+- [ ] Winter: a driveway and walkway before and after snow removal
 - [ ] Holiday: a home before and after light installation (daytime and dusk)
-- [ ] Yard care: a fence or deck before and after staining
-- [ ] Interior: a garage before and after cleaning
+- [ ] Interior: a kitchen or bathroom before and after cleaning
+- [ ] Post-construction: a room before and after the final clean
 
 **Team**
 
@@ -231,7 +279,7 @@ live site shows "Request a quote" instead of a price. Review each one under **Pr
 - [ ] Roof Cleaning (job)
 - [ ] Window Cleaning (window)
 - [ ] Driveway Sealing (sq ft)
-- [ ] House Cleaning (job)
+- [ ] Interior House Cleaning (job)
 - [ ] Move-In / Move-Out Cleaning (job)
 - [ ] Garage Cleaning (job)
 - [ ] Spring & Fall Yard Cleanup (job)
@@ -275,6 +323,10 @@ The starter text was written for you, but only you know your methods and policie
 
 - [ ] **Service pages.** Read each service in the admin. Check the method, what's included, the
       safety notes and the FAQs, especially notice periods, what you haul and what you won't do.
+- [ ] **Blog posts and solutions.** Read each one: they were written before the 2026-10 update and
+      may mention services you haven't confirmed. Links to unpublished services show as plain
+      text, and the two articles about unconfirmed services only (move-out cleaning, icy
+      walkways) are drafts. Edit or unpublish any that describe work you don't offer.
 - [ ] **Cities.** Check each city's postal code prefixes (the first three characters, e.g. M1B)
       and neighborhoods, and read the intro (admin, **Cities**). Add local conditions (snowfall,
       rainfall) only with a source link.

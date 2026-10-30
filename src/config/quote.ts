@@ -42,15 +42,8 @@ export const TIMELINES = [
   'As soon as possible',
   'Within 2 weeks',
   'Within a month',
+  'Before the next season (e.g. snow or holiday lights)',
   'Flexible',
-] as const
-export const BUDGETS = [
-  'Under $500',
-  '$500–$1,000',
-  '$1,000–$2,500',
-  '$2,500–$5,000',
-  'Over $5,000',
-  'Not sure yet',
 ] as const
 
 export const COMMERCIAL_PROPERTY_TYPES = [

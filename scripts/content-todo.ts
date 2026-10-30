@@ -1,25 +1,21 @@
 /**
- * `pnpm content-todo`: regenerates the photo and pricing lists in CONTENT_TODO.md from the seed
- * data and from every <PhotoPlaceholder label="…"> in the page code (brief §19).
+ * `pnpm content-todo`: regenerates the confirmation, photo and pricing lists in CONTENT_TODO.md
+ * from the seed data and from every <PhotoPlaceholder label="…"> in the page code (brief §19).
  */
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'fs'
 import path from 'path'
 import { format, resolveConfig } from 'prettier'
 
 import type { Season } from '../src/config/catalog'
+import { confirmedServices, pendingServiceAreas } from '../src/config/site'
 
 import { posts, solutions } from '../src/seed/data/articles'
 import { categories } from '../src/seed/data/categories'
 import { cities } from '../src/seed/data/cities'
-import { commercialPages, homepage } from '../src/seed/data/globals'
+import { homepage } from '../src/seed/data/globals'
 import { aboutPage } from '../src/seed/data/pages'
 import { discounts, plans, pricingRules } from '../src/seed/data/pricing'
-import {
-  homeHeroImages,
-  serviceHeroImages,
-  solutionHeroImages,
-  whyChooseUsImages,
-} from '../src/seed/data/media'
+import { homeHeroImages, serviceHeroImages, solutionHeroImages } from '../src/seed/data/media'
 import { sampleTeam } from '../src/seed/data/samples'
 import { allServices } from '../src/seed/data/services'
 
@@ -44,20 +40,25 @@ const photos = [
     ...homepage.heroVariants
       .filter((variant) => !homeHeroImages[variant.season as Season])
       .map((variant) => `Hero (${variant.season}): ${variant.imageLabel}`),
-    ...homepage.whyChooseUs
-      .filter((card) => !whyChooseUsImages[card.title])
-      .map((card) => `Why choose us, "${card.title}": ${card.imageLabel}`),
   ]),
   ...section('Category and commercial pages', [
-    ...categories.map((category) => `${category.title}: ${category.heroImageLabel}`),
-    `HOA & condo page: ${commercialPages.hoa.heroImageLabel}`,
+    ...categories
+      .filter((category) =>
+        allServices.some(
+          (service) =>
+            service.category === category.slug && confirmedServices.includes(service.slug),
+        ),
+      )
+      .map((category) => `${category.title} (optional): ${category.heroImageLabel}`),
     `About page: ${aboutPage.heroImageLabel}`,
   ]),
   ...section(
     'Service pages',
     allServices
-      .filter((service) => !serviceHeroImages[service.slug])
-      .map((service) => `${service.title}: ${service.heroImageLabel}`),
+      .filter(
+        (service) => confirmedServices.includes(service.slug) && !serviceHeroImages[service.slug],
+      )
+      .map((service) => `${service.title} (optional): ${service.heroImageLabel}`),
   ),
   ...section(
     'City pages',
@@ -72,17 +73,36 @@ const photos = [
       .filter((article) => !solutionHeroImages[article.slug])
       .map((article) => `${article.title}: ${article.heroImageLabel}`),
   ),
-  ...section('More before & after pairs (same angle and distance for both shots)', [
-    'Winter: a driveway and walkway before and after snow clearing',
+  ...section('More before & after pairs, from your own jobs only (same angle for both shots)', [
+    'Winter: a driveway and walkway before and after snow removal',
     'Holiday: a home before and after light installation (daytime and dusk)',
-    'Yard care: a fence or deck before and after staining',
-    'Interior: a garage before and after cleaning',
+    'Interior: a kitchen or bathroom before and after cleaning',
+    'Post-construction: a room before and after the final clean',
   ]),
   ...section(
     'Team',
     sampleTeam.map((member) => `${member.role.replace(' (sample)', '')}: ${member.photoLabel}`),
   ),
   ...section('Other pages', [...new Set(codeLabels(path.resolve('src')))]),
+]
+
+const confirmations = [
+  ...section(
+    'Published: confirmed by you on 2026-10-30',
+    allServices
+      .filter((service) => confirmedServices.includes(service.slug))
+      .map((service) => service.title),
+  ),
+  ...section(
+    'Unpublished drafts: publish one in the admin (Services → open it → Publish) only once you offer it',
+    allServices
+      .filter((service) => !confirmedServices.includes(service.slug))
+      .map((service) => service.title),
+  ),
+  ...section(
+    'Possible service areas: add each as a city in the admin, with its own page copy, once confirmed',
+    pendingServiceAreas,
+  ),
 ]
 
 const titleOf = (slug: string) =>
@@ -116,6 +136,7 @@ function replaceBetween(text: string, marker: string, lines: string[]) {
 }
 
 let text = readFileSync(FILE, 'utf8')
+text = replaceBetween(text, 'confirmations', confirmations)
 text = replaceBetween(text, 'photos', photos)
 text = replaceBetween(text, 'pricing', pricing)
 writeFileSync(FILE, await format(text, { ...(await resolveConfig(FILE)), filepath: FILE }))

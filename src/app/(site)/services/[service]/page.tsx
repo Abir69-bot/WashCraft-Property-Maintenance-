@@ -13,8 +13,10 @@ import {
   BookingWindow,
   IncludedList,
   MethodAndSafety,
+  PointList,
   PricingGuide,
   ProcessSteps,
+  QuoteCard,
   RelatedLinks,
   ServiceIntro,
 } from '@/components/sections/service-blocks'
@@ -66,11 +68,12 @@ export default async function ServicePage({ params }: PageProps<'/services/[serv
   const { layout, page } = await loadService(slug)
   if (!page) return notFoundUnlessMoved(routes.service(slug))
   const [shared, flags] = await Promise.all([getSharedBlocks(), getFeatureFlags()])
-  const { site, categories, cities } = layout
+  const { site, categories, cities, quote } = layout
   const region = site.region
   const { service } = page
   const category = typeof service.category === 'object' ? service.category : null
-  const cta = quoteCta(service)
+  const hasHub = (categories.find((item) => item.id === category?.id)?.services.length ?? 0) > 1
+  const cta = quoteCta(service, layout.quote)
   const faqs = mergeFaqs(
     (service.faqs ?? []).map((faq, index) => ({
       id: faq.id ?? `service-${index}`,
@@ -95,7 +98,10 @@ export default async function ServicePage({ params }: PageProps<'/services/[serv
       <PageHero
         crumbs={[
           { label: 'Services', href: routes.services },
-          ...(category ? [{ label: category.title, href: routes.category(category.slug) }] : []),
+          // A one-service category has no hub, so it gets no breadcrumb of its own.
+          ...(category && hasHub
+            ? [{ label: category.title, href: routes.category(category.slug) }]
+            : []),
           { label: service.title, href: routes.service(service.slug) },
         ]}
         eyebrow={category?.title}
@@ -107,21 +113,48 @@ export default async function ServicePage({ params }: PageProps<'/services/[serv
         badge={<BookingWindow seasons={service.seasons} note={service.bookingWindowNote} />}
         actions={<QuoteActions cta={cta} phone={site.phone} />}
         aside={
-          <QuickQuoteCard
-            groups={serviceGroups(categories)}
-            consentLabel={consentText(site.country, site.shortName)}
-            defaultService={service.slug}
-          />
+          // The quick form belongs to the instant-price flow; otherwise a plain quote card.
+          quote.instantPricing ? (
+            <QuickQuoteCard
+              groups={serviceGroups(categories)}
+              consentLabel={consentText(site.country, site.shortName)}
+              defaultService={service.slug}
+            />
+          ) : (
+            <QuoteCard cta={cta} service={service.title} />
+          )
         }
       />
       <ServiceIntro service={service} region={region} trust={proofPoints(site)} />
-      <BenefitTabs benefits={service.benefits} title={service.title} region={region} />
       <IncludedList items={service.included} />
+      <PointList
+        kind="suitableFor"
+        title={`Who ${service.title.toLowerCase()} is for`}
+        items={service.suitableFor}
+        tone="surface"
+      />
+      <PointList
+        kind="exclusions"
+        title="What’s not included, and access limits"
+        intro="Anything outside this list can be discussed when we quote. Your written estimate always spells out exactly what’s covered."
+        items={service.exclusions}
+      />
+      <PointList
+        kind="preparation"
+        title="How to prepare"
+        items={service.preparation}
+        tone="surface"
+      />
+      <BenefitTabs benefits={service.benefits} title={service.title} region={region} />
       <MethodAndSafety method={service.method} safety={service.safety} region={region} />
-      <ProcessSteps steps={service.process} region={region} upsell={shared.recurringUpsell} />
-      <PricingGuide service={service} cta={cta} />
+      <ProcessSteps
+        steps={service.process}
+        region={region}
+        upsell={quote.instantPricing ? shared.recurringUpsell : null}
+      />
+      {quote.instantPricing && <PricingGuide service={service} cta={cta} />}
       <TrustStrip site={site} />
-      <ComparisonTable comparison={shared.comparison} tone="default" />
+      {flags.comparisonTable && <ComparisonTable comparison={shared.comparison} tone="default" />}
       <NeedUsNow phone={site.phone} />
       <BeforeAfter items={page.gallery} title={`${service.title}: before and after`} />
       <Testimonials testimonials={page.testimonials} site={site} />
@@ -141,8 +174,8 @@ export default async function ServicePage({ params }: PageProps<'/services/[serv
       <FinalCta
         region={region}
         cta={cta}
-        title={`Ready to book ${service.title}?`}
-        text="Tell us a little about your property and we’ll take it from there."
+        title={`Ready for ${service.title.toLowerCase()}?`}
+        text="Tell us about the job and send photos if you can. We’ll review it and contact you with a written estimate."
       />
     </>
   )

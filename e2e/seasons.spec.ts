@@ -7,7 +7,7 @@ import { signIn, skipCookieBanner } from './helpers'
 
 /**
  * Seasonal hero switching (brief §18). The date logic is unit tested (lib/seasons.test.ts); this
- * checks the whole chain: Seasonal settings → page refresh → the right hero and quote flow.
+ * checks the whole chain: Seasonal settings → page refresh → the right seasonal hero.
  * Forcing a season changes the whole site, so the `seasons` project runs this file after every
  * other test (playwright.config.ts). A staff test: CI only, like admin.spec.ts.
  */
@@ -22,15 +22,17 @@ test('the home page hero switches with the season', async ({ page, baseURL }) =>
     })
     expect(response.ok(), await response.text()).toBe(true)
   }
+  // The headline stays the same all year; the eyebrow above it follows the season.
   const hero = async () => {
     await page.goto('/')
     const section = page.locator('section[aria-labelledby="hero-heading"]')
-    const link = await section.getByRole('link').first().getAttribute('href')
-    return `${await section.locator('h1').textContent()} → ${link}`
+    const eyebrow = section.locator('h1').locator('xpath=preceding-sibling::p[1]')
+    return `${await section.locator('h1').textContent()} / ${await eyebrow.textContent()}`
   }
   const expected = (season: string) => {
     const variant = homepage.heroVariants.find((item) => item.season === season)!
-    return `${fillTokens(variant.headline, { region: site.region })} → ${variant.cta.href}`
+    const region = { region: site.region }
+    return `${fillTokens(variant.headline, region)} / ${fillTokens(variant.eyebrow, region)}`
   }
 
   try {

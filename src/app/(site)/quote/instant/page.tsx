@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 import { InstantWizardLoader } from '@/components/quote/instant-wizard-loader'
 import { QuotePage } from '@/components/quote/quote-page'
@@ -28,6 +29,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** The instant-price wizard (brief §10.2). */
 export default async function InstantQuotePage() {
+  // Off until switched on under Feature switches (Instant prices and plans); the quote form covers it.
+  if (!(await getLayoutData()).quote.instantPricing) redirect(routes.quote)
   const [layout, services, plans, pricing] = await Promise.all([
     getLayoutData(),
     getQuoteServices(),

@@ -35,7 +35,8 @@ export const Leads: CollectionConfig = {
               type: 'row',
               fields: [
                 { name: 'name', type: 'text', required: true },
-                { name: 'phone', type: 'text', required: true },
+                // Visitors give a phone number, an email address, or both.
+                { name: 'phone', type: 'text' },
                 { name: 'email', type: 'email' },
               ],
             },

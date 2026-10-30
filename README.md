@@ -209,9 +209,11 @@ and Resend) first.
    `CRON_SECRET`. For **Preview**, use the Neon `dev` strings so previews never touch production.
 3. **Region:** `vercel.json` runs functions in `cle1` (Cleveland), next to Neon in Ohio. If your
    Neon project is elsewhere, pick the nearest Vercel region.
-4. **Business facts:** the build stops at `check-config` until every placeholder and demo value
-   is replaced (CONTENT_TODO.md, section 1). Set them in `src/config/site.ts` before the first
-   deploy, or in the admin under Site settings once the site runs.
+4. **Business facts:** the build stops at `check-config` until a confirmed email address and
+   tagline are set and no demo values remain (CONTENT_TODO.md, section 1). A phone number and
+   hours are optional: call and text links and opening hours stay hidden until they're set. Set
+   them in `src/config/site.ts` before the first deploy, or in the admin under Site settings once
+   the site runs.
 5. **First production database setup** (from GitHub, close to Neon): in the repository, add these
    secrets under Settings → Secrets and variables → Actions: `PRODUCTION_DATABASE_URI`,
    `PRODUCTION_DATABASE_URI_DIRECT`, `PRODUCTION_PAYLOAD_SECRET` (the same value as in Vercel),
@@ -220,8 +222,15 @@ and Resend) first.
    starter content" ticked. It applies the migrations and seeds the content in a few minutes.
 6. **Deploy** (push to `main`, or Redeploy in Vercel). Open `/admin` on the live site and create
    the first user straight away: it becomes the owner.
-7. **Domain:** Settings → Domains. Then finish the search engine and local SEO steps below and in
-   CONTENT_TODO.md (sections 8 and 10).
+7. **Domain and HTTPS:** Settings → Domains → add `washcraft.ca` (or the confirmed domain) and
+   `www.washcraft.ca`, and set the DNS records Vercel shows at the registrar. Vercel issues and
+   renews the HTTPS certificate and redirects HTTP to HTTPS by itself; the site also sends HSTS
+   and other security headers (`next.config.ts`). Set `NEXT_PUBLIC_SITE_URL` to the final
+   `https://` address and redeploy. Then finish the search engine and local SEO steps below and
+   in CONTENT_TODO.md (sections 8 and 10).
+8. **Test a real enquiry** on the live site (see [Handover checklist](docs/HANDOVER.md)): send a
+   quote request with a photo and confirm the owner gets the email (and text, if Twilio is set),
+   the lead is in Admin → Leads and the photo opens from the lead.
 
 ## Backups and restore
 
@@ -255,6 +264,45 @@ Vercel so the pages pick up the restored content. On a Mac or Linux, `PGSSLROOTC
 Photos in the public R2 bucket aren't in the database dump. R2 keeps them unless you delete them;
 copy the bucket now and then (for example with `rclone`) if you want a second copy.
 
+## Confirming services, areas and business details
+
+The site only advertises what the owner has confirmed. Everything else is built and waiting,
+unpublished.
+
+- **Services:** a published service is a confirmed one. Unconfirmed services are saved as
+  **drafts**: they have no page, and never appear in menus, the sitemap, the quote form or
+  search. To offer one, open it in Admin → Services, check every word of it (especially the
+  **Not included and access limits** list), then **Publish**. To withdraw a service, **Unpublish**
+  it. CONTENT_TODO.md lists which services are published and which are drafts. A category with no
+  published services disappears; with exactly one, its links go straight to that service.
+- **Service pages** have three extra lists under Page content: **Who it's for**, **Not included
+  and access limits** and **How to prepare**. Only state limits you've confirmed, such as how high
+  you can safely clean windows. Until a limit is confirmed, say it's confirmed in the written
+  estimate, as the seeded copy does.
+- **Service areas:** Admin → Cities. Only confirmed areas have a city page. Possible areas the
+  owner hasn't confirmed (Toronto, East York, York, Brampton, Pickering, Ajax) are listed in
+  `pendingServiceAreas` in `src/config/site.ts` and CONTENT_TODO.md. Add one as a city with its
+  own local copy once it's confirmed (see [Adding a city](#adding-a-city)); never publish a
+  placeholder page.
+- **Contact details:** Admin → Site settings → Business. Leave the phone, email and hours blank
+  until each is confirmed and working: without them, no call, text or email links show anywhere
+  (no placeholders). The suggested `info@washcraft.ca` is not used until the mailbox exists. Never
+  enter a home address unless the owner wants it published.
+- **Quote policy:** Site settings → **Quotes are free**. Ticked, buttons read "Request a Free
+  Quote"; unticked, "Request a Quote".
+- **Credentials:** insurance, workers' compensation and licence numbers (Site settings → Trust &
+  proof) only appear once they're filled in. Enter only details you can show proof of.
+- **Feature switches** (Admin → Settings → Feature switches), all off by default:
+  - **Instant prices and plans:** the price wizard, maintenance plans, recurring discounts and the
+    quick quote forms. Switch on only after every pricing rule under Pricing is confirmed.
+  - **Dedicated quote forms:** the snow contract, holiday lights, junk removal and commercial bid
+    forms. Switch on only once their options (contract terms, light packages and so on) are
+    confirmed.
+  - **Comparison table:** only if every claim in it is true.
+
+  While they're off, every quote button goes to the quote request form at `/quote`, with the
+  service already ticked when the button is on a service page.
+
 ## Content updates
 
 Saving in the admin updates the live pages within seconds. Services, categories, cities, blog
@@ -270,7 +318,9 @@ within a minute of saving.
 ### Adding a service
 
 1. Admin → **Services → Create new**. Fill in the title, the slug (the address, e.g.
-   `paver-sealing`), the category and the **Page content** tab. Copy can use `{region}`.
+   `paver-sealing`), the category and the **Page content** tab, including Who it's for, Not
+   included and access limits, and How to prepare. Copy can use `{region}`. Only add services
+   the business actually offers, and keep it a draft until the scope is confirmed.
 2. **Card & menu:** the summary, icon, three card bullets and the button text.
 3. **Quote & pricing:** pick how it's quoted. "Custom quote" works straight away. "Instant price"
    also needs a pricing rule (Pricing → Pricing rules → the service), and questions if the
@@ -281,6 +331,17 @@ within a minute of saving.
 
 The service appears in the menus, its category page, `/services`, the 404 search and the sitemap
 without a redeploy. Changing a slug later adds a redirect from the old address.
+
+### FAQs and photos
+
+- **FAQs:** Admin → FAQs (the FAQ page and the home page's "Questions people ask"; tick **Show on
+  home** to feature one). Questions specific to one service go in that service's own FAQ list.
+  Never promise response times, prices or guarantees in an answer.
+- **Photos:** upload in Admin → Media, with alt text that says what the photo shows. Use only
+  photos of WashCraft's own work for before-and-after pairs (Admin → Gallery items) and service
+  heroes. If a photo is illustrative (not your own job), say so in its caption and never use it as
+  a before-and-after. The gallery page and its menu link only appear once there's at least one
+  real before-and-after pair.
 
 ### Adding a city
 
@@ -319,7 +380,10 @@ date ranges in `src/globals/settings.ts`, then create and commit a migration.
   and development deployments tell search engines to stay away.
 - After launch, add the site to [Google Search Console](https://search.google.com/search-console)
   and [Bing Webmaster Tools](https://www.bing.com/webmasters), and submit
-  `https://<your-domain>/sitemap.xml` in both.
+  `https://<your-domain>/sitemap.xml` in both. **Search Console:** use a Domain property and
+  verify with the DNS record Google gives you (nothing to change in the site). If you'd rather
+  use the HTML tag method, put the token from Google's tag in `GOOGLE_SITE_VERIFICATION` and
+  redeploy.
 - Every page carries structured data (business details, breadcrumbs, services, FAQs, articles).
   Check any page with Google's [Rich Results Test](https://search.google.com/test/rich-results)
   once the site is live. It only uses facts from Site settings: set the address (or leave it blank
@@ -328,8 +392,9 @@ date ranges in `src/globals/settings.ts`, then create and commit a migration.
 
 ## Analytics
 
-Nothing is loaded until a visitor clicks **Accept** in the cookie banner, and nothing at all
-without the IDs below.
+Analytics is **off** unless the owner asks for it: with the IDs below blank, no analytics scripts
+load and no cookie banner appears. Once they're set, nothing loads until a visitor clicks
+**Accept** in the cookie banner.
 
 1. **Google Tag Manager + GA4.** Create a GA4 property and a Tag Manager container
    (tagmanager.google.com). In the container add a **Google tag** with your GA4 measurement ID,
@@ -353,6 +418,35 @@ without the IDs below.
 Consent Mode v2 tells Google that analytics was allowed and advertising was not (the banner only
 asks about analytics). "Cookie settings" in the footer lets visitors change their mind; declining
 then removes the analytics cookies.
+
+## Security
+
+What the site does:
+
+- **Forms:** every field is checked on the server with the same Zod schema as the browser, with
+  length limits. Leads are saved through Payload (parameterized queries); nothing a visitor types
+  is rendered as HTML. Each form has a honeypot, a per-visitor rate limit and Cloudflare Turnstile
+  (when its keys are set). Server actions only accept requests from the site's own origin (CSRF),
+  and the admin's API checks the origin of signed-in writes.
+- **Uploads:** photos only (JPEG, PNG, HEIC, WebP), checked by the file's actual content, at most
+  10 files of 10 MB. Files get random names in the **private** store (R2 in production), are
+  never public, and staff download them through the signed-in admin as attachments with
+  `nosniff`, so they can't run in the browser.
+- **Secrets and logs:** keys live only in server environment variables (`src/lib/env.ts`); the
+  browser only gets `NEXT_PUBLIC_` values. Error logs leave out customer details and database
+  parameters.
+- **Headers:** HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`,
+  `Permissions-Policy` and a Content-Security-Policy limited to framing, plugins, `<base>` and
+  form targets (`next.config.ts`). A stricter script policy would need per-request nonces, which
+  would stop pages being served statically.
+- **Successful sends only:** the thank-you page only shows once the lead is saved, or (if the
+  database is down) backed up to private storage or emailed to the owner. Otherwise the visitor
+  is told it wasn't sent.
+
+What deployment still needs: Turnstile keys, the R2 private bucket, Resend on a verified domain,
+a strong `PAYLOAD_SECRET` and `CRON_SECRET`, 2-factor sign-in on every account (Vercel, Neon,
+Cloudflare, GitHub, the registrar), and `pnpm audit` after dependency updates. No website is
+"100% secure"; these steps reduce the risk.
 
 ## Testing
 
@@ -388,6 +482,11 @@ To run the browser tests locally against a throwaway database instead of Neon `d
 `pnpm test:db:up`, create a `washcraft` database in that container, then set `DATABASE_URI` and
 `DATABASE_URI_DIRECT` to `postgresql://postgres:postgres@localhost:5433/washcraft` in your shell
 before `pnpm db:migrate`, `pnpm payload run src/seed/index.ts`, `pnpm build` and `pnpm test:e2e`.
+
+## Handover
+
+See [docs/HANDOVER.md](docs/HANDOVER.md) for the launch checklist: domain, hosting, email,
+renewal dates, account ownership and admin access.
 
 ## Project documents
 

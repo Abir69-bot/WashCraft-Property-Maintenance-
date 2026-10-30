@@ -7,6 +7,7 @@ import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { Section } from '@/components/sections/section'
 import { getSolutionList } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 
@@ -29,7 +30,10 @@ const serviceCategory = (service: unknown) =>
 
 /** Problem-and-fix pages, filtered by the categories of their related services (brief §9.7). */
 export default async function SolutionsPage() {
-  const [{ site, categories }, solutions] = await Promise.all([getLayoutData(), getSolutionList()])
+  const [{ site, categories, quote }, solutions] = await Promise.all([
+    getLayoutData(),
+    getSolutionList(),
+  ])
   const region = site.region
 
   return (
@@ -39,12 +43,7 @@ export default async function SolutionsPage() {
         eyebrow="Solutions"
         title={title(region)}
         intro={intro}
-        actions={
-          <QuoteActions
-            cta={{ href: routes.quoteCustom, label: 'Request a quote' }}
-            phone={site.phone}
-          />
-        }
+        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
       />
       <Section id="problems" title="Find your problem">
         {solutions.length > 0 ? (
@@ -77,7 +76,7 @@ export default async function SolutionsPage() {
           <p className="rounded-card bg-surface p-6">New guides are on the way. Check back soon.</p>
         )}
       </Section>
-      <FinalCta region={region} />
+      <FinalCta region={region} cta={generalCta(quote)} />
     </>
   )
 }

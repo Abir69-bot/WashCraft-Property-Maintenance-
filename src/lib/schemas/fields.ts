@@ -49,6 +49,31 @@ export const fileRefsField = z
 
 export type FileRef = z.infer<typeof fileRefsField>[number]
 
+type ContactShape = { phone: string; email: string; address?: string; zip?: string }
+
+/**
+ * Visitors may give a phone number, an email address or both, and (when the form asks for the
+ * property) a street address, a postal code or both. One of each pair is required.
+ */
+export function eitherContact<T extends z.ZodType<ContactShape>>(schema: T) {
+  // `when` runs this even while other fields have errors, so every problem shows at once.
+  return schema.superRefine(
+    (form, ctx) => {
+      if (!form.phone && !form.email) {
+        const message = 'Enter a phone number or an email address'
+        ctx.addIssue({ code: 'custom', path: ['phone'], message })
+        ctx.addIssue({ code: 'custom', path: ['email'], message })
+      }
+      if ('address' in form && !form.zip && !form.address) {
+        const message = 'Enter the postal code or the street address'
+        ctx.addIssue({ code: 'custom', path: ['zip'], message })
+        ctx.addIssue({ code: 'custom', path: ['address'], message })
+      }
+    },
+    { when: (payload) => typeof payload.value === 'object' && payload.value !== null },
+  )
+}
+
 /** Fields every form ends with: who to contact, consent, spam checks. */
 export const contactFields = {
   name: nameField,

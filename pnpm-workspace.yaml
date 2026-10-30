@@ -5,3 +5,9 @@ allowBuilds:
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - lucide-react@1.60.0
+# Patched versions of Payload's transitive dependencies, within the same major version
+# (2026-10-30 audit). Remove each once Payload ships it.
+overrides:
+  dompurify: ^3.4.17
+  undici: ^7.30.1
+  fast-uri: ^3.1.9

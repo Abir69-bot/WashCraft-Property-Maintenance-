@@ -32,8 +32,10 @@ export type SiteConfig = {
   currency: Currency | Placeholder
   locale: Locale | Placeholder
   region: string
-  /** Each entry becomes a city page. */
+  /** Confirmed service areas. Each entry becomes a city page. */
   serviceAreas: string[]
+  /** Quote policy: true only when the owner confirms quotes are free ("Request a Free Quote"). */
+  freeQuotes: boolean
   foundedYear: number | null
   insuranceCoverage: string | null
   workersCompRegistration: string | null
@@ -54,14 +56,18 @@ export const site: SiteConfig = {
   name: 'WashCraft Property Maintenance',
   shortName: 'WashCraft',
   tagline: 'Exterior care, year-round',
-  phone: '(416) 555-0142',
-  email: 'hello@example.com',
+  // Not confirmed yet: no phone, email or hours are shown until the owner sets them. The
+  // proposed info@washcraft.ca is unconfirmed, so it isn't used (see CONTENT_TODO.md).
+  phone: '[PHONE]',
+  email: '[EMAIL]',
+  // Never publish a home address without the owner's explicit permission.
   address: null,
-  hours: 'Mon–Sat 7am–6pm',
+  hours: '[HOURS]',
   country: 'CA',
   currency: 'CAD',
   locale: 'en-CA',
-  region: 'the GTA',
+  // Reads after "in" ("Gutter Cleaning in the Toronto area"). Doesn't claim the whole GTA.
+  region: 'the Toronto area',
   // Confirmed by the owner 2026-10-27 (see DECISIONS.md).
   serviceAreas: [
     'Scarborough',
@@ -72,6 +78,8 @@ export const site: SiteConfig = {
     'Richmond Hill',
     'Mississauga',
   ],
+  // Confirmed by the owner 2026-10-30 (see DECISIONS.md).
+  freeQuotes: true,
   foundedYear: null,
   insuranceCoverage: null,
   workersCompRegistration: null,
@@ -89,9 +97,8 @@ export const site: SiteConfig = {
     nextdoor: null,
   },
   stats: { jobsCompleted: null, happyClients: null, rating: null, reviewCount: null },
-  // Demo stand-ins chosen at the owner's request (see DECISIONS.md).
-  // 555-0100–0199 numbers and example.com are reserved for fiction and never reach anyone.
-  demo: ['tagline', 'phone', 'email', 'address', 'hours', 'region'],
+  // The tagline comes from the owner's logo but still needs confirming as search-result copy.
+  demo: ['tagline'],
 }
 
 /**
@@ -105,6 +112,33 @@ export const sampleProof = {
   guarantee:
     'Sample guarantee. If any part of the job isn’t right, tell us within 7 days and we’ll come back to fix it. Write your own wording in Site settings.',
 } as const
+
+/**
+ * Areas the owner may serve but hasn't confirmed. Never shown on the site; listed in
+ * CONTENT_TODO.md. Add one as a city (with its own page copy) in the admin once confirmed.
+ */
+export const pendingServiceAreas = ['Toronto', 'East York', 'York', 'Brampton', 'Pickering', 'Ajax']
+
+/**
+ * Services the owner confirmed they offer (owner, 2026-10-30). The seed publishes these and
+ * saves every other service as an unpublished draft. After seeding, a service's publish status
+ * in the admin is what counts: publish one when it's confirmed, unpublish it to withdraw it.
+ */
+export const confirmedServices = [
+  'snow-removal',
+  'christmas-light-installation',
+  'pressure-washing',
+  'soft-washing',
+  'window-cleaning',
+  'gutter-cleaning',
+  'roof-cleaning',
+  'driveway-sealing',
+  'patio-balcony-cleaning',
+  'house-cleaning',
+  'post-construction-cleaning',
+  'commercial-cleaning',
+  'restaurant-cleaning',
+]
 
 export function isPlaceholder(value: unknown): value is Placeholder {
   return typeof value === 'string' && /^\[.+\]$/.test(value.trim())

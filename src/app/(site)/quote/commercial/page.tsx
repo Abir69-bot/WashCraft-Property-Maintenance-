@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 import { CommercialBidForm } from '@/components/quote/flows/commercial-bid-form'
 import { QuotePage } from '@/components/quote/quote-page'
@@ -23,6 +24,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Commercial / HOA bid request (brief §10.5). Commercial services are listed first. */
 export default async function CommercialBidPage() {
+  // Off until switched on under Feature switches (Dedicated quote forms); the quote form covers it.
+  if (!(await getLayoutData()).quote.dedicatedForms) redirect(routes.quote)
   const { site, categories } = await getLayoutData()
   const ordered = [
     ...categories.filter((category) => category.tone === 'commercial'),
