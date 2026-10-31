@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 import { JunkRemovalForm } from '@/components/quote/flows/junk-removal-form'
 import { QuotePage } from '@/components/quote/quote-page'
@@ -22,6 +23,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Photo-based junk removal quote (brief §10.5). */
 export default async function JunkRemovalPage() {
+  // Off until switched on under Feature switches (Dedicated quote forms); the quote form covers it.
+  if (!(await getLayoutData()).quote.dedicatedForms) redirect(routes.quote)
   const { site } = await getLayoutData()
   return (
     <QuotePage

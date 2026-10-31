@@ -699,3 +699,103 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
   so it's left for a separate pass.
 - Neon `dev` was updated with a one-off script: Site settings switched to Canada, the six Colorado
   cities removed, the seven GTA cities seeded and the sample testimonials moved to them.
+
+## Website update brief (2026-10-30)
+
+A new brief asked for an honest, premium refresh focused on enquiries, with only confirmed
+services, areas and facts on the live site. The owner answered four questions the same day.
+
+### Confirmed by the owner
+
+- **Service areas:** the seven GTA areas confirmed on 2026-10-27 stay published. Toronto, East
+  York, York, Brampton, Pickering and Ajax are possible areas, kept in `pendingServiceAreas`
+  (`src/config/site.ts`) and CONTENT_TODO.md, with no pages until confirmed and written.
+- **Services:** the thirteen services in the brief are confirmed: snow removal, Christmas light
+  installation, pressure washing, soft washing, window cleaning, gutter cleaning, roof cleaning,
+  driveway sealing, patio and balcony cleaning, interior house cleaning, post-construction
+  cleaning, commercial cleaning and restaurant cleaning (`confirmedServices`). Their scope details
+  (window heights, roof method, snow options, light take-down and storage, balcony access) are not
+  confirmed, so their copy says these are confirmed in the written estimate.
+- **Quotes are free:** buttons read "Request a Free Quote". It's a Site settings checkbox
+  (`freeQuotes`, default off), so the wording follows the policy.
+- **Existing extras:** the instant-price wizard, maintenance plans, bin-cleaning subscription,
+  comparison table and the separate snow, holiday lights, junk removal and commercial bid forms
+  are switched off, not deleted (Feature switches, all off by default).
+
+### How "confirmed" works
+
+- **Unconfirmed = unpublished.** The seed publishes `confirmedServices` and saves the other 38
+  services as drafts, so they have no page and appear nowhere, using Payload's own draft status
+  rather than a new field. After seeding, the admin's Publish button is what counts.
+- Categories with no published service disappear; a category with one service has no hub (its
+  links go straight to the service, and the hub address redirects there). Lists picked in globals
+  (featured services, HOA services) and bundles only show published services.
+- Cities without written copy are seeded as drafts, never as "TODO" pages.
+- **Contact details** (phone, email, hours) are placeholders until the owner confirms them. With
+  none set, the site shows no call, text or email links and no TODO chips anywhere; the footer and
+  contact page fall back to the service-area list and the quote form. `check-config` now requires
+  only the email (where leads go) and the tagline; phone and hours are optional.
+- **Region wording** is "the Toronto area" (owner's own phrase in the brief), not "the GTA", so
+  titles don't claim coverage of the whole GTA.
+
+### Quote request form
+
+- The custom quote form became the one quote request form at `/quote` (`/quote/custom`
+  redirects there, keeping `?service=`). Fields: services (checkboxes, plus "Something else, or
+  not sure"), description, preferred timing, optional photos, name, phone and/or email, street
+  address and/or postal code, consent. Budget was dropped (not in the brief).
+- Phone or email: at least one, checked in the browser and on the server (`eitherContact`).
+  `leads.phone` is no longer required (migration). A lead without a postal code isn't flagged
+  "outside your area".
+- The contact form follows the same phone-or-email rule.
+- Duplicate sends: the form ignores a second submit while one is in flight or after success.
+  A network failure shows "your request was not sent", never success.
+- The thank-you page shows the five-step workflow (review → contact → written estimate →
+  approve and schedule), with no response-time promise unless Site settings has one.
+- `/contact` stays as the general-message page; both it and every quote button lead to the
+  quote form.
+
+### Design
+
+- Depth comes from CSS only (`globals.css`): layered navy-tinted shadows (`card-raised`), a
+  small hover lift only on hover-capable devices with motion allowed (`card-lift`), beveled icon
+  tiles, gradient step numbers, a soft-glow hero surface and a gradient closing panel. The hero
+  shows a 3D-tilted stack of the service groups when there's no real photo for the season,
+  flat on phones. Brand colours are unchanged.
+- No placeholder photo boxes on public pages: service, category and "why choose us" visuals
+  only render with a real photo. The window-cleaning pole photo is no longer a hero because it
+  implies a working height that isn't confirmed.
+- The scrolling marquee and the slide-in popup are gone from the default site (motion and
+  clutter); the call band only shows with a confirmed phone number.
+
+### Navigation and pages
+
+- Main menu: Services (mega menu), Service Areas, Before & After (only with real photos), About,
+  FAQs, Contact, plus the quote button. The Commercial dropdown and its admin links were
+  removed (`navigation_commercial_links` dropped); commercial and restaurant cleaning are a
+  category.
+- Categories: Residential Cleaning, Commercial & Restaurant Cleaning, Post-Construction Cleaning
+  (new), Exterior Cleaning, Snow Removal, Holiday Lighting, Yard & Exterior Care (all drafts).
+- Pages with nothing real to show return 404 and leave the sitemap: reviews (no real reviews),
+  the gallery (no real pairs), the HOA page (no published HOA services) and switched-off quote
+  pages (which redirect to `/quote`).
+- Blog, solutions and careers are unchanged and stay out of the main menu.
+
+### Security
+
+- Security headers in `next.config.ts` (HSTS, nosniff, referrer policy, frame options,
+  permissions policy, a nonce-free CSP for framing, plugins, base and form targets).
+- Server logs never include customer details: database errors are trimmed before their
+  parameters, notification logs drop addresses, and the "log the whole lead when every backup
+  fails" fallback was removed (the visitor is told the request wasn't sent instead).
+- Analytics and the cookie banner only load when an analytics ID is configured.
+- Optional `GOOGLE_SITE_VERIFICATION` for Search Console's HTML-tag method.
+
+### Tests
+
+- e2e: the switched-off flows moved to `e2e/features.spec.ts`, which switches them on in its own
+  Playwright project after the main tests (like `seasons`). New tests cover the quote request
+  form (preselection, phone-or-email, upload checks, single send, redirects), unpublished
+  services returning 404, single-service category links and the absence of placeholder contact
+  details.
+- Unit and integration test data moved from Denver to the Toronto area.

@@ -1,5 +1,6 @@
 import { ExternalLink } from 'lucide-react'
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
 import { FilteredList } from '@/components/filtered-list'
 import { FinalCta } from '@/components/sections/home-blocks'
@@ -13,6 +14,7 @@ import type { SiteConfig } from '@/config/site'
 import { getReviews } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
 import { shownRating } from '@/lib/proof'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { formatDate } from '@/lib/view'
@@ -83,7 +85,10 @@ function GoogleReviewCard({ review }: { review: GoogleReview }) {
  * leave a review. With nothing real to show, it says so plainly.
  */
 export default async function ReviewsPage() {
-  const [{ site }, { testimonials, google }] = await Promise.all([getLayoutData(), getReviews()])
+  const [{ site, quote }, { testimonials, google }] = await Promise.all([
+    getLayoutData(),
+    getReviews(),
+  ])
   const rated = shownRating(site)
   const serviceOf = (value: number | Service | null | undefined) =>
     value && typeof value === 'object' ? value : null
@@ -108,6 +113,9 @@ export default async function ReviewsPage() {
     })),
   ]
 
+  // No real reviews or rating yet: no page (brief: never publish empty or sample proof).
+  if (items.length === 0 && !rated) notFound()
+
   return (
     <>
       <PageHero
@@ -127,10 +135,7 @@ export default async function ReviewsPage() {
         }
         actions={
           <>
-            <QuoteActions
-              cta={{ href: routes.quoteInstant, label: 'Get instant price' }}
-              phone={site.phone}
-            />
+            <QuoteActions cta={generalCta(quote)} phone={site.phone} />
             <LeaveReview site={site} />
           </>
         }
@@ -157,7 +162,7 @@ export default async function ReviewsPage() {
           </div>
         )}
       </Section>
-      <FinalCta region={site.region} />
+      <FinalCta region={site.region} cta={generalCta(quote)} />
     </>
   )
 }

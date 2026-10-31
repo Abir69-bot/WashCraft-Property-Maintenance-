@@ -20,47 +20,71 @@ export const winterServices: ServiceSeed[] = [
     icon: 'snowflake',
     quoteMode: 'contract',
     seasons: ['winter'],
-    bookingWindowNote: SNOW_NOTE,
-    headline: 'Snow cleared all winter, without you lifting a shovel',
-    promise: 'Seasonal snow contracts for {region} homes and businesses.',
+    headline: 'Snow cleared from your property',
+    promise: 'Snow removal for homes and businesses in {region}.',
     summary:
-      'Seasonal snow removal contracts covering driveways, walkways and sidewalks, with salting and ice control available.',
-    outcomeLabel: 'Get on a snow route',
-    bullets: [
-      'Cleared after every qualifying snowfall',
-      'Driveways, walkways and sidewalks',
-      'Salting and ice control add-ons',
-    ],
+      'Snow removal for driveways, walkways and entrances. The areas, timing and options are confirmed in your written estimate before winter starts.',
+    outcomeLabel: 'Ask about snow removal',
+    bullets: ['Driveways and walkways', 'Homes and businesses', 'Options confirmed in writing'],
     heroImageLabel: 'Snow blower clearing a long residential driveway',
     problem:
-      'A heavy snowfall can mean an hour of shoveling before work, and another after the plow fills in the end of the driveway. Ice on steps and sidewalks is a slip risk for family, visitors and delivery drivers.',
+      'Snow and ice make driveways and walkways hard to use and slippery to walk on. Clearing them yourself after every storm takes time and effort, especially early in the morning.',
     benefits: [
       {
-        title: 'On the route, all season',
-        body: 'Once you sign up, we come after each snowfall that reaches your trigger depth. No calls needed.',
+        title: 'Clear paths',
+        body: 'Driveways, walkways and entrances cleared so people can get in and out.',
       },
-      { title: 'Safer walkways', body: 'Clear paths and optional salting reduce slips and falls.' },
-      { title: 'Known cost', body: 'Choose a flat seasonal rate or pay per visit. No surprises.' },
+      {
+        title: 'Less to worry about',
+        body: 'No shoveling for you after a snowfall.',
+      },
+      {
+        title: 'Agreed in advance',
+        body: 'The areas and options are set out in your estimate, so you know what to expect.',
+      },
     ],
     included: [
-      'Driveway clearing to the edges',
-      'Front walk, steps and public sidewalk',
-      'Plow ridge at the end of the driveway cleared',
-      'Service after every snowfall that reaches your trigger depth',
-      'Salting or ice control if added',
+      'Snow cleared from the driveway, walkways and entrances listed in your estimate',
+      'Timing and service options as set out in your written estimate',
+      'Snow placed in agreed spots on your property',
+    ],
+    suitableFor: [
+      'Homeowners who’d rather not shovel',
+      'Landlords responsible for clearing tenant access',
+      'Small businesses with entrances, walkways or small lots',
+    ],
+    exclusions: [
+      'Service options, such as when we come out and how often, are confirmed in your estimate. We don’t advertise options before they’re confirmed.',
+      'Roof snow removal is not included.',
+      'Snow can’t be pushed onto the street or a neighbor’s property.',
+      'Large lots that need heavy equipment are quoted separately.',
+    ],
+    preparation: [
+      'Send a request before winter so we can plan your property.',
+      'Mark the edges of driveways, gardens and anything hidden under snow.',
+      'Keep vehicles and items out of the areas to be cleared when you can.',
     ],
     method:
-      'Our routes are planned before winter. When snowfall reaches your trigger depth, crews start on the route with snow blowers, shovels and, on larger drives, plows. Walkways and steps are cleared by hand. If you’ve added salting or ice control, we treat surfaces right after clearing.',
+      'Before winter we agree which areas we clear and where snow can go. Your estimate sets out the options and timing that apply to your property.',
     safety:
-      'We clear around cars, mailboxes and landscaping carefully. Mark garden edges and low obstacles with stakes before the first snow so they don’t get damaged.',
+      'Ice can form after we clear. Tell us about steps and slopes that need special attention, and ask about ice control when you request a quote.',
     process: [
       {
-        title: 'Sign up',
-        body: 'Tell us the driveway size and walkways, and choose your add-ons.',
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos help us understand the job.',
       },
-      { title: 'Pick your trigger', body: 'Choose the snowfall depth that starts a visit.' },
-      { title: 'Route planning', body: 'We add your property to a route and mark obstacles.' },
-      { title: 'We clear', body: 'After each qualifying snowfall, all winter.' },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
     ],
     priceFactors: [
       'Driveway size',
@@ -75,31 +99,20 @@ export const winterServices: ServiceSeed[] = [
     ],
     faqs: [
       {
-        question: 'When do you come after a snowfall?',
-        answer:
-          'Crews start the route when snowfall reaches your trigger depth. During long storms we may visit more than once. Exact timing depends on the storm and your place on the route.',
+        question: 'When should I request a quote?',
+        answer: 'Before winter is best, so we can plan your property ahead of the first snowfall.',
       },
       {
-        question: 'What is a trigger depth?',
-        answer: 'The amount of snow that starts a visit. You choose it when you sign up.',
+        question: 'What options do you offer?',
+        answer:
+          'We confirm the options for your property, such as timing and areas covered, in your written estimate.',
       },
       {
-        question: 'Flat rate or per visit: which is better?',
-        answer:
-          'A flat seasonal rate is predictable whatever the winter brings. Per visit can cost less in a light winter and more in a heavy one.',
-      },
-      {
-        question: 'Do you clear the public sidewalk?',
-        answer:
-          'Yes, if you include it. Many cities expect sidewalks to be cleared soon after snow stops.',
-      },
-      {
-        question: 'Can I sign up mid-season?',
-        answer:
-          'If there’s space on a route, yes. Routes fill up, so signing up in the fall is best.',
+        question: 'Do you clear roofs?',
+        answer: 'No. Snow removal covers driveways, walkways and entrances.',
       },
     ],
-    related: ['driveway-snow-clearing', 'walkway-sidewalk-snow-clearing', 'salting-de-icing'],
+    related: ['christmas-light-installation', 'gutter-cleaning', 'driveway-sealing'],
     questions: [driveway, walkway],
   },
   {

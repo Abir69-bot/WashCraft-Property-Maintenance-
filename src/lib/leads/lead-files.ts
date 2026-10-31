@@ -98,9 +98,18 @@ export async function verifyUploads(
     const start = info ? await store.readStart(ref.key, 16) : null
     const type = start ? sniffType(start) : null
     const allowed = type && (FILE_KINDS[kind] as readonly string[]).includes(type)
-    if (!info || !allowed || info.size > MAX_FILE_BYTES) {
+    const problem = !info
+      ? 'not found in storage'
+      : info.size > MAX_FILE_BYTES
+        ? 'larger than 10 MB'
+        : !type
+          ? 'content is not a JPEG, PNG, WebP, HEIC or PDF'
+          : !allowed
+            ? `${type} is not allowed here`
+            : null
+    if (!info || !allowed || problem) {
       if (info) await store.delete(ref.key).catch(() => undefined)
-      console.warn(`[lead-files] rejected upload ${ref.key} (${type ?? 'unknown type'})`)
+      console.warn(`[lead-files] rejected upload ${ref.key}: ${problem}`)
       continue
     }
     checked.push({

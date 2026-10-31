@@ -1,10 +1,9 @@
 import { MessageSquare, Phone } from 'lucide-react'
 
-import { TodoChip } from '@/components/ui/todo-chip'
 import { smsHref, telHref } from '@/lib/text'
 import { cn } from '@/lib/utils'
 
-/** "Call (720) 555-0142" link, or a TODO chip while the phone number is a placeholder. */
+/** "Call (416) 555-0142" link, or nothing until a valid phone number is set. */
 export function CallLink({
   phone,
   className,
@@ -15,7 +14,7 @@ export function CallLink({
   label?: string
 }) {
   const href = telHref(phone)
-  if (!href) return <TodoChip label="phone" />
+  if (!href) return null
   return (
     <a
       href={href}

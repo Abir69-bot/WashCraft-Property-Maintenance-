@@ -3,6 +3,7 @@ import { z } from 'zod'
 import {
   consentField,
   contactFields,
+  eitherContact,
   emailField,
   fileRefsField,
   honeypotField,
@@ -13,16 +14,19 @@ import {
   zipField,
 } from './fields'
 
-/** Contact page form (brief §9.7): a lead of type "contact". */
-export const contactSchema = z.object({
-  ...contactFields,
-  zip: z.union([z.literal(''), zipField]),
-  message: z
-    .string()
-    .trim()
-    .min(5, 'Tell us how we can help')
-    .max(2000, 'Use 2,000 characters or fewer'),
-})
+/** Contact page form (brief §9.7): a lead of type "contact". A phone number or an email. */
+export const contactSchema = eitherContact(
+  z.object({
+    ...contactFields,
+    phone: z.union([z.literal(''), phoneField]),
+    zip: z.union([z.literal(''), zipField]),
+    message: z
+      .string()
+      .trim()
+      .min(5, 'Tell us how we can help')
+      .max(2000, 'Use 2,000 characters or fewer'),
+  }),
+)
 
 export type ContactInput = z.infer<typeof contactSchema>
 

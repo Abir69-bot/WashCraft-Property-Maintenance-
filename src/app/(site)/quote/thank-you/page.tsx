@@ -30,13 +30,14 @@ export default async function ThankYouPage() {
         </Suspense>
         <h2 className="mt-10 text-h3">What happens next</h2>
         <ol className="mt-4 grid max-w-2xl list-decimal gap-3 pl-6 text-lg">
-          <li>We review your details and any photos you sent.</li>
+          <li>WashCraft reviews your request and any photos you sent.</li>
           <li>
             {site.responseTimePromise
-              ? `We get back to you ${site.responseTimePromise} to confirm the details and price.`
-              : 'We contact you to confirm the details and price.'}
+              ? `We contact you ${site.responseTimePromise}, and may ask for more photos or details.`
+              : 'We contact you, and may ask for more photos or details.'}
           </li>
-          <li>You pick a date that suits you. No payment is taken online.</li>
+          <li>You receive a written estimate with the scope, exclusions, price and conditions.</li>
+          <li>Once you approve it, we confirm a date with you. No payment is taken online.</li>
         </ol>
         {calLink && (
           <div className="mt-8">

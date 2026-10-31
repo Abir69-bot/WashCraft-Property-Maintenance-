@@ -4,6 +4,7 @@ import { after } from 'next/server'
 import type { z } from 'zod'
 
 import { FREQUENCIES } from '@/config/catalog'
+import { isPlaceholder } from '@/config/site'
 import {
   COMMERCIAL_PROPERTY_TYPES,
   FLOW_SERVICES,
@@ -32,16 +33,18 @@ import type { FileRef } from '@/lib/schemas/fields'
 import { quickQuoteSchema, trackingSchema, type Tracking } from '@/lib/schemas/quick-quote'
 import {
   commercialBidSchema,
-  customQuoteSchema,
   holidayLightsSchema,
   instantQuoteSchema,
   junkRemovalSchema,
+  OTHER_SERVICE,
+  quoteRequestSchema,
   quoteUpdateSchema,
   snowContractSchema,
   uploadCheckSchema,
   uploadRequestSchema,
 } from '@/lib/schemas/quote'
 import { privateStore } from '@/lib/storage'
+import { e164 } from '@/lib/text'
 
 import { clientIp, guardSubmission, withinLimit } from './guard'
 import { checkUpload, newFileKey, normalizeType, verifyUploads, type FileKind } from './lead-files'
@@ -54,6 +57,7 @@ import {
   type LeadData,
   type SubmitOutcome,
 } from './pipeline'
+import { describeError } from './save'
 import { leadToken, verifyLeadToken } from './token'
 import type { EstimateView, FormResult, QuoteReceipt } from './types'
 
@@ -64,7 +68,23 @@ import type { EstimateView, FormResult, QuoteReceipt } from './types'
  */
 
 const CHECK_FIELDS = 'Please check the highlighted fields.'
-const SERVER_ERROR = 'Sorry, we couldn’t send that just now. Please try again, or call or text us.'
+const SERVER_ERROR =
+  'Sorry, we couldn’t send that just now, so your request was not sent. Please try again in a few minutes.'
+
+/** "Your request was not saved" message, pointing to whichever contact details are confirmed. */
+function notSaved(site: LayoutData['site'], what: string) {
+  const phone = e164(site.phone) ? site.phone : null
+  const email = isPlaceholder(site.email) ? null : site.email
+  const reach =
+    phone && email
+      ? `call ${phone} or email ${email}`
+      : phone
+        ? `call ${phone}`
+        : email
+          ? `email ${email}`
+          : null
+  return `Sorry, we couldn’t save your ${what}, so it was not sent. Please try again in a few minutes${reach ? `, or ${reach}` : ''}.`
+}
 
 type Fields = Record<string, string>
 
@@ -94,7 +114,7 @@ async function pricing(): Promise<PricingData | null> {
   try {
     return await getPricingData()
   } catch (error) {
-    console.error('[quote] pricing unavailable, saving without an estimate', error)
+    console.error('[quote] pricing unavailable, saving without an estimate', describeError(error))
     return null
   }
 }
@@ -170,7 +190,7 @@ function receipt(
   if (!outcome.saved && !outcome.backedUp) {
     return {
       ok: false,
-      message: `Sorry, we couldn’t save your request. Please call or text us at ${layout.site.phone}.`,
+      message: notSaved(layout.site, 'request'),
     }
   }
   return {
@@ -195,7 +215,7 @@ async function checkedFiles(refs: FileRef[], kind: FileKind) {
     return await verifyUploads(refs, kind)
   } catch (error) {
     // Storage unreachable: keep the request, note the files in the lead instead.
-    console.error('[quote] could not check uploads', error)
+    console.error('[quote] could not check uploads', describeError(error))
     return []
   }
 }
@@ -221,7 +241,7 @@ export async function submitQuickQuote(input: unknown, tracking: unknown): Promi
     const result = receipt(outcome, layout)
     return result.ok ? { ok: true } : result
   } catch (error) {
-    console.error('[quote] quick quote failed', error)
+    console.error('[quote] quick quote failed', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
@@ -293,7 +313,7 @@ export async function submitInstantQuote(
       plan && { name: plan.name, price: planPrice(plan) },
     )
   } catch (error) {
-    console.error('[quote] instant quote failed', error)
+    console.error('[quote] instant quote failed', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
@@ -342,11 +362,13 @@ export async function updateQuote(input: unknown): Promise<FormResult> {
       const results = await Promise.allSettled(sends)
       results
         .filter((result) => result.status === 'rejected')
-        .forEach((result) => console.error('[quote] update alert failed', result.reason))
+        .forEach((result) =>
+          console.error('[quote] update alert failed', describeError(result.reason)),
+        )
     })
     return { ok: true }
   } catch (error) {
-    console.error('[quote] could not update lead', error)
+    console.error('[quote] could not update lead', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
@@ -414,7 +436,7 @@ export async function submitSnowContract(
     })
     return receipt(outcome, layout, shown)
   } catch (error) {
-    console.error('[quote] snow contract failed', error)
+    console.error('[quote] snow contract failed', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
@@ -476,7 +498,7 @@ export async function submitHolidayLights(
     })
     return receipt(outcome, layout, shown)
   } catch (error) {
-    console.error('[quote] holiday lights failed', error)
+    console.error('[quote] holiday lights failed', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
@@ -516,14 +538,17 @@ export async function submitJunkRemoval(input: unknown, tracking: unknown): Prom
     const result = receipt(outcome, layout)
     return result.ok ? { ok: true } : result
   } catch (error) {
-    console.error('[quote] junk removal failed', error)
+    console.error('[quote] junk removal failed', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
 
-/** Custom quote with photos, for large or unusual jobs (brief §10.5). */
-export async function submitCustomQuote(input: unknown, tracking: unknown): Promise<FormResult> {
-  const parsed = customQuoteSchema.safeParse(input)
+/**
+ * The quote request form (/quote): services, the job, timing, optional photos, and a phone
+ * number or email address. Saved as a "custom" lead.
+ */
+export async function submitQuoteRequest(input: unknown, tracking: unknown): Promise<FormResult> {
+  const parsed = quoteRequestSchema.safeParse(input)
   if (!parsed.success) return invalid(fieldErrors(parsed.error))
   const form = parsed.data
   const blocked = await guard(form)
@@ -540,23 +565,28 @@ export async function submitCustomQuote(input: unknown, tracking: unknown): Prom
     const outcome = await submitLead({
       data: {
         ...leadBase('custom', form, tracking, layout),
-        address: form.address,
+        address: form.address || undefined,
         services: services.map((service) => service.id),
         lineItems: services.map((service) => ({ service: service.id, serviceName: service.title })),
         notes: form.description,
         details: {
           timeline: form.timeline,
-          budget: form.budget || 'Not given',
+          ...(form.services.includes(OTHER_SERVICE) && {
+            otherService: 'Something else / not sure',
+          }),
           photosSent: form.photos.length,
         },
       },
       files,
-      serviceNames: services.map((service) => service.title),
+      serviceNames: [
+        ...services.map((service) => service.title),
+        ...(form.services.includes(OTHER_SERVICE) ? ['Something else / not sure'] : []),
+      ],
     })
     const result = receipt(outcome, layout)
     return result.ok ? { ok: true } : result
   } catch (error) {
-    console.error('[quote] custom quote failed', error)
+    console.error('[quote] quote request failed', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
@@ -607,7 +637,7 @@ export async function submitCommercialBid(input: unknown, tracking: unknown): Pr
     const result = receipt(outcome, layout)
     return result.ok ? { ok: true } : result
   } catch (error) {
-    console.error('[quote] commercial bid failed', error)
+    console.error('[quote] commercial bid failed', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
@@ -638,7 +668,7 @@ export async function submitContact(input: unknown, tracking: unknown): Promise<
     const result = receipt(outcome, layout)
     return result.ok ? { ok: true } : result
   } catch (error) {
-    console.error('[contact] contact form failed', error)
+    console.error('[contact] contact form failed', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
@@ -673,12 +703,12 @@ export async function submitJobApplication(input: unknown): Promise<FormResult> 
     if (!outcome.saved && !outcome.backedUp) {
       return {
         ok: false,
-        message: `Sorry, we couldn’t save your application. Please call us at ${layout.site.phone}.`,
+        message: notSaved(layout.site, 'application'),
       }
     }
     return { ok: true }
   } catch (error) {
-    console.error('[careers] application failed', error)
+    console.error('[careers] application failed', describeError(error))
     return { ok: false, message: SERVER_ERROR }
   }
 }
@@ -703,7 +733,7 @@ export async function prepareUpload(
     const target = await privateStore().uploadTarget(key, type, parsed.data.size)
     return { ok: true, key, url: target.url, headers: target.headers }
   } catch (error) {
-    console.error('[quote] could not prepare an upload', error)
+    console.error('[quote] could not prepare an upload', describeError(error))
     return {
       ok: false,
       message: 'Uploads aren’t working right now. You can send the form without photos.',
@@ -726,7 +756,7 @@ export async function confirmUpload(input: unknown): Promise<FormResult> {
     const [file] = await verifyUploads([{ key, name: 'upload' }], kind)
     if (file) return { ok: true }
   } catch (error) {
-    console.error('[quote] could not check an upload', error)
+    console.error('[quote] could not check an upload', describeError(error))
     return { ok: true } // Checked again when the form is sent.
   }
   return {

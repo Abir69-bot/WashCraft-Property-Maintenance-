@@ -8,28 +8,16 @@ import { getLayoutData } from './layout'
 const PAGES: SearchEntry[] = [
   { title: 'All services', href: routes.services, kind: 'Page', text: 'services list' },
   {
-    title: 'Get instant price',
-    href: routes.quoteInstant,
+    title: 'Request a quote',
+    href: routes.quote,
     kind: 'Page',
-    text: 'quote estimate price cost',
+    text: 'quote estimate price cost contact free photos',
   },
   {
-    title: 'Request a custom quote',
-    href: routes.quoteCustom,
-    kind: 'Page',
-    text: 'quote large job',
-  },
-  {
-    title: 'Commercial & HOA',
+    title: 'Commercial & restaurant cleaning',
     href: routes.commercial,
     kind: 'Page',
-    text: 'business property manager bid',
-  },
-  {
-    title: 'Maintenance plans',
-    href: routes.maintenancePlans,
-    kind: 'Page',
-    text: 'plans packages subscription',
+    text: 'business restaurant office property manager',
   },
   {
     title: 'Service areas',
@@ -43,7 +31,6 @@ const PAGES: SearchEntry[] = [
     kind: 'Page',
     text: 'photos gallery results',
   },
-  { title: 'Reviews', href: routes.reviews, kind: 'Page', text: 'testimonials google rating' },
   { title: 'About us', href: routes.about, kind: 'Page', text: 'company team founder' },
   { title: 'Careers', href: routes.careers, kind: 'Page', text: 'jobs hiring work apply' },
   { title: 'Blog', href: routes.blog, kind: 'Page', text: 'articles tips guides' },
@@ -84,6 +71,6 @@ export async function getSearchIndex(): Promise<SearchEntry[]> {
       kind: 'Article',
       text: fill(post.excerpt),
     })),
-    ...PAGES,
+    ...PAGES.filter((page) => layout.hasGallery || page.href !== routes.beforeAndAfter),
   ]
 }

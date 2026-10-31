@@ -2,10 +2,12 @@ import {
   ArrowRight,
   BadgeCheck,
   Building2,
-  CalendarCheck,
+  CalendarRange,
   Check,
-  ClipboardList,
-  Sparkles,
+  FileText,
+  HeartHandshake,
+  Layers,
+  MapPin,
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -27,6 +29,7 @@ import { shownGuarantee, shownRating, type ShownGuarantee } from '@/lib/proof'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { fillTokens, smsHref, telHref } from '@/lib/text'
+import { cn } from '@/lib/utils'
 import { asMedia, mediaSrc } from '@/lib/view'
 import type { ClientLogo, Homepage, Plan, Post, TeamMember } from '@/payload-types'
 
@@ -52,6 +55,27 @@ export function QuickQuoteStrip({
           Four quick details and we’ll get back to you with a price.
         </p>
         <QuickQuoteForm groups={groups} consentLabel={consentLabel} layout="wide" />
+      </div>
+    </section>
+  )
+}
+
+/** Short introduction under the hero (Home page → Hero → Introduction). */
+export function Intro({ intro, region }: { intro: Homepage['introduction']; region: string }) {
+  if (!intro?.title || !intro.body) return null
+  return (
+    <section aria-labelledby="intro-heading" className="bg-white">
+      <div className="container grid gap-6 py-14 lg:grid-cols-[1fr_1.4fr] lg:gap-16 lg:py-20">
+        <h2 id="intro-heading" className="text-balance">
+          {fillTokens(intro.title, { region })}
+        </h2>
+        <div className="grid content-start gap-4 text-lg text-muted">
+          {fillTokens(intro.body, { region })
+            .split(/\n\s*\n/)
+            .map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+        </div>
       </div>
     </section>
   )
@@ -142,41 +166,50 @@ export function ServiceCategories({
   explorer: ExplorerService[]
   region: string
 }) {
+  if (categories.length === 0) return null
   return (
     <Section
       id="services"
       eyebrow="What we do"
-      title="Every season, one team"
-      intro={`Cleaning, snow and ice, holiday lighting and yard care for homes and businesses across ${region}.`}
+      title="Services for every season"
+      intro={`Interior, commercial and post-construction cleaning, exterior cleaning, snow removal and holiday lighting for homes and businesses in ${region}.`}
     >
       <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {categories.map((category) => (
           <li
             key={category.id}
-            className={`flex flex-col rounded-card border border-t-4 border-border bg-white p-6 ${TONE_BORDER[category.tone] ?? ''}`}
+            className={`flex card-lift flex-col card-raised border-t-4 p-6 ${TONE_BORDER[category.tone] ?? ''}`}
           >
             <div className="flex items-center gap-3">
-              <ServiceIcon name={category.icon} className="size-8 text-secondary-strong" />
-              <h3 className="text-h3">
-                <Link
-                  href={routes.category(category.slug)}
-                  className="text-primary no-underline hover:underline"
-                >
-                  {category.title}
-                </Link>
-              </h3>
+              <span className="icon-chip">
+                <ServiceIcon name={category.icon} className="size-6" />
+              </span>
+              <h3 className="text-h3">{category.title}</h3>
             </div>
-            <p className="mt-3 text-muted">{category.summary}</p>
-            <Link
-              href={routes.category(category.slug)}
-              className="mt-auto inline-flex min-h-11 items-center gap-2 pt-4 font-semibold"
-            >
-              {category.outcomeLabel} <ArrowRight aria-hidden className="size-4" />
-            </Link>
+            <p className="mt-3 text-muted">{fillTokens(category.summary, { region })}</p>
+            <ul className="mt-4 grid gap-1 border-t border-border pt-4">
+              {category.services.map((service) => (
+                <li key={service.id}>
+                  <Link
+                    href={routes.service(service.slug)}
+                    className="flex min-h-10 items-center justify-between gap-2 rounded-md font-semibold text-primary no-underline hover:underline"
+                  >
+                    {service.title}
+                    <ArrowRight aria-hidden className="size-4 shrink-0 text-secondary-strong" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>
       <ServiceExplorer services={explorer} />
+      <Link
+        href={routes.services}
+        className="mt-8 inline-flex min-h-11 items-center gap-2 font-semibold"
+      >
+        Explore all services <ArrowRight aria-hidden className="size-4" />
+      </Link>
     </Section>
   )
 }
@@ -215,47 +248,45 @@ export function SeasonalSpotlight({
   )
 }
 
-const STEP_ICONS = [ClipboardList, CalendarCheck, Sparkles]
-
+/** The quote process, as numbered steps (Home page → How it works in the admin). */
 export function HowItWorks({
   steps,
   upsell,
   tone,
+  title = 'How getting a quote works',
 }: {
   steps: Homepage['howItWorks']
+  /** Link to maintenance plans after the last step (only with instant prices switched on). */
   upsell?: string | null
   tone?: SectionTone
+  title?: string
 }) {
   if (!steps?.length) return null
   return (
-    <Section
-      id="how-it-works"
-      tone={tone}
-      eyebrow="How it works"
-      title="Three steps to a cleaner property"
-      align="center"
-    >
-      <ol className="grid gap-8 md:grid-cols-3">
-        {steps.map((step, index) => {
-          const Icon = STEP_ICONS[index] ?? Check
-          return (
-            <li key={step.id ?? step.title} className="text-center">
-              <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-surface text-primary">
-                <Icon aria-hidden className="size-7" />
-              </span>
-              <h3 className="mt-4 text-h3">
-                <span className="sr-only">Step {index + 1}: </span>
-                {step.title}
-              </h3>
-              <p className="mt-2 text-muted">{step.body}</p>
-              {index === steps.length - 1 && upsell && (
-                <Link href={routes.maintenancePlans} className="mt-3 inline-block font-semibold">
-                  {upsell}
-                </Link>
-              )}
-            </li>
-          )
-        })}
+    <Section id="how-it-works" tone={tone} eyebrow="How it works" title={title}>
+      <ol
+        className={cn(
+          'grid gap-5 sm:grid-cols-2',
+          steps.length > 3 ? 'lg:grid-cols-5' : 'lg:grid-cols-3',
+        )}
+      >
+        {steps.map((step, index) => (
+          <li key={step.id ?? step.title} className="relative card-raised p-6">
+            <span aria-hidden className="step-number">
+              {index + 1}
+            </span>
+            <h3 className="mt-4 text-lg">
+              <span className="sr-only">Step {index + 1}: </span>
+              {step.title}
+            </h3>
+            <p className="mt-2 text-small text-muted">{step.body}</p>
+            {index === steps.length - 1 && upsell && (
+              <Link href={routes.maintenancePlans} className="mt-3 inline-block font-semibold">
+                {upsell}
+              </Link>
+            )}
+          </li>
+        ))}
       </ol>
     </Section>
   )
@@ -304,6 +335,8 @@ export function NeedUsNow({ phone }: { phone: string }) {
   )
 }
 
+const REASON_ICONS = [Layers, CalendarRange, FileText, MapPin, HeartHandshake]
+
 export function WhyChooseUs({
   cards,
   region,
@@ -322,28 +355,35 @@ export function WhyChooseUs({
       id="why-choose-us"
       tone={tone}
       eyebrow="Why WashCraft"
-      title="Why homeowners and managers choose us"
+      title="Why choose WashCraft"
       intro={intro}
     >
       <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {cards.map((card) => (
-          <li
-            key={card.id ?? card.title}
-            className="overflow-hidden rounded-card border border-border bg-white"
-          >
-            <CmsImage
-              media={card.image}
-              label={card.imageLabel}
-              ratio="3/2"
-              sizes="(min-width: 1024px) 380px, (min-width: 480px) 50vw, 100vw"
-              className="rounded-none"
-            />
-            <div className="p-6">
-              <h3 className="text-h3">{card.title}</h3>
-              <p className="mt-2 text-muted">{fillTokens(card.body, { region })}</p>
-            </div>
-          </li>
-        ))}
+        {cards.map((card, index) => {
+          const Icon = REASON_ICONS[index % REASON_ICONS.length]
+          return (
+            <li key={card.id ?? card.title} className="card-lift overflow-hidden card-raised">
+              {/* Only a real photo is shown; otherwise the card leads with an icon. */}
+              {asMedia(card.image) && (
+                <CmsImage
+                  media={card.image}
+                  ratio="3/2"
+                  sizes="(min-width: 1024px) 380px, (min-width: 480px) 50vw, 100vw"
+                  className="rounded-none"
+                />
+              )}
+              <div className="p-6">
+                {!asMedia(card.image) && (
+                  <span className="mb-4 icon-chip">
+                    <Icon aria-hidden className="size-6" />
+                  </span>
+                )}
+                <h3 className="text-h3">{card.title}</h3>
+                <p className="mt-2 text-muted">{fillTokens(card.body, { region })}</p>
+              </div>
+            </li>
+          )
+        })}
       </ul>
     </Section>
   )
@@ -413,22 +453,32 @@ export function ComparisonTable({
   )
 }
 
-export function CommercialBlock({ site }: { site: SiteConfig }) {
+/** Commercial and restaurant customers. Points stay factual: no pricing or paperwork promises. */
+export function CommercialBlock({
+  site,
+  cta,
+  servicesHref,
+}: {
+  site: SiteConfig
+  cta: QuoteCta
+  /** The commercial category's page (or its only service). */
+  servicesHref: string
+}) {
   const proof = credentials(site)
   return (
     <Section
       id="commercial"
       tone="dark"
-      eyebrow="Commercial & HOA"
-      title="For property managers, HOA boards and businesses"
+      eyebrow="Commercial & restaurant"
+      title="Cleaning for businesses, restaurants and rental properties"
     >
       <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <ul className="grid gap-3">
           {[
-            'One point of contact for every service and site',
-            'Washing, windows, gutters, snow and lighting on one calendar',
-            'Volume and multi-site pricing',
-            'Insurance certificates and safety documents on request',
+            'Commercial, restaurant and post-construction cleaning through one company',
+            'Exterior and seasonal work for the same property when you need it',
+            'A written estimate that sets out the scope, exclusions and conditions',
+            'Visit times agreed with you before any work is booked',
           ].map((point) => (
             <li key={point} className="flex items-start gap-3">
               <Building2 aria-hidden className="mt-1 size-5 shrink-0 text-secondary-on-dark" />
@@ -446,10 +496,10 @@ export function CommercialBlock({ site }: { site: SiteConfig }) {
           )}
           <div className="flex flex-wrap gap-3">
             <Button asChild size="lg">
-              <Link href={routes.quoteCommercial}>Request a bid</Link>
+              <Link href={cta.href}>{cta.label}</Link>
             </Button>
             <Button asChild size="lg" variant="inverse">
-              <Link href={routes.category('commercial')}>Commercial services</Link>
+              <Link href={servicesHref}>Commercial services</Link>
             </Button>
           </div>
         </div>
@@ -559,32 +609,34 @@ export function LatestArticles({ posts }: { posts: Post[] }) {
   )
 }
 
-/** Closing call to action. Inner pages pass their own quote flow and wording. */
+/** Closing call to action. Inner pages pass their own quote button and wording. */
 export function FinalCta({
   region,
-  cta = { href: routes.quoteInstant, label: 'Get instant price' },
-  title = 'Ready for a cleaner, safer property?',
-  text = `Get a price range in minutes for most homes in ${region}, or tell us about a bigger job.`,
+  cta,
+  title = 'Tell us about your property',
+  text = `Send a few details about the job in ${region}. We’ll review your request and contact you with a written estimate.`,
 }: {
   region: string
-  cta?: QuoteCta
+  cta: QuoteCta
   title?: string
   text?: string
 }) {
   return (
-    <section aria-labelledby="final-cta-heading" className="bg-surface">
-      <div className="container section-y text-center">
-        <h2 id="final-cta-heading">{title}</h2>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted">{text}</p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button asChild size="lg">
-            <Link href={cta.href}>{cta.label}</Link>
-          </Button>
-          {!cta.href.startsWith(routes.quoteCustom) && (
-            <Button asChild size="lg" variant="outline">
-              <Link href={routes.quoteCustom}>Request a custom quote</Link>
+    <section aria-labelledby="final-cta-heading">
+      <div className="container section-y">
+        <div className="cta-panel text-center">
+          <h2 id="final-cta-heading" className="text-white">
+            {title}
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-white/90">{text}</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg">
+              <Link href={cta.href}>{cta.label}</Link>
             </Button>
-          )}
+            <Button asChild size="lg" variant="inverse">
+              <Link href={routes.services}>Explore Our Services</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </section>

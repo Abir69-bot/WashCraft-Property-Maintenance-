@@ -12,6 +12,7 @@ import { routes } from '@/lib/routes'
 import { serviceLd } from '@/lib/seo/json-ld'
 import { categoryTitle } from '@/lib/seo/titles'
 import { fillTokens } from '@/lib/text'
+import { asMedia } from '@/lib/view'
 import type { Service, ServiceCategory } from '@/payload-types'
 
 import { FaqList } from './areas-and-faq'
@@ -68,22 +69,30 @@ export function Bundles({
   bundles: ServiceCategory['bundles']
   region: string
 }) {
-  if (!bundles?.length) return null
+  // A bundle only shows when every service in it is published: visitors only see services
+  // the business has confirmed (unpublished ones come back as bare ids).
+  const shown = (bundles ?? []).flatMap((bundle) => {
+    const services = (bundle.services ?? []).filter(
+      (service): service is Service => typeof service === 'object',
+    )
+    return services.length > 1 && services.length === (bundle.services ?? []).length
+      ? [{ ...bundle, services }]
+      : []
+  })
+  if (shown.length === 0) return null
   return (
     <Section
       id="bundles"
       tone="surface"
       eyebrow="Bundles"
-      title="Popular bundles"
-      intro="Services that work well together. Ask for any of them in one quote."
+      title="Services that work well together"
+      intro="Ask for any of these in one quote request."
     >
       <ul className="grid gap-6 md:grid-cols-2">
-        {bundles.map((bundle) => {
-          const services = (bundle.services ?? []).filter(
-            (service): service is Service => typeof service === 'object',
-          )
+        {shown.map((bundle) => {
+          const { services } = bundle
           return (
-            <li key={bundle.id ?? bundle.title} className="rounded-card bg-white p-6">
+            <li key={bundle.id ?? bundle.title} className="card-raised p-6">
               <h3>{bundle.title}</h3>
               <p className="mt-2 text-muted">{fillTokens(bundle.description, { region })}</p>
               {services.length > 0 && (
@@ -156,13 +165,14 @@ export function CategoryHub({
         badge={category.bookingNote && <NoteBadge>{category.bookingNote}</NoteBadge>}
         actions={<QuoteActions cta={cta} phone={site.phone} />}
         aside={
-          <CmsImage
-            media={category.heroImage}
-            label={category.heroImageLabel}
-            ratio="4/3"
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            priority
-          />
+          asMedia(category.heroImage) && (
+            <CmsImage
+              media={category.heroImage}
+              ratio="4/3"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              priority
+            />
+          )
         }
       />
       <ServiceGrid
@@ -181,7 +191,7 @@ export function CategoryHub({
         region={region}
         cta={cta}
         title={`Get a quote for ${category.title}`}
-        text="Tell us a little about your property and we’ll take it from there."
+        text="Tell us a little about your property. We’ll review it and contact you with a written estimate."
       />
     </>
   )

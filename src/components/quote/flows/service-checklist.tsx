@@ -1,6 +1,7 @@
 'use client'
 
 import { ChevronDown } from 'lucide-react'
+import { useId } from 'react'
 import { useWatch, type FieldValues, type Path, type UseFormReturn } from 'react-hook-form'
 
 import { errorFor } from '../fields'
@@ -29,10 +30,20 @@ export function ServiceChecklist<T extends FieldValues>({
 }) {
   const chosen = (useWatch({ control: form.control, name }) as string[] | undefined) ?? []
   const error = errorFor(form, name)
+  const id = useId()
+  const describedBy = [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(' ')
   return (
-    <fieldset aria-invalid={error ? true : undefined} className="grid gap-2">
+    <fieldset
+      aria-invalid={error ? true : undefined}
+      aria-describedby={describedBy || undefined}
+      className="grid gap-2"
+    >
       <legend className="mb-1 font-semibold text-ink">{legend}</legend>
-      {hint && <p className="text-small text-muted">{hint}</p>}
+      {hint && (
+        <p id={`${id}-hint`} className="text-small text-muted">
+          {hint}
+        </p>
+      )}
       {chosen.length > 0 && (
         <p className="text-small font-semibold text-primary">{chosen.length} selected</p>
       )}
@@ -75,7 +86,11 @@ export function ServiceChecklist<T extends FieldValues>({
           )
         })}
       </div>
-      {error && <p className="text-small font-medium text-error">{error}</p>}
+      {error && (
+        <p id={`${id}-error`} className="text-small font-medium text-error">
+          {error}
+        </p>
+      )}
     </fieldset>
   )
 }

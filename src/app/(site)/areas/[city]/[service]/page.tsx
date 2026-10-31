@@ -13,6 +13,7 @@ import {
   ProcessSteps,
   RelatedLinks,
   ServiceIntro,
+  QuoteCard,
 } from '@/components/sections/service-blocks'
 import { consentText } from '@/config/consent'
 import { getLayoutData } from '@/lib/data/layout'
@@ -85,7 +86,7 @@ export default async function CityServicePage({ params }: PageProps<'/areas/[cit
   const { city } = data.city
   const { service } = data.service
   const local = city.name
-  const cta = quoteCta(service)
+  const cta = quoteCta(service, data.layout.quote)
   const gallery = data.city.gallery.filter((item) => idOf(item.service) === service.id)
   const faqs = mergeFaqs(
     (service.faqs ?? []).map((faq, index) => ({
@@ -121,11 +122,16 @@ export default async function CityServicePage({ params }: PageProps<'/areas/[cit
         badge={<BookingWindow seasons={service.seasons} note={service.bookingWindowNote} />}
         actions={<QuoteActions cta={cta} phone={site.phone} />}
         aside={
-          <QuickQuoteCard
-            groups={serviceGroups(categories)}
-            consentLabel={consentText(site.country, site.shortName)}
-            defaultService={service.slug}
-          />
+          // The quick form belongs to the instant-price flow; otherwise a plain quote card.
+          data.layout.quote.instantPricing ? (
+            <QuickQuoteCard
+              groups={serviceGroups(categories)}
+              consentLabel={consentText(site.country, site.shortName)}
+              defaultService={service.slug}
+            />
+          ) : (
+            <QuoteCard cta={cta} />
+          )
         }
       />
       <TrustStrip site={site} />

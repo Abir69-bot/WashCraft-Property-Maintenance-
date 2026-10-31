@@ -8,6 +8,7 @@ import { Section } from '@/components/sections/section'
 import { ServiceAreaMap } from '@/components/sections/service-area-map'
 import { ZipChecker } from '@/components/sections/zip-checker'
 import { getLayoutData } from '@/lib/data/layout'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 
@@ -27,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Service-area overview with the map and postal code checker (brief §6). */
 export default async function AreasPage() {
-  const { site, cities } = await getLayoutData()
+  const { site, cities, quote } = await getLayoutData()
 
   return (
     <>
@@ -37,12 +38,7 @@ export default async function AreasPage() {
         icon="house"
         title={title(site.region)}
         intro={intro(site.region)}
-        actions={
-          <QuoteActions
-            cta={{ href: routes.quoteInstant, label: 'Get instant price' }}
-            phone={site.phone}
-          />
-        }
+        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
         aside={<ZipChecker cities={cities} />}
       />
       <Section id="cities" eyebrow="Cities" title="Cities we serve">
@@ -66,7 +62,7 @@ export default async function AreasPage() {
           <ServiceAreaMap cities={cities.map(({ name, lat, lng }) => ({ name, lat, lng }))} />
         </div>
       </Section>
-      <FinalCta region={site.region} />
+      <FinalCta region={site.region} cta={generalCta(quote)} />
     </>
   )
 }

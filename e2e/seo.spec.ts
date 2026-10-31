@@ -43,7 +43,7 @@ test.describe('search engines', () => {
   })
 
   test('every page describes the business, and no page marks up reviews', async ({ page }) => {
-    for (const path of ['/', '/contact', '/reviews']) {
+    for (const path of ['/', '/contact', '/quote']) {
       await page.goto(path)
       const items = await structuredData(page)
       expect(types(items)).toEqual(
@@ -121,8 +121,29 @@ test.describe('analytics', () => {
     expect(thirdParty).toEqual([])
     expect(await page.evaluate(() => 'dataLayer' in window)).toBe(false)
 
+    // Call and text links only render once the owner confirms a phone number, which the seeded
+    // site doesn't have. Add one marked like the real ones, so the page's own click tracking
+    // (which listens for any `data-track` link) is what gets tested.
+    await page.evaluate(() => {
+      const link = document.createElement('a')
+      link.href = 'tel:+14165550199'
+      link.dataset.track = 'call_click'
+      link.textContent = 'Call'
+      document.querySelector('main')!.append(link)
+    })
+    // A click on the call link, without actually opening the phone app.
+    const clickCallLink = () =>
+      page.evaluate(() => {
+        document.addEventListener('click', (event) => event.preventDefault(), { once: true })
+        document
+          .querySelector('a[data-track="call_click"]')!
+          .dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      })
+
     await page.getByRole('button', { name: 'Decline' }).click()
+    await clickCallLink()
     expect(thirdParty).toEqual([])
+    expect(await page.evaluate(() => 'dataLayer' in window)).toBe(false)
 
     // Accepting loads the configured tools (the CI build sets test IDs; locally there may be none).
     test.skip(!process.env.NEXT_PUBLIC_GTM_ID, 'No Tag Manager ID in this build')
@@ -130,18 +151,14 @@ test.describe('analytics', () => {
     await page.getByRole('button', { name: 'Cookie settings' }).dispatchEvent('click')
     await page.getByRole('button', { name: 'Accept' }).click()
     await expect.poll(() => thirdParty.some((url) => url.includes('gtm.js'))).toBe(true)
-    // A click on the call link, without actually opening the phone app.
-    await page.evaluate(() => {
-      document.addEventListener('click', (event) => event.preventDefault(), { once: true })
-      document
-        .querySelector('a[data-track="call_click"]')!
-        .dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
-    })
+    await clickCallLink()
     const events = await page.evaluate(() =>
       (
         (window as unknown as { dataLayer: { event?: string; service?: string }[] }).dataLayer ?? []
       ).filter((entry) => entry.event === 'call_click'),
     )
+    // Only the click after accepting was recorded.
+    expect(events).toHaveLength(1)
     expect(events[0]).toMatchObject({ event: 'call_click', service: 'gutter-cleaning' })
   })
 

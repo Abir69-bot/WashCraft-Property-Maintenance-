@@ -2,7 +2,12 @@ import { isPlaceholder, type Country, type SiteConfig } from './site'
 
 export type ConfigProblem = { field: string; message: string }
 
-const REQUIRED_TEXT = ['tagline', 'phone', 'email', 'hours', 'region'] as const
+/**
+ * Facts the live site can't launch without. Phone and hours are optional: call links and
+ * opening hours simply stay hidden until they're confirmed. The email is required because new
+ * leads are sent there when no separate alert email is set.
+ */
+const REQUIRED_TEXT = ['tagline', 'email', 'region'] as const
 
 const COUNTRY_DEFAULTS: Record<Country, Pick<SiteConfig, 'currency' | 'locale'>> = {
   CA: { currency: 'CAD', locale: 'en-CA' },

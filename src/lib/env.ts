@@ -84,6 +84,8 @@ const schema = z.object({
   GOOGLE_PLACES_API_KEY: optionalText,
   /** Shared secret for scheduled jobs; Vercel Cron sends it as "Authorization: Bearer …". */
   CRON_SECRET: optionalText,
+  /** Google Search Console HTML-tag verification token (optional; DNS verification needs none). */
+  GOOGLE_SITE_VERIFICATION: optionalText,
 })
 
 export type SiteEnv = z.infer<typeof deployEnv>

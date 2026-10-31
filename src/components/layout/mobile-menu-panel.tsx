@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
-import { routes } from '@/lib/routes'
+import { categoryHref, routes } from '@/lib/routes'
 
 import type { MenuCategory, NavLink } from './main-nav'
 
@@ -20,8 +20,7 @@ const linkClass = 'block rounded-md px-2 py-2.5 text-ink no-underline hover:bg-s
 export type MobileMenuProps = {
   categories: MenuCategory[]
   areaLinks: NavLink[]
-  companyLinks: NavLink[]
-  commercialLinks: NavLink[]
+  pageLinks: NavLink[]
   cta: NavLink
   callHref: string | null
   textHref: string | null
@@ -34,8 +33,7 @@ export type MobileMenuProps = {
 export function MobileMenuPanel({
   categories,
   areaLinks,
-  companyLinks,
-  commercialLinks,
+  pageLinks,
   cta,
   callHref,
   textHref,
@@ -71,46 +69,40 @@ export function MobileMenuPanel({
           >
             <Logo variant="horizontal" height={48} />
           </Link>
+          <Button asChild size="lg">
+            <Link href={cta.href}>{cta.label}</Link>
+          </Button>
           <Accordion type="multiple">
-            {categories.map((category) => (
-              <AccordionItem key={category.id} value={category.slug}>
-                <AccordionTrigger>
-                  <span className="flex items-center gap-2">
-                    {category.icon}
-                    {category.menuLabel || category.title}
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <ul>
-                    <li>
-                      <Link
-                        href={routes.category(category.slug)}
-                        className={`${linkClass} font-semibold`}
-                      >
-                        {category.title} overview
-                      </Link>
-                    </li>
-                    {category.services.map((service) => (
-                      <li key={service.id}>
-                        <Link href={routes.service(service.slug)} className={linkClass}>
-                          {service.title}
-                        </Link>
-                      </li>
-                    ))}
-                    {category.slug === 'commercial' &&
-                      commercialLinks.map((link) => (
-                        <li key={link.href}>
-                          <Link href={link.href} className={linkClass}>
-                            {link.label}
+            <AccordionItem value="services">
+              <AccordionTrigger>Services</AccordionTrigger>
+              <AccordionContent>
+                <Link href={routes.services} className={`${linkClass} font-semibold`}>
+                  All services
+                </Link>
+                {categories.map((category) => (
+                  <div key={category.id} className="mt-3">
+                    <Link
+                      href={categoryHref(category)}
+                      className={`${linkClass} flex items-center gap-2 font-semibold text-primary`}
+                    >
+                      {category.icon}
+                      {category.menuLabel || category.title}
+                    </Link>
+                    <ul className="ml-7 border-l border-border pl-2">
+                      {category.services.map((service) => (
+                        <li key={service.id}>
+                          <Link href={routes.service(service.slug)} className={linkClass}>
+                            {service.title}
                           </Link>
                         </li>
                       ))}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
+                    </ul>
+                  </div>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
             <AccordionItem value="areas">
-              <AccordionTrigger>Areas we serve</AccordionTrigger>
+              <AccordionTrigger>Service Areas</AccordionTrigger>
               <AccordionContent>
                 <ul>
                   {[...areaLinks, { label: 'All service areas', href: routes.areas }].map(
@@ -125,25 +117,20 @@ export function MobileMenuPanel({
                 </ul>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="company">
-              <AccordionTrigger>Company</AccordionTrigger>
-              <AccordionContent>
-                <ul>
-                  {companyLinks.map((link) => (
-                    <li key={link.href}>
-                      <Link href={link.href} className={linkClass}>
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
           </Accordion>
-          <div className="grid gap-3">
-            <Button asChild size="lg">
-              <Link href={cta.href}>{cta.label}</Link>
-            </Button>
+          <ul className="-mt-4 divide-y divide-border border-b border-border">
+            {pageLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="flex min-h-14 items-center font-heading text-lg font-bold text-primary no-underline"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {(callHref || textHref) && (
             <div className="grid grid-cols-2 gap-3">
               {callHref && (
                 <Button asChild variant="outline">
@@ -160,7 +147,7 @@ export function MobileMenuPanel({
                 </Button>
               )}
             </div>
-          </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

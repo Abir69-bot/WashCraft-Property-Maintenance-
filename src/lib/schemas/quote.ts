@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { FREQUENCIES } from '@/config/catalog'
 import {
   BID_FREQUENCIES,
-  BUDGETS,
   COMMERCIAL_PROPERTY_TYPES,
   HOLIDAY_STYLES,
   INSTALL_WINDOWS,
@@ -19,6 +18,7 @@ import {
   addressField,
   contactFields,
   emailField,
+  eitherContact,
   fileRefsField,
   shortText,
   zipField,
@@ -129,15 +129,34 @@ export const junkRemovalSchema = z.object({
 })
 export type JunkRemovalInput = z.infer<typeof junkRemovalSchema>
 
-export const customQuoteSchema = z.object({
-  services: z.array(z.string().max(100)).max(30),
-  description: z.string().trim().min(10, 'Tell us about the job').max(4000),
-  photos: fileRefsField,
-  timeline: choose(TIMELINES, 'Choose a timeline'),
-  budget: z.union([z.literal(''), z.enum(BUDGETS)]),
-  ...contact,
-})
-export type CustomQuoteInput = z.infer<typeof customQuoteSchema>
+/** Shown in the service list for jobs that don't match a listed service. */
+export const OTHER_SERVICE = 'other'
+
+/**
+ * The quote request form (brief §7 of the 2026-10 update): the service, the job, optional
+ * photos, and a way to reach the visitor (phone or email) and find the property (street address
+ * or postal code).
+ */
+export const quoteRequestSchema = eitherContact(
+  z.object({
+    services: z
+      .array(z.string().max(100))
+      .min(1, 'Choose the service you need, or “Something else”')
+      .max(30),
+    description: z
+      .string()
+      .trim()
+      .min(10, 'Tell us a little about the job (at least 10 characters)')
+      .max(3000, 'Use 3,000 characters or fewer'),
+    photos: fileRefsField,
+    timeline: choose(TIMELINES, 'Choose when you’d like the work done'),
+    ...contactFields,
+    phone: z.union([z.literal(''), contactFields.phone]),
+    address: z.union([z.literal(''), addressField]),
+    zip: z.union([z.literal(''), zipField]),
+  }),
+)
+export type QuoteRequestInput = z.infer<typeof quoteRequestSchema>
 
 export const commercialBidSchema = z.object({
   company: z.string().trim().min(2, 'Enter the company or HOA name').max(120),

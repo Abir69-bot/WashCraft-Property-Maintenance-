@@ -18,6 +18,7 @@ import { cachedQuery, getPayloadClient, readAs } from './cache'
 
 /** Fields loaded for related services: enough for a card and its quote button. */
 const CARD = {
+  _status: true,
   title: true,
   slug: true,
   summary: true,

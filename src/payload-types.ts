@@ -204,7 +204,7 @@ export interface UserAuthOperations {
 export interface Lead {
   id: number;
   name: string;
-  phone: string;
+  phone?: string | null;
   email?: string | null;
   address?: string | null;
   postalCode?: string | null;
@@ -445,6 +445,33 @@ export interface Service {
     item: string;
     id?: string | null;
   }[];
+  /**
+   * The customers and properties this service suits. The section hides while the list is empty.
+   */
+  suitableFor?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * What this service doesn’t cover, and access or height limits. Only list limits you have confirmed. The section hides while the list is empty.
+   */
+  exclusions?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * What the customer should do before the visit. The section hides while the list is empty.
+   */
+  preparation?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
   method: string;
   safety?: string | null;
   process: {
@@ -589,7 +616,7 @@ export interface Service {
   slug: string;
   category: number | ServiceCategory;
   /**
-   * Untick to hide this service everywhere.
+   * Untick to hide this service everywhere. Services you haven’t confirmed should stay unpublished (drafts).
    */
   enabled?: boolean | null;
   /**
@@ -1765,6 +1792,24 @@ export interface ServicesSelect<T extends boolean = true> {
         item?: T;
         id?: T;
       };
+  suitableFor?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  exclusions?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  preparation?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
   method?: T;
   safety?: T;
   process?:
@@ -2442,25 +2487,32 @@ export interface SiteSetting {
   shortName: string;
   tagline?: string | null;
   /**
-   * Used for call and text links.
+   * Used for call and text links. Leave blank until the number is confirmed: no call links show without it.
    */
   phone?: string | null;
+  /**
+   * Shown as an email link and used for lead alerts when no alert email is set. Only enter a working, confirmed address.
+   */
   email?: string | null;
   /**
    * Leave blank if you travel to customers and have no public address.
    */
   address?: string | null;
   /**
-   * e.g. Mon–Sat 8am–6pm
+   * e.g. Mon–Sat 8am–6pm. Hidden while blank.
    */
   hours?: string | null;
   /**
-   * How locals name your area, as it reads after "in", e.g. "the GTA". Fills {region} in text.
+   * How locals name your area, as it reads after "in", e.g. "the Toronto area". Fills {region} in text. Don’t claim more than the cities you serve.
    */
   region?: string | null;
   country: 'US' | 'CA';
   currency: 'USD' | 'CAD';
   locale: 'en-US' | 'en-CA';
+  /**
+   * Tick only if every quote is free. Buttons then read "Request a Free Quote" instead of "Request a Quote".
+   */
+  freeQuotes?: boolean | null;
   foundedYear?: number | null;
   /**
    * e.g. "$2M general liability"
@@ -2606,18 +2658,17 @@ export interface SeasonalSetting {
  */
 export interface Navigation {
   id: number;
-  headerCta: {
-    label: string;
-    href: string;
+  /**
+   * Leave both blank to follow the quote settings ("Request a Free Quote" or "Request a Quote").
+   */
+  headerCta?: {
+    label?: string | null;
+    href?: string | null;
   };
+  /**
+   * Plain links after Services and Service Areas, e.g. About, FAQs, Contact. The Before & After link hides itself until there are real photos.
+   */
   companyLinks?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
-  commercialLinks?:
     | {
         label: string;
         href: string;
@@ -2688,6 +2739,7 @@ export interface Homepage {
     | {
         section:
           | 'hero'
+          | 'intro'
           | 'quick-quote'
           | 'client-logos'
           | 'trust-strip'
@@ -2716,6 +2768,13 @@ export interface Homepage {
    */
   featuredServices?: (number | Service)[] | null;
   /**
+   * The short introduction under the hero. Write {region} to insert your service region.
+   */
+  introduction?: {
+    title?: string | null;
+    body?: string | null;
+  };
+  /**
    * One per season. The site picks the one for today’s date.
    */
   heroVariants?:
@@ -2736,6 +2795,9 @@ export interface Homepage {
         id?: string | null;
       }[]
     | null;
+  /**
+   * The quote process, shown on the home and quote pages.
+   */
   howItWorks?:
     | {
         title: string;
@@ -2744,7 +2806,7 @@ export interface Homepage {
       }[]
     | null;
   /**
-   * Shown under step 3.
+   * Shown under the last step, linking to maintenance plans (only with instant prices switched on).
    */
   recurringUpsell?: string | null;
   whyChooseUs?:
@@ -2968,6 +3030,18 @@ export interface LegalPage {
 export interface FeatureFlag {
   id: number;
   /**
+   * The instant-price wizard, price ranges, maintenance plans and recurring discounts. Leave off until every price under Pricing is confirmed: with it off, every quote button goes to the quote request form.
+   */
+  instantPricing?: boolean | null;
+  /**
+   * The separate snow contract, holiday lights, junk removal and commercial bid forms. Leave off until their options (contract terms, light packages, etc.) are confirmed.
+   */
+  dedicatedQuoteForms?: boolean | null;
+  /**
+   * The "how we compare" table. Only turn it on if every claim in it is true and can be shown.
+   */
+  comparisonTable?: boolean | null;
+  /**
    * Build /areas/<city>/<service> pages for the services picked on each city.
    */
   cityServicePages?: boolean | null;
@@ -3029,6 +3103,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   country?: T;
   currency?: T;
   locale?: T;
+  freeQuotes?: T;
   foundedYear?: T;
   insuranceCoverage?: T;
   workersCompRegistration?: T;
@@ -3151,13 +3226,6 @@ export interface NavigationSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
-  commercialLinks?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        id?: T;
-      };
   featuredCard?:
     | T
     | {
@@ -3213,6 +3281,12 @@ export interface HomepageSelect<T extends boolean = true> {
         id?: T;
       };
   featuredServices?: T;
+  introduction?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+      };
   heroVariants?:
     | T
     | {
@@ -3382,6 +3456,9 @@ export interface LegalPagesSelect<T extends boolean = true> {
  * via the `definition` "feature-flags_select".
  */
 export interface FeatureFlagsSelect<T extends boolean = true> {
+  instantPricing?: T;
+  dedicatedQuoteForms?: T;
+  comparisonTable?: T;
   cityServicePages?: T;
   reviewRequests?: T;
   calBooking?: T;

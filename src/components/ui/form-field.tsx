@@ -14,8 +14,11 @@ type FormFieldProps = {
   label: React.ReactNode
   hint?: React.ReactNode
   error?: string
-  /** Optional fields are marked "(optional)"; everything else is announced as required. */
-  optional?: boolean
+  /**
+   * Optional fields are marked "(optional)", or with the given note when one of several fields
+   * is needed (e.g. "or email"). Everything else is announced as required.
+   */
+  optional?: boolean | string
   className?: string
   children: (control: FieldControlProps) => React.ReactNode
 }
@@ -41,7 +44,12 @@ export function FormField({
     <div className={cn('grid gap-1.5', className)}>
       <label htmlFor={id} className="font-semibold text-ink">
         {label}
-        {optional && <span className="font-normal text-muted"> (optional)</span>}
+        {optional && (
+          <span className="font-normal text-muted">
+            {' '}
+            ({optional === true ? 'optional' : optional})
+          </span>
+        )}
       </label>
       {hint && (
         <p id={hintId} className="text-small text-muted">

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
 import { GalleryBrowser, type GalleryEntry } from '@/components/gallery-browser'
 import { FinalCta } from '@/components/sections/home-blocks'
@@ -7,6 +8,7 @@ import { Section } from '@/components/sections/section'
 import { getGallery } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
 import { isProductionSite } from '@/lib/env'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { asMedia, mediaSrc } from '@/lib/view'
@@ -36,7 +38,7 @@ const unique = <T extends { value: string; label: string }>(options: T[]) =>
 
 /** Filterable before-and-after gallery (brief §9.7). Pairs without both photos are left out. */
 export default async function BeforeAndAfterPage() {
-  const [{ site }, items] = await Promise.all([getLayoutData(), getGallery()])
+  const [{ site, quote }, items] = await Promise.all([getLayoutData(), getGallery()])
   const entries: GalleryEntry[] = items.flatMap((item) => {
     const before = asMedia(item.before)
     const after = asMedia(item.after)
@@ -57,6 +59,8 @@ export default async function BeforeAndAfterPage() {
       sample: Boolean(item.isSample) && !isProductionSite,
     }
   })
+  // Never publish an empty gallery.
+  if (entries.length === 0) notFound()
   const categories = unique(
     items.flatMap((item) => {
       const category = doc<ServiceCategory>(item.category)
@@ -83,12 +87,7 @@ export default async function BeforeAndAfterPage() {
         eyebrow="Our work"
         title={title(site.region)}
         intro={intro}
-        actions={
-          <QuoteActions
-            cta={{ href: routes.quoteInstant, label: 'Get instant price' }}
-            phone={site.phone}
-          />
-        }
+        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
       />
       <Section id="gallery" title="Projects">
         {entries.length > 0 ? (
@@ -104,7 +103,7 @@ export default async function BeforeAndAfterPage() {
           </p>
         )}
       </Section>
-      <FinalCta region={site.region} />
+      <FinalCta region={site.region} cta={generalCta(quote)} />
     </>
   )
 }

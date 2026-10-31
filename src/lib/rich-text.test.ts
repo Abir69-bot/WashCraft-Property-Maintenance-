@@ -6,6 +6,7 @@ import {
   splitAtMiddle,
   tableOfContents,
   type RichContent,
+  unlinkUnpublishedServices,
 } from './rich-text'
 
 const text = (value: string) => ({ type: 'text', text: value })
@@ -81,5 +82,46 @@ describe('fillContentTokens', () => {
       text: 'Winter in Denver Metro',
     })
     expect(nodeText(content.root.children[0])).toBe('Homes in {region}')
+  })
+})
+
+describe('unlinkUnpublishedServices', () => {
+  const link = (url: string, text: string) => ({
+    type: 'link',
+    fields: { url, linkType: 'custom' },
+    children: [{ type: 'text', text }],
+  })
+  const content = {
+    root: {
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            { type: 'text', text: 'Try ' },
+            link('/services/gutter-cleaning', 'gutter cleaning'),
+            { type: 'text', text: ' or ' },
+            link('/services/house-washing', 'house washing'),
+            { type: 'text', text: '. ' },
+            link('/blog/tips', 'tips'),
+          ],
+        },
+      ],
+    },
+  }
+
+  it('keeps links to published services and turns the rest into plain text', () => {
+    const result = unlinkUnpublishedServices(content, ['gutter-cleaning'])
+    const paragraph = result.root.children[0] as unknown as {
+      children: { type: string; text?: string }[]
+    }
+    expect(paragraph.children.map((node) => node.type)).toEqual([
+      'text',
+      'link',
+      'text',
+      'text',
+      'text',
+      'link',
+    ])
+    expect(paragraph.children[3].text).toBe('house washing')
   })
 })

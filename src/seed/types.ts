@@ -9,6 +9,7 @@ export type CategorySlug =
   | 'holiday-lighting'
   | 'yard-care'
   | 'commercial'
+  | 'post-construction'
 
 export type TitledText = { title: string; body: string }
 export type Faq = { question: string; answer: string }
@@ -50,6 +51,10 @@ export type ServiceSeed = {
   problem: string
   benefits: TitledText[]
   included: string[]
+  /** Who the service suits, what it doesn't cover (and access limits), how to prepare. */
+  suitableFor?: string[]
+  exclusions?: string[]
+  preparation?: string[]
   method: string
   safety?: string
   process: TitledText[]

@@ -12,8 +12,8 @@ import { getPostList } from '@/lib/data/content'
 import { loadPost } from '@/lib/data/load'
 import { notFoundUnlessMoved } from '@/lib/data/redirects'
 import { env } from '@/lib/env'
-import { quoteCta } from '@/lib/quote/flow'
-import { fillContentTokens, type RichContent } from '@/lib/rich-text'
+import { generalCta, quoteCta } from '@/lib/quote/flow'
+import { fillContentTokens, type RichContent, unlinkUnpublishedServices } from '@/lib/rich-text'
 import { routes } from '@/lib/routes'
 import { articleLd } from '@/lib/seo/json-ld'
 import { pageMetadata } from '@/lib/seo/metadata'
@@ -50,12 +50,10 @@ export default async function PostPage({ params }: PageProps<'/blog/[slug]'>) {
   const { slug } = await params
   const { layout, page: post } = await loadPost(slug)
   if (!post) return notFoundUnlessMoved(routes.post(slug))
-  const { site } = layout
+  const { site, quote } = layout
   const region = site.region
   const services = docs<Service>(post.relatedServices).filter((service) => service.enabled)
-  const cta = services[0]
-    ? quoteCta(services[0])
-    : { href: routes.quoteInstant, label: 'Get instant price' }
+  const cta = services[0] ? quoteCta(services[0], quote) : generalCta(quote)
   // Chosen related posts, topped up with the newest others in the same category. Cards come
   // from the listing, which has their photos.
   const chosenIds = (post.relatedPosts ?? []).map((doc) => (typeof doc === 'object' ? doc.id : doc))
@@ -113,7 +111,10 @@ export default async function PostPage({ params }: PageProps<'/blog/[slug]'>) {
         }
       />
       <ArticleBody
-        content={fillContentTokens(post.content as RichContent, { region })}
+        content={unlinkUnpublishedServices(
+          fillContentTokens(post.content as RichContent, { region }),
+          layout.services.map((service) => service.slug),
+        )}
         cta={cta}
         phone={site.phone}
         topic={services[0]?.title}

@@ -1,30 +1,42 @@
 import { expect, test } from '@playwright/test'
 
-import { site } from '../src/config/site'
+import { confirmedServices, site } from '../src/config/site'
 import { categories } from '../src/seed/data/categories'
 import { cities } from '../src/seed/data/cities'
 import { allServices } from '../src/seed/data/services'
 import { toSlug } from '../src/lib/text'
 import { expectAccessible, expectTemplate, skipCookieBanner } from './helpers'
 
+/** Only services the owner confirmed are published (src/config/site.ts). */
+const confirmed = allServices.filter((service) => confirmedServices.includes(service.slug))
+
 test.describe('every seeded page renders with correct metadata', () => {
   test.beforeEach(({ isMobile }) => {
     test.skip(isMobile, 'Metadata is the same on every screen size')
   })
 
-  for (const service of allServices) {
+  for (const service of confirmed) {
     test(`service: ${service.slug}`, async ({ page }) => {
       await expectTemplate(page, `/services/${service.slug}`, `${service.title} in ${site.region}`)
     })
   }
 
   for (const category of categories) {
+    const published = confirmed.filter((service) => service.category === category.slug)
     test(`category: ${category.slug}`, async ({ page }) => {
-      await expectTemplate(
-        page,
-        `/${category.slug}`,
-        `${category.title} Services in ${site.region}`,
-      )
+      if (published.length > 1) {
+        await expectTemplate(
+          page,
+          `/${category.slug}`,
+          `${category.title} Services in ${site.region}`,
+        )
+      } else if (published.length === 1) {
+        // A one-service category has no hub of its own.
+        await page.goto(`/${category.slug}`)
+        await expect(page).toHaveURL(new RegExp(`/services/${published[0].slug}$`))
+      } else {
+        expect((await page.goto(`/${category.slug}`))?.status()).toBe(404)
+      }
     })
   }
 
@@ -38,8 +50,6 @@ test.describe('every seeded page renders with correct metadata', () => {
   for (const [path, heading] of [
     ['/services', `Property Maintenance Services in ${site.region}`],
     ['/areas', `Service Areas in ${site.region}`],
-    ['/maintenance-plans', `Maintenance Plans in ${site.region}`],
-    ['/commercial/hoa', `HOA & Condo Property Maintenance in ${site.region}`],
   ]) {
     test(`page: ${path}`, async ({ page }) => {
       await expectTemplate(page, path, heading)
@@ -59,8 +69,6 @@ test.describe('templates', () => {
     '/services',
     '/areas',
     '/commercial',
-    '/commercial/hoa',
-    '/maintenance-plans',
   ]) {
     test(`${path} has no serious accessibility problems`, async ({ page }) => {
       await page.goto(path)
@@ -68,14 +76,43 @@ test.describe('templates', () => {
     })
   }
 
-  test('seasonal services send quotes to their own flow', async ({ page }) => {
+  test('every service page covers scope, fit, limits, preparation, areas and FAQs', async ({
+    page,
+  }) => {
+    await page.goto('/services/window-cleaning')
+    const main = page.getByRole('main')
+    for (const heading of [
+      'What’s included',
+      'Who window cleaning is for',
+      'What’s not included, and access limits',
+      'How to prepare',
+      'Where we offer Window Cleaning',
+      'Window Cleaning questions',
+    ]) {
+      await expect(main.getByRole('heading', { name: heading, level: 2 })).toBeVisible()
+    }
+    await expect(
+      main.getByRole('link', { name: /^Request a (Free )?Quote$/ }).first(),
+    ).toHaveAttribute('href', '/quote?service=window-cleaning')
+  })
+
+  test('seasonal services use the quote form while the dedicated forms are off', async ({
+    page,
+  }) => {
     await page.goto('/services/snow-removal')
     const hero = page.locator('section[aria-labelledby="page-heading"]')
-    await expect(hero.getByRole('link', { name: 'Sign up for a snow contract' })).toHaveAttribute(
-      'href',
-      '/quote/snow-contract',
-    )
-    await expect(hero.getByText(/Booking window/)).toBeVisible()
+    await expect(
+      hero.getByRole('link', { name: /^Request a (Free )?Quote$/ }).first(),
+    ).toHaveAttribute('href', '/quote?service=snow-removal')
+  })
+
+  test('services the owner hasn’t confirmed are not published', async ({ page }) => {
+    for (const service of allServices.filter((item) => !confirmedServices.includes(item.slug))) {
+      expect((await page.goto(`/services/${service.slug}`))?.status(), service.slug).toBe(404)
+    }
+    await page.goto('/services')
+    await expect(page.getByRole('link', { name: 'House Washing', exact: true })).toHaveCount(0)
+    await expect(page.getByRole('link', { name: 'Junk Removal', exact: true })).toHaveCount(0)
   })
 
   test('benefit tabs keep every panel in the page', async ({ page }) => {
@@ -92,13 +129,13 @@ test.describe('templates', () => {
   test('services can be filtered by category and searched', async ({ page }) => {
     await page.goto('/services')
     const status = page.getByRole('status').filter({ hasText: /services/ })
-    await expect(status).toHaveText(`${allServices.length} services`)
-    await page.getByRole('button', { name: 'Winter Services', exact: true }).click()
-    const winter = allServices.filter((service) => service.category === 'winter-services')
-    await expect(status).toHaveText(`Showing ${winter.length} of ${allServices.length} services`)
+    await expect(status).toHaveText(`${confirmed.length} services`)
+    await page.getByRole('button', { name: 'Exterior Cleaning', exact: true }).click()
+    const exterior = confirmed.filter((service) => service.category === 'exterior-cleaning')
+    await expect(status).toHaveText(`Showing ${exterior.length} of ${confirmed.length} services`)
     const main = page.getByRole('main')
-    await expect(main.getByRole('heading', { name: 'Exterior Cleaning', level: 2 })).toBeHidden()
-    await expect(main.getByRole('heading', { name: 'Winter Services', level: 2 })).toBeVisible()
+    await expect(main.getByRole('heading', { name: 'Residential Cleaning', level: 2 })).toBeHidden()
+    await expect(main.getByRole('heading', { name: 'Exterior Cleaning', level: 2 })).toBeVisible()
     await page.getByRole('button', { name: 'All', exact: true }).click()
     await page.getByLabel('Search services').fill('gutter')
     await expect(main.getByRole('link', { name: 'Gutter Cleaning', exact: true })).toBeVisible()

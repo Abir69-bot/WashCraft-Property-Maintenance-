@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { routes } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
-export type DirectoryCategory = { slug: string; title: string }
+export type DirectoryCategory = { slug: string; title: string; href: string }
 export type DirectoryService = { slug: string; category: string; text: string }
 
 /**
@@ -82,7 +82,7 @@ export function ServicesDirectory({
       {visible.length === 0 && (
         <p className="mt-6 rounded-card bg-surface p-6">
           Nothing matches “{query}”. Try another word, or{' '}
-          <Link href={routes.quoteCustom}>tell us about the job</Link> and we’ll help.
+          <Link href={routes.quote}>tell us about the job</Link> and we’ll help.
         </p>
       )}
 
@@ -95,10 +95,7 @@ export function ServicesDirectory({
             className={cn('mt-10', groupServices.length === 0 && 'hidden')}
           >
             <h2 id={`${id}-${group.slug}`} className="text-h3">
-              <Link
-                href={routes.category(group.slug)}
-                className="text-primary no-underline hover:underline"
-              >
+              <Link href={group.href} className="text-primary no-underline hover:underline">
                 {group.title}
               </Link>
             </h2>

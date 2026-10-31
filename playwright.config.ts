@@ -20,14 +20,29 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'] }, testIgnore: /seasons\.spec\.ts/ },
-    { name: 'mobile', use: { ...devices['Pixel 7'] }, testIgnore: /seasons\.spec\.ts/ },
-    // Forces a season site-wide, so it waits until every other test has finished.
+    {
+      name: 'desktop',
+      use: { ...devices['Desktop Chrome'] },
+      testIgnore: /(seasons|features)\.spec\.ts/,
+    },
+    {
+      name: 'mobile',
+      use: { ...devices['Pixel 7'] },
+      testIgnore: /(seasons|features)\.spec\.ts/,
+    },
+    // Switch features on and force a season site-wide, so they wait until every other test has
+    // finished, and run one after the other.
+    {
+      name: 'features',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /features\.spec\.ts/,
+      dependencies: ['desktop', 'mobile'],
+    },
     {
       name: 'seasons',
       use: { ...devices['Desktop Chrome'] },
       testMatch: /seasons\.spec\.ts/,
-      dependencies: ['desktop', 'mobile'],
+      dependencies: ['features'],
     },
   ],
   webServer: {

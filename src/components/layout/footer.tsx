@@ -1,9 +1,10 @@
 import Link from 'next/link'
 
 import { Logo } from '@/components/brand/logo'
-import { SiteValue } from '@/components/ui/todo-chip'
+import { isPlaceholder } from '@/config/site'
 import type { LayoutData } from '@/lib/data/layout'
-import { routes } from '@/lib/routes'
+import { quoteLabel } from '@/lib/quote/flow'
+import { categoryHref, routes } from '@/lib/routes'
 import { fillTokens } from '@/lib/text'
 
 import { CallLink, TextLink } from './contact-links'
@@ -22,7 +23,7 @@ const SOCIAL_LABELS: Record<string, string> = {
   nextdoor: 'Nextdoor',
 }
 
-export function Footer({ data }: { data: LayoutData }) {
+export function Footer({ data, analytics }: { data: LayoutData; analytics: boolean }) {
   const { site, categories, cities, navigation, footer } = data
   const perCategory = footer.servicesPerCategory ?? 5
   const socials = Object.entries(site.social).filter(([, url]) => url)
@@ -55,6 +56,7 @@ export function Footer({ data }: { data: LayoutData }) {
           </div>
           <div>
             <h2 className={headingClass}>Contact</h2>
+            {/* Only confirmed details show; unset ones are left out, never shown as stand-ins. */}
             <ul className="grid gap-1 text-small text-white/85">
               <li>
                 <CallLink phone={site.phone} className={linkClass} />
@@ -62,22 +64,23 @@ export function Footer({ data }: { data: LayoutData }) {
               <li>
                 <TextLink phone={site.phone} className={linkClass} />
               </li>
+              {!isPlaceholder(site.email) && (
+                <li>
+                  <a href={`mailto:${site.email}`} data-track="email_click" className={linkClass}>
+                    {site.email}
+                  </a>
+                </li>
+              )}
+              {!isPlaceholder(site.hours) && <li className="py-1">{site.hours}</li>}
+              <li className="py-1">
+                {site.address && !isPlaceholder(site.address)
+                  ? site.address
+                  : `We come to you in ${site.serviceAreas.join(', ')}.`}
+              </li>
               <li>
-                <a href={`mailto:${site.email}`} data-track="email_click" className={linkClass}>
-                  <SiteValue value={site.email} label="email" />
-                </a>
-              </li>
-              <li className="py-1">
-                <SiteValue value={site.hours} label="hours" />
-              </li>
-              <li className="py-1">
-                {site.address ? (
-                  <SiteValue value={site.address} label="address" />
-                ) : (
-                  <>
-                    We come to you across <SiteValue value={site.region} label="region" />
-                  </>
-                )}
+                <Link href={routes.quote} className={`${linkClass} font-semibold text-white`}>
+                  {quoteLabel(data.quote)} →
+                </Link>
               </li>
             </ul>
           </div>
@@ -88,7 +91,7 @@ export function Footer({ data }: { data: LayoutData }) {
             <div key={category.id}>
               <h2 className={headingClass}>
                 <Link
-                  href={routes.category(category.slug)}
+                  href={categoryHref(category)}
                   className="text-white no-underline hover:underline"
                 >
                   {category.menuLabel || category.title}
@@ -102,14 +105,16 @@ export function Footer({ data }: { data: LayoutData }) {
                     </Link>
                   </li>
                 ))}
-                <li>
-                  <Link
-                    href={routes.category(category.slug)}
-                    className={`${linkClass} font-semibold text-white`}
-                  >
-                    All services →
-                  </Link>
-                </li>
+                {category.services.length > 1 && (
+                  <li>
+                    <Link
+                      href={routes.category(category.slug)}
+                      className={`${linkClass} font-semibold text-white`}
+                    >
+                      All services →
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
           ))}
@@ -136,13 +141,15 @@ export function Footer({ data }: { data: LayoutData }) {
           <nav aria-label="Company">
             <h2 className={headingClass}>Company</h2>
             <ul>
-              {(navigation.companyLinks ?? []).map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className={linkClass}>
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {(navigation.companyLinks ?? [])
+                .filter((link) => data.hasGallery || link.href !== routes.beforeAndAfter)
+                .map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className={linkClass}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </nav>
           {badges.length > 0 && (
@@ -169,9 +176,11 @@ export function Footer({ data }: { data: LayoutData }) {
                 </Link>
               </li>
             ))}
-            <li>
-              <CookieSettingsButton className={linkClass} />
-            </li>
+            {analytics && (
+              <li>
+                <CookieSettingsButton className={linkClass} />
+              </li>
+            )}
           </ul>
         </div>
       </div>

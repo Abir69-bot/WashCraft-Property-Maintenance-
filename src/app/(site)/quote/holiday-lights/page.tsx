@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 import { HolidayLightsForm } from '@/components/quote/flows/holiday-lights-form'
 import { QuotePage } from '@/components/quote/quote-page'
@@ -25,6 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Holiday lighting booking (brief §10.5). */
 export default async function HolidayLightsPage() {
+  // Off until switched on under Feature switches (Dedicated quote forms); the quote form covers it.
+  if (!(await getLayoutData()).quote.dedicatedForms) redirect(routes.quote)
   const [{ site }, services] = await Promise.all([getLayoutData(), getQuoteServices()])
   const install = services.find((service) => service.slug === FLOW_SERVICES.lights)
 

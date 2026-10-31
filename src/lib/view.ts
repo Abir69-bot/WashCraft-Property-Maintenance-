@@ -1,6 +1,6 @@
 import type { ServiceGroup } from '@/components/quote/quick-quote-form'
 import type { NavCategory } from '@/lib/data/layout'
-import type { Media } from '@/payload-types'
+import type { Media, Service } from '@/payload-types'
 
 /** Options for the grouped service <select> in quote forms. */
 export function serviceGroups(categories: NavCategory[]): ServiceGroup[] {
@@ -10,6 +10,20 @@ export function serviceGroups(categories: NavCategory[]): ServiceGroup[] {
       label: category.title,
       options: category.services.map((service) => ({ value: service.slug, label: service.title })),
     }))
+}
+
+/**
+ * Services from a relationship list that visitors may see: populated, published and enabled.
+ * Globals populate drafts too, so lists picked in the admin (featured services, HOA services,
+ * bundles) go through this before they are shown.
+ */
+export function publishedServices<T extends Pick<Service, 'enabled'> & { _status?: string | null }>(
+  list: (number | T)[] | null | undefined,
+): T[] {
+  return (list ?? []).filter(
+    (service): service is T =>
+      typeof service === 'object' && service._status === 'published' && service.enabled !== false,
+  )
 }
 
 /** An upload field's value once populated (depth ≥ 1), or null. */

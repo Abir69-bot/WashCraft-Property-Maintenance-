@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 import { CategoryHub } from '@/components/sections/category-hub'
 import { CaseStudies, HoaCard, ManagerPoints } from '@/components/sections/commercial-blocks'
@@ -7,8 +7,9 @@ import { ClientLogos } from '@/components/sections/home-blocks'
 import { loadCategory } from '@/lib/data/load'
 import { getCommercialData } from '@/lib/data/pages'
 import { categoryCta } from '@/lib/quote/flow'
-import { COMMERCIAL_CATEGORY } from '@/lib/routes'
+import { COMMERCIAL_CATEGORY, routes } from '@/lib/routes'
 import { categoryMetadata } from '@/lib/seo/metadata'
+import { publishedServices } from '@/lib/view'
 
 export async function generateMetadata(): Promise<Metadata> {
   const { layout, page } = await loadCategory(COMMERCIAL_CATEGORY)
@@ -22,10 +23,14 @@ export default async function CommercialPage() {
     getCommercialData(),
   ])
   if (!page) notFound()
+  const services = layout.categories.find((item) => item.id === page.category.id)?.services ?? []
+  if (services.length === 1) redirect(routes.service(services[0].slug))
   return (
-    <CategoryHub layout={layout} page={page} cta={categoryCta(page.category.tone)}>
+    <CategoryHub layout={layout} page={page} cta={categoryCta(page.category.tone, layout.quote)}>
       <ManagerPoints points={commercial.pages.points} site={layout.site} />
-      <HoaCard hoa={commercial.pages.hoa} region={layout.site.region} />
+      {publishedServices(commercial.pages.hoa.services).length > 0 && (
+        <HoaCard hoa={commercial.pages.hoa} region={layout.site.region} />
+      )}
       <ClientLogos logos={commercial.clientLogos} />
       <CaseStudies items={commercial.caseStudies} />
     </CategoryHub>

@@ -28,6 +28,19 @@
   --yard-strong: #3e7e41;
   --todo: #ffe066;
   --focus-ring: var(--primary);
+
+  /* Depth: layered, navy-tinted shadows for raised surfaces (not colours, so not in the
+     contrast table). */
+  --shadow-color: 197 75% 15%;
+  --shadow-raised:
+    0 1px 2px hsl(var(--shadow-color) / 0.06), 0 4px 10px -2px hsl(var(--shadow-color) / 0.08),
+    0 12px 28px -8px hsl(var(--shadow-color) / 0.1);
+  --shadow-lifted:
+    0 2px 4px hsl(var(--shadow-color) / 0.06), 0 10px 20px -4px hsl(var(--shadow-color) / 0.12),
+    0 24px 48px -12px hsl(var(--shadow-color) / 0.18);
+  --shadow-inset:
+    inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -1px 0 hsl(var(--shadow-color) / 0.06);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Brand palette only: Tailwind's default colours are removed so off-brand classes fail. */
@@ -147,6 +160,121 @@
   padding-block: 3.5rem;
   @variant lg {
     padding-block: 6rem;
+  }
+}
+
+/* Raised surface: white card with a hairline border and soft layered shadow. */
+@utility card-raised {
+  border-radius: var(--radius-card);
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  background-color: #fff;
+  box-shadow: var(--shadow-raised);
+}
+
+/* Lifts slightly on hover or keyboard focus, only on devices that hover and when motion is
+   welcome. Touch screens see the resting card, which already shows every link. */
+@utility card-lift {
+  transition:
+    transform 250ms var(--ease-out-soft),
+    box-shadow 250ms var(--ease-out-soft);
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover,
+    &:focus-within {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lifted);
+    }
+  }
+}
+
+@utility shadow-raised {
+  box-shadow: var(--shadow-raised);
+}
+@utility shadow-inset {
+  box-shadow: var(--shadow-inset);
+}
+
+/* Rounded square behind an icon: a soft bevel that reads as a small raised tile. */
+@utility icon-chip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.875rem;
+  color: var(--primary);
+  background: linear-gradient(145deg, #fff, var(--surface));
+  border: 1px solid var(--border);
+  box-shadow:
+    var(--shadow-inset),
+    0 6px 14px -6px hsl(var(--shadow-color) / 0.25);
+}
+
+/* Numbered step badge. */
+@utility step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(145deg, var(--secondary-strong), var(--primary));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.25),
+    0 8px 16px -6px hsl(var(--shadow-color) / 0.45);
+}
+
+/* Page-top surface: the brand surface with a faint teal glow, so heroes feel layered. */
+@utility hero-surface {
+  background:
+    radial-gradient(60rem 30rem at 90% -10%, rgb(44 177 188 / 0.14), transparent 60%),
+    radial-gradient(40rem 24rem at -10% 110%, rgb(14 77 100 / 0.07), transparent 60%),
+    linear-gradient(180deg, var(--surface), #fff);
+}
+
+/* The hero's stacked service cards: tilted slightly in 3D on wide screens, flat on phones. */
+@utility hero-stack {
+  display: grid;
+  gap: 0.875rem;
+  @variant lg {
+    perspective: 1600px;
+    padding-block: 1rem;
+    padding-right: 3rem;
+  }
+}
+@utility hero-stack-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.125rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  background: linear-gradient(160deg, #fff 55%, var(--surface));
+  box-shadow: var(--shadow-raised);
+  @variant lg {
+    transform: rotateY(-9deg) rotateX(3deg) translateX(calc(var(--i, 0) * 1rem));
+    transform-origin: left center;
+    box-shadow: var(--shadow-lifted);
+  }
+}
+
+/* Closing call-to-action panel: deep brand gradient with a soft highlight. */
+@utility cta-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  padding: 3rem 1.5rem;
+  color: #fff;
+  --focus-ring: var(--cta);
+  background:
+    radial-gradient(40rem 20rem at 85% 0%, rgb(44 177 188 / 0.35), transparent 65%),
+    linear-gradient(135deg, var(--primary), #0a3646);
+  box-shadow: var(--shadow-lifted);
+  @variant md {
+    padding: 4rem 3rem;
   }
 }
 

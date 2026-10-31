@@ -21,6 +21,208 @@ const multiSiteFaq: Faq = {
 
 export const commercialServices: ServiceSeed[] = [
   {
+    slug: 'commercial-cleaning',
+    title: 'Commercial Cleaning',
+    category: 'commercial',
+    icon: 'building',
+    quoteMode: 'custom',
+    seasons: ['all-year'],
+    headline: 'Clean, welcoming business spaces',
+    promise: 'Commercial cleaning for offices, shops and shared spaces in {region}.',
+    summary:
+      'Commercial cleaning for offices, retail spaces and common areas, with the areas, tasks and visit times agreed in your written estimate.',
+    outcomeLabel: 'Get a commercial cleaning quote',
+    bullets: [
+      'Offices, shops and common areas',
+      'Visit times agreed with you',
+      'Scope set out in writing',
+    ],
+    heroImageLabel: 'Clean, bright office reception area',
+    problem:
+      'Customers, staff and tenants notice a dirty space straight away. Floors, washrooms, kitchens and high-touch surfaces need regular attention, and it’s hard to keep up while running a business.',
+    benefits: [
+      {
+        title: 'A better first impression',
+        body: 'Clean entrances, floors and washrooms make a business look well run.',
+      },
+      {
+        title: 'Planned around you',
+        body: 'Visit times are agreed with you so we work around your hours.',
+      },
+      {
+        title: 'Clear scope',
+        body: 'Your estimate lists the areas and tasks, so everyone knows what’s covered.',
+      },
+    ],
+    included: [
+      'Floors vacuumed and mopped in the areas listed',
+      'Washrooms cleaned and restocked with your supplies',
+      'Kitchens and break rooms cleaned',
+      'Dusting and wiping of desks, counters and high-touch surfaces',
+      'Garbage and recycling emptied',
+    ],
+    suitableFor: [
+      'Small offices and professional spaces',
+      'Retail stores and showrooms',
+      'Common areas in rental and mixed-use buildings',
+    ],
+    exclusions: [
+      'Carpet cleaning is not offered.',
+      'Specialized cleaning, such as medical or lab spaces, is only included if confirmed in your estimate.',
+      'Work at height and exterior windows are quoted separately.',
+      'Any security, alarm or key arrangements are agreed in writing before the first visit.',
+    ],
+    preparation: [
+      'Tell us the size and type of space, and send photos or a floor plan if you have one.',
+      'Let us know the times we can work and how we get in.',
+      'Point out any rooms or equipment we shouldn’t touch.',
+    ],
+    method:
+      'We agree a checklist and visit times with you, then work through each area the same way every visit. If something on the checklist can’t be done, we tell you.',
+    safety:
+      'We follow your building’s rules for access, alarms and storage, and keep walkways clear while we work.',
+    process: [
+      {
+        title: 'Send a request',
+        body: 'Tell us about the space and the times that suit you.',
+      },
+      {
+        title: 'We review it',
+        body: 'We may ask for photos, a floor plan or a short walk-through.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm the first visit.',
+      },
+    ],
+    priceFactors: [
+      'Size and layout of the space',
+      'Areas and tasks included',
+      'How often and when we visit',
+    ],
+    faqs: [
+      {
+        question: 'Can you clean outside business hours?',
+        answer:
+          'Visit times are agreed with you when we quote. Tell us the times that work for your business.',
+      },
+      {
+        question: 'Do you clean carpets?',
+        answer: 'No, we don’t offer carpet cleaning. We vacuum carpets as part of the clean.',
+      },
+      {
+        question: 'Do you clean restaurants?',
+        answer:
+          'Yes, restaurant cleaning is a separate service with its own scope. See restaurant cleaning for details.',
+      },
+    ],
+    related: ['restaurant-cleaning', 'post-construction-cleaning', 'window-cleaning'],
+  },
+  {
+    slug: 'restaurant-cleaning',
+    title: 'Restaurant Cleaning',
+    category: 'commercial',
+    icon: 'sparkles',
+    quoteMode: 'custom',
+    seasons: ['all-year'],
+    headline: 'Dining rooms and restaurants kept clean',
+    promise: 'Restaurant cleaning in {region}, planned around your opening hours.',
+    summary:
+      'Restaurant cleaning for dining rooms, washrooms, entrances and front-of-house areas. Kitchen tasks are only included when listed in your estimate, and exhaust hood cleaning is not offered.',
+    outcomeLabel: 'Get a restaurant cleaning quote',
+    bullets: [
+      'Dining rooms and washrooms',
+      'Entrances and front of house',
+      'Scope set out in writing',
+    ],
+    heroImageLabel: 'Clean restaurant dining room before opening',
+    problem:
+      'Guests judge a restaurant by its dining room and washrooms. Busy services leave floors, tables, chairs and high-touch areas needing more than a quick wipe at closing.',
+    benefits: [
+      {
+        title: 'Ready for guests',
+        body: 'A clean dining room and washrooms make a good first impression.',
+      },
+      {
+        title: 'Fits your schedule',
+        body: 'Visits are planned around your opening hours.',
+      },
+      {
+        title: 'No surprises',
+        body: 'Exactly what we clean, and what we don’t, is listed in your estimate.',
+      },
+    ],
+    included: [
+      'Dining room floors, tables, chairs and booths',
+      'Washrooms cleaned',
+      'Entrances, host stands and front-of-house surfaces',
+      'Other areas listed in your estimate',
+    ],
+    suitableFor: [
+      'Independent restaurants, cafés and bars',
+      'Takeout counters and quick-service spots',
+      'Event and banquet rooms',
+    ],
+    exclusions: [
+      'Kitchen exhaust, hood and duct cleaning is not offered.',
+      'Kitchen equipment and back-of-house tasks are only included when your estimate lists them.',
+      'Grease trap cleaning and pest control are not offered.',
+      'Carpet cleaning is not offered.',
+    ],
+    preparation: [
+      'Tell us your opening hours and when we can work.',
+      'Put food away and secure anything we shouldn’t move.',
+      'Let us know about alarm codes, keys and where supplies are kept.',
+    ],
+    method:
+      'We agree a checklist for each area with you and work through it the same way every visit, after service or at times you choose.',
+    safety:
+      'We follow your food-safety rules about which products can be used where, and we keep exits and walkways clear.',
+    process: [
+      {
+        title: 'Send a request',
+        body: 'Tell us about the restaurant, the areas and your hours.',
+      },
+      {
+        title: 'We review it',
+        body: 'We may ask for photos or a short walk-through before or after service.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm the first visit.',
+      },
+    ],
+    priceFactors: [
+      'Size of the dining room and other areas',
+      'Tasks included',
+      'How often and when we visit',
+    ],
+    faqs: [
+      {
+        question: 'Do you clean kitchen exhaust hoods?',
+        answer: 'No. We don’t offer exhaust hood, duct or grease trap cleaning.',
+      },
+      {
+        question: 'Do you clean the kitchen?',
+        answer:
+          'Only the kitchen tasks listed in your estimate. Tell us what you need and we’ll confirm what we can include.',
+      },
+      {
+        question: 'Can you come after closing?',
+        answer: 'Visit times are agreed with you when we quote. Tell us your hours.',
+      },
+    ],
+    related: ['commercial-cleaning', 'window-cleaning', 'patio-balcony-cleaning'],
+  },
+  {
     slug: 'commercial-property-maintenance',
     title: 'Commercial Property Maintenance',
     category: 'commercial',

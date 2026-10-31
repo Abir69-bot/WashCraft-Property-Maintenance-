@@ -16,7 +16,6 @@ export const routes = {
   cityService: (city: string, service: string) => `/areas/${city}/${service}`,
   quote: '/quote',
   quoteInstant: '/quote/instant',
-  quoteCustom: '/quote/custom',
   quoteSnowContract: '/quote/snow-contract',
   quoteHolidayLights: '/quote/holiday-lights',
   quoteJunkRemoval: '/quote/junk-removal',
@@ -38,6 +37,15 @@ export const routes = {
   terms: '/terms',
   accessibility: '/accessibility',
 } as const
+
+/**
+ * Where a link to a category goes: its hub, or straight to its only service when it has one
+ * (single-service categories have no hub, so menus never link through a redirect).
+ */
+export const categoryHref = (category: { slug: string; services: { slug: string }[] }) =>
+  category.services.length === 1
+    ? routes.service(category.services[0].slug)
+    : routes.category(category.slug)
 
 /** Collections whose documents have their own page, and how to build that page's path. */
 export const DOC_PATHS = {

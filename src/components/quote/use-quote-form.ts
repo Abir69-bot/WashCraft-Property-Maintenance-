@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { useForm, type DefaultValues, type FieldValues, type UseFormReturn } from 'react-hook-form'
 import type { z } from 'zod'
 
@@ -34,24 +34,49 @@ export function useQuoteForm<T extends FieldValues, R extends object>({
   const [serverError, setServerError] = useState<string | null>(null)
   const [challenge, setChallenge] = useState(0)
   const [uploading, setUploading] = useState(false)
+  // Blocks a second send while one is in flight (double clicks, Enter pressed twice) and after
+  // success, while the browser moves to the thank-you page.
+  const sending = useRef(false)
 
   useEffect(rememberLandingPage, [])
 
-  const onSubmit = form.handleSubmit((values) => {
+  function send(values: T) {
+    if (sending.current) return
     if (uploading) {
       setServerError('Please wait for your files to finish uploading.')
       return
     }
     if (check && !check(values, form)) return
     setServerError(null)
+    sending.current = true
     startTransition(async () => {
-      const result = await submit(values, collectTracking())
+      let result: FormResult<R>
+      try {
+        result = await submit(values, collectTracking())
+      } catch {
+        // Network error or the server didn't answer: nothing was confirmed, so say so.
+        result = {
+          ok: false,
+          message:
+            'We couldn’t reach our server, so your request was not sent. Check your connection and try again.',
+        }
+      }
       if (result.ok) return onSuccess(result, values)
+      sending.current = false
       setServerError(result.message)
       applyServerErrors(form, result.fieldErrors)
       setChallenge((count) => count + 1)
     })
-  })
+  }
+
+  // handleSubmit is only called from the submit event, so `send` never runs during render.
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    if (sending.current) {
+      event.preventDefault()
+      return
+    }
+    void form.handleSubmit(send)(event)
+  }
 
   return {
     form,

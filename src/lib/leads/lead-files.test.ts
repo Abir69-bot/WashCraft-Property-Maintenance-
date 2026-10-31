@@ -1,8 +1,8 @@
-import { mkdtemp, rm } from 'fs/promises'
+import { mkdtemp, readFile, rm } from 'fs/promises'
 import os from 'os'
 import path from 'path'
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { LocalObjectStore } from '@/lib/storage/object-store'
 
@@ -26,6 +26,14 @@ describe('sniffType', () => {
     expect(sniffType(bytes('RIFF', 0, 0, 0, 0, 'WEBPVP8 '))).toBe('image/webp')
     expect(sniffType(bytes(0, 0, 0, 0x18, 'ftypheic', 0, 0, 0, 0))).toBe('image/heic')
     expect(sniffType(PDF)).toBe('application/pdf')
+  })
+
+  it('recognizes JPEGs whatever marker follows the start of image', () => {
+    for (const marker of [0xe0, 0xe1, 0xdb, 0xee]) {
+      expect(sniffType(bytes(0xff, 0xd8, 0xff, marker, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))).toBe(
+        'image/jpeg',
+      )
+    }
   })
 
   it('rejects everything else, whatever it is called', () => {
@@ -84,6 +92,65 @@ describe('verifyUploads', () => {
       { key: photo, filename: 'front yard.jpg', mimeType: 'image/jpeg', size: JPEG.length },
     ])
     expect(await store.head(fake)).toBeNull()
+  })
+
+  it('accepts real JPEG and PNG photos, and says why it rejects a disguised one', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const fixture = (name: string) => readFile(path.resolve('e2e', 'fixtures', name))
+    const jpeg = newFileKey('image/jpeg')
+    const png = newFileKey('image/png')
+    const fake = newFileKey('image/jpeg')
+    await store.put(jpeg, await fixture('photo.jpg'), 'image/jpeg')
+    await store.put(png, await fixture('photo.png'), 'image/png')
+    await store.put(fake, await fixture('not-a-photo.jpg'), 'image/jpeg')
+
+    const checked = await verifyUploads(
+      [
+        { key: jpeg, name: 'driveway.jpeg' },
+        { key: png, name: 'patio.png' },
+        { key: fake, name: 'not-a-photo.jpg' },
+      ],
+      'photo',
+      store,
+    )
+
+    expect(checked.map((file) => [file.filename, file.mimeType])).toEqual([
+      ['driveway.jpeg', 'image/jpeg'],
+      ['patio.png', 'image/png'],
+    ])
+    expect(warn).toHaveBeenCalledOnce()
+    expect(warn.mock.calls[0][0]).toBe(
+      `[lead-files] rejected upload ${fake}: content is not a JPEG, PNG, WebP, HEIC or PDF`,
+    )
+    warn.mockRestore()
+  })
+
+  it('logs a missing or oversized upload as such, not as an unknown type', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const missing = newFileKey('image/jpeg')
+    const large = newFileKey('image/jpeg')
+    await store.put(
+      large,
+      new Uint8Array([...JPEG, ...new Uint8Array(10 * 1024 * 1024)]),
+      'image/jpeg',
+    )
+
+    expect(
+      await verifyUploads(
+        [
+          { key: missing, name: 'gone.jpg' },
+          { key: large, name: 'huge.jpg' },
+        ],
+        'photo',
+        store,
+      ),
+    ).toEqual([])
+    expect(warn.mock.calls.map(([message]) => message)).toEqual([
+      `[lead-files] rejected upload ${missing}: not found in storage`,
+      `[lead-files] rejected upload ${large}: larger than 10 MB`,
+    ])
+    expect(await store.head(large)).toBeNull()
+    warn.mockRestore()
   })
 
   it('only accepts PDFs where documents are allowed', async () => {

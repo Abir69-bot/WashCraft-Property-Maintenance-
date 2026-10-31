@@ -8,6 +8,7 @@ import type {
   Service,
   ServiceCategory,
 } from '@/payload-types'
+import type { QuoteSettings } from '@/lib/quote/flow'
 import { getSite } from '@/lib/site-settings'
 
 import { cachedQuery, getPayloadClient } from './cache'
@@ -45,71 +46,87 @@ export type LayoutData = {
   footer: Footer
   seasonal: SeasonalSetting
   heroVariants: NonNullable<Homepage['heroVariants']>
+  /** Where quote buttons go and what they say. */
+  quote: QuoteSettings
+  /** True once there are before/after photos visitors may see (never samples on the live site). */
+  hasGallery: boolean
 }
 
 /** Everything the header, footer and global bars need. One cached query for every page. */
 export const getLayoutData = cachedQuery('layout', async (): Promise<LayoutData> => {
   const payload = await getPayloadClient()
-  const [site, categories, services, cities, navigation, footer, seasonal, homepage] =
-    await Promise.all([
-      getSite(payload),
-      payload.find({
-        collection: 'service-categories',
-        overrideAccess: false,
-        sort: 'order',
-        pagination: false,
-        depth: 0,
-        select: {
-          title: true,
-          slug: true,
-          icon: true,
-          tone: true,
-          menuLabel: true,
-          summary: true,
-          outcomeLabel: true,
-        },
-      }),
-      payload.find({
-        collection: 'services',
-        overrideAccess: false,
-        where: { enabled: { equals: true } },
-        sort: 'order',
-        pagination: false,
-        depth: 0,
-        select: {
-          title: true,
-          slug: true,
-          icon: true,
-          category: true,
-          summary: true,
-          seasons: true,
-          quoteMode: true,
-          dedicatedFlow: true,
-          outcomeLabel: true,
-          cardBullets: true,
-        },
-      }),
-      payload.find({
-        collection: 'cities',
-        overrideAccess: false,
-        sort: 'order',
-        pagination: false,
-        depth: 0,
-        select: {
-          name: true,
-          slug: true,
-          state: true,
-          zipPrefixes: true,
-          lat: true,
-          lng: true,
-          servicePages: true,
-        },
-      }),
-      payload.findGlobal({ slug: 'navigation', depth: 0 }),
-      payload.findGlobal({ slug: 'footer', depth: 0 }),
-      payload.findGlobal({ slug: 'seasonal-settings', depth: 0 }),
-      payload.findGlobal({ slug: 'homepage', depth: 0 }),
-    ])
+  const [
+    site,
+    categories,
+    services,
+    cities,
+    navigation,
+    footer,
+    seasonal,
+    homepage,
+    flags,
+    gallery,
+  ] = await Promise.all([
+    getSite(payload),
+    payload.find({
+      collection: 'service-categories',
+      overrideAccess: false,
+      sort: 'order',
+      pagination: false,
+      depth: 0,
+      select: {
+        title: true,
+        slug: true,
+        icon: true,
+        tone: true,
+        menuLabel: true,
+        summary: true,
+        outcomeLabel: true,
+      },
+    }),
+    payload.find({
+      collection: 'services',
+      overrideAccess: false,
+      where: { enabled: { equals: true } },
+      sort: 'order',
+      pagination: false,
+      depth: 0,
+      select: {
+        title: true,
+        slug: true,
+        icon: true,
+        category: true,
+        summary: true,
+        seasons: true,
+        quoteMode: true,
+        dedicatedFlow: true,
+        outcomeLabel: true,
+        cardBullets: true,
+      },
+    }),
+    payload.find({
+      collection: 'cities',
+      overrideAccess: false,
+      sort: 'order',
+      pagination: false,
+      depth: 0,
+      select: {
+        name: true,
+        slug: true,
+        state: true,
+        zipPrefixes: true,
+        lat: true,
+        lng: true,
+        servicePages: true,
+      },
+    }),
+    payload.findGlobal({ slug: 'navigation', depth: 0 }),
+    payload.findGlobal({ slug: 'footer', depth: 0 }),
+    payload.findGlobal({ slug: 'seasonal-settings', depth: 0 }),
+    payload.findGlobal({ slug: 'homepage', depth: 0 }),
+    payload.findGlobal({ slug: 'feature-flags', depth: 0 }),
+    payload.count({ collection: 'gallery-items', overrideAccess: false }),
+  ])
 
   const navServices = services.docs.map((service) => ({
     ...service,
@@ -118,15 +135,24 @@ export const getLayoutData = cachedQuery('layout', async (): Promise<LayoutData>
 
   return {
     site,
-    categories: (categories.docs as Omit<NavCategory, 'services'>[]).map((category) => ({
-      ...category,
-      services: navServices.filter((service) => service.category === category.id),
-    })),
+    // A category only appears once it has a published (confirmed) service.
+    categories: (categories.docs as Omit<NavCategory, 'services'>[])
+      .map((category) => ({
+        ...category,
+        services: navServices.filter((service) => service.category === category.id),
+      }))
+      .filter((category) => category.services.length > 0),
     services: navServices,
     cities: cities.docs as AreaCity[],
     navigation,
     footer,
     seasonal,
     heroVariants: homepage.heroVariants ?? [],
+    quote: {
+      instantPricing: Boolean(flags.instantPricing),
+      dedicatedForms: Boolean(flags.dedicatedQuoteForms),
+      freeQuotes: site.freeQuotes,
+    },
+    hasGallery: gallery.totalDocs > 0,
   }
 })

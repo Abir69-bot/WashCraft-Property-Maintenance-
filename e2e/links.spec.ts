@@ -15,7 +15,7 @@ test('no page links to a missing or moved address', async ({ request, baseURL, i
   const pages = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
     (match) => new URL(match[1]).pathname,
   )
-  expect(pages.length).toBeGreaterThan(50)
+  expect(pages.length).toBeGreaterThan(30)
 
   const linkedFrom = new Map<string, string>()
   for (const page of pages) {

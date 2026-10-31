@@ -10,14 +10,15 @@ const saved: SiteSetting = {
   name: 'WashCraft Property Maintenance',
   shortName: 'WashCraft',
   tagline: 'Exterior care, year-round',
-  phone: '(303) 555-0142',
+  phone: '(416) 555-0142',
   email: 'hello@example.com',
   address: '',
   hours: 'Mon–Sat 7am–6pm',
-  region: 'Denver Metro',
-  country: 'US',
-  currency: 'USD',
-  locale: 'en-US',
+  region: 'the Toronto area',
+  country: 'CA',
+  currency: 'CAD',
+  locale: 'en-CA',
+  freeQuotes: true,
   social: { instagram: 'https://instagram.com/washcraft', facebook: '' },
   stats: { rating: 4.9, reviewCount: 120 },
   demo: [],
@@ -26,11 +27,12 @@ const saved: SiteSetting = {
 
 describe('toSiteConfig', () => {
   it('maps saved settings to the SiteConfig shape', () => {
-    const config = toSiteConfig(saved, ['Denver', 'Aurora'])
+    const config = toSiteConfig(saved, ['Scarborough', 'Markham'])
     expect(config).toMatchObject({
       tagline: 'Exterior care, year-round',
       address: null,
-      serviceAreas: ['Denver', 'Aurora'],
+      serviceAreas: ['Scarborough', 'Markham'],
+      freeQuotes: true,
       social: { instagram: 'https://instagram.com/washcraft', facebook: null, tiktok: null },
       stats: { rating: 4.9, reviewCount: 120, jobsCompleted: null },
       insuranceCoverage: null,
@@ -38,10 +40,16 @@ describe('toSiteConfig', () => {
     expect(checkSiteConfig(config)).toEqual([])
   })
 
-  it('turns a cleared required field back into a placeholder', () => {
-    const config = toSiteConfig({ ...saved, phone: ' ' }, ['Denver'])
+  it('turns a cleared field back into a placeholder', () => {
+    const config = toSiteConfig({ ...saved, phone: ' ', email: '' }, ['Scarborough'])
     expect(config.phone).toBe('[PHONE]')
-    expect(checkSiteConfig(config).map((problem) => problem.field)).toEqual(['phone'])
+    expect(config.email).toBe('[EMAIL]')
+    // Only the email blocks launch; without a phone the call links simply stay hidden.
+    expect(checkSiteConfig(config).map((problem) => problem.field)).toEqual(['email'])
+  })
+
+  it('treats free quotes as unconfirmed until the box is ticked', () => {
+    expect(toSiteConfig({ ...saved, freeQuotes: null }, ['Scarborough']).freeQuotes).toBe(false)
   })
 
   it('flags a missing city list and remaining demo values', () => {

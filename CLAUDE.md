@@ -133,6 +133,13 @@ layout, and `text-h1/h2/h3/body/small` for type. Adding a colour means updating 
 
 ## Conventions
 
+- **Only confirmed facts go live (2026-10-30 update).** Unconfirmed services, cities and articles
+  are unpublished drafts (`confirmedServices` in `config/site.ts` seeds the status; the admin's
+  Publish button decides after that). Contact details stay `[PLACEHOLDER]` until confirmed and
+  render nothing (no TODO chips on public pages). Quote buttons come from `generalCta()` /
+  `quoteCta()` with `layout.quote`; never hard-code "Get instant price". Instant pricing, plans
+  and the dedicated quote forms are behind Feature switches, off by default. See DECISIONS.md.
+
 - Show the rating and the guarantee through `shownRating()` / `shownGuarantee()` (`lib/proof.ts`), never `site.stats` / `site.guarantee` directly: outside production they fall back to `sampleProof` and need a `<SampleBadge>`.
 - Never invent business facts. Read them from site settings (`getSite()`); placeholders in `[BRACKETS]` render as a yellow "TODO" chip in dev and fail `check-config` for prod. Fields in `site.demo` are owner-approved demo stand-ins: render them normally, never treat them as confirmed facts (e.g. no "call us" urgency copy that depends on a real number), and they also fail `check-config`.
 - Every third-party integration is optional: missing env var → console fallback, feature still works or hides itself. Only `DATABASE_URI` is required.

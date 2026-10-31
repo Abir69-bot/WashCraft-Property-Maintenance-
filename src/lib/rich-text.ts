@@ -27,6 +27,36 @@ export function fillContentTokens(content: RichContent, values: TokenValues): Ri
   }
 }
 
+type LinkNode = RichNode & { fields?: { url?: unknown } }
+
+/**
+ * Turns links to service pages that aren't published (unconfirmed services) into plain text, so
+ * articles never link to a missing page or advertise a service that isn't offered.
+ */
+export function unlinkUnpublishedServices(
+  content: RichContent,
+  publishedSlugs: string[],
+): RichContent {
+  const live = new Set(publishedSlugs)
+  const unlink = (nodes: RichNode[]): RichNode[] =>
+    nodes.flatMap((node) => {
+      const url = (node as LinkNode).fields?.url
+      const slug =
+        node.type === 'link' && typeof url === 'string'
+          ? url.match(/^\/services\/([^/?#]+)\/?(?:[?#].*)?$/)?.[1]
+          : undefined
+      if (slug && !live.has(slug)) return unlink(node.children ?? [])
+      return [node.children ? { ...node, children: unlink(node.children) } : node]
+    })
+  return {
+    ...content,
+    root: {
+      ...content.root,
+      children: unlink(content.root.children as RichNode[]) as RichContent['root']['children'],
+    },
+  }
+}
+
 /** A heading's anchor, e.g. "The short answer" → "the-short-answer". */
 export const headingId = (node: RichNode) => toSlug(nodeText(node)) || 'section'
 

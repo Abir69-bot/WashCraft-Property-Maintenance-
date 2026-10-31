@@ -10,6 +10,7 @@ import { FinalCta, HowItWorks, TrustStrip, WhyChooseUs } from '@/components/sect
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { BeforeAfter, Testimonials } from '@/components/sections/proof'
 import { Section } from '@/components/sections/section'
+import { QuoteCard } from '@/components/sections/service-blocks'
 import { ServiceAreaMap } from '@/components/sections/service-area-map'
 import { ZipChecker } from '@/components/sections/zip-checker'
 import { consentText } from '@/config/consent'
@@ -18,6 +19,7 @@ import { loadCity } from '@/lib/data/load'
 import { getSharedBlocks } from '@/lib/data/pages'
 import { seasonNow } from '@/lib/data/season'
 import { notFoundUnlessMoved } from '@/lib/data/redirects'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { inSeasonNow } from '@/lib/seasons'
 import { pageMetadata } from '@/lib/seo/metadata'
@@ -51,7 +53,7 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
   const { layout, page } = await loadCity(slug)
   if (!page) return notFoundUnlessMoved(routes.city(slug))
   const shared = await getSharedBlocks()
-  const { site, categories, services, cities } = layout
+  const { site, categories, services, cities, quote } = layout
   const { city } = page
   const local = city.name
   const neighborhoods = (city.neighborhoods ?? []).map((item) => item.name)
@@ -74,17 +76,17 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
             </p>
           )
         }
-        actions={
-          <QuoteActions
-            cta={{ href: routes.quoteInstant, label: 'Get instant price' }}
-            phone={site.phone}
-          />
-        }
+        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
         aside={
-          <QuickQuoteCard
-            groups={serviceGroups(categories)}
-            consentLabel={consentText(site.country, site.shortName)}
-          />
+          // The quick form belongs to the instant-price flow; otherwise a plain quote card.
+          quote.instantPricing ? (
+            <QuickQuoteCard
+              groups={serviceGroups(categories)}
+              consentLabel={consentText(site.country, site.shortName)}
+            />
+          ) : (
+            <QuoteCard cta={generalCta(quote)} />
+          )
         }
       />
       <TrustStrip site={site} />
@@ -116,7 +118,11 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
           </p>
         }
       />
-      <HowItWorks steps={shared.howItWorks} upsell={shared.recurringUpsell} tone="surface" />
+      <HowItWorks
+        steps={shared.howItWorks}
+        upsell={quote.instantPricing ? shared.recurringUpsell : null}
+        tone="surface"
+      />
       <BeforeAfter items={page.gallery} title={`Our work in ${city.name}`} />
       <Testimonials testimonials={page.testimonials} site={site} />
       <Neighborhoods city={city} />
@@ -147,7 +153,7 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
         tone="surface"
       />
       <NearbyAreas cities={cities} current={city.id} />
-      <FinalCta region={local} />
+      <FinalCta region={local} cta={generalCta(quote)} />
     </>
   )
 }

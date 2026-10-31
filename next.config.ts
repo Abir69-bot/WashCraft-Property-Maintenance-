@@ -11,9 +11,35 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
  */
 const contentCacheVersion = Date.now().toString(36)
 
+/**
+ * Security headers for every route. Vercel serves HTTPS only and redirects HTTP; HSTS tells
+ * browsers to never try HTTP again. The CSP is limited to directives that need no per-request
+ * nonce (a nonce would make every page dynamic): no framing by other sites, no plugins, no
+ * <base> or form hijacking.
+ */
+const securityHeaders = [
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=()' },
+  {
+    key: 'Content-Security-Policy',
+    value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'",
+  },
+]
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The custom quote form became the quote request form at /quote (query string kept).
+  redirects: async () => [{ source: '/quote/custom', destination: '/quote', permanent: true }],
   env: { CONTENT_CACHE_VERSION: contentCacheVersion },
+  experimental: {
+    // Each static-generation worker loads Payload with its own pool of up to 5 connections.
+    // Next defaults to one worker per core, so a 16-core PC ran 15 workers and 75 connections
+    // and ran out of memory mid-build. Four matches a Vercel build machine.
+    cpus: 4,
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     localPatterns: [{ pathname: '/api/media/file/**' }],
@@ -45,8 +71,10 @@ const payloadHeaders = config.headers
  */
 export default {
   ...config,
-  headers: async () =>
-    (payloadHeaders ? await payloadHeaders() : []).map((rule) =>
+  headers: async () => [
+    { source: '/:path*', headers: securityHeaders },
+    ...(payloadHeaders ? await payloadHeaders() : []).map((rule) =>
       rule.source === '/:path*' ? { ...rule, source: '/admin/:path*' } : rule,
     ),
+  ],
 } satisfies NextConfig

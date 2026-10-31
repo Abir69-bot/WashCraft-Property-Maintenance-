@@ -6,13 +6,13 @@ import { isPlaceholder, site, type SiteConfig } from './site'
 const complete: SiteConfig = {
   ...site,
   tagline: 'Exterior, interior and seasonal care for your property',
-  phone: '(303) 555-0142',
+  phone: '(416) 555-0142',
   email: 'hello@example.com',
   address: null,
   hours: 'Mon–Sat 8am–6pm',
-  country: 'US',
-  currency: 'USD',
-  locale: 'en-US',
+  country: 'CA',
+  currency: 'CAD',
+  locale: 'en-CA',
   region: 'Example Region',
   serviceAreas: ['Northtown', 'Southvale'],
   demo: [],
@@ -31,18 +31,22 @@ describe('isPlaceholder', () => {
 })
 
 describe('checkSiteConfig', () => {
-  it('blocks the shipped demo config until the owner confirms it', () => {
-    expect(fields(site)).toEqual(site.demo)
+  it('blocks the shipped config until the owner sets an email and confirms the demo values', () => {
+    expect(fields(site)).toEqual(['email', ...site.demo])
     expect(site.demo.length).toBeGreaterThan(0)
   })
 
   it('flags unset placeholders', () => {
     const config: SiteConfig = {
       ...complete,
-      phone: '[PHONE]',
+      email: '[EMAIL]',
       serviceAreas: ['Northtown', '[CITY 2]'],
     }
-    expect(fields(config)).toEqual(['phone', 'serviceAreas[1]'])
+    expect(fields(config)).toEqual(['email', 'serviceAreas[1]'])
+  })
+
+  it('allows launching without a phone number or hours (their links and lines stay hidden)', () => {
+    expect(fields({ ...complete, phone: '[PHONE]', hours: '[HOURS]' })).toEqual([])
   })
 
   it('flags fields still marked as demo', () => {
@@ -72,7 +76,7 @@ describe('checkSiteConfig', () => {
   })
 
   it('keeps currency and locale consistent with the country', () => {
-    expect(fields({ ...complete, country: 'CA' })).toEqual(['currency', 'locale'])
+    expect(fields({ ...complete, country: 'US' })).toEqual(['currency', 'locale'])
   })
 
   it('requires https URLs for review and social links', () => {

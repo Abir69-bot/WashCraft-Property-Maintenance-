@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
 import { CmsImage } from '@/components/cms-image'
 import { FaqList } from '@/components/sections/areas-and-faq'
@@ -13,7 +14,7 @@ import { categoryCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { pageMetadata } from '@/lib/seo/metadata'
 import { fillTokens } from '@/lib/text'
-import { asMedia } from '@/lib/view'
+import { asMedia, publishedServices } from '@/lib/view'
 import type { Service } from '@/payload-types'
 
 const defaultTitle = (region: string) => `HOA & Condo Property Maintenance in ${region}`
@@ -36,11 +37,11 @@ export default async function HoaPage() {
   const { site, categories } = layout
   const region = site.region
   const { hoa, points } = commercial.pages
-  const cta = categoryCta('commercial')
+  const cta = categoryCta('commercial', layout.quote)
   const commercialCategory = categories.find((category) => category.tone === 'commercial')
-  const services = (hoa.services ?? []).filter(
-    (service): service is Service => typeof service === 'object' && service.enabled !== false,
-  )
+  const services = publishedServices<Service>(hoa.services)
+  // The page is about these services: with none confirmed (published) there is nothing to show.
+  if (services.length === 0) notFound()
 
   return (
     <>

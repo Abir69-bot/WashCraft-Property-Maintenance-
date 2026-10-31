@@ -7,6 +7,7 @@ import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { FAQ_CATEGORIES } from '@/config/content'
 import { getFaqList } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
+import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { faqPage } from '@/lib/seo/json-ld'
 import { pageMetadata } from '@/lib/seo/metadata'
@@ -23,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Every FAQ, grouped by topic, with search (brief §9.7). */
 export default async function FaqPage() {
-  const [{ site }, faqs] = await Promise.all([getLayoutData(), getFaqList()])
+  const [{ site, quote }, faqs] = await Promise.all([getLayoutData(), getFaqList()])
   const region = site.region
   const groups = FAQ_CATEGORIES.map((category) => ({
     value: category.value,
@@ -45,12 +46,7 @@ export default async function FaqPage() {
         eyebrow="FAQ"
         title={title}
         intro={intro}
-        actions={
-          <QuoteActions
-            cta={{ href: routes.quoteInstant, label: 'Get instant price' }}
-            phone={site.phone}
-          />
-        }
+        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
       />
       <section aria-label="Questions and answers" className="section-y">
         <div className="container">
@@ -58,9 +54,10 @@ export default async function FaqPage() {
         </div>
       </section>
       <FinalCta
+        cta={generalCta(quote)}
         region={region}
         title="Still have a question?"
-        text="Ask us anything, or get a price for your property in a few minutes."
+        text="Send us your question with a quote request, or browse our services."
       />
     </>
   )

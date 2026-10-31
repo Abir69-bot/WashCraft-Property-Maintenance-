@@ -7,17 +7,7 @@ export const STATIC_PATHS = [
   routes.home,
   routes.services,
   routes.areas,
-  routes.hoa,
-  routes.maintenancePlans,
   routes.quote,
-  routes.quoteInstant,
-  routes.quoteCustom,
-  routes.quoteSnowContract,
-  routes.quoteHolidayLights,
-  routes.quoteJunkRemoval,
-  routes.quoteCommercial,
-  routes.beforeAndAfter,
-  routes.reviews,
   routes.about,
   routes.careers,
   routes.blog,
@@ -28,6 +18,20 @@ export const STATIC_PATHS = [
   routes.terms,
   routes.accessibility,
 ]
+
+/** Pages that only exist while a feature switch is on or there is real content to show. */
+export const OPTIONAL_PATHS = {
+  instantPricing: [routes.quoteInstant, routes.maintenancePlans],
+  dedicatedForms: [
+    routes.quoteSnowContract,
+    routes.quoteHolidayLights,
+    routes.quoteJunkRemoval,
+    routes.quoteCommercial,
+  ],
+  gallery: [routes.beforeAndAfter],
+  reviews: [routes.reviews],
+  hoa: [routes.hoa],
+} as const
 
 type Doc = { slug: string; updatedAt?: string | null }
 
@@ -40,6 +44,7 @@ export type SitemapData = {
   team: Doc[]
   jobs: Doc[]
   cityServicePages: boolean
+  optional: Record<keyof typeof OPTIONAL_PATHS, boolean>
 }
 
 /** Every public page, with the date its document last changed where there is one. */
@@ -54,6 +59,9 @@ export function sitemapEntries(data: SitemapData, origin: string): MetadataRoute
 
   return [
     ...STATIC_PATHS.map((path) => entry(path)),
+    ...(Object.keys(OPTIONAL_PATHS) as (keyof typeof OPTIONAL_PATHS)[])
+      .filter((key) => data.optional[key])
+      .flatMap((key) => OPTIONAL_PATHS[key].map((path) => entry(path))),
     ...docs(data.categories, routes.category),
     ...docs(data.services, routes.service),
     ...docs(data.cities, routes.city),
