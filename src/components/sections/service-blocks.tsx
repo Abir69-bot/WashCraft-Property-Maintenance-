@@ -13,7 +13,7 @@ import {
 import Link from 'next/link'
 
 import { CmsImage } from '@/components/cms-image'
-import { ServiceCard } from '@/components/service-card'
+import { ServiceCard, ServiceCardCredits } from '@/components/service-card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SEASON_LABELS, type Season } from '@/config/catalog'
@@ -428,6 +428,7 @@ export function RelatedLinks({
           ))}
         </ul>
       )}
+      {cards.length > 0 && <ServiceCardCredits slugs={cards.map((service) => service.slug)} />}
       {guides.length > 0 && (
         <div className="mt-10">
           <h3>Helpful guides</h3>

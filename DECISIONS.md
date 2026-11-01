@@ -870,3 +870,20 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
 - **Removed at the owner's request:** the home page's "Clients we work with" section (it renders
   nothing even if switched on in the admin; the Commercial page keeps its own logo row) and the
   About page's team grid. Team bio pages remain for the founder's "Read … story" link.
+
+## Service card photos (2026-11-01)
+
+- **Every service card has a photo**, chosen in one place: `servicePhoto()` in `lib/photos.ts`.
+  The owner's photo (the service's hero image) wins, except a wide before/after pair that a
+  16:9 card would cut in half; then the licensed photo in `stockByService` (`assets/photos.ts`)
+  stands in. `ServiceCard` looks the photo up itself (`getServicePhotos()`, cached), so the
+  services page, category pages, city pages and related-service rows all match the home page.
+  A service with neither photo falls back to its icon. A unit test fails if a confirmed service
+  has no photo.
+- **Stock photos** come from Wikimedia Commons under CC BY / CC BY-SA, cropped to 16:9, and are
+  credited in a "Stock photo credits" list under each card grid, as their licenses require.
+  They show a kind of work, never WashCraft's own jobs. The owner asked for WashTech's photos
+  where reuse rights could be verified; none could be, so none were used. Unsplash and Pexels
+  need API keys this project doesn't have.
+- **Services page:** the category chips and search box were removed at the owner's request.
+  Every category heading and service now shows at once, 3 / 2 / 1 cards per row.

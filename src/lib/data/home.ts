@@ -2,7 +2,6 @@ import type {
   Faq,
   GalleryItem,
   Homepage,
-  Media,
   Plan,
   Post,
   TeamMember,
@@ -19,15 +18,13 @@ export type HomeData = {
   posts: Post[]
   plans: Plan[]
   founder: TeamMember | null
-  /** Service photos set in the admin, by service slug (home page service cards). */
-  servicePhotos: Record<string, Media>
 }
 
 export const getHomeData = cachedQuery('home', async (): Promise<HomeData> => {
   const payload = await getPayloadClient()
   const common = { overrideAccess: false } as const
   const all = { overrideAccess: false, pagination: false } as const
-  const [homepage, gallery, testimonials, faqs, posts, plans, founder, photos] = await Promise.all([
+  const [homepage, gallery, testimonials, faqs, posts, plans, founder] = await Promise.all([
     payload.findGlobal({ slug: 'homepage', depth: 1 }),
     payload.find({
       ...common,
@@ -75,13 +72,6 @@ export const getHomeData = cachedQuery('home', async (): Promise<HomeData> => {
       limit: 1,
       depth: 1,
     }),
-    payload.find({
-      ...all,
-      collection: 'services',
-      where: { heroImage: { exists: true } },
-      depth: 1,
-      select: { slug: true, heroImage: true },
-    }),
   ])
 
   return {
@@ -92,12 +82,5 @@ export const getHomeData = cachedQuery('home', async (): Promise<HomeData> => {
     posts: posts.docs as Post[],
     plans: plans.docs,
     founder: founder.docs[0] ?? null,
-    servicePhotos: Object.fromEntries(
-      photos.docs.flatMap((service) =>
-        service.heroImage && typeof service.heroImage === 'object'
-          ? [[service.slug, service.heroImage]]
-          : [],
-      ),
-    ),
   }
 })

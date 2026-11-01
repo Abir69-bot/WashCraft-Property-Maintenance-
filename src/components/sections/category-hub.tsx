@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { CmsImage } from '@/components/cms-image'
 import { JsonLd } from '@/components/json-ld'
-import { ServiceCard } from '@/components/service-card'
+import { ServiceCard, ServiceCardCredits } from '@/components/service-card'
 import type { LayoutData, NavService } from '@/lib/data/layout'
 import type { CategoryPage } from '@/lib/data/pages'
 import { env } from '@/lib/env'
@@ -57,6 +57,7 @@ export function ServiceGrid({
           </li>
         ))}
       </ul>
+      <ServiceCardCredits slugs={services.map((service) => service.slug)} />
     </Section>
   )
 }

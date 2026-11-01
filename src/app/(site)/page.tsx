@@ -1,7 +1,7 @@
 import { Archivo } from 'next/font/google'
 import { Fragment } from 'react'
 
-import { stockByService, stockPhotos, type StockPhoto } from '@/assets/home/photos'
+import { stockPhotos, type StockPhoto } from '@/assets/photos'
 import {
   ComparisonTable,
   LatestArticles,
@@ -26,7 +26,6 @@ import {
   NightTestimonials,
   NightWhyChooseUs,
   PhotoCredits,
-  type Photo,
   type SeasonPanel,
   type ServiceTile,
 } from '@/components/sections/home-night'
@@ -36,8 +35,10 @@ import { isPlaceholder } from '@/config/site'
 import type { HOME_SECTIONS } from '@/globals/settings'
 import { getHomeData } from '@/lib/data/home'
 import { getLayoutData } from '@/lib/data/layout'
+import { getServicePhotos } from '@/lib/data/service-photos'
 import { getFeatureFlags } from '@/lib/data/pages'
 import { seasonNow } from '@/lib/data/season'
+import { fromMedia, fromStock, servicePhoto, type Photo } from '@/lib/photos'
 import { shownGuarantee } from '@/lib/proof'
 import { generalCta } from '@/lib/quote/flow'
 import { categoryHref, COMMERCIAL_CATEGORY } from '@/lib/routes'
@@ -60,16 +61,13 @@ type HomeSection = (typeof HOME_SECTIONS)[number]
 const SERVICE_CARDS = 8
 const TAB_SEASONS: Season[] = ['spring', 'summer', 'fall', 'winter', 'holiday']
 
-const fromMedia = (media: Media): Photo => ({
-  src: mediaSrc(media),
-  alt: media.alt,
-  width: media.width,
-  height: media.height,
-})
-
 /** Home page (brief §9.1): sections in the order set in the admin, each hiding when empty. */
 export default async function HomePage() {
-  const [layout, home] = await Promise.all([getLayoutData(), getHomeData()])
+  const [layout, home, servicePhotos] = await Promise.all([
+    getLayoutData(),
+    getHomeData(),
+    getServicePhotos(),
+  ])
   const { site, categories, services, cities, quote } = layout
   const cta = generalCta(quote)
   const commercial = categories.find((category) => category.slug === COMMERCIAL_CATEGORY)
@@ -81,7 +79,7 @@ export default async function HomePage() {
   const stockUse: { photo: StockPhoto; section: HomeSection }[] = []
   const stock = (photo: StockPhoto, section: HomeSection): Photo => {
     stockUse.push({ photo, section })
-    return { src: photo.src, alt: photo.alt, width: photo.src.width, height: photo.src.height }
+    return fromStock(photo)
   }
   const variantImage = (key: Season | undefined) =>
     asMedia(layout.heroVariants.find((item) => item.season === key)?.image)
@@ -104,26 +102,20 @@ export default async function HomePage() {
           'hero',
         )
 
-  // Featured services first (Home page settings), then the rest; each with a card photo.
+  // Featured services first (Home page settings), then the rest; each with its card photo.
   const featured = publishedServices<Service>(home.homepage.featuredServices).map((s) => s.slug)
   const ordered = [
     ...featured.flatMap((slug) => services.filter((service) => service.slug === slug)),
     ...services.filter((service) => !featured.includes(service.slug)),
   ]
-  // The admin photo wins, except a wide side-by-side pair (wider than 3:2), which a 4:3 card
-  // would cut in half: then the licensed photo stands in.
   const cardPhoto = (slug: string): Photo | null => {
-    const media = home.servicePhotos[slug]
-    const licensed = stockByService[slug]
-    const pair = media?.width && media.height && media.width / media.height >= 1.5
-    if (media && !(pair && licensed)) return fromMedia(media)
-    return licensed ? stock(licensed, 'services') : null
+    const photo = servicePhoto(slug, servicePhotos[slug])
+    if (photo?.stock) stockUse.push({ photo: photo.stock, section: 'services' })
+    return photo
   }
   const withPhotos = ordered.filter(
     (service) =>
-      featured.includes(service.slug) ||
-      stockByService[service.slug] ||
-      home.servicePhotos[service.slug],
+      featured.includes(service.slug) || servicePhoto(service.slug, servicePhotos[service.slug]),
   )
   const tiles: ServiceTile[] = withPhotos.slice(0, SERVICE_CARDS).map((service) => ({
     slug: service.slug,
@@ -139,7 +131,7 @@ export default async function HomePage() {
     if (inSeason.length === 0) return []
     const media =
       variantImage(key) ??
-      inSeason.map((service) => home.servicePhotos[service.slug]).find(Boolean) ??
+      inSeason.map((service) => servicePhotos[service.slug]).find(Boolean) ??
       null
     const fallback =
       key === 'winter' ? stockPhotos.heroWinter : key === 'holiday' ? stockPhotos.heroHoliday : null

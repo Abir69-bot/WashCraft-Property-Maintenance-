@@ -147,17 +147,18 @@ Each photo slot on the site shows a placeholder describing exactly what to shoot
 work only (no stock photos of people). Upload photos in the admin under **Media**, then attach
 them to the matching page. This list is regenerated with `pnpm content-todo`.
 
-**Home page photos (2026-11-01).** Until you upload your own, the home page hero and a few
-service cards use licensed stock photos (credited at the bottom of the home page). Replace them
-with your own work when you can:
+**Service and home page photos (2026-11-01).** Every service card shows a photo. Pressure
+washing, soft washing, patio, gutter and roof cleaning use your own job photos; the others, and
+the home page hero, use licensed stock photos (credited under each card grid). Replace them with
+your own work when you can:
 
 - [ ] Hero photos, landscape and at least 1600px wide: **Home page → Hero tab → Hero Variants →
       the season's row → Image** (winter and holiday first).
-- [ ] A photo for **Interior House Cleaning** and **Post-Construction Cleaning** (their cards
-      show an icon until then): **Services → the service → Hero image**.
-- [ ] Your own photos for holiday lights, window cleaning and commercial cleaning, in the same
-      place; each card switches to your photo once it's uploaded. Snow removal already has your
-      before/after image, which stays uncropped on its page, so its card needs a single photo.
+- [ ] Your own photos for Interior House Cleaning, Commercial Cleaning, Restaurant Cleaning,
+      Post-Construction Cleaning, Window Cleaning, Driveway Sealing, Snow Removal and Christmas
+      Light Installation: **Services → the service → Hero image**. Each card switches to your
+      photo once it's uploaded. Snow removal already has your before/after image, which stays
+      uncropped on its page, so its card needs a single photo.
 - [ ] Confirm the snow removal before/after image shows a real WashCraft job. If it's an
       illustration, say so in its caption or replace it (no made-up results, rule 2).
 

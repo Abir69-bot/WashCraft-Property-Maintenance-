@@ -9,11 +9,12 @@ import {
   Layers,
   MapPin,
 } from 'lucide-react'
-import Image, { type StaticImageData } from 'next/image'
+import Image from 'next/image'
 import Link from 'next/link'
 
-import type { StockPhoto } from '@/assets/home/photos'
+import type { StockPhoto } from '@/assets/photos'
 import { CmsImage } from '@/components/cms-image'
+import { PhotoCredits as Credits } from '@/components/photo-credits'
 import { JsonLd } from '@/components/json-ld'
 import { SampleBadge } from '@/components/sample-badge'
 import { ServiceIcon } from '@/components/service-icon'
@@ -30,6 +31,7 @@ import type { Season } from '@/config/catalog'
 import type { SiteConfig } from '@/config/site'
 import type { AreaCity } from '@/lib/data/layout'
 import type { FaqEntry } from '@/lib/faqs'
+import type { Photo } from '@/lib/photos'
 import { shownRating, type ShownGuarantee } from '@/lib/proof'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
@@ -51,14 +53,6 @@ import { ZipChecker } from './zip-checker'
  * photo service cards, large drag sliders, outlined step numbers and a closing quote panel.
  * Inner pages keep the light sections in home-blocks.tsx.
  */
-
-/** A photo for the hero, a card or a panel: an admin upload (URL) or a licensed stock file. */
-export type Photo = {
-  src: string | StaticImageData
-  alt: string
-  width?: number | null
-  height?: number | null
-}
 
 export const pill =
   'inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-6 font-semibold whitespace-nowrap text-white no-underline transition-colors hover:border-white hover:bg-white/5'
@@ -265,7 +259,7 @@ export function NightServices({ tiles, region }: { tiles: ServiceTile[]; region:
             key={tile.slug}
             className="group relative flex night-card reveal flex-col overflow-hidden"
           >
-            <div className="relative aspect-[4/3] overflow-hidden bg-night">
+            <div className="relative aspect-video overflow-hidden bg-night">
               {tile.photo ? (
                 <Image
                   src={tile.photo.src}
@@ -1016,24 +1010,7 @@ export function PhotoCredits({ photos }: { photos: StockPhoto[] }) {
   if (photos.length === 0) return null
   return (
     <div className="bg-night-raised">
-      <details className="container pb-10 text-small text-night-muted">
-        <summary className="inline-flex min-h-11 cursor-pointer items-center">
-          Stock photo credits
-        </summary>
-        <ul className="mt-2 grid gap-1">
-          {photos.map(({ credit }) => (
-            <li key={credit.source}>
-              <a href={credit.source}>{credit.title}</a> by {credit.author},{' '}
-              {credit.licenseUrl ? (
-                <a href={credit.licenseUrl}>{credit.license}</a>
-              ) : (
-                credit.license
-              )}
-              . {credit.changes}.
-            </li>
-          ))}
-        </ul>
-      </details>
+      <Credits photos={photos} className="container pb-10 text-night-muted" />
     </div>
   )
 }
