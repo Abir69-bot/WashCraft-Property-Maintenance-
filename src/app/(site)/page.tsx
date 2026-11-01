@@ -47,12 +47,17 @@ import { cn } from '@/lib/utils'
 import { asMedia, mediaSrc, publishedServices, serviceGroups } from '@/lib/view'
 import type { Media, Service } from '@/payload-types'
 
-/** Wide display face for the home page's headings; other pages never load it. */
+/**
+ * Wide display face for the home page's headings. Not preloaded: its @font-face lands in the
+ * site-wide stylesheet, so a preload would make every page fetch it (88 KB, costing inner pages
+ * their Lighthouse score). Browsers fetch it only where text uses it, so other pages never do.
+ */
 const archivo = Archivo({
   subsets: ['latin'],
   axes: ['wdth'],
   variable: '--font-display',
   display: 'swap',
+  preload: false,
 })
 
 type HomeSection = (typeof HOME_SECTIONS)[number]
