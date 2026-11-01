@@ -93,10 +93,11 @@ export const footer = {
   ],
 }
 
+// Owner's hero wording (2026-11-01). "Across the GTA" is the owner's choice for the hero only;
+// titles and other copy keep {region} ("the Toronto area"), see DECISIONS.md.
 const HERO = {
-  headline: 'Year-Round Property Maintenance, Made Simple',
-  subline:
-    'From snow removal and seasonal lighting to interior cleaning, post-construction cleanup, commercial and restaurant cleaning, exterior cleaning, and property upkeep, WashCraft Property Maintenance helps Toronto-area customers keep their spaces clean, cared for, and ready for every season.',
+  headline: 'Your Property, Our Priority',
+  subline: 'Exterior Cleaning, Property Maintenance & Snow Removal Across the GTA',
   cta: { label: 'Request a Free Quote', href: routes.quote },
 }
 
@@ -105,18 +106,18 @@ const SHOWN = [
   'hero',
   'intro',
   'services',
-  'why-choose-us',
-  'trust-strip',
-  'before-after',
   'testimonials',
-  'commercial',
-  'how-it-works',
-  'service-areas',
+  'before-after',
+  'trust-strip',
   'guarantee',
-  'need-us-now',
-  'client-logos',
+  'service-areas',
+  'commercial',
+  'seasonal-spotlight',
+  'how-it-works',
+  'why-choose-us',
   'founder',
   'faq',
+  'need-us-now',
   'final-cta',
 ] as const
 

@@ -2675,9 +2675,6 @@ export interface Navigation {
         id?: string | null;
       }[]
     | null;
-  /**
-   * The card in the Services menu. Automatic shows what’s in season.
-   */
   featuredCard?: {
     automatic?: boolean | null;
     title?: string | null;

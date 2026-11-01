@@ -30,6 +30,9 @@ export const colorTokens: ColorToken[] = [
   { name: 'yard', hex: '#4C9A50', use: 'Yard-care accents and icons' },
   { name: 'yard-strong', hex: '#3E7E41', use: 'Yard-care badges and text' },
   { name: 'todo', hex: '#FFE066', use: 'TODO chips and Sample badges (never in production)' },
+  { name: 'night', hex: '#061B23', use: 'Home page background' },
+  { name: 'night-raised', hex: '#0B2631', use: 'Home page alternating bands and cards' },
+  { name: 'night-muted', hex: '#A7BDC7', use: 'Secondary text on the home page' },
 ]
 
 export type ContrastPair = { fg: string; bg: string; min: 3 | 4.5; where: string }
@@ -61,6 +64,14 @@ export const contrastPairs: ContrastPair[] = [
   { fg: 'border-strong', bg: 'white', min: 3, where: 'Form field borders' },
   { fg: 'primary', bg: 'white', min: 3, where: 'Focus ring on light sections' },
   { fg: 'cta', bg: 'primary', min: 3, where: 'Focus ring on dark sections' },
+  { fg: 'white', bg: 'night', min: 4.5, where: 'Home page text and headings' },
+  { fg: 'white', bg: 'night-raised', min: 4.5, where: 'Home page text on bands and cards' },
+  { fg: 'night-muted', bg: 'night', min: 4.5, where: 'Home page secondary text' },
+  { fg: 'night-muted', bg: 'night-raised', min: 4.5, where: 'Secondary text on home bands' },
+  { fg: 'cta', bg: 'night', min: 4.5, where: 'Home page accent links and numbers' },
+  { fg: 'cta', bg: 'night-raised', min: 4.5, where: 'Accent links on home cards' },
+  { fg: 'secondary-on-dark', bg: 'night', min: 4.5, where: 'Teal text on the home page' },
+  { fg: 'secondary-on-dark', bg: 'night-raised', min: 4.5, where: 'Teal text on home bands' },
 ]
 
 export function tokenHex(name: string): string {

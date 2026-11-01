@@ -4,38 +4,15 @@ import { ArrowRight, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { NavigationMenu } from 'radix-ui'
 
-import { categoryHref, routes } from '@/lib/routes'
+import { routes } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
 export type NavLink = { label: string; href: string }
 
-/**
- * What the menus show of each category. Only these fields are sent to the browser: the menus
- * are client components, so every prop is in every page's payload.
- */
-export type MenuCategory = {
-  id: number
-  title: string
-  slug: string
-  /** Drawn on the server (see header.tsx), so the icon set never ships to the browser. */
-  icon: React.ReactNode
-  menuLabel?: string | null
-  services: { id: number; title: string; slug: string }[]
-}
-export type FeaturedCard = {
-  eyebrow?: string | null
-  title: string
-  text: string
-  href: string
-  cta: string
-}
-
-const MAX_PER_CATEGORY = 6
-
 const triggerClass =
-  'group inline-flex min-h-11 items-center gap-1 rounded-full px-3 font-semibold text-ink transition-colors hover:bg-surface hover:text-primary data-[state=open]:bg-surface data-[state=open]:text-primary xl:px-4'
+  'nav-top group inline-flex min-h-11 items-center gap-1 rounded-full px-3 font-semibold text-ink transition-colors hover:bg-surface hover:text-primary data-[state=open]:bg-surface data-[state=open]:text-primary xl:px-4'
 const panelClass =
-  'absolute top-full z-50 mt-2 animate-fade-in rounded-card border border-border bg-white p-6 text-ink shadow-xl'
+  'absolute top-full z-50 mt-2 animate-fade-in rounded-card border border-border bg-white p-6 text-ink shadow-xl [--focus-ring:var(--primary)]'
 const linkClass =
   'block rounded-md px-2 py-1.5 text-small text-ink no-underline hover:bg-surface hover:text-primary'
 
@@ -81,99 +58,63 @@ function LinkList({ links }: { links: NavLink[] }) {
   )
 }
 
-/** Desktop navigation (lg and up). Radix handles hover, keyboard, Escape and focus. */
+/**
+ * Desktop navigation (lg and up). Radix handles hover (the panel stays open while the pointer
+ * moves into it), click and tap, Escape, outside clicks and keyboard focus.
+ */
 export function MainNav({
-  categories,
+  services,
   areaLinks,
   pageLinks,
-  featured,
 }: {
-  categories: MenuCategory[]
+  /** The Services menu's two columns (lib/services-menu.ts); the last link is All Services. */
+  services: NavLink[][]
   areaLinks: NavLink[]
   /** Plain top-level links (About, FAQs, Contact…), set under Navigation in the admin. */
   pageLinks: NavLink[]
-  featured: FeaturedCard | null
 }) {
-  const columns = Math.min(categories.length, 3)
+  const last = services.at(-1)?.at(-1)
   return (
-    // Radix wraps the list in a `position: relative` div, which would make the Services panel
-    // only as wide as the menu triggers. Making it static lets the panel span the header row
-    // (header.tsx), while the other panels stay under their own `relative` items.
-    <NavigationMenu.Root aria-label="Main" className="hidden lg:block [&>div]:static!">
+    <NavigationMenu.Root aria-label="Main" className="hidden lg:block">
       <NavigationMenu.List className="flex items-center gap-0.5">
-        <NavigationMenu.Item>
+        <NavigationMenu.Item className="relative">
           <Trigger>Services</Trigger>
-          {/* The header is sticky, so a panel taller than the screen scrolls inside itself. */}
-          <NavigationMenu.Content
-            className={cn(panelClass, 'inset-x-6 max-h-[calc(100dvh-12rem)] overflow-y-auto')}
-          >
-            <div
-              className="grid gap-x-6 gap-y-5"
-              style={{
-                gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))${featured ? ' 17rem' : ''}`,
-              }}
-            >
-              {categories.map((category) => (
-                <div key={category.id}>
-                  <MenuLink
-                    href={categoryHref(category)}
-                    className="mb-1 flex items-center gap-2 font-heading text-base font-bold text-primary"
-                  >
-                    {category.icon}
-                    {category.menuLabel || category.title}
-                  </MenuLink>
-                  <ul className="grid gap-0.5">
-                    {category.services.slice(0, MAX_PER_CATEGORY).map((service) => (
-                      <li key={service.id}>
-                        <MenuLink href={routes.service(service.slug)}>{service.title}</MenuLink>
+          {/* Dark two-column panel, opening right under the Services button. */}
+          <NavigationMenu.Content className="absolute top-full left-0 z-50 mt-3 w-[min(38rem,calc(100vw-3rem))] animate-menu-in rounded-xl border border-white/10 bg-night p-3 text-white shadow-2xl [--focus-ring:var(--cta)]">
+            <div className="grid grid-cols-2 gap-x-2">
+              {services.map((column, index) => (
+                <ul key={index} className="grid content-start gap-0.5">
+                  {column.map((link) => {
+                    const all = link === last
+                    return (
+                      <li key={link.label}>
+                        <NavigationMenu.Link asChild>
+                          <Link
+                            href={link.href}
+                            className={cn(
+                              'group/item flex min-h-12 items-center justify-between gap-3 rounded-lg px-4 py-3 font-semibold no-underline transition-colors duration-200 hover:bg-white/[0.07] focus-visible:bg-white/[0.07]',
+                              all
+                                ? 'mt-1 border-t border-white/10 text-cta'
+                                : 'text-white/90 hover:text-white',
+                            )}
+                          >
+                            {link.label}
+                            <ArrowRight
+                              aria-hidden
+                              className={cn(
+                                'size-4 shrink-0 text-cta transition duration-200',
+                                !all &&
+                                  '-translate-x-1 opacity-0 group-hover/item:translate-x-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:opacity-100',
+                              )}
+                            />
+                          </Link>
+                        </NavigationMenu.Link>
                       </li>
-                    ))}
-                    {category.services.length > MAX_PER_CATEGORY && (
-                      <li>
-                        <MenuLink
-                          href={routes.category(category.slug)}
-                          className="font-semibold text-secondary-strong"
-                        >
-                          All {(category.menuLabel || category.title).toLowerCase()} →
-                        </MenuLink>
-                      </li>
-                    )}
-                  </ul>
-                </div>
+                    )
+                  })}
+                </ul>
               ))}
-              {featured && (
-                <div
-                  className="row-span-2 row-start-1 flex flex-col rounded-card bg-surface p-5 shadow-inset"
-                  style={{ gridColumnStart: columns + 1 }}
-                >
-                  {featured.eyebrow && (
-                    <p className="text-small font-semibold tracking-wide text-secondary-strong uppercase">
-                      {featured.eyebrow}
-                    </p>
-                  )}
-                  <p className="mt-1 font-heading text-lg font-bold text-primary">
-                    {featured.title}
-                  </p>
-                  <p className="mt-2 text-small text-muted">{featured.text}</p>
-                  <NavigationMenu.Link asChild>
-                    <Link
-                      href={featured.href}
-                      className="mt-auto inline-flex min-h-11 items-center gap-2 pt-4 font-semibold"
-                    >
-                      {featured.cta} <ArrowRight aria-hidden className="size-4" />
-                    </Link>
-                  </NavigationMenu.Link>
-                </div>
-              )}
             </div>
-            <NavigationMenu.Link asChild>
-              <Link
-                href={routes.services}
-                className="mt-5 inline-flex min-h-11 items-center gap-2 border-t border-border pt-4 font-semibold"
-              >
-                See all services <ArrowRight aria-hidden className="size-4" />
-              </Link>
-            </NavigationMenu.Link>
           </NavigationMenu.Content>
         </NavigationMenu.Item>
 

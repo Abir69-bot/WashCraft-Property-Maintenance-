@@ -31,6 +31,9 @@ export const mediaFiles = {
   'window-cleaning-pole': 'Technician cleaning high windows on a tall house with a water-fed pole',
   'skylights-roof': 'Two clean skylights on a dark shingle roof',
   'roof-moss-leaves': 'Roof section covered in moss and fallen leaves under a tree',
+  // Supplied by the owner 2026-11-01 for the Snow Removal page; shown whole, never cropped.
+  'snow-removal-before-after':
+    'Side-by-side view of a snow-covered driveway before snow removal and the same driveway cleared after',
 } as const satisfies Record<string, string>
 
 export type MediaKey = keyof typeof mediaFiles
@@ -116,6 +119,7 @@ export const serviceHeroImages: Record<string, MediaKey> = {
   'exterior-surface-cleaning': 'railing-after',
   'glass-awning-cleaning': 'skylights-roof',
   'commercial-gutter-cleaning': 'gutter-2-after',
+  'snow-removal': 'snow-removal-before-after',
 }
 
 export const solutionHeroImages: Record<string, MediaKey> = {

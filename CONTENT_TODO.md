@@ -104,16 +104,16 @@ Set these in the admin under **Site settings** (or `src/config/site.ts` before t
 `pnpm check-config` lists whatever is still missing. Country (Canada), currency (CAD) and language
 (en-CA) are set.
 
-| Field        | Status                                                                                                                                                             |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `email`      | **Required.** Not set. Leads go here unless separate alert emails are set. The suggested `info@washcraft.ca` is unconfirmed: only enter it once the mailbox works. |
-| `tagline`    | Demo value "Exterior care, year-round" (from your logo). Confirm or replace it: the business now covers interior and seasonal work too.                            |
-| `phone`      | Optional. Not set, so no call or text links appear. Add it once the number is confirmed.                                                                           |
-| `hours`      | Optional. Not set, so no hours are shown.                                                                                                                          |
-| `address`    | Not shown (service-area business). Never published without your permission.                                                                                        |
-| `region`     | "the Toronto area" (your wording in the brief). Used in page titles.                                                                                               |
-| `freeQuotes` | Confirmed 2026-10-30: quotes are free ("Request a Free Quote").                                                                                                    |
-| Domain       | `washcraft.ca` is proposed. Confirm it's registered, then follow docs/HANDOVER.md.                                                                                 |
+| Field        | Status                                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `email`      | Confirmed 2026-10-31: `abirbotnsu69@gmail.com`. Shown on the site, and new leads go here unless separate alert emails are set. |
+| `tagline`    | Confirmed 2026-10-31: "Professional Property Care, Every Season".                                                              |
+| `phone`      | Optional. Not set, so no call or text links appear. Add it once the number is confirmed.                                       |
+| `hours`      | Optional. Not set, so no hours are shown.                                                                                      |
+| `address`    | Not shown (service-area business). Never published without your permission.                                                    |
+| `region`     | "the Toronto area" (your wording in the brief). Used in page titles.                                                           |
+| `freeQuotes` | Confirmed 2026-10-30: quotes are free ("Request a Free Quote").                                                                |
+| Domain       | `washcraft.ca` is proposed. Confirm it's registered, then follow docs/HANDOVER.md.                                             |
 
 The service areas are confirmed (2026-10-27): Scarborough, North York, Etobicoke, Markham,
 Vaughan, Richmond Hill and Mississauga.
@@ -147,10 +147,22 @@ Each photo slot on the site shows a placeholder describing exactly what to shoot
 work only (no stock photos of people). Upload photos in the admin under **Media**, then attach
 them to the matching page. This list is regenerated with `pnpm content-todo`.
 
-**Most urgent: the holiday hero photo.** Holiday season runs Oct 1 – Jan 31 and winter Nov 1 –
-Mar 31, and your current photos are all summer work, so the home page hero shows a placeholder
-until a holiday photo (then a winter one) is uploaded. Attach it in the admin: **Home page → Hero tab →
-Hero Variants → the Holiday row → Image**. You can also change the season dates in **Seasonal settings**.
+**Service and home page photos (2026-11-01).** Every service card shows a photo. Pressure
+washing, soft washing, patio, gutter and roof cleaning use your own job photos; the others, and
+the home page hero, use licensed stock photos (credited under each card grid). Replace them with
+your own work when you can:
+
+- [ ] Hero photos, landscape and at least 1600px wide: **Home page → Hero tab → Hero Variants →
+      the season's row → Image** (winter and holiday first).
+- [ ] Your own photos for Interior House Cleaning, Commercial Cleaning, Restaurant Cleaning,
+      Post-Construction Cleaning, Window Cleaning, Driveway Sealing, Snow Removal and Christmas
+      Light Installation: **Services → the service → Hero image**. Each card switches to your
+      photo once it's uploaded. Snow removal already has your before/after image, which stays
+      uncropped on its page, so its card needs a single photo.
+- [ ] Confirm the snow removal before/after image shows a real WashCraft job. If it's an
+      illustration, say so in its caption or replace it (no made-up results, rule 2).
+
+You can also change the season dates in **Seasonal settings**.
 
 <!-- photos:start -->
 

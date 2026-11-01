@@ -73,6 +73,11 @@ export default {
   ...config,
   headers: async () => [
     { source: '/:path*', headers: securityHeaders },
+    // Self-hosted font files carry their version in the name, so they never change in place.
+    {
+      source: '/fonts/:file*',
+      headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+    },
     ...(payloadHeaders ? await payloadHeaders() : []).map((rule) =>
       rule.source === '/:path*' ? { ...rule, source: '/admin/:path*' } : rule,
     ),

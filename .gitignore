@@ -10,6 +10,7 @@ next-env.d.ts
 # env files (only the example is committed)
 .env
 .env*.local
+.env.vercel*
 
 # local uploads (production uses Cloudflare R2)
 /media

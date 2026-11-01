@@ -31,9 +31,9 @@ describe('isPlaceholder', () => {
 })
 
 describe('checkSiteConfig', () => {
-  it('blocks the shipped config until the owner sets an email and confirms the demo values', () => {
-    expect(fields(site)).toEqual(['email', ...site.demo])
-    expect(site.demo.length).toBeGreaterThan(0)
+  it('passes the shipped config: email and tagline confirmed, no demo values left', () => {
+    expect(fields(site)).toEqual([])
+    expect(site.demo).toEqual([])
   })
 
   it('flags unset placeholders', () => {

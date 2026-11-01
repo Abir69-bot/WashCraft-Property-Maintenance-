@@ -27,6 +27,10 @@
   --yard: #4c9a50;
   --yard-strong: #3e7e41;
   --todo: #ffe066;
+  /* Home page night palette: the primary teal taken down to near-black. */
+  --night: #061b23;
+  --night-raised: #0b2631;
+  --night-muted: #a7bdc7;
   --focus-ring: var(--primary);
 
   /* Depth: layered, navy-tinted shadows for raised surfaces (not colours, so not in the
@@ -60,6 +64,7 @@
   --animate-slide-in-right: slide-in-right 220ms ease-out;
   --animate-slide-in-up: slide-in-up 220ms ease-out;
   --animate-marquee: marquee 45s linear infinite;
+  --animate-menu-in: menu-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
 
   @keyframes fade-in {
     from {
@@ -74,6 +79,12 @@
   @keyframes marquee {
     to {
       transform: translateX(-100%);
+    }
+  }
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
     }
   }
   @keyframes slide-in-up {
@@ -106,6 +117,9 @@
   --color-yard: var(--yard);
   --color-yard-strong: var(--yard-strong);
   --color-todo: var(--todo);
+  --color-night: var(--night);
+  --color-night-raised: var(--night-raised);
+  --color-night-muted: var(--night-muted);
 
   --font-heading: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -235,32 +249,6 @@
     linear-gradient(180deg, var(--surface), #fff);
 }
 
-/* The hero's stacked service cards: tilted slightly in 3D on wide screens, flat on phones. */
-@utility hero-stack {
-  display: grid;
-  gap: 0.875rem;
-  @variant lg {
-    perspective: 1600px;
-    padding-block: 1rem;
-    padding-right: 3rem;
-  }
-}
-@utility hero-stack-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.125rem 1.25rem;
-  border-radius: 1rem;
-  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-  background: linear-gradient(160deg, #fff 55%, var(--surface));
-  box-shadow: var(--shadow-raised);
-  @variant lg {
-    transform: rotateY(-9deg) rotateX(3deg) translateX(calc(var(--i, 0) * 1rem));
-    transform-origin: left center;
-    box-shadow: var(--shadow-lifted);
-  }
-}
-
 /* Closing call-to-action panel: deep brand gradient with a soft highlight. */
 @utility cta-panel {
   position: relative;
@@ -288,6 +276,125 @@
   }
   & :where(a:not([class])) {
     color: #fff;
+  }
+}
+
+/* ---- Home page: night theme (components/sections/home-night.tsx) ---- */
+
+/* The home page body: white headings and plain links, gold focus ring. */
+@utility home-night {
+  background-color: var(--night);
+  color: #fff;
+  --focus-ring: var(--cta);
+  & :where(h1, h2, h3, h4) {
+    color: #fff;
+  }
+  & :where(a:not([class])) {
+    color: #fff;
+  }
+}
+
+/* Wide, heavy display type (Archivo, loaded by the home page only). */
+/*
+ * The home page's display face: Archivo ExtraBold at 125% width, the one style it uses (14 KB,
+ * latin, SIL Open Font License: public/fonts/archivo-OFL.txt). Self-hosted rather than through
+ * next/font, whose variable file (88 KB) was preloaded on every page; the home page preloads
+ * this file itself, and browsers fetch it only where display headings appear.
+ */
+@font-face {
+  font-family: 'Archivo Display';
+  font-style: normal;
+  font-weight: 800;
+  font-stretch: 125%;
+  font-display: swap;
+  src: url('/fonts/archivo-expanded-extrabold-v25.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@utility display-type {
+  font-family: 'Archivo Display', var(--font-heading);
+  font-weight: 800;
+  font-stretch: 125%;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+}
+@utility display-hero {
+  font-size: clamp(2.375rem, 1.4rem + 3.9vw, 4.25rem); /* 38 → 68 */
+}
+@utility display-h2 {
+  font-size: clamp(2rem, 1.35rem + 2.3vw, 2.875rem); /* 32 → 46 */
+}
+@utility display-h3 {
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); /* 20 → 24 */
+}
+
+/* Card on the night background: hairline border that brightens and lifts on hover. */
+@utility night-card {
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.09);
+  background-color: var(--night-raised);
+  transition:
+    transform 300ms var(--ease-out-soft),
+    border-color 300ms var(--ease-out-soft);
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover,
+    &:focus-within {
+      transform: translateY(-4px);
+      border-color: rgb(255 255 255 / 0.22);
+    }
+  }
+}
+
+/* Fades and rises into place as it scrolls into view. Browsers without scroll-driven
+   animations (and anyone who prefers reduced motion) simply see the content. */
+@utility reveal {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(2.5rem);
+  }
+}
+
+/* Outlined step numbers ("01"). */
+@utility outline-number {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--cta);
+}
+
+/* Thin gold bar along the top of the header showing how far down the page you are. */
+@utility scroll-progress {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 3px;
+  background-color: var(--cta);
+  transform-origin: left;
+  transform: scaleX(0);
+  @supports (animation-timeline: scroll()) {
+    animation: grow-x linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes grow-x {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Dark map tiles to sit on the night background; markers keep their colours. */
+@utility map-night {
+  & :where(.leaflet-tile-pane) {
+    filter: invert(1) hue-rotate(180deg) brightness(0.85) saturate(0.6);
   }
 }
 
@@ -378,6 +485,22 @@
     background-color: var(--secondary);
     color: var(--ink);
   }
+}
+
+/* The header on the home page: dark glass over the night theme. Only the bar itself turns dark;
+   the menu panels stay white. Unlayered, so it wins over the header's utility classes. */
+header[data-tone='night'] {
+  background-color: rgb(6 27 35 / 0.88);
+  border-color: rgb(255 255 255 / 0.08);
+  --focus-ring: var(--cta);
+}
+header[data-tone='night'] .nav-top {
+  color: #fff;
+}
+header[data-tone='night'] .nav-top:hover,
+header[data-tone='night'] .nav-top[data-state='open'] {
+  background-color: rgb(255 255 255 / 0.1);
+  color: #fff;
 }
 
 /* A dismissed announcement stays hidden for 7 days (see components/layout/announcement.tsx). */

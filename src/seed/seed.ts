@@ -155,17 +155,28 @@ export async function seed(
     demo: site.demo,
   })
 
-  /** Uploads a file from src/seed/media once, matched by file name. Returns its id. */
+  /**
+   * Uploads a file from src/seed/media once, matched by file name. Returns its id. Payload never
+   * overwrites a stored file: when the name is taken it saves `name-1.jpg`, so those count too.
+   */
   async function seedMedia(filename: string, alt: string): Promise<number> {
-    const existing = await payload.find({
+    const { name, ext } = path.parse(filename)
+    const isStoredCopy = (stored: string) =>
+      stored === filename ||
+      (stored.startsWith(`${name}-`) &&
+        stored.endsWith(ext) &&
+        /^\d+$/.test(stored.slice(name.length + 1, -ext.length)))
+    const candidates = await payload.find({
       collection: 'media',
-      where: { filename: { equals: filename } },
-      limit: 1,
+      where: { filename: { like: name } },
+      limit: 0,
       depth: 0,
+      sort: 'id',
     })
-    if (existing.docs[0]) {
+    const existing = candidates.docs.find((doc) => doc.filename && isStoredCopy(doc.filename))
+    if (existing) {
       tally('media', 'skipped')
-      return existing.docs[0].id
+      return existing.id
     }
     const created = await payload.create({
       collection: 'media',

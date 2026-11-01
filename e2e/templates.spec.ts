@@ -126,20 +126,29 @@ test.describe('templates', () => {
     await expect(panels.nth(0)).toBeHidden()
   })
 
-  test('services can be filtered by category and searched', async ({ page }) => {
+  test('the services page shows every service, with a photo, under its category', async ({
+    page,
+  }) => {
     await page.goto('/services')
-    const status = page.getByRole('status').filter({ hasText: /services/ })
-    await expect(status).toHaveText(`${confirmed.length} services`)
-    await page.getByRole('button', { name: 'Exterior Cleaning', exact: true }).click()
-    const exterior = confirmed.filter((service) => service.category === 'exterior-cleaning')
-    await expect(status).toHaveText(`Showing ${exterior.length} of ${confirmed.length} services`)
     const main = page.getByRole('main')
-    await expect(main.getByRole('heading', { name: 'Residential Cleaning', level: 2 })).toBeHidden()
+    await expect(
+      main.getByRole('heading', { name: 'Residential Cleaning', level: 2 }),
+    ).toBeVisible()
     await expect(main.getByRole('heading', { name: 'Exterior Cleaning', level: 2 })).toBeVisible()
-    await page.getByRole('button', { name: 'All', exact: true }).click()
-    await page.getByLabel('Search services').fill('gutter')
-    await expect(main.getByRole('link', { name: 'Gutter Cleaning', exact: true })).toBeVisible()
-    await expect(main.getByRole('link', { name: 'Snow Removal', exact: true })).toBeHidden()
+    for (const service of confirmed) {
+      const card = main.getByRole('article').filter({
+        has: page.getByRole('heading', { name: service.title, exact: true }),
+      })
+      await expect(card, service.slug).toHaveCount(1)
+      const photo = card.getByRole('img')
+      await expect(photo, service.slug).toHaveAttribute('alt', /\S/)
+      await photo.scrollIntoViewIfNeeded()
+      await expect
+        .poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth))
+        .toBeGreaterThan(0)
+    }
+    await expect(page.getByRole('group', { name: 'Filter by category' })).toHaveCount(0)
+    await expect(page.getByLabel('Search services')).toHaveCount(0)
   })
 
   test('service-in-city pages stay off until the feature flag is on', async ({ page }) => {

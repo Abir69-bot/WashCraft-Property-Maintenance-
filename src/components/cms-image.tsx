@@ -12,6 +12,7 @@ export function CmsImage({
   ratio = '4/3',
   sizes,
   priority = false,
+  natural = false,
   className,
 }: {
   media: number | Media | null | undefined
@@ -20,12 +21,20 @@ export function CmsImage({
   /** Rendered width hint for next/image, e.g. "(min-width: 1024px) 50vw, 100vw". */
   sizes: string
   priority?: boolean
+  /** Show a landscape photo at its own proportions, uncropped (e.g. a before/after pair). */
+  natural?: boolean
   className?: string
 }) {
   if (media && typeof media === 'object' && media.url) {
+    const uncropped = natural && media.width && media.height && media.width > media.height
     return (
       <div
-        className={cn('relative overflow-hidden rounded-card bg-surface', RATIOS[ratio], className)}
+        className={cn(
+          'relative overflow-hidden rounded-card bg-surface',
+          !uncropped && RATIOS[ratio],
+          className,
+        )}
+        style={uncropped ? { aspectRatio: `${media.width} / ${media.height}` } : undefined}
       >
         <Image
           src={mediaSrc(media)}
