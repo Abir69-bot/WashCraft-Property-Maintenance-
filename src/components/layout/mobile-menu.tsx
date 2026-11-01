@@ -26,7 +26,7 @@ export function MobileMenu(props: MobileMenuProps) {
         ref={button}
         variant="ghost"
         size="icon"
-        className="lg:hidden"
+        className="nav-top lg:hidden"
         aria-label="Open menu"
         aria-haspopup="dialog"
         aria-expanded={open}

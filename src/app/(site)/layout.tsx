@@ -14,20 +14,20 @@ import { CallBand } from '@/components/layout/call-band'
 import { CookieConsent } from '@/components/layout/cookie-consent'
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
-import type { FeaturedCard } from '@/components/layout/main-nav'
 import { MobileActionBar } from '@/components/layout/mobile-action-bar'
 import { PreviewBanner } from '@/components/layout/preview-banner'
+import { HideOn } from '@/components/layout/route-visibility'
 import { UtilityBar } from '@/components/layout/utility-bar'
 import { SlideInQuote } from '@/components/quote/slide-in-quote'
 import { consentText } from '@/config/consent'
 import { isPlaceholder } from '@/config/site'
-import { getLayoutData, type LayoutData } from '@/lib/data/layout'
+import { getLayoutData } from '@/lib/data/layout'
 import { CLARITY_ID, GTM_ID } from '@/lib/public-env'
 import { generalCta } from '@/lib/quote/flow'
+import { routes } from '@/lib/routes'
 import { seasonNow } from '@/lib/data/season'
 import { env, isProductionSite } from '@/lib/env'
 import { localBusiness, webSite } from '@/lib/seo/json-ld'
-import { fillTokens } from '@/lib/text'
 import { serviceGroups } from '@/lib/view'
 
 import './globals.css'
@@ -63,29 +63,10 @@ export const viewport: Viewport = {
   themeColor: '#0E4D64',
 }
 
-function featuredCard(
-  layout: LayoutData,
-  variant: ReturnType<typeof seasonNow>['variant'],
-): FeaturedCard | null {
-  const manual = layout.navigation.featuredCard
-  const region = layout.site.region
-  if (manual && !manual.automatic && manual.title && manual.href) {
-    return { title: manual.title, text: manual.text ?? '', href: manual.href, cta: 'Learn more' }
-  }
-  if (!variant) return null
-  return {
-    eyebrow: variant.eyebrow,
-    title: fillTokens(variant.headline, { region }),
-    text: fillTokens(variant.subline, { region }),
-    href: variant.cta.href,
-    cta: variant.cta.label,
-  }
-}
-
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const [layout, draft] = await Promise.all([getLayoutData(), draftMode()])
   const { site } = layout
-  const { season, active, variant } = seasonNow(layout)
+  const { season, active } = seasonNow(layout)
   const announcement = pickAnnouncement(layout.seasonal, season, active)
   const hasAnalytics = Boolean(GTM_ID || CLARITY_ID)
 
@@ -120,8 +101,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         />
         {draft.isEnabled && <PreviewBanner />}
         <AnnouncementBar announcement={announcement} />
-        <UtilityBar site={site} />
-        <Header data={layout} featured={featuredCard(layout, variant)} />
+        {/* The home page's dark header and hero carry the region and contact details. */}
+        <HideOn prefixes={[routes.home]}>
+          <UtilityBar site={site} />
+        </HideOn>
+        <Header data={layout} />
         <main id="main" tabIndex={-1} className="focus:outline-none">
           {children}
         </main>

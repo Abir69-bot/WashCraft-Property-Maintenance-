@@ -1,7 +1,6 @@
 import {
   ArrowRight,
   BadgeCheck,
-  Building2,
   CalendarRange,
   Check,
   FileText,
@@ -12,20 +11,15 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { TONE_BORDER } from '@/components/category-tone'
 import { CmsImage } from '@/components/cms-image'
 import { CallLink, TextLink } from '@/components/layout/contact-links'
 import { QuickQuoteForm, type ServiceGroup } from '@/components/quote/quick-quote-form'
 import { SampleBadge } from '@/components/sample-badge'
-import { ServiceCard } from '@/components/service-card'
-import { ServiceIcon } from '@/components/service-icon'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { SEASON_LABELS, type Season } from '@/config/catalog'
 import type { SiteConfig } from '@/config/site'
-import type { NavCategory, NavService } from '@/lib/data/layout'
 import { planPrice } from '@/lib/pricing/plans'
-import { shownGuarantee, shownRating, type ShownGuarantee } from '@/lib/proof'
+import { shownGuarantee, shownRating } from '@/lib/proof'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { fillTokens, smsHref, telHref } from '@/lib/text'
@@ -34,9 +28,7 @@ import { asMedia, mediaSrc } from '@/lib/view'
 import type { ClientLogo, Homepage, Plan, Post, TeamMember } from '@/payload-types'
 
 import { PostCard } from './article'
-import { credentials } from './commercial-blocks'
 import { Section, type SectionTone } from './section'
-import { ServiceExplorer, type ExplorerService } from './service-explorer'
 
 export function QuickQuoteStrip({
   groups,
@@ -55,27 +47,6 @@ export function QuickQuoteStrip({
           Four quick details and we’ll get back to you with a price.
         </p>
         <QuickQuoteForm groups={groups} consentLabel={consentLabel} layout="wide" />
-      </div>
-    </section>
-  )
-}
-
-/** Short introduction under the hero (Home page → Hero → Introduction). */
-export function Intro({ intro, region }: { intro: Homepage['introduction']; region: string }) {
-  if (!intro?.title || !intro.body) return null
-  return (
-    <section aria-labelledby="intro-heading" className="bg-white">
-      <div className="container grid gap-6 py-14 lg:grid-cols-[1fr_1.4fr] lg:gap-16 lg:py-20">
-        <h2 id="intro-heading" className="text-balance">
-          {fillTokens(intro.title, { region })}
-        </h2>
-        <div className="grid content-start gap-4 text-lg text-muted">
-          {fillTokens(intro.body, { region })
-            .split(/\n\s*\n/)
-            .map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-        </div>
       </div>
     </section>
   )
@@ -157,97 +128,6 @@ export function TrustStrip({ site }: { site: SiteConfig }) {
   )
 }
 
-export function ServiceCategories({
-  categories,
-  explorer,
-  region,
-}: {
-  categories: NavCategory[]
-  explorer: ExplorerService[]
-  region: string
-}) {
-  if (categories.length === 0) return null
-  return (
-    <Section
-      id="services"
-      eyebrow="What we do"
-      title="Services for every season"
-      intro={`Interior, commercial and post-construction cleaning, exterior cleaning, snow removal and holiday lighting for homes and businesses in ${region}.`}
-    >
-      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category) => (
-          <li
-            key={category.id}
-            className={`flex card-lift flex-col card-raised border-t-4 p-6 ${TONE_BORDER[category.tone] ?? ''}`}
-          >
-            <div className="flex items-center gap-3">
-              <span className="icon-chip">
-                <ServiceIcon name={category.icon} className="size-6" />
-              </span>
-              <h3 className="text-h3">{category.title}</h3>
-            </div>
-            <p className="mt-3 text-muted">{fillTokens(category.summary, { region })}</p>
-            <ul className="mt-4 grid gap-1 border-t border-border pt-4">
-              {category.services.map((service) => (
-                <li key={service.id}>
-                  <Link
-                    href={routes.service(service.slug)}
-                    className="flex min-h-10 items-center justify-between gap-2 rounded-md font-semibold text-primary no-underline hover:underline"
-                  >
-                    {service.title}
-                    <ArrowRight aria-hidden className="size-4 shrink-0 text-secondary-strong" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-      <ServiceExplorer services={explorer} />
-      <Link
-        href={routes.services}
-        className="mt-8 inline-flex min-h-11 items-center gap-2 font-semibold"
-      >
-        Explore all services <ArrowRight aria-hidden className="size-4" />
-      </Link>
-    </Section>
-  )
-}
-
-export function SeasonalSpotlight({
-  season,
-  services,
-}: {
-  season: Season
-  services: NavService[]
-}) {
-  if (services.length === 0) return null
-  return (
-    <Section
-      id="in-season"
-      tone="surface"
-      eyebrow={`${SEASON_LABELS[season]} spotlight`}
-      title="In season right now"
-      intro="Book these while the timing is right. Popular dates fill up fast."
-    >
-      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {services.slice(0, 6).map((service) => (
-          <li key={service.id}>
-            <ServiceCard
-              slug={service.slug}
-              title={service.title}
-              summary={service.summary}
-              icon={service.icon}
-              outcomeLabel={service.outcomeLabel}
-              className="h-full"
-            />
-          </li>
-        ))}
-      </ul>
-    </Section>
-  )
-}
-
 /** The quote process, as numbered steps (Home page → How it works in the admin). */
 export function HowItWorks({
   steps,
@@ -289,23 +169,6 @@ export function HowItWorks({
         ))}
       </ol>
     </Section>
-  )
-}
-
-export function GuaranteeBand({ guarantee }: { guarantee: ShownGuarantee }) {
-  if (!guarantee) return null
-  return (
-    <section aria-labelledby="guarantee-heading" className="bg-success-strong text-white">
-      <div className="container flex flex-col items-start gap-3 py-10 md:flex-row md:items-center md:gap-6">
-        <BadgeCheck aria-hidden className="size-12 shrink-0" />
-        <div>
-          <h2 id="guarantee-heading" className="flex items-center gap-3 text-h3 text-white">
-            Our guarantee <SampleBadge show={guarantee.sample} />
-          </h2>
-          <p className="mt-1 text-white">{guarantee.text}</p>
-        </div>
-      </div>
-    </section>
   )
 }
 
@@ -448,61 +311,6 @@ export function ComparisonTable({
             ))}
           </tbody>
         </table>
-      </div>
-    </Section>
-  )
-}
-
-/** Commercial and restaurant customers. Points stay factual: no pricing or paperwork promises. */
-export function CommercialBlock({
-  site,
-  cta,
-  servicesHref,
-}: {
-  site: SiteConfig
-  cta: QuoteCta
-  /** The commercial category's page (or its only service). */
-  servicesHref: string
-}) {
-  const proof = credentials(site)
-  return (
-    <Section
-      id="commercial"
-      tone="dark"
-      eyebrow="Commercial & restaurant"
-      title="Cleaning for businesses, restaurants and rental properties"
-    >
-      <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
-        <ul className="grid gap-3">
-          {[
-            'Commercial, restaurant and post-construction cleaning through one company',
-            'Exterior and seasonal work for the same property when you need it',
-            'A written estimate that sets out the scope, exclusions and conditions',
-            'Visit times agreed with you before any work is booked',
-          ].map((point) => (
-            <li key={point} className="flex items-start gap-3">
-              <Building2 aria-hidden className="mt-1 size-5 shrink-0 text-secondary-on-dark" />
-              {point}
-            </li>
-          ))}
-        </ul>
-        <div className="grid content-start gap-4">
-          {proof.length > 0 && (
-            <ul className="grid gap-1 text-small text-white/90">
-              {proof.map((credential) => (
-                <li key={credential}>✓ {credential}</li>
-              ))}
-            </ul>
-          )}
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <Link href={cta.href}>{cta.label}</Link>
-            </Button>
-            <Button asChild size="lg" variant="inverse">
-              <Link href={servicesHref}>Commercial services</Link>
-            </Button>
-          </div>
-        </div>
       </div>
     </Section>
   )

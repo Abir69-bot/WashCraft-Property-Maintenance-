@@ -6,7 +6,6 @@ import { credentials } from '@/components/sections/commercial-blocks'
 import { FinalCta, Founder, TrustStrip } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { Section } from '@/components/sections/section'
-import { TeamGrid } from '@/components/sections/team'
 import { getAboutPage, getTeam } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
 import { generalCta } from '@/lib/quote/flow'
@@ -31,8 +30,9 @@ export async function generateMetadata(): Promise<Metadata> {
 const paragraphs = (text: string) => text.split(/\n\s*\n/).filter((part) => part.trim())
 
 /**
- * About (brief §9.7): story, mission and values, founder, team, credentials with downloadable
- * certificates, and community involvement. Sections without real content are left out.
+ * About (brief §9.7): story, mission and values, founder, credentials with downloadable
+ * certificates, and community involvement. Sections without real content are left out. The team
+ * grid was removed at the owner's request (2026-11-01); bio pages stay for the founder's link.
  */
 export default async function AboutPage() {
   const [{ site, quote }, about, team] = await Promise.all([
@@ -101,11 +101,6 @@ export default async function AboutPage() {
       )}
 
       <Founder founder={founder} region={region} />
-      <TeamGrid
-        members={team.filter((member) => member.id !== founder?.id)}
-        region={region}
-        tone="surface"
-      />
 
       {(proof.length > 0 || certificates.length > 0) && (
         <Section id="credentials" eyebrow="Paperwork" title="Our credentials">

@@ -55,11 +55,11 @@ export type DemoField = Exclude<keyof SiteConfig, 'demo'>
 export const site: SiteConfig = {
   name: 'WashCraft Property Maintenance',
   shortName: 'WashCraft',
-  tagline: 'Exterior care, year-round',
-  // Not confirmed yet: no phone, email or hours are shown until the owner sets them. The
-  // proposed info@washcraft.ca is unconfirmed, so it isn't used (see CONTENT_TODO.md).
+  // Tagline and email confirmed by the owner 2026-10-31 (see DECISIONS.md).
+  tagline: 'Professional Property Care, Every Season',
+  // Not confirmed yet: no phone number or hours are shown until the owner sets them.
   phone: '[PHONE]',
-  email: '[EMAIL]',
+  email: 'abirbotnsu69@gmail.com',
   // Never publish a home address without the owner's explicit permission.
   address: null,
   hours: '[HOURS]',
@@ -97,8 +97,7 @@ export const site: SiteConfig = {
     nextdoor: null,
   },
   stats: { jobsCompleted: null, happyClients: null, rating: null, reviewCount: null },
-  // The tagline comes from the owner's logo but still needs confirming as search-result copy.
-  demo: ['tagline'],
+  demo: [],
 }
 
 /**

@@ -2,27 +2,20 @@ import { Phone } from 'lucide-react'
 import Link from 'next/link'
 
 import { Logo } from '@/components/brand/logo'
-import { ServiceIcon } from '@/components/service-icon'
 import { Button } from '@/components/ui/button'
 import type { LayoutData } from '@/lib/data/layout'
 import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
+import { servicesMenu } from '@/lib/services-menu'
 import { smsHref, telHref } from '@/lib/text'
 
 import { HeaderShell } from './header-shell'
-import { MainNav, type FeaturedCard, type MenuCategory, type NavLink } from './main-nav'
+import { MainNav, type NavLink } from './main-nav'
 import { MobileMenu } from './mobile-menu'
 
-export function Header({ data, featured }: { data: LayoutData; featured: FeaturedCard | null }) {
+export function Header({ data }: { data: LayoutData }) {
   const { site, cities, navigation } = data
-  const categories: MenuCategory[] = data.categories.map((category) => ({
-    id: category.id,
-    title: category.title,
-    slug: category.slug,
-    icon: <ServiceIcon name={category.icon} className="size-5 text-secondary-strong" />,
-    menuLabel: category.menuLabel,
-    services: category.services.map(({ id, title, slug }) => ({ id, title, slug })),
-  }))
+  const services = servicesMenu(data.categories, data.services)
   // An owner-set header button wins; otherwise it follows the quote settings.
   const cta =
     navigation.headerCta?.href && navigation.headerCta.label
@@ -53,18 +46,13 @@ export function Header({ data, featured }: { data: LayoutData; featured: Feature
             className="h-12 w-auto transition-[height] group-data-[scrolled]:h-11 sm:h-14"
           />
         </Link>
-        <MainNav
-          categories={categories}
-          areaLinks={areaLinks}
-          pageLinks={pageLinks}
-          featured={featured}
-        />
+        <MainNav services={services} areaLinks={areaLinks} pageLinks={pageLinks} />
         <div className="ml-auto flex items-center gap-2">
           {callHref && (
             <a
               href={callHref}
               data-track="call_click"
-              className="hidden min-h-11 items-center gap-2 px-3 font-semibold text-primary no-underline xl:inline-flex"
+              className="nav-top hidden min-h-11 items-center gap-2 rounded-full px-3 font-semibold text-primary no-underline xl:inline-flex"
             >
               <Phone aria-hidden className="size-4" />
               {site.phone}
@@ -74,7 +62,7 @@ export function Header({ data, featured }: { data: LayoutData; featured: Feature
             <Link href={cta.href}>{cta.label}</Link>
           </Button>
           <MobileMenu
-            categories={categories}
+            services={services}
             areaLinks={areaLinks}
             pageLinks={pageLinks}
             cta={cta}

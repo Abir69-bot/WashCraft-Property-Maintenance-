@@ -56,6 +56,15 @@ Newest phase at the bottom. Rule of thumb from the brief: more leads and better 
     WorkSafeBC/WSIB.
   - Postal-code fields and checkers say "ZIP code" and match 5-digit ZIP prefixes.
 
+### Confirmed email and tagline (2026-10-31)
+
+- **Email:** `abirbotnsu69@gmail.com`, confirmed by the owner. It's shown in the footer and on the
+  contact and quote pages, and it's where new leads are emailed unless separate alert addresses
+  are set in Site settings → Lead alerts. It isn't a sending address: Resend's `EMAIL_FROM` must
+  be on a domain verified in Resend, which a Gmail address can't be.
+- **Tagline:** "Professional Property Care, Every Season", confirmed by the owner. It replaces the
+  demo "Exterior care, year-round" and is no longer listed in `site.demo`.
+
 ### Demo business details (2026-10-21)
 
 - **Demo stand-ins at the owner's request.** The owner asked for demo values until the real ones are
@@ -799,3 +808,65 @@ services, areas and facts on the live site. The owner answered four questions th
   services returning 404, single-service category links and the absence of placeholder contact
   details.
 - Unit and integration test data moved from Denver to the Toronto area.
+
+## Home page redesign (2026-11-01)
+
+The owner asked for a home page that takes its layout, rhythm and interaction quality from a
+reference site they named, without its copy, logo, colours or photos (rule 1).
+
+- **Night theme, WashCraft colours.** The home page is dark: `--night` and `--night-raised` are
+  the brand teal taken down to near-black, with the existing gold `--cta` as the accent and
+  `--secondary-on-dark` for teal text. All pairs are in `brand-tokens.ts` and contrast-tested.
+  Other pages keep the light design; only the header bar turns dark on `/` (`data-tone`), and
+  the utility bar is hidden there because the hero shows the region.
+- **Home-only components.** `components/sections/home-night.tsx` holds the restyled sections;
+  inner pages still use `home-blocks.tsx`, `proof.tsx` and `areas-and-faq.tsx` unchanged.
+  Section order is still set in the admin. The seed's default order now follows the reference
+  (hero, intro, clients, services, reviews, before/after, stats, areas, commercial, seasons,
+  steps, why us, founder, FAQ, closing panel), and the season tabs section is switched on. An
+  existing database keeps its saved order until it's changed in the admin.
+- **Type.** Headings on the home page use Archivo at 125% width (OFL, loaded by the home page
+  only through `next/font`). Body text stays Inter.
+- **Motion.** Scroll reveals and the header's progress bar are CSS scroll-driven animations:
+  no JavaScript, skipped under reduced motion, and content simply shows in browsers without
+  support. The review rows scroll slowly, pause on hover and focus, and have a Pause button
+  (WCAG 2.2.2); repeated cards are `inert`.
+- **Photos.** Before/after sliders and the photo wall use only the owner's job photos (never
+  samples). Where the owner has no suitable photo (hero, snow, holiday lights, windows,
+  commercial cleaning), licensed photos from Wikimedia Commons fill in (`src/assets/home`,
+  credited under "Stock photo credits" at the bottom of the page). They illustrate a kind of
+  work and are never presented as WashCraft jobs. Licence plates and a store's signs were
+  blurred or cropped out. An admin hero photo replaces the stock one when it's landscape and at
+  least 1600px wide; services without any photo (house cleaning, post-construction) show an
+  icon tile until one is uploaded. This replaces the earlier "no stock photos" stance for the
+  home page only, at the owner's request.
+- **Snow removal photo.** The owner's before/after image is the Snow Removal service photo
+  (`snow-removal-before-after.jpg`, unmodified). Service intros now show a landscape photo at
+  its own proportions (`CmsImage natural`), so both halves stay visible; portrait photos keep
+  the 4:3 crop. The home page's Winter tab shows the same image uncropped; the Snow Removal
+  card uses a separate photo so the pair is never cropped into a 4:3 card (an admin photo wins on
+  a card unless it's a pair wider than 3:2).
+
+### Hero wording (2026-11-01)
+
+- The owner set the hero to **"Your Property, Our Priority"** with the subheading **"Exterior
+  Cleaning, Property Maintenance & Snow Removal Across the GTA"**, for every season. The
+  subheading uses the hero's existing subline field (no schema change) and replaces the long
+  description, which the introduction section right below already covers.
+- "Across the GTA" is the owner's own wording and applies to the hero only. It's broader than
+  the seven confirmed service areas, so titles and other copy keep `{region}` ("the Toronto
+  area"), as decided on 2026-10-30.
+
+### Services menu and removed sections (2026-11-01)
+
+- **Services menu.** The mega menu built from categories became the owner's fixed list of twelve
+  in two columns (`lib/services-menu.ts`), on a dark panel under the Services button; the mobile
+  menu shows the same list. Each item resolves against published content, so it never links to
+  a missing page: "Property Maintenance" goes to the Commercial Property Maintenance service once
+  published (a draft today), otherwise to the services overview; "Seasonal Services" to the home
+  page's season tabs (`/#in-season`); "Interlock / Surface Care" to Patio & Balcony Cleaning.
+  The menu's seasonal card was dropped; its admin field (Navigation → featuredCard) is hidden
+  rather than removed, so no migration was needed.
+- **Removed at the owner's request:** the home page's "Clients we work with" section (it renders
+  nothing even if switched on in the admin; the Commercial page keeps its own logo row) and the
+  About page's team grid. Team bio pages remain for the founder's "Read … story" link.

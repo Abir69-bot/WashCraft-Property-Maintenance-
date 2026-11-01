@@ -66,6 +66,7 @@ export function ServiceIntro({
           <CmsImage
             media={service.heroImage}
             ratio="4/3"
+            natural
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="shadow-raised"
           />

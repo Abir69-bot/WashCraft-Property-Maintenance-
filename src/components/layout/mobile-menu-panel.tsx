@@ -11,14 +11,15 @@ import {
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
-import { categoryHref, routes } from '@/lib/routes'
+import { routes } from '@/lib/routes'
 
-import type { MenuCategory, NavLink } from './main-nav'
+import type { NavLink } from './main-nav'
 
 const linkClass = 'block rounded-md px-2 py-2.5 text-ink no-underline hover:bg-surface'
 
 export type MobileMenuProps = {
-  categories: MenuCategory[]
+  /** The Services menu's columns (lib/services-menu.ts): stacked on phones, side by side from sm. */
+  services: NavLink[][]
   areaLinks: NavLink[]
   pageLinks: NavLink[]
   cta: NavLink
@@ -31,7 +32,7 @@ export type MobileMenuProps = {
  * Full screen below lg; closes itself after navigation and returns focus to the button.
  */
 export function MobileMenuPanel({
-  categories,
+  services,
   areaLinks,
   pageLinks,
   cta,
@@ -76,29 +77,19 @@ export function MobileMenuPanel({
             <AccordionItem value="services">
               <AccordionTrigger>Services</AccordionTrigger>
               <AccordionContent>
-                <Link href={routes.services} className={`${linkClass} font-semibold`}>
-                  All services
-                </Link>
-                {categories.map((category) => (
-                  <div key={category.id} className="mt-3">
-                    <Link
-                      href={categoryHref(category)}
-                      className={`${linkClass} flex items-center gap-2 font-semibold text-primary`}
-                    >
-                      {category.icon}
-                      {category.menuLabel || category.title}
-                    </Link>
-                    <ul className="ml-7 border-l border-border pl-2">
-                      {category.services.map((service) => (
-                        <li key={service.id}>
-                          <Link href={routes.service(service.slug)} className={linkClass}>
-                            {service.title}
+                <div className="grid sm:grid-cols-2 sm:gap-x-4">
+                  {services.map((column, index) => (
+                    <ul key={index}>
+                      {column.map((link) => (
+                        <li key={link.label}>
+                          <Link href={link.href} className={linkClass}>
+                            {link.label}
                           </Link>
                         </li>
                       ))}
                     </ul>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="areas">

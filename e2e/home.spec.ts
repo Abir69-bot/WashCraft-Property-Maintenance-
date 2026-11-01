@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { site } from '../src/config/site'
+
 import { expectAccessible, RADIX_FOCUS_PROXY, skipCookieBanner } from './helpers'
 
 test.describe('home page', () => {
@@ -9,7 +11,10 @@ test.describe('home page', () => {
 
   test('shows the hero, its two buttons and the main sections', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('h1')).toHaveText('Year-Round Property Maintenance, Made Simple')
+    await expect(page.locator('h1')).toHaveText('Your Property, Our Priority')
+    await expect(page.locator('h1 + p')).toHaveText(
+      'Exterior Cleaning, Property Maintenance & Snow Removal Across the GTA',
+    )
     const hero = page.locator('section[aria-labelledby="hero-heading"]')
     await expect(hero.getByRole('link', { name: /^Request a (Free )?Quote$/ })).toHaveAttribute(
       'href',
@@ -48,8 +53,15 @@ test.describe('home page', () => {
       await page.goto(path)
       const text = await page.locator('body').innerText()
       expect(text, path).not.toMatch(/TODO|\[PHONE\]|\[EMAIL\]|\[HOURS\]|555-01\d\d|example\.com/)
-      // Call and email links only appear once real details are set (none are in the seed).
-      await expect(page.locator('a[href^="tel:"], a[href^="mailto:"]'), path).toHaveCount(0)
+      // Call links only appear once a phone number is confirmed (none is in the seed).
+      await expect(page.locator('a[href^="tel:"], a[href^="sms:"]'), path).toHaveCount(0)
+      // Every email link goes to the confirmed business address.
+      const emails = page.locator('a[href^="mailto:"]')
+      await expect(emails.first(), path).toBeAttached()
+      for (const href of await emails.evaluateAll((links) =>
+        links.map((a) => a.getAttribute('href')),
+      ))
+        expect(href, path).toBe(`mailto:${site.email}`)
     }
   })
 
@@ -76,16 +88,14 @@ test.describe('navigation', () => {
     await trigger.focus()
     await page.keyboard.press('Enter')
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-    await expect(
-      page.getByRole('link', { name: 'Pressure Washing', exact: true }).first(),
-    ).toBeVisible()
+    const menu = page.getByRole('navigation', { name: 'Main' })
+    // The owner's list (lib/services-menu.ts): first column, second column, and All Services.
+    for (const name of ['Pressure Washing', 'Snow Removal', 'Roof Cleaning', 'All Services']) {
+      await expect(menu.getByRole('link', { name, exact: true })).toBeVisible()
+    }
     await expectAccessible(page, { exclude: [RADIX_FOCUS_PROXY] })
     await page.keyboard.press('Tab')
-    await expect(
-      page
-        .getByRole('navigation', { name: 'Main' })
-        .getByRole('link', { name: 'Residential cleaning', exact: true }),
-    ).toBeFocused()
+    await expect(menu.getByRole('link', { name: 'Exterior Cleaning', exact: true })).toBeFocused()
     await page.keyboard.press('Escape')
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expect(trigger).toBeFocused()

@@ -1,4 +1,3 @@
-import { MapPin } from 'lucide-react'
 import Link from 'next/link'
 
 import { JsonLd } from '@/components/json-ld'
@@ -8,49 +7,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import type { AreaCity } from '@/lib/data/layout'
 import type { FaqEntry } from '@/lib/faqs'
 import { routes } from '@/lib/routes'
 import { faqPage } from '@/lib/seo/json-ld'
 import { fillTokens } from '@/lib/text'
 
 import { Section, type SectionTone } from './section'
-import { ServiceAreaMap } from './service-area-map'
-import { ZipChecker } from './zip-checker'
-
-/** City grid, map and postal code checker (brief §9.1.17). */
-export function ServiceAreas({ cities, region }: { cities: AreaCity[]; region: string }) {
-  if (cities.length === 0) return null
-  return (
-    <Section
-      id="service-areas"
-      tone="surface"
-      eyebrow="Service areas"
-      title="Where we work"
-      intro={`We currently serve these communities in ${region}. Not on the list? Send a quote request anyway and we’ll tell you honestly whether we can help.`}
-    >
-      <div className="grid gap-8 lg:grid-cols-2">
-        <div className="grid content-start gap-6">
-          <ul className="grid grid-cols-2 gap-3">
-            {cities.map((city) => (
-              <li key={city.id}>
-                <Link
-                  href={routes.city(city.slug)}
-                  className="flex min-h-12 card-lift items-center gap-2 card-raised px-4 font-semibold no-underline"
-                >
-                  <MapPin aria-hidden className="size-4 shrink-0 text-secondary-strong" />
-                  {city.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <ZipChecker cities={cities} />
-        </div>
-        <ServiceAreaMap cities={cities.map(({ name, lat, lng }) => ({ name, lat, lng }))} />
-      </div>
-    </Section>
-  )
-}
 
 /** Accordion of questions. Answers stay in the HTML for search engines (brief §9.1.18). */
 export function FaqList({

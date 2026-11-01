@@ -176,7 +176,9 @@ export const Navigation: GlobalConfig = {
     {
       name: 'featuredCard',
       type: 'group',
-      admin: { description: 'The card in the Services menu. Automatic shows what’s in season.' },
+      // The Services menu became a fixed two-column list (2026-11-01) with no card. Hidden rather
+      // than dropped, so no migration is needed; remove it with the next schema change.
+      admin: { hidden: true },
       fields: [
         { name: 'automatic', type: 'checkbox', defaultValue: true },
         { name: 'title', type: 'text' },
