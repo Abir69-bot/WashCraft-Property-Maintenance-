@@ -1,4 +1,3 @@
-import { Archivo } from 'next/font/google'
 import { Fragment } from 'react'
 
 import { stockPhotos, type StockPhoto } from '@/assets/photos'
@@ -43,22 +42,14 @@ import { shownGuarantee } from '@/lib/proof'
 import { generalCta } from '@/lib/quote/flow'
 import { categoryHref, COMMERCIAL_CATEGORY } from '@/lib/routes'
 import { fillTokens } from '@/lib/text'
-import { cn } from '@/lib/utils'
 import { asMedia, mediaSrc, publishedServices, serviceGroups } from '@/lib/view'
 import type { Media, Service } from '@/payload-types'
 
 /**
- * Wide display face for the home page's headings. Not preloaded: its @font-face lands in the
- * site-wide stylesheet, so a preload would make every page fetch it (88 KB, costing inner pages
- * their Lighthouse score). Browsers fetch it only where text uses it, so other pages never do.
+ * The display headings' font (globals.css). Preloaded with a rendered <link> (React hoists it
+ * into <head>) rather than preload(), whose hint also fires when other pages prefetch this one.
  */
-const archivo = Archivo({
-  subsets: ['latin'],
-  axes: ['wdth'],
-  variable: '--font-display',
-  display: 'swap',
-  preload: false,
-})
+const DISPLAY_FONT = '/fonts/archivo-expanded-extrabold-v25.woff2'
 
 type HomeSection = (typeof HOME_SECTIONS)[number]
 
@@ -220,7 +211,8 @@ export default async function HomePage() {
     ...new Set(stockUse.filter((use) => shown.has(use.section)).map((use) => use.photo)),
   ]
   return (
-    <div className={cn(archivo.variable, 'home-night')}>
+    <div className="home-night">
+      <link rel="preload" href={DISPLAY_FONT} as="font" type="font/woff2" crossOrigin="anonymous" />
       {enabled.map((item) => (
         <Fragment key={item.id ?? item.section}>{sections[item.section]}</Fragment>
       ))}
