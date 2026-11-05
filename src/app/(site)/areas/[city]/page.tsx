@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { areaPhotos } from '@/assets/area-photos'
-import { CmsImage } from '@/components/cms-image'
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
 import { AreaHero } from '@/components/sections/area-hero'
 import { FaqList } from '@/components/sections/areas-and-faq'
@@ -93,20 +92,6 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
         </Section>
       )}
       <TrustStrip site={site} />
-      <Section id="about-city">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
-          <div>
-            <h2>Caring for homes in {city.name}</h2>
-            <p className="mt-4 text-lg text-muted">{city.intro}</p>
-          </div>
-          <CmsImage
-            media={city.heroImage}
-            label={city.heroImageLabel}
-            ratio="4/3"
-            sizes="(min-width: 1024px) 50vw, 100vw"
-          />
-        </div>
-      </Section>
       <LocalConditions city={city} />
       <ServiceGrid
         id="services"
