@@ -9,8 +9,12 @@ import { cn } from '@/lib/utils'
 
 export type NavLink = { label: string; href: string }
 
+/**
+ * Top-level items stay on one line ("Service Areas", "Before & After"); padding and size step
+ * down a little on narrower desktops so the whole row still fits beside the logo and button.
+ */
 const triggerClass =
-  'nav-top group inline-flex min-h-11 items-center gap-1 rounded-full px-3 font-semibold text-ink transition-colors hover:bg-surface hover:text-primary data-[state=open]:bg-surface data-[state=open]:text-primary xl:px-4'
+  'nav-top group inline-flex min-h-11 items-center gap-1 rounded-full px-2 text-[0.9375rem] font-semibold whitespace-nowrap text-ink transition-colors hover:bg-surface hover:text-primary data-[state=open]:bg-surface data-[state=open]:text-primary xl:px-3 xl:text-base'
 const panelClass =
   'absolute top-full z-50 mt-2 animate-fade-in rounded-card border border-border bg-white p-6 text-ink shadow-xl [--focus-ring:var(--primary)]'
 const linkClass =
@@ -22,7 +26,7 @@ function Trigger({ children }: { children: React.ReactNode }) {
       {children}
       <ChevronDown
         aria-hidden
-        className="size-4 transition-transform group-data-[state=open]:rotate-180"
+        className="size-4 shrink-0 transition-transform group-data-[state=open]:rotate-180"
       />
     </NavigationMenu.Trigger>
   )
@@ -128,7 +132,7 @@ export function MainNav({
         {pageLinks.map((link) => (
           <NavigationMenu.Item key={link.href}>
             <NavigationMenu.Link asChild>
-              <Link href={link.href} className={cn(triggerClass, 'px-3 no-underline')}>
+              <Link href={link.href} className={cn(triggerClass, 'no-underline')}>
                 {link.label}
               </Link>
             </NavigationMenu.Link>
