@@ -1003,3 +1003,7 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   the text on phones) when there is no before-and-after pair, in place of the admin's service
   photo. First: Commercial Cleaning, a worker in a WashCraft jacket pressure washing a home's
   driveway (`public/images/services/commercial-cleaning.jpg`).
+- **No caption under before/after pairs** (owner, 2026-11-05). The visible caption and the
+  "example photos by …, not WashCraft's work (photo credits)" note under each pair are gone. The
+  caption still names the pair for screen readers (`role="group"`), and licensed pairs stay
+  credited on `/photo-credits`, linked from every page's footer.

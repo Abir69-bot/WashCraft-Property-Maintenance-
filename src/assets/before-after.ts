@@ -23,7 +23,7 @@ export type BeforeAfterExample = {
   /** Describes what each photo shows; both name the same surface. */
   beforeAlt: string
   afterAlt: string
-  /** One short line on what the pair shows. */
+  /** One short line on what the pair shows: the label screen readers announce for the pair. */
   caption: string
   /** Licensed third-party photos only; none for an image the owner supplied. */
   credit?: StockPhoto['credit']

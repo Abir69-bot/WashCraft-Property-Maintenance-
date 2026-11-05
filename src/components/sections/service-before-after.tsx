@@ -1,8 +1,6 @@
 import Image, { type StaticImageData } from 'next/image'
-import Link from 'next/link'
 
 import type { BeforeAfterExample } from '@/assets/before-after'
-import { routes } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
 /** One half of the pair: the photo with its label along the bottom edge. */
@@ -41,27 +39,19 @@ function Half({
 
 /**
  * A before-and-after pair beside "Why it matters" on service pages: the two photos side by side
- * in one rounded frame, split by a thin line, labelled along the bottom, with its caption and,
- * for licensed photos, a note that they are examples (credited on the Photo Credits page), not
- * WashCraft's work.
+ * in one rounded frame, split by a thin line, labelled along the bottom. No visible caption (the
+ * owner's request); the caption names the group for screen readers, and licensed photos are
+ * credited on the Photo Credits page, linked from the footer.
  */
 export function BeforeAfterPair({ example }: { example: BeforeAfterExample }) {
   return (
-    <div>
-      <div className="grid grid-cols-2 gap-0.5 overflow-hidden rounded-card border border-border bg-white/70 shadow-raised">
-        <Half src={example.before} alt={example.beforeAlt} label="Before" />
-        <Half src={example.after} alt={example.afterAlt} label="After" />
-      </div>
-      <p className="mt-3 text-small text-muted">
-        {example.caption}.
-        {example.credit && (
-          <>
-            {' '}
-            Example photos by {example.credit.author}, not WashCraft’s work (
-            <Link href={routes.photoCredits}>photo credits</Link>).
-          </>
-        )}
-      </p>
+    <div
+      role="group"
+      aria-label={example.caption}
+      className="grid grid-cols-2 gap-0.5 overflow-hidden rounded-card border border-border bg-white/70 shadow-raised"
+    >
+      <Half src={example.before} alt={example.beforeAlt} label="Before" />
+      <Half src={example.after} alt={example.afterAlt} label="After" />
     </div>
   )
 }
