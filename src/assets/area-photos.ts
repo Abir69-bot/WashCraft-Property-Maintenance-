@@ -10,8 +10,9 @@ import type { StockPhoto } from './photos'
 
 /**
  * A licensed photo of a well-known place in each service area, shown on its city page under the
- * map. They show the place, never WashCraft's work, and each is credited beside the photo as its
- * license requires (see DECISIONS.md). Keyed by city slug; a city without one shows the map only.
+ * map. They show the place, never WashCraft’s work, and each is credited on the Photo Credits
+ * page (linked from the footer) as its license requires (see DECISIONS.md). Keyed by city slug;
+ * a city without one shows the map only.
  */
 export type AreaPhoto = StockPhoto & { place: string }
 
@@ -19,18 +20,22 @@ const commons = (file: string) => `https://commons.wikimedia.org/wiki/File:${fil
 const CHANGES = 'Cropped to 16:9 and resized'
 const CC_BY_4 = { license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/' }
 const CC0 = { license: 'CC0', licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/' }
+const CC_BY_SA_4 = {
+  license: 'CC BY-SA 4.0',
+  licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+}
 
 export const areaPhotos: Record<string, AreaPhoto> = {
+  // The owner swapped the Bluffs for a residential street (2026-11-05).
   scarborough: {
     src: scarborough,
-    place: 'Scarborough Bluffs at Bluffer’s Park',
-    alt: 'The pale clay cliffs of the Scarborough Bluffs rising above Lake Ontario',
+    place: 'Townhomes in Steeles, Scarborough',
+    alt: 'A row of three-storey townhomes with tidy gardens and parked cars along a tree-lined street in Scarborough',
     credit: {
-      title: 'Scarborough Bluffs - Bluffer’s Park',
-      author: 'The Cosmonaut',
-      license: 'CC BY-SA 2.5 CA',
-      licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.5/ca/',
-      source: commons('Scarborough_Bluffs_-_Bluffer%27s_Park.jpg'),
+      title: 'Townhomes in Steeles, Toronto',
+      author: 'ChadPerez49',
+      ...CC_BY_SA_4,
+      source: commons('Townhomes_in_Steeles,_Toronto_jul162014.jpg'),
       changes: CHANGES,
     },
   },

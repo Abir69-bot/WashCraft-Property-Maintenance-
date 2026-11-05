@@ -4,7 +4,7 @@ import { JsonLd } from '@/components/json-ld'
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
 import { FaqList } from '@/components/sections/areas-and-faq'
 import { proofPoints } from '@/components/sections/hero'
-import { ComparisonTable, FinalCta, NeedUsNow, TrustStrip } from '@/components/sections/home-blocks'
+import { ComparisonTable, FinalCta, NeedUsNow } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { BeforeAfter, Testimonials } from '@/components/sections/proof'
 import {
@@ -153,7 +153,6 @@ export default async function ServicePage({ params }: PageProps<'/services/[serv
         upsell={quote.instantPricing ? shared.recurringUpsell : null}
       />
       {quote.instantPricing && <PricingGuide service={service} cta={cta} />}
-      <TrustStrip site={site} />
       {flags.comparisonTable && <ComparisonTable comparison={shared.comparison} tone="default" />}
       <NeedUsNow phone={site.phone} />
       <BeforeAfter items={page.gallery} title={`${service.title}: before and after`} />

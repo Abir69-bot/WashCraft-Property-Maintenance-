@@ -7,7 +7,7 @@ import { AreaHero } from '@/components/sections/area-hero'
 import { FaqList } from '@/components/sections/areas-and-faq'
 import { ServiceGrid } from '@/components/sections/category-hub'
 import { LocalConditions, NearbyAreas } from '@/components/sections/city-blocks'
-import { FinalCta, HowItWorks, TrustStrip, WhyChooseUs } from '@/components/sections/home-blocks'
+import { FinalCta, HowItWorks, WhyChooseUs } from '@/components/sections/home-blocks'
 import { BeforeAfter } from '@/components/sections/proof'
 import { Section } from '@/components/sections/section'
 import { ZipChecker } from '@/components/sections/zip-checker'
@@ -91,7 +91,6 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
           </div>
         </Section>
       )}
-      <TrustStrip site={site} />
       <LocalConditions city={city} />
       <ServiceGrid
         id="services"

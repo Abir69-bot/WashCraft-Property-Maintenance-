@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
 import { FaqList } from '@/components/sections/areas-and-faq'
 import { LocalConditions } from '@/components/sections/city-blocks'
-import { FinalCta, NeedUsNow, TrustStrip } from '@/components/sections/home-blocks'
+import { FinalCta, NeedUsNow } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { BeforeAfter } from '@/components/sections/proof'
 import {
@@ -134,7 +134,6 @@ export default async function CityServicePage({ params }: PageProps<'/areas/[cit
           )
         }
       />
-      <TrustStrip site={site} />
       <ServiceIntro service={service} region={local} trust={[]} />
       <LocalConditions city={city} />
       <IncludedList items={service.included} />

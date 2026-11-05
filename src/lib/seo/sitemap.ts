@@ -17,6 +17,7 @@ export const STATIC_PATHS = [
   routes.privacy,
   routes.terms,
   routes.accessibility,
+  routes.photoCredits,
 ]
 
 /** Pages that only exist while a feature switch is on or there is real content to show. */

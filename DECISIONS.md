@@ -952,3 +952,16 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   live site (brief §3.2). There is no sample rating any more: a rating shows only real numbers
   (Google's daily sync or Site settings). Verified Google reviews already have their own path
   (`source: google`, a "Verified Google review" link, `lib/reviews/google.ts`).
+- **Dark theme on every page** (owner, 2026-11-05). This replaces "body sections below the hero
+  stay light" above. Inner pages take the home page's night palette through the shared tokens
+  (`night-palette` in globals.css, applied to `<body>` on every page but the home page), so
+  components keep their classes. Fills that need the brand hues use the fixed `--brand-*`
+  aliases. The mobile menu, cookie banner and mobile action bar use the palette on the home page
+  too, and the Service Areas dropdown shares the Services panel.
+- **Removed at the owner's request (2026-11-05):** the "What customers say" section on city pages,
+  the trust strip (`TrustStrip`) on inner pages, and the Scarborough Bluffs photo. Scarborough's
+  area photo is now "Townhomes in Steeles" (ChadPerez49, CC BY-SA 4.0, Wikimedia Commons).
+- **Photo credits page** (owner, 2026-11-05): area photos show no caption. Every licensed photo
+  (area and stock) is credited on `/photo-credits` with its author, source, license and changes,
+  linked from the footer by a fixed link (not a Footer setting, so it can't be removed by
+  mistake). The collapsible "Stock photo credits" lists on the home and service pages stay.

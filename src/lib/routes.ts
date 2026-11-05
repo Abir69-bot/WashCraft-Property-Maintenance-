@@ -36,6 +36,7 @@ export const routes = {
   privacy: '/privacy',
   terms: '/terms',
   accessibility: '/accessibility',
+  photoCredits: '/photo-credits',
 } as const
 
 /**

@@ -1,6 +1,17 @@
 import type { StockPhoto } from '@/assets/photos'
 import { cn } from '@/lib/utils'
 
+/** One photo's credit: title (linked to its source), author, license (linked) and changes made. */
+export function CreditLine({ credit }: { credit: StockPhoto['credit'] }) {
+  return (
+    <>
+      <a href={credit.source}>{credit.title}</a> by {credit.author},{' '}
+      {credit.licenseUrl ? <a href={credit.licenseUrl}>{credit.license}</a> : credit.license}.{' '}
+      {credit.changes}.
+    </>
+  )
+}
+
 /**
  * Credits for the licensed stock photos shown on a page, as their licenses require. Collapsed by
  * default; lists each photo once.
@@ -22,9 +33,7 @@ export function PhotoCredits({
       <ul className="mt-2 grid gap-1">
         {shown.map(({ credit }) => (
           <li key={credit.source}>
-            <a href={credit.source}>{credit.title}</a> by {credit.author},{' '}
-            {credit.licenseUrl ? <a href={credit.licenseUrl}>{credit.license}</a> : credit.license}.{' '}
-            {credit.changes}.
+            <CreditLine credit={credit} />
           </li>
         ))}
       </ul>

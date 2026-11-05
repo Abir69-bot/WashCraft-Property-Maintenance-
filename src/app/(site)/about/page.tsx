@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 
 import { CmsImage } from '@/components/cms-image'
 import { credentials } from '@/components/sections/commercial-blocks'
-import { FinalCta, TrustStrip } from '@/components/sections/home-blocks'
+import { FinalCta } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { Section } from '@/components/sections/section'
 import { getAboutPage } from '@/lib/data/content'
@@ -146,7 +146,6 @@ export default async function AboutPage() {
         </Section>
       )}
 
-      <TrustStrip site={site} />
       <FinalCta region={region} cta={generalCta(quote)} />
     </>
   )

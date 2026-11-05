@@ -176,6 +176,12 @@ export function Footer({ data, analytics }: { data: LayoutData; analytics: boole
                 </Link>
               </li>
             ))}
+            {/* Fixed, not a Footer setting: the photo licenses require the credits to stay linked. */}
+            <li>
+              <Link href={routes.photoCredits} className={linkClass}>
+                Photo credits
+              </Link>
+            </li>
             {analytics && (
               <li>
                 <CookieSettingsButton className={linkClass} />

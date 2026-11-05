@@ -84,28 +84,18 @@ export function AreaHero({
               className="h-72 border-white/10 sm:h-80 lg:h-80 lg:min-h-0"
             />
           </div>
+          {/* Credited on the Photo Credits page (linked from the footer), not under the photo. */}
           {photo && (
-            <figure>
-              <div className="group relative aspect-video overflow-hidden rounded-card bg-night-raised">
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  placeholder="blur"
-                  fill
-                  sizes="(min-width: 1200px) 600px, (min-width: 1024px) 50vw, 100vw"
-                  className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
-                />
-              </div>
-              <figcaption className={cn(NIGHT_TEXT, 'mt-2 text-small text-night-muted')}>
-                {photo.place}. Photo: <a href={photo.credit.source}>{photo.credit.author}</a>,{' '}
-                {photo.credit.licenseUrl ? (
-                  <a href={photo.credit.licenseUrl}>{photo.credit.license}</a>
-                ) : (
-                  photo.credit.license
-                )}
-                , {photo.credit.changes.toLowerCase()}.
-              </figcaption>
-            </figure>
+            <div className="group relative aspect-video overflow-hidden rounded-card bg-night-raised">
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                placeholder="blur"
+                fill
+                sizes="(min-width: 1200px) 600px, (min-width: 1024px) 50vw, 100vw"
+                className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
+              />
+            </div>
           )}
         </div>
       </div>

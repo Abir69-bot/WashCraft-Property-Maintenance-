@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { ContactForm } from '@/components/forms/contact-form'
 import { Breadcrumbs } from '@/components/layout/breadcrumbs'
 import { ContactDetails } from '@/components/sections/contact-details'
-import { TrustStrip } from '@/components/sections/home-blocks'
 import { NIGHT_TEXT, QuoteActions } from '@/components/sections/page-hero'
 import { Section } from '@/components/sections/section'
 import { ServiceAreaMap } from '@/components/sections/service-area-map'
@@ -105,8 +104,6 @@ export default async function ContactPage() {
           </div>
         </Section>
       )}
-
-      <TrustStrip site={site} />
     </>
   )
 }

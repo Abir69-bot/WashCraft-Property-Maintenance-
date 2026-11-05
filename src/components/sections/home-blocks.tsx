@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  BadgeCheck,
   CalendarRange,
   Check,
   FileText,
@@ -17,9 +16,7 @@ import { QuickQuoteForm, type ServiceGroup } from '@/components/quote/quick-quot
 import { SampleBadge } from '@/components/sample-badge'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import type { SiteConfig } from '@/config/site'
 import { planPrice } from '@/lib/pricing/plans'
-import { shownGuarantee, shownRating } from '@/lib/proof'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { fillTokens, smsHref, telHref } from '@/lib/text'
@@ -93,36 +90,6 @@ export function ClientLogos({ logos }: { logos: ClientLogo[] }) {
           </ul>
         ))}
       </div>
-    </section>
-  )
-}
-
-/** Up to four checkmarks, each only when site settings back it up (brief §9.1.4, §9.3.8). */
-export function TrustStrip({ site }: { site: SiteConfig }) {
-  const guarantee = shownGuarantee(site)
-  const rated = shownRating(site)
-  const items = [
-    site.insuranceCoverage && { label: `Insured: ${site.insuranceCoverage}` },
-    site.workersCompRegistration && { label: 'Workers’ comp registered' },
-    site.licenceNumbers.length > 0 && { label: 'Licensed' },
-    guarantee && { label: 'Satisfaction guarantee', sample: guarantee.sample },
-    site.responseTimePromise && { label: `Replies ${site.responseTimePromise}` },
-    rated && {
-      label: `${rated.rating.toFixed(1)}★ from ${rated.reviewCount} reviews`,
-    },
-  ].filter(Boolean) as { label: string; sample?: boolean }[]
-  if (items.length === 0) return null
-  return (
-    <section aria-label="Why customers trust us" className="bg-surface">
-      <ul className="container grid gap-4 py-6 sm:grid-cols-2 lg:grid-cols-4">
-        {items.slice(0, 4).map((item) => (
-          <li key={item.label} className="flex items-center gap-2 font-semibold text-ink">
-            <BadgeCheck aria-hidden className="size-6 shrink-0 text-success-strong" />
-            {item.label}
-            <SampleBadge show={item.sample} />
-          </li>
-        ))}
-      </ul>
     </section>
   )
 }
