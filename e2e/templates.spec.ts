@@ -151,7 +151,7 @@ test.describe('templates', () => {
     await expect(page.getByLabel('Search services')).toHaveCount(0)
   })
 
-  test('every area page has its map, a credited local photo and the business card', async ({
+  test('every area page has its map, a local photo credited on Photo Credits, and the business card', async ({
     page,
   }) => {
     // Map tiles come from OpenStreetMap; the test doesn't need the pictures.
@@ -174,10 +174,22 @@ test.describe('templates', () => {
       await expect
         .poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth))
         .toBeGreaterThan(0)
-      await expect(hero.getByRole('figure')).toContainText('Photo:')
       await expect(
         hero.getByRole('heading', { name: `${site.shortName} in ${city.name}`, level: 2 }),
       ).toBeVisible()
+    }
+    // The photos carry no caption; each is credited, with its license, on the Photo Credits page.
+    await page.goto('/photo-credits')
+    const credits = page.getByRole('region', { name: 'Service area photos' })
+    for (const city of cities) {
+      const entry = credits.getByRole('listitem').filter({
+        has: page.getByRole('link', { name: city.name, exact: true }),
+      })
+      await expect(entry, city.name).toHaveCount(1)
+      await expect(entry.getByRole('link', { name: /^CC/ }), city.name).toHaveAttribute(
+        'href',
+        /^https:\/\/creativecommons\.org\//,
+      )
     }
   })
 

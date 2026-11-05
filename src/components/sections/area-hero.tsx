@@ -86,7 +86,7 @@ export function AreaHero({
           </div>
           {/* Credited on the Photo Credits page (linked from the footer), not under the photo. */}
           {photo && (
-            <div className="group relative aspect-video overflow-hidden rounded-card bg-night-raised">
+            <figure className="group relative aspect-video overflow-hidden rounded-card bg-night-raised">
               <Image
                 src={photo.src}
                 alt={photo.alt}
@@ -95,7 +95,7 @@ export function AreaHero({
                 sizes="(min-width: 1200px) 600px, (min-width: 1024px) 50vw, 100vw"
                 className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
               />
-            </div>
+            </figure>
           )}
         </div>
       </div>
