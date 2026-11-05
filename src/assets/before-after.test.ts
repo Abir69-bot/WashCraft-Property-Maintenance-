@@ -12,13 +12,16 @@ describe('before-and-after examples', () => {
     expect(entries.map(([slug]) => slug).filter((slug) => !slugs.has(slug))).toEqual([])
   })
 
-  it('are equal-sized, described, credited pairs', () => {
+  it('are equal-sized, described pairs', () => {
     for (const [, example] of entries) {
       expect(example.before.width).toBe(example.after.width)
       expect(example.before.height).toBe(example.after.height)
       expect(example.beforeAlt.length).toBeGreaterThan(20)
       expect(example.afterAlt.length).toBeGreaterThan(20)
-      expect(example.credit.licenseUrl).toMatch(/^https:\/\/creativecommons\.org\//)
+      // Licensed photos link their license; owner-supplied images have no credit.
+      if (example.credit) {
+        expect(example.credit.licenseUrl).toMatch(/^https:\/\/creativecommons\.org\//)
+      }
     }
   })
 })

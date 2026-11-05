@@ -41,8 +41,9 @@ function Half({
 
 /**
  * A before-and-after pair beside "Why it matters" on service pages: the two photos side by side
- * in one rounded frame, split by a thin line, labelled along the bottom, with a note that they are
- * example photos (credited on the Photo Credits page), not WashCraft's work.
+ * in one rounded frame, split by a thin line, labelled along the bottom, with its caption and,
+ * for licensed photos, a note that they are examples (credited on the Photo Credits page), not
+ * WashCraft's work.
  */
 export function BeforeAfterPair({ example }: { example: BeforeAfterExample }) {
   return (
@@ -52,8 +53,14 @@ export function BeforeAfterPair({ example }: { example: BeforeAfterExample }) {
         <Half src={example.after} alt={example.afterAlt} label="After" />
       </div>
       <p className="mt-3 text-small text-muted">
-        {example.caption}. Example photos by {example.credit.author}, not WashCraft’s work (
-        <Link href={routes.photoCredits}>photo credits</Link>).
+        {example.caption}.
+        {example.credit && (
+          <>
+            {' '}
+            Example photos by {example.credit.author}, not WashCraft’s work (
+            <Link href={routes.photoCredits}>photo credits</Link>).
+          </>
+        )}
       </p>
     </div>
   )

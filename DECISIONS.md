@@ -992,3 +992,9 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   for house cleaning: a dishwasher-cleaned hood filter (after only) and "Otaku Room - Before and
   After" (a renovation). Found but not used: "Hood1" (Achim Hering, public domain), a
   restaurant kitchen exhaust hood before and after cleaning, an option for Restaurant Cleaning.
+- **Snow removal before/after replaced** (owner, 2026-11-05). The Ben Babcock pair is gone (and
+  from Photo Credits). The owner supplied one image of a driveway before and after snow clearing,
+  with its own labels and divider; it is split into two halves and trimmed above the printed
+  labels (`public/images/services/snow-removal-*.jpg`). Its origin isn't recorded, so the caption
+  says "Illustration" and makes no claim that it is a WashCraft job. If it is the owner's own job
+  photo, the caption can say so.

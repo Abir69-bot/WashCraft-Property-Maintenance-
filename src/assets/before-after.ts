@@ -13,9 +13,9 @@ import type { StockPhoto } from './photos'
  * Licensed before-and-after examples, shown beside "Why it matters" on service pages where the
  * owner has no pair of their own. Each is a genuine pair: the same surface or property before and
  * after the same kind of work, published as a pair by the photographer. They are labelled as
- * examples, never as WashCraft's work, and credited on the Photo Credits page. A service with no
- * verified pair has no entry (see DECISIONS.md for the search and what was rejected). Keyed by
- * service slug.
+ * examples, never as WashCraft's work, and credited on the Photo Credits page. An image the owner
+ * supplied has no credit and its caption says what it is. A service with no pair has no entry
+ * (see DECISIONS.md for the search and what was rejected). Keyed by service slug.
  */
 export type BeforeAfterExample = {
   before: StaticImageData
@@ -25,7 +25,8 @@ export type BeforeAfterExample = {
   afterAlt: string
   /** One short line on what the pair shows. */
   caption: string
-  credit: StockPhoto['credit']
+  /** Licensed third-party photos only; none for an image the owner supplied. */
+  credit?: StockPhoto['credit']
 }
 
 const commons = (file: string) => `https://commons.wikimedia.org/wiki/File:${file}`
@@ -64,22 +65,14 @@ export const beforeAfterExamples: Record<string, BeforeAfterExample> = {
       changes: SPLIT,
     },
   },
-  // Two photos of one driveway an hour apart, from opposite ends (the photographer's own pair).
+  // Supplied by the owner (2026-11-05) as one image with its own labels; split and trimmed here.
+  // Its origin isn't recorded, so the caption calls it an illustration, not a WashCraft job.
   'snow-removal': {
     before: snowRemovalBefore,
     after: snowRemovalAfter,
-    beforeAlt: 'A driveway buried in deep snow, with a snow-covered car parked by the house',
-    afterAlt:
-      'The same driveway after shoveling, seen from the house: a cleared lane beside a tall snowbank',
-    caption:
-      'One driveway, an hour apart, before and after shoveling (the second photo looks back toward the street)',
-    credit: {
-      title: 'Before shovelling / After shovelling 1',
-      author: 'Ben Babcock',
-      license: 'CC BY 2.0',
-      licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
-      source: commons('Before_shovelling_(2081155092).jpg'),
-      changes: 'Resized',
-    },
+    beforeAlt:
+      'A snow-covered driveway with tire tracks in front of a brick house and dark garage door',
+    afterAlt: 'The same driveway cleared down to wet pavement, with snow banked along both edges',
+    caption: 'Illustration: a driveway before and after snow clearing',
   },
 }
