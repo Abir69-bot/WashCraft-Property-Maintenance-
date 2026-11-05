@@ -18,7 +18,7 @@ import { categories } from '@/seed/data/categories'
 import { faqs } from '@/seed/data/faqs'
 import { commercialPages } from '@/seed/data/globals'
 import { gallery, mediaFiles } from '@/seed/data/media'
-import { sampleClientLogos } from '@/seed/data/samples'
+import { sampleClientLogos, sampleTestimonials } from '@/seed/data/samples'
 import { allServices, seed } from '@/seed/seed'
 
 let payload: Payload
@@ -71,7 +71,7 @@ describe('seed', () => {
       faqs: faqs.length,
       posts: 6,
       solutions: 6,
-      testimonials: 6,
+      testimonials: sampleTestimonials.length,
       'job-openings': 2,
       plans: 7,
       'gallery-items': gallery.length,
@@ -165,7 +165,8 @@ describe('seed', () => {
       where: { featured: { equals: true } },
       depth: 1,
     })
-    expect(featured.docs[0].photo).toMatchObject({ filename: 'siding-after.jpg' })
+    // Fictional sample reviews never sit next to the owner's real job photos.
+    expect(featured.docs[0].photo ?? null).toBeNull()
     const { docs } = await payload.find({
       collection: 'services',
       where: { slug: { equals: 'gutter-cleaning' } },

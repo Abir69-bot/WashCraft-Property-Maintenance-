@@ -4,68 +4,81 @@
  * live site. Replace with real content before launch.
  */
 
-import type { MediaKey } from './media'
-
-/** Photos are the owner's real job photos of the service each sample is about. */
+/**
+ * Fictional reviews: made-up customers with natural, varied wording across the main services,
+ * for checking the review section's layout in development and preview. Never real feedback, so
+ * they never sit next to the owner's job photos, carry no Google link, and stay off the live site.
+ */
 export const sampleTestimonials: {
   name: string
   city: string
   service: string
   rating: number
   featured?: boolean
-  photo?: MediaKey
   quote: string
 }[] = [
   {
-    name: 'Sample customer, Maria G.',
-    city: 'Scarborough',
-    service: 'house-washing',
-    rating: 5,
-    featured: true,
-    photo: 'siding-after',
-    quote:
-      'The crew showed up when they said, protected every plant and left the house looking freshly painted. The black streaks under the gutters are gone too.',
-  },
-  {
-    name: 'Sample customer, Dan R.',
-    city: 'North York',
-    service: 'gutter-cleaning',
-    rating: 5,
-    photo: 'gutter-2-after',
-    quote:
-      'Before and after photos of every gutter, plus a heads-up about a loose downspout. Very thorough.',
-  },
-  {
-    name: 'Sample customer, Priya S.',
+    name: 'Priya S.',
     city: 'Markham',
     service: 'window-cleaning',
     rating: 5,
-    photo: 'window-cleaning-pole',
+    featured: true,
     quote:
-      'Our second-story windows haven’t been this clear since we moved in. No streaks anywhere.',
+      'Our second-floor windows haven’t looked this clear since we moved in. They did the screens and sills too, and put down drop cloths inside before they started.',
   },
   {
-    name: 'Sample customer, Tom and Elise W.',
+    name: 'Daniel R.',
+    city: 'North York',
+    service: 'gutter-cleaning',
+    rating: 5,
+    quote:
+      'Sent before and after photos of every run of gutter and pointed out a loose downspout bracket. No mess left on the driveway.',
+  },
+  {
+    name: 'Siobhan M.',
     city: 'Etobicoke',
+    service: 'snow-removal',
+    rating: 4,
+    quote:
+      'Driveway and front steps were clear before we left for work most mornings. After the big February storm they came later than usual, but the job was still done well.',
+  },
+  {
+    name: 'Marc-André T.',
+    city: 'Scarborough',
+    service: 'pressure-washing',
+    rating: 5,
+    quote:
+      'Our interlock patio had turned green under the maple. Now you can see the real color of the stones again.',
+  },
+  {
+    name: 'Grace L.',
+    city: 'Richmond Hill',
+    service: 'soft-washing',
+    rating: 5,
+    quote: 'Gentle on our older stucco, and the dark streaks under the eaves are gone.',
+  },
+  {
+    name: 'Ahmed K.',
+    city: 'Mississauga',
+    service: 'pressure-washing',
+    rating: 4,
+    quote:
+      'Booked a spring clean for the driveway and walkway. They worked carefully around the garden beds. One oil stain is still faintly there, which they warned us about up front.',
+  },
+  {
+    name: 'Jenna and Rob P.',
+    city: 'Vaughan',
+    service: 'window-cleaning',
+    rating: 5,
+    quote: 'Easy to book and on time. Clear windows, no streaks.',
+  },
+  {
+    name: 'Wei C.',
+    city: 'Scarborough',
     service: 'snow-removal',
     rating: 5,
     quote:
-      'Every storm, the driveway and walk were clear before we left for work. We didn’t pick up a shovel all winter.',
-  },
-  {
-    name: 'Sample customer, Kevin L.',
-    city: 'Vaughan',
-    service: 'fence-deck-staining',
-    rating: 5,
-    quote: 'They cleaned the deck, let it dry and came back to stain it. It looks brand new.',
-  },
-  {
-    name: 'Sample customer, Hannah M.',
-    city: 'Mississauga',
-    service: 'christmas-light-installation',
-    rating: 5,
-    quote:
-      'Perfectly straight roofline lights and they took them down in January. Booking again this year.',
+      'Our walkway was salted every icy morning. With two kids and a dog going in and out, that made a real difference this winter.',
   },
 ]
 

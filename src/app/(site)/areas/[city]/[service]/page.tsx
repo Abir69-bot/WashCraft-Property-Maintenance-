@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
 import { FaqList } from '@/components/sections/areas-and-faq'
-import { LocalConditions, Neighborhoods } from '@/components/sections/city-blocks'
+import { LocalConditions } from '@/components/sections/city-blocks'
 import { FinalCta, NeedUsNow, TrustStrip } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { BeforeAfter } from '@/components/sections/proof'
@@ -140,7 +140,6 @@ export default async function CityServicePage({ params }: PageProps<'/areas/[cit
       <IncludedList items={service.included} />
       <ProcessSteps steps={service.process} region={local} />
       <BeforeAfter items={gallery} title={`${service.title} in ${local}: before and after`} />
-      <Neighborhoods city={city} tone="surface" />
       <NeedUsNow phone={site.phone} />
       <FaqList faqs={faqs} region={local} title={`${service.title} in ${local}: questions`} />
       <RelatedLinks

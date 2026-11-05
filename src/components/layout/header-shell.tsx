@@ -6,12 +6,13 @@ import { useEffect, useState } from 'react'
 import { routes } from '@/lib/routes'
 
 /**
- * Sticky header that gets a shadow and shrinks once the page scrolls. On the home page it turns
- * dark to match the night theme and shows a scroll progress bar.
+ * Sticky header that gets a shadow and shrinks once the page scrolls. It is dark on every page,
+ * to match the night theme of the home page and page heroes; the home page adds a scroll
+ * progress bar.
  */
 export function HeaderShell({ children }: { children: React.ReactNode }) {
   const [scrolled, setScrolled] = useState(false)
-  const night = usePathname() === routes.home
+  const home = usePathname() === routes.home
 
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > 24)
@@ -23,10 +24,10 @@ export function HeaderShell({ children }: { children: React.ReactNode }) {
   return (
     <header
       data-scrolled={scrolled ? '' : undefined}
-      data-tone={night ? 'night' : undefined}
+      data-tone="night"
       className="group sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur transition-shadow data-[scrolled]:shadow-md"
     >
-      {night && <div aria-hidden className="scroll-progress" />}
+      {home && <div aria-hidden className="scroll-progress" />}
       {children}
     </header>
   )

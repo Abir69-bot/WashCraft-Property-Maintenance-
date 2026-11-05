@@ -426,7 +426,6 @@ export async function seed(
         service: idsFor(serviceIds, [testimonial.service])[0],
         city: optionalCity(testimonial.city),
         featured: testimonial.featured ?? false,
-        photo: testimonial.photo && mediaId(testimonial.photo),
         isSample: true,
         order: (index + 1) * 10,
       },

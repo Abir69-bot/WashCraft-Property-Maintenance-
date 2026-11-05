@@ -24,7 +24,7 @@ const PAGES: [string, string][] = [
   ['/before-and-after', `Before and After Photos from ${region} Jobs`],
   ['/about', `About ${shortName}`],
   ['/careers', `Careers at ${shortName} in ${region}`],
-  ['/contact', `Contact ${shortName}`],
+  ['/contact', 'Contact Us'],
   ['/privacy', 'Privacy Policy'],
   ['/terms', 'Terms of Use'],
   ['/accessibility', 'Accessibility Statement'],

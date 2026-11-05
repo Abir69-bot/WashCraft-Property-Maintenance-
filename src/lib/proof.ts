@@ -2,16 +2,19 @@ import { sampleProof, type SiteConfig } from '@/config/site'
 import { isProductionSite } from '@/lib/env'
 
 /**
- * The rating and guarantee as pages show them: the real values (Google or Site settings), or in
- * development and preview the sample ones, flagged so a "Sample" badge goes next to them. On the
- * live site both stay hidden until the owner provides the real thing (brief §3.2, §3.3).
+ * The rating as pages show it: only the real numbers (Google's, synced daily, or Site
+ * settings), never a sample, so no page shows an unverified rating (owner, 2026-11-05).
  */
-export function shownRating(site: Pick<SiteConfig, 'stats'>, production = isProductionSite) {
+export function shownRating(site: Pick<SiteConfig, 'stats'>) {
   const { rating, reviewCount } = site.stats
-  if (rating && reviewCount) return { rating, reviewCount, sample: false }
-  if (production) return null
-  return { rating: sampleProof.rating, reviewCount: sampleProof.reviewCount, sample: true }
+  return rating && reviewCount ? { rating, reviewCount } : null
 }
+
+/**
+ * The guarantee as pages show it: the real one, or in development and preview the sample, flagged
+ * so a "Sample" badge goes next to it. On the live site it stays hidden until the owner provides
+ * one (brief §3.2, §3.3).
+ */
 
 export function shownGuarantee(site: Pick<SiteConfig, 'guarantee'>, production = isProductionSite) {
   if (site.guarantee) return { text: site.guarantee, sample: false }

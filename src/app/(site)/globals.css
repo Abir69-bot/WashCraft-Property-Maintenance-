@@ -279,10 +279,10 @@
   }
 }
 
-/* ---- Home page: night theme (components/sections/home-night.tsx) ---- */
+/* ---- Night theme: the home page (components/sections/home-night.tsx) and every page hero ---- */
 
-/* The home page body: white headings and plain links, gold focus ring. */
-@utility home-night {
+/* Night background with white headings and plain links and a gold focus ring. */
+@utility night-theme {
   background-color: var(--night);
   color: #fff;
   --focus-ring: var(--cta);
@@ -294,12 +294,11 @@
   }
 }
 
-/* Wide, heavy display type (Archivo, loaded by the home page only). */
 /*
  * The home page's display face: Archivo ExtraBold at 125% width, the one style it uses (14 KB,
  * latin, SIL Open Font License: public/fonts/archivo-OFL.txt). Self-hosted rather than through
- * next/font, whose variable file (88 KB) was preloaded on every page; the home page preloads
- * this file itself, and browsers fetch it only where display headings appear.
+ * next/font, whose variable file (88 KB) was preloaded on every page. Every page hero uses it now,
+ * so the site layout preloads this one small file.
  */
 @font-face {
   font-family: 'Archivo Display';
@@ -328,6 +327,17 @@
 }
 @utility display-h3 {
   font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); /* 20 → 24 */
+}
+/* Inner page H1s: a step down from the home hero, as their titles run longer. */
+@utility display-page {
+  font-size: clamp(2.125rem, 1.45rem + 2.6vw, 3.5rem); /* 34 → 56 */
+}
+
+/* Inner page heroes: the night background with the same soft teal glow as the light heroes had. */
+@utility hero-night {
+  background:
+    radial-gradient(60rem 30rem at 90% -10%, rgb(44 177 188 / 0.18), transparent 60%),
+    radial-gradient(40rem 24rem at -10% 110%, rgb(245 183 0 / 0.06), transparent 60%), var(--night);
 }
 
 /* Card on the night background: hairline border that brightens and lifts on hover. */

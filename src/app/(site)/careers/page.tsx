@@ -52,7 +52,7 @@ export default async function CareersPage() {
               <Link href="#apply">Apply now</Link>
             </Button>
             {jobs.length > 0 && (
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="night">
                 <Link href="#open-roles">See open roles</Link>
               </Button>
             )}

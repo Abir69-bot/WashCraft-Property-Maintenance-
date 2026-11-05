@@ -121,17 +121,7 @@ test.describe('analytics', () => {
     expect(thirdParty).toEqual([])
     expect(await page.evaluate(() => 'dataLayer' in window)).toBe(false)
 
-    // Call and text links only render once the owner confirms a phone number, which the seeded
-    // site doesn't have. Add one marked like the real ones, so the page's own click tracking
-    // (which listens for any `data-track` link) is what gets tested.
-    await page.evaluate(() => {
-      const link = document.createElement('a')
-      link.href = 'tel:+14165550199'
-      link.dataset.track = 'call_click'
-      link.textContent = 'Call'
-      document.querySelector('main')!.append(link)
-    })
-    // A click on the call link, without actually opening the phone app.
+    // A click on one of the page's call links, without actually opening the phone app.
     const clickCallLink = () =>
       page.evaluate(() => {
         document.addEventListener('click', (event) => event.preventDefault(), { once: true })

@@ -25,7 +25,7 @@ import { routes } from '@/lib/routes'
 import { fillTokens, smsHref, telHref } from '@/lib/text'
 import { cn } from '@/lib/utils'
 import { asMedia, mediaSrc } from '@/lib/view'
-import type { ClientLogo, Homepage, Plan, Post, TeamMember } from '@/payload-types'
+import type { ClientLogo, Homepage, Plan, Post } from '@/payload-types'
 
 import { PostCard } from './article'
 import { Section, type SectionTone } from './section'
@@ -109,7 +109,6 @@ export function TrustStrip({ site }: { site: SiteConfig }) {
     site.responseTimePromise && { label: `Replies ${site.responseTimePromise}` },
     rated && {
       label: `${rated.rating.toFixed(1)}★ from ${rated.reviewCount} reviews`,
-      sample: rated.sample,
     },
   ].filter(Boolean) as { label: string; sample?: boolean }[]
   if (items.length === 0) return null
@@ -172,23 +171,33 @@ export function HowItWorks({
   )
 }
 
-export function NeedUsNow({ phone }: { phone: string }) {
+/** Call and text band, shown once a phone number is set. `night` for the home page's theme. */
+export function NeedUsNow({ phone, tone }: { phone: string; tone?: 'night' }) {
   if (!telHref(phone)) return null
+  const night = tone === 'night'
   return (
-    <section aria-labelledby="need-us-heading" className="bg-surface">
+    <section
+      aria-labelledby="need-us-heading"
+      className={night ? 'border-y border-white/5 bg-night-raised' : 'bg-surface'}
+    >
       <div className="container flex flex-col items-start justify-between gap-6 py-10 md:flex-row md:items-center">
         <div>
-          <h2 id="need-us-heading" className="text-h3">
+          <h2
+            id="need-us-heading"
+            className={night ? 'display-type display-h3 text-white' : 'text-h3'}
+          >
             Need us now?
           </h2>
-          <p className="mt-1 text-muted">Call or text and we’ll help you plan the job.</p>
+          <p className={cn('mt-1', night ? 'text-night-muted' : 'text-muted')}>
+            Call or text and we’ll help you plan the job.
+          </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button asChild size="lg" variant="primary">
+          <Button asChild size="lg" variant={night ? 'cta' : 'primary'}>
             <CallLink phone={phone} label={`Call ${phone}`} />
           </Button>
           {smsHref(phone) && (
-            <Button asChild size="lg" variant="outline">
+            <Button asChild size="lg" variant={night ? 'night' : 'outline'}>
               <TextLink phone={phone} />
             </Button>
           )}
@@ -362,36 +371,6 @@ export function PlansTeaser({ plans }: { plans: Plan[] }) {
       <Button asChild variant="outline" size="lg" className="mt-8">
         <Link href={routes.maintenancePlans}>Compare plans and packages</Link>
       </Button>
-    </Section>
-  )
-}
-
-export function Founder({ founder, region }: { founder: TeamMember | null; region: string }) {
-  if (!founder) return null
-  return (
-    <Section id="founder" eyebrow="Meet the founder">
-      <div className="grid items-center gap-10 md:grid-cols-[minmax(0,22rem)_1fr]">
-        <CmsImage
-          media={founder.photo}
-          label={founder.photoLabel}
-          ratio="4/5"
-          sizes="(min-width: 768px) 352px, 100vw"
-        />
-        <div>
-          <SampleBadge show={founder.isSample} className="mb-3" />
-          <h2 className="text-h2">{founder.name}</h2>
-          <p className="mt-1 font-semibold text-secondary-strong">{founder.role}</p>
-          <p className="mt-4 max-w-prose text-lg text-muted">
-            {fillTokens(founder.shortBio, { region })}
-          </p>
-          <Link
-            href={routes.teamMember(founder.slug)}
-            className="mt-5 inline-flex min-h-11 items-center gap-2 font-semibold"
-          >
-            Read {founder.name.split(' ')[0]}’s story <ArrowRight aria-hidden className="size-4" />
-          </Link>
-        </div>
-      </div>
     </Section>
   )
 }

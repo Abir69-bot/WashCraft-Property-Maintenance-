@@ -39,7 +39,7 @@ import { faqPage } from '@/lib/seo/json-ld'
 import { fillTokens, telHref } from '@/lib/text'
 import { cn } from '@/lib/utils'
 import { asMedia, mediaSrc } from '@/lib/view'
-import type { City, GalleryItem, Homepage, Service, TeamMember, Testimonial } from '@/payload-types'
+import type { City, GalleryItem, Homepage, Service, Testimonial } from '@/payload-types'
 
 import { BeforeAfterSlider } from './before-after-slider'
 import { credentials } from './commercial-blocks'
@@ -151,7 +151,6 @@ export function NightHero({
           <p className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-small font-semibold">
             <Stars rating={Math.round(rated.rating)} />
             {rated.rating.toFixed(1)} from {rated.reviewCount} reviews
-            <SampleBadge show={rated.sample} />
           </p>
         ) : (
           variant.eyebrow && (
@@ -390,7 +389,6 @@ export function NightTestimonials({
               <span className="text-small text-night-muted">
                 from {rated.reviewCount} Google reviews
               </span>
-              <SampleBadge show={rated.sample} />
             </p>
           )}
         </div>
@@ -512,7 +510,6 @@ export function NightStats({ site }: { site: SiteConfig }) {
       value: rated.rating.toFixed(1),
       label: 'Average rating',
       note: `from ${rated.reviewCount} reviews`,
-      sample: rated.sample,
     },
     site.foundedYear && { value: String(site.foundedYear), label: `Serving ${site.region} since` },
     site.insuranceCoverage && { value: 'Insured', label: site.insuranceCoverage },
@@ -822,39 +819,6 @@ export function NightWhyChooseUs({
         })}
       </ul>
     </NightSection>
-  )
-}
-
-export function NightFounder({ founder, region }: { founder: TeamMember | null; region: string }) {
-  if (!founder) return null
-  return (
-    <section id="founder" aria-labelledby="founder-heading" className="bg-night section-y">
-      <div className="container grid items-center gap-10 md:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
-        <CmsImage
-          media={founder.photo}
-          label={founder.photoLabel}
-          ratio="4/5"
-          sizes="(min-width: 768px) 352px, 100vw"
-          className="reveal rounded-lg"
-        />
-        <div className="reveal">
-          <SampleBadge show={founder.isSample} className="mb-3" />
-          <p className="text-small font-semibold tracking-wide text-secondary-on-dark uppercase">
-            Meet the founder
-          </p>
-          <h2 id="founder-heading" className="mt-2 display-type display-h2">
-            {founder.name}
-          </h2>
-          <p className="mt-1 font-semibold text-cta">{founder.role}</p>
-          <p className="mt-5 max-w-prose text-xl leading-relaxed text-white/85">
-            {fillTokens(founder.shortBio, { region })}
-          </p>
-          <Link href={routes.teamMember(founder.slug)} className={cn(pill, 'mt-8')}>
-            Read {founder.name.split(' ')[0]}’s story <ArrowRight aria-hidden className="size-4" />
-          </Link>
-        </div>
-      </div>
-    </section>
   )
 }
 

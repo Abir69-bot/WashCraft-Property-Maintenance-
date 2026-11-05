@@ -115,7 +115,6 @@ const SHOWN = [
   'seasonal-spotlight',
   'how-it-works',
   'why-choose-us',
-  'founder',
   'faq',
   'need-us-now',
   'final-cta',

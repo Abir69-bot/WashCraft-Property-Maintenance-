@@ -29,6 +29,10 @@ export const smsHref = (phone: string | null | undefined) => {
   return number ? `sms:${number}` : null
 }
 
+/** Google Maps directions to an address (works on phones and computers, no API key). */
+export const directionsHref = (address: string) =>
+  `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`
+
 /** URL slug from a name, e.g. "Castle Rock" → "castle-rock" (matches Payload's slug field). */
 export const toSlug = (text: string) =>
   text

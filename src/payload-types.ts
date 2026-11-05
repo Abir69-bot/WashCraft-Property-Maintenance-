@@ -787,7 +787,7 @@ export interface TeamMember {
   generateSlug?: boolean | null;
   slug: string;
   /**
-   * Shown in "Meet the founder".
+   * The founder. Shown as "Founder" on their bio page.
    */
   isFounder?: boolean | null;
   /**

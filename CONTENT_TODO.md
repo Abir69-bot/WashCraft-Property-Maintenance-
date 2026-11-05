@@ -101,19 +101,21 @@ the service's **Not included and access limits** list in the admin:
 ## 1. Business facts — required before launch
 
 Set these in the admin under **Site settings** (or `src/config/site.ts` before the first deploy).
+**If Site settings were ever saved in the admin, the live site uses those saved values: enter the
+2026-11-05 details there too** (phone, email, hours, address, region).
 `pnpm check-config` lists whatever is still missing. Country (Canada), currency (CAD) and language
 (en-CA) are set.
 
-| Field        | Status                                                                                                                         |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `email`      | Confirmed 2026-10-31: `abirbotnsu69@gmail.com`. Shown on the site, and new leads go here unless separate alert emails are set. |
-| `tagline`    | Confirmed 2026-10-31: "Professional Property Care, Every Season".                                                              |
-| `phone`      | Optional. Not set, so no call or text links appear. Add it once the number is confirmed.                                       |
-| `hours`      | Optional. Not set, so no hours are shown.                                                                                      |
-| `address`    | Not shown (service-area business). Never published without your permission.                                                    |
-| `region`     | "the Toronto area" (your wording in the brief). Used in page titles.                                                           |
-| `freeQuotes` | Confirmed 2026-10-30: quotes are free ("Request a Free Quote").                                                                |
-| Domain       | `washcraft.ca` is proposed. Confirm it's registered, then follow docs/HANDOVER.md.                                             |
+| Field        | Status                                                                                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `email`      | Confirmed 2026-11-05: `info@washcraft.ca`. Shown on the site, and new leads go here unless separate alert emails are set, so make sure this inbox works. |
+| `tagline`    | Confirmed 2026-10-31: "Professional Property Care, Every Season".                                                                                        |
+| `phone`      | Confirmed 2026-11-05: +1 (647) 451-0230. Call and text links use `+16474510230`.                                                                         |
+| `hours`      | Confirmed 2026-11-05: "Every day, 7:00 AM – 8:00 PM".                                                                                                    |
+| `address`    | Confirmed for publishing 2026-11-05: 43 Ridgemoor Ave, Scarborough, ON M1N 1M5. Links to Google Maps directions.                                         |
+| `region`     | Confirmed 2026-11-05: "Toronto and the GTA". Used in page titles.                                                                                        |
+| `freeQuotes` | Confirmed 2026-10-30: quotes are free ("Request a Free Quote").                                                                                          |
+| Domain       | `washcraft.ca` is proposed. Confirm it's registered, then follow docs/HANDOVER.md.                                                                       |
 
 The service areas are confirmed (2026-10-27): Scarborough, North York, Etobicoke, Markham,
 Vaughan, Richmond Hill and Mississauga.

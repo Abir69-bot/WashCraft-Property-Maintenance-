@@ -48,11 +48,12 @@ export function Header({ data }: { data: LayoutData }) {
         </Link>
         <MainNav services={services} areaLinks={areaLinks} pageLinks={pageLinks} />
         <div className="ml-auto flex items-center gap-2">
+          {/* Only on very wide screens: the number is in the bar above and in the home hero. */}
           {callHref && (
             <a
               href={callHref}
               data-track="call_click"
-              className="nav-top hidden min-h-11 items-center gap-2 rounded-full px-3 font-semibold text-primary no-underline xl:inline-flex"
+              className="nav-top hidden min-h-11 items-center gap-2 rounded-full px-3 font-semibold whitespace-nowrap text-primary no-underline 2xl:inline-flex"
             >
               <Phone aria-hidden className="size-4" />
               {site.phone}

@@ -66,7 +66,10 @@ export const TeamMembers: CollectionConfig = {
     {
       name: 'isFounder',
       type: 'checkbox',
-      admin: { position: 'sidebar', description: 'Shown in "Meet the founder".' },
+      admin: {
+        position: 'sidebar',
+        description: 'The founder. Shown as "Founder" on their bio page.',
+      },
     },
     isSampleField,
     orderField,

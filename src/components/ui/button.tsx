@@ -13,6 +13,8 @@ export const buttonVariants = cva(
           'bg-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.15),0_6px_14px_-6px_rgb(0_0_0/0.4)] hover:bg-primary-hover',
         outline: 'border-2 border-primary bg-white text-primary hover:bg-surface',
         inverse: 'bg-white text-primary hover:bg-surface',
+        /** Secondary button on the night theme (home page and page heroes). */
+        night: 'border border-white/25 text-white hover:border-white hover:bg-white/5',
         ghost: 'text-primary hover:bg-surface',
         link: 'min-h-0 rounded-none px-0 text-secondary-strong underline underline-offset-4 hover:text-primary',
       },

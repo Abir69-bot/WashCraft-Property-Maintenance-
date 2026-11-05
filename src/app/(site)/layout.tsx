@@ -76,6 +76,14 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       className={`${inter.variable} ${jakarta.variable}`}
     >
       <head>
+        {/* The display headings' font (globals.css): every page hero uses it. */}
+        <link
+          rel="preload"
+          href="/fonts/archivo-expanded-extrabold-v25.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
         {announcement && (
           <script dangerouslySetInnerHTML={{ __html: announcementScript(announcement.id) }} />
         )}
