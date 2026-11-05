@@ -1,12 +1,11 @@
 import { ExternalLink, MapPin } from 'lucide-react'
 import Link from 'next/link'
 
-import { CmsImage } from '@/components/cms-image'
 import type { AreaCity } from '@/lib/data/layout'
 import { routes } from '@/lib/routes'
 import type { City } from '@/payload-types'
 
-import { Section, type SectionTone } from './section'
+import { Section } from './section'
 
 /** Owner-entered local facts, each with its source; hidden when empty (brief §9.4). */
 export function LocalConditions({ city }: { city: City }) {
@@ -33,41 +32,6 @@ export function LocalConditions({ city }: { city: City }) {
               Source: {stat.sourceName} <ExternalLink aria-hidden className="size-3.5" />
               <span className="sr-only">(opens in a new tab)</span>
             </a>
-          </li>
-        ))}
-      </ul>
-    </Section>
-  )
-}
-
-/** Neighborhood cards with a photo or placeholder and a short blurb (brief §9.4). */
-export function Neighborhoods({ city, tone }: { city: City; tone?: SectionTone }) {
-  const neighborhoods = city.neighborhoods ?? []
-  if (neighborhoods.length === 0) return null
-  return (
-    <Section
-      id="neighborhoods"
-      tone={tone}
-      eyebrow="Neighborhoods"
-      title={`Where we work in ${city.name}`}
-    >
-      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {neighborhoods.map((neighborhood) => (
-          <li
-            key={neighborhood.id ?? neighborhood.name}
-            className="overflow-hidden rounded-card border border-border bg-white"
-          >
-            <CmsImage
-              media={neighborhood.image}
-              label={neighborhood.imageLabel}
-              ratio="3/2"
-              sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
-              className="rounded-none"
-            />
-            <div className="p-5">
-              <h3>{neighborhood.name}</h3>
-              <p className="mt-2 text-muted">{neighborhood.blurb}</p>
-            </div>
           </li>
         ))}
       </ul>

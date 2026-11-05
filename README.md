@@ -404,8 +404,8 @@ load and no cookie banner appears. Once they're set, nothing loads until a visit
    where the page has them: `quick_form_submit`, `quote_start`, `quote_step`,
    `quote_contact_submitted`, `quote_estimate_viewed`, `booking_requested`, `snow_contract_submit`,
    `holiday_lights_submit`, `junk_quote_submit`, `commercial_bid_submit`, `call_click`,
-   `sms_click`, `email_click`, `review_link_click`, `careers_apply`, `contact_submit`. In Tag
-   Manager, add a **Custom Event** trigger matching them all (regex
+   `sms_click`, `email_click`, `directions_click`, `review_link_click`, `careers_apply`,
+   `contact_submit`. In Tag Manager, add a **Custom Event** trigger matching them all (regex
    `^(quick_form_submit|quote_.*|booking_requested|.*_submit|.*_click|careers_apply)$`) and a
    **GA4 Event** tag with event name `{{Event}}` and the three parameters as data layer variables.
 3. **Conversions.** In GA4 → Admin → Key events, mark `quick_form_submit`,

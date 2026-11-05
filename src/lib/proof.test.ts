@@ -10,22 +10,16 @@ const unset = {
 const rated = { stats: { ...unset.stats, rating: 4.7, reviewCount: 23 } }
 
 describe('shownRating', () => {
-  it('shows a real rating everywhere', () => {
-    expect(shownRating(rated, true)).toEqual({ rating: 4.7, reviewCount: 23, sample: false })
-    expect(shownRating(rated, false)).toEqual({ rating: 4.7, reviewCount: 23, sample: false })
+  it('shows a real rating', () => {
+    expect(shownRating(rated)).toEqual({ rating: 4.7, reviewCount: 23 })
   })
 
   it('needs both the rating and the review count', () => {
-    expect(shownRating({ stats: { ...unset.stats, rating: 4.7 } }, true)).toBeNull()
+    expect(shownRating({ stats: { ...unset.stats, rating: 4.7 } })).toBeNull()
   })
 
-  it('shows the sample rating, flagged, outside production only', () => {
-    expect(shownRating(unset, false)).toEqual({
-      rating: sampleProof.rating,
-      reviewCount: sampleProof.reviewCount,
-      sample: true,
-    })
-    expect(shownRating(unset, true)).toBeNull()
+  it('never shows a sample rating', () => {
+    expect(shownRating(unset)).toBeNull()
   })
 })
 

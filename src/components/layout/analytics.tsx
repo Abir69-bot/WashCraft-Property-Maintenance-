@@ -13,7 +13,13 @@ type AnalyticsWindow = Window & {
   clarity?: ((...args: unknown[]) => void) & { q?: unknown[] }
 }
 
-const TRACKED = new Set<EventName>(['call_click', 'sms_click', 'email_click', 'review_link_click'])
+const TRACKED = new Set<EventName>([
+  'call_click',
+  'sms_click',
+  'email_click',
+  'directions_click',
+  'review_link_click',
+])
 const ANALYTICS_COOKIES = /^(_ga|_gid|_gat|_clck|_clsk|CLID|MUID)/
 
 /** Scripts are added once per page load; declining later pauses them instead. */

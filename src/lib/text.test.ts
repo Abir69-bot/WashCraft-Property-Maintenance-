@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { e164, fillTokens, smsHref, telHref, toSlug } from './text'
+import { directionsHref, e164, fillTokens, smsHref, telHref, toSlug } from './text'
 
 describe('fillTokens', () => {
   it('fills known tokens', () => {
@@ -22,12 +22,21 @@ describe('phone links', () => {
     expect(e164('1-720-555-0142')).toBe('+17205550142')
     expect(telHref('720.555.0142')).toBe('tel:+17205550142')
     expect(smsHref('720 555 0142')).toBe('sms:+17205550142')
+    expect(telHref('+1 (647) 451-0230')).toBe('tel:+16474510230')
   })
 
   it('returns null for placeholders and invalid numbers', () => {
     expect(telHref('[PHONE]')).toBeNull()
     expect(smsHref('555-0142')).toBeNull()
     expect(e164(null)).toBeNull()
+  })
+})
+
+describe('directionsHref', () => {
+  it('links to Google Maps directions to the address', () => {
+    expect(directionsHref('43 Ridgemoor Ave, Scarborough, ON M1N 1M5')).toBe(
+      'https://www.google.com/maps/dir/?api=1&destination=43%20Ridgemoor%20Ave%2C%20Scarborough%2C%20ON%20M1N%201M5',
+    )
   })
 })
 

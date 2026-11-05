@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { site } from '../src/config/site'
+import { e164 } from '../src/lib/text'
 
 import { expectAccessible, RADIX_FOCUS_PROXY, skipCookieBanner } from './helpers'
 
@@ -53,8 +54,13 @@ test.describe('home page', () => {
       await page.goto(path)
       const text = await page.locator('body').innerText()
       expect(text, path).not.toMatch(/TODO|\[PHONE\]|\[EMAIL\]|\[HOURS\]|555-01\d\d|example\.com/)
-      // Call links only appear once a phone number is confirmed (none is in the seed).
-      await expect(page.locator('a[href^="tel:"], a[href^="sms:"]'), path).toHaveCount(0)
+      // Every call and text link goes to the confirmed business number.
+      const calls = page.locator('a[href^="tel:"], a[href^="sms:"]')
+      await expect(calls.first(), path).toBeAttached()
+      for (const href of await calls.evaluateAll((links) =>
+        links.map((a) => a.getAttribute('href')),
+      ))
+        expect(href?.replace(/^(tel|sms):/, ''), path).toBe(e164(site.phone))
       // Every email link goes to the confirmed business address.
       const emails = page.locator('a[href^="mailto:"]')
       await expect(emails.first(), path).toBeAttached()

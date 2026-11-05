@@ -151,6 +151,52 @@ test.describe('templates', () => {
     await expect(page.getByLabel('Search services')).toHaveCount(0)
   })
 
+  test('every area page has its map, a credited local photo and the business card', async ({
+    page,
+  }) => {
+    // Map tiles come from OpenStreetMap; the test doesn't need the pictures.
+    await page.route(/tile\.openstreetmap\.org/, (route) => route.fulfill({ status: 204 }))
+    for (const city of cities) {
+      await page.goto(`/areas/${toSlug(city.name)}`)
+      const hero = page.locator('section[aria-labelledby="page-heading"]')
+      await expect(hero.getByRole('heading', { level: 1 })).toHaveText(
+        `Property Maintenance in ${city.name}`,
+      )
+      const map = hero.getByRole('region', {
+        name: `Map of ${city.name} and nearby cities we serve`,
+      })
+      // The map loads as it nears the screen (on a phone it sits below the business card).
+      await map.scrollIntoViewIfNeeded()
+      await expect(map.locator('.leaflet-interactive').first(), city.name).toBeAttached()
+      const photo = hero.getByRole('figure').getByRole('img')
+      await expect(photo).toHaveAttribute('alt', /\S/)
+      await photo.scrollIntoViewIfNeeded()
+      await expect
+        .poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth))
+        .toBeGreaterThan(0)
+      await expect(hero.getByRole('figure')).toContainText('Photo:')
+      await expect(
+        hero.getByRole('heading', { name: `${site.shortName} in ${city.name}`, level: 2 }),
+      ).toBeVisible()
+    }
+  })
+
+  test('area map markers open a link to that area', async ({ page }) => {
+    await page.route(/tile\.openstreetmap\.org/, (route) => route.fulfill({ status: 204 }))
+    await page.goto('/areas/scarborough')
+    const map = page.getByRole('region', { name: /^Map of Scarborough/ })
+    await map.scrollIntoViewIfNeeded()
+    await map.locator('.leaflet-interactive').first().waitFor()
+    // Markers are drawn in service-area order, so the second is the next city. On a phone it
+    // can sit outside the visible map, so the click is sent to the marker directly.
+    const next = site.serviceAreas[1]
+    await map.locator('.leaflet-interactive').nth(1).dispatchEvent('click')
+    await expect(map.getByRole('link', { name: `See ${next}` })).toHaveAttribute(
+      'href',
+      `/areas/${toSlug(next)}`,
+    )
+  })
+
   test('service-in-city pages stay off until the feature flag is on', async ({ page }) => {
     const response = await page.goto('/areas/scarborough/gutter-cleaning')
     expect(response?.status()).toBe(404)

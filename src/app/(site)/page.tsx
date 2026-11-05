@@ -13,7 +13,6 @@ import {
   NightCommercial,
   NightFaq,
   NightFinalCta,
-  NightFounder,
   NightGuarantee,
   NightHero,
   NightHowItWorks,
@@ -44,12 +43,6 @@ import { categoryHref, COMMERCIAL_CATEGORY } from '@/lib/routes'
 import { fillTokens } from '@/lib/text'
 import { asMedia, mediaSrc, publishedServices, serviceGroups } from '@/lib/view'
 import type { Media, Service } from '@/payload-types'
-
-/**
- * The display headings' font (globals.css). Preloaded with a rendered <link> (React hoists it
- * into <head>) rather than preload(), whose hint also fires when other pages prefetch this one.
- */
-const DISPLAY_FONT = '/fonts/archivo-expanded-extrabold-v25.woff2'
 
 type HomeSection = (typeof HOME_SECTIONS)[number]
 
@@ -175,7 +168,7 @@ export default async function HomePage() {
     ),
     'before-after': <NightBeforeAfter items={home.gallery} />,
     guarantee: <NightGuarantee guarantee={shownGuarantee(site)} />,
-    'need-us-now': <NeedUsNow phone={site.phone} />,
+    'need-us-now': <NeedUsNow phone={site.phone} tone="night" />,
     testimonials: <NightTestimonials testimonials={home.testimonials} site={site} />,
     'why-choose-us': <NightWhyChooseUs cards={home.homepage.whyChooseUs} region={region} />,
     comparison: flags.comparisonTable && <ComparisonTable comparison={home.homepage.comparison} />,
@@ -188,7 +181,8 @@ export default async function HomePage() {
       />
     ),
     plans: quote.instantPricing && <PlansTeaser plans={home.plans} />,
-    founder: <NightFounder founder={home.founder} region={region} />,
+    // Removed at the owner's request (2026-11-05).
+    founder: null,
     'service-areas': <NightServiceAreas cities={cities} region={region} />,
     faq: <NightFaq faqs={home.faqs} region={region} />,
     articles: <LatestArticles posts={home.posts} />,
@@ -211,8 +205,7 @@ export default async function HomePage() {
     ...new Set(stockUse.filter((use) => shown.has(use.section)).map((use) => use.photo)),
   ]
   return (
-    <div className="home-night">
-      <link rel="preload" href={DISPLAY_FONT} as="font" type="font/woff2" crossOrigin="anonymous" />
+    <div className="night-theme">
       {enabled.map((item) => (
         <Fragment key={item.id ?? item.section}>{sections[item.section]}</Fragment>
       ))}

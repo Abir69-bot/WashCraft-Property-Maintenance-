@@ -87,7 +87,6 @@ export function Testimonials({
           <p className="flex flex-wrap items-center gap-2 font-semibold text-ink">
             <Stars rating={Math.round(rated.rating)} /> {rated.rating.toFixed(1)} from{' '}
             {rated.reviewCount} Google reviews
-            <SampleBadge show={rated.sample} />
             {site.googleReviewUrl && (
               <a
                 href={site.googleReviewUrl}

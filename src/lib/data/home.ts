@@ -1,12 +1,4 @@
-import type {
-  Faq,
-  GalleryItem,
-  Homepage,
-  Plan,
-  Post,
-  TeamMember,
-  Testimonial,
-} from '@/payload-types'
+import type { Faq, GalleryItem, Homepage, Plan, Post, Testimonial } from '@/payload-types'
 
 import { cachedQuery, getPayloadClient } from './cache'
 
@@ -17,14 +9,13 @@ export type HomeData = {
   faqs: Faq[]
   posts: Post[]
   plans: Plan[]
-  founder: TeamMember | null
 }
 
 export const getHomeData = cachedQuery('home', async (): Promise<HomeData> => {
   const payload = await getPayloadClient()
   const common = { overrideAccess: false } as const
   const all = { overrideAccess: false, pagination: false } as const
-  const [homepage, gallery, testimonials, faqs, posts, plans, founder] = await Promise.all([
+  const [homepage, gallery, testimonials, faqs, posts, plans] = await Promise.all([
     payload.findGlobal({ slug: 'homepage', depth: 1 }),
     payload.find({
       ...common,
@@ -65,13 +56,6 @@ export const getHomeData = cachedQuery('home', async (): Promise<HomeData> => {
       sort: 'order',
       depth: 0,
     }),
-    payload.find({
-      ...common,
-      collection: 'team-members',
-      where: { isFounder: { equals: true } },
-      limit: 1,
-      depth: 1,
-    }),
   ])
 
   return {
@@ -81,6 +65,5 @@ export const getHomeData = cachedQuery('home', async (): Promise<HomeData> => {
     faqs: faqs.docs,
     posts: posts.docs as Post[],
     plans: plans.docs,
-    founder: founder.docs[0] ?? null,
   }
 })

@@ -1,18 +1,18 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { areaPhotos } from '@/assets/area-photos'
 import { CmsImage } from '@/components/cms-image'
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
+import { AreaHero } from '@/components/sections/area-hero'
 import { FaqList } from '@/components/sections/areas-and-faq'
 import { ServiceGrid } from '@/components/sections/category-hub'
-import { LocalConditions, NearbyAreas, Neighborhoods } from '@/components/sections/city-blocks'
+import { LocalConditions, NearbyAreas } from '@/components/sections/city-blocks'
 import { FinalCta, HowItWorks, TrustStrip, WhyChooseUs } from '@/components/sections/home-blocks'
-import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { BeforeAfter, Testimonials } from '@/components/sections/proof'
 import { Section } from '@/components/sections/section'
-import { QuoteCard } from '@/components/sections/service-blocks'
-import { ServiceAreaMap } from '@/components/sections/service-area-map'
 import { ZipChecker } from '@/components/sections/zip-checker'
+import { areaSummaries } from '@/config/areas'
 import { consentText } from '@/config/consent'
 import { getLayoutData } from '@/lib/data/layout'
 import { loadCity } from '@/lib/data/load'
@@ -22,7 +22,7 @@ import { notFoundUnlessMoved } from '@/lib/data/redirects'
 import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { inSeasonNow } from '@/lib/seasons'
-import { pageMetadata } from '@/lib/seo/metadata'
+import { excerpt, pageMetadata } from '@/lib/seo/metadata'
 import { cityTitle } from '@/lib/seo/titles'
 import { asMedia, serviceGroups } from '@/lib/view'
 
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: PageProps<'/areas/[city]'>): 
   return pageMetadata({
     path: routes.city(city.slug),
     title: cityTitle(city.name),
-    description: city.intro,
+    description: areaSummaries[city.slug] ?? city.intro,
     seo: city.meta,
     image: asMedia(city.heroImage),
     siteName: layout.site.shortName,
@@ -61,34 +61,37 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
 
   return (
     <>
-      <PageHero
+      <AreaHero
         crumbs={[
           { label: 'Service areas', href: routes.areas },
           { label: city.name, href: routes.city(city.slug) },
         ]}
         eyebrow={`${city.name}, ${city.state}`}
-        icon="house"
         title={cityTitle(city.name)}
-        intro={
-          neighborhoods.length > 0 && (
-            <p>
-              Serving {neighborhoods.join(', ')} and every neighborhood in {city.name}.
-            </p>
-          )
-        }
-        actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
-        aside={
-          // The quick form belongs to the instant-price flow; otherwise a plain quote card.
-          quote.instantPricing ? (
+        summary={city.meta?.description || areaSummaries[city.slug] || excerpt(city.intro)}
+        neighborhoods={neighborhoods}
+        cta={generalCta(quote)}
+        site={site}
+        city={city.name}
+        cities={cities.map(({ name, lat, lng, slug: other }) => ({
+          name,
+          lat,
+          lng,
+          href: routes.city(other),
+        }))}
+        photo={areaPhotos[city.slug] ?? null}
+      />
+      {/* The quick form belongs to the instant-price flow (Feature switches). */}
+      {quote.instantPricing && (
+        <Section id="instant-estimate" title={`Get an instant estimate in ${city.name}`}>
+          <div className="max-w-xl">
             <QuickQuoteCard
               groups={serviceGroups(categories)}
               consentLabel={consentText(site.country, site.shortName)}
             />
-          ) : (
-            <QuoteCard cta={generalCta(quote)} />
-          )
-        }
-      />
+          </div>
+        </Section>
+      )}
       <TrustStrip site={site} />
       <Section id="about-city">
         <div className="grid items-center gap-10 lg:grid-cols-2">
@@ -125,7 +128,6 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
       />
       <BeforeAfter items={page.gallery} title={`Our work in ${city.name}`} />
       <Testimonials testimonials={page.testimonials} site={site} />
-      <Neighborhoods city={city} />
       {/* Shared cards keep the region: they make claims about the business, not this city. */}
       <WhyChooseUs
         cards={shared.whyChooseUs}
@@ -133,13 +135,10 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
         intro={city.whyChooseUs}
         tone="surface"
       />
+      {/* The map is in the hero; this section keeps the postal code check. */}
       <Section id="map" eyebrow="Service area" title={`Do we serve your part of ${city.name}?`}>
-        <div className="grid items-start gap-8 lg:grid-cols-2">
+        <div className="max-w-xl">
           <ZipChecker cities={cities} />
-          <ServiceAreaMap
-            cities={cities.map(({ name, lat, lng }) => ({ name, lat, lng }))}
-            focus={city.name}
-          />
         </div>
       </Section>
       <FaqList

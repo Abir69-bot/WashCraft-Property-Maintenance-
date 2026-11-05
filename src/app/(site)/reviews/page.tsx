@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation'
 import { FilteredList } from '@/components/filtered-list'
 import { FinalCta } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
-import { SampleBadge } from '@/components/sample-badge'
 import { TestimonialCard } from '@/components/sections/proof'
 import { Section } from '@/components/sections/section'
 import { Stars } from '@/components/stars'
@@ -33,10 +32,10 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-function LeaveReview({ site }: { site: SiteConfig }) {
+function LeaveReview({ site, tone = 'outline' }: { site: SiteConfig; tone?: 'outline' | 'night' }) {
   if (!site.googleReviewUrl) return null
   return (
-    <Button asChild size="lg" variant="outline">
+    <Button asChild size="lg" variant={tone}>
       <a href={site.googleReviewUrl} target="_blank" rel="noopener" data-track="review_link_click">
         Leave us a review <ExternalLink aria-hidden />
         <span className="sr-only">(opens Google in a new tab)</span>
@@ -124,10 +123,9 @@ export default async function ReviewsPage() {
         title={title(site.region)}
         intro={
           rated ? (
-            <p className="flex flex-wrap items-center gap-2 font-semibold text-ink">
+            <p className="flex flex-wrap items-center gap-2 font-semibold text-white">
               <Stars rating={Math.round(rated.rating)} /> {rated.rating.toFixed(1)} out of 5 from{' '}
               {rated.reviewCount} Google reviews
-              <SampleBadge show={rated.sample} />
             </p>
           ) : (
             intro
@@ -136,7 +134,7 @@ export default async function ReviewsPage() {
         actions={
           <>
             <QuoteActions cta={generalCta(quote)} phone={site.phone} />
-            <LeaveReview site={site} />
+            <LeaveReview site={site} tone="night" />
           </>
         }
       />

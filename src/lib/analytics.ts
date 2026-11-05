@@ -18,6 +18,7 @@ export type EventName =
   | 'call_click'
   | 'sms_click'
   | 'email_click'
+  | 'directions_click'
   | 'review_link_click'
   | 'careers_apply'
   | 'contact_submit'

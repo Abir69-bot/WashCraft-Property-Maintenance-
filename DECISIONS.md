@@ -887,3 +887,68 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   need API keys this project doesn't have.
 - **Services page:** the category chips and search box were removed at the owner's request.
   Every category heading and service now shows at once, 3 / 2 / 1 cards per row.
+
+## Service area page heroes (2026-11-05)
+
+- **City page hero** (`AreaHero`): heading, a one-sentence summary, quote and call buttons and a
+  business card on the left; a dark map and a photo of a local landmark on the right. The card
+  lists only confirmed details from site settings (phone, email, hours, address or "we come to
+  you", free estimates), so placeholders never show. The owner's reference screenshot was not
+  attached to the request, so the layout follows its written description.
+- **Summaries** live in `config/areas.ts` (one per city slug, under 160 characters, confirmed
+  services only). A description saved in the city's SEO tab replaces it in the hero and the
+  search snippet; a city with neither uses the start of its intro. No schema change.
+- **Map:** the existing Leaflet + OpenStreetMap map, with the home page's dark tile filter.
+  On city pages every marker opens a popup linking to that city's page, and the scroll wheel
+  zooms only after the map is clicked. Leaflet still loads only when the map nears the screen.
+  The second map lower on the page was removed; the postal code checker stays.
+- **Photos** (`public/images/service-areas/`, registered in `assets/area-photos.ts`) are real
+  photos of each place from Wikimedia Commons, cropped to 16:9 at 1600 × 900, and credited in
+  the caption under the photo as their licenses require. They show the place, never
+  WashCraft's work:
+
+  | City          | Photo                                        | Author                      | License         |
+  | ------------- | -------------------------------------------- | --------------------------- | --------------- |
+  | Scarborough   | Scarborough Bluffs - Bluffer's Park          | The Cosmonaut               | CC BY-SA 2.5 CA |
+  | North York    | DowntownNorthYork20150914                    | PFHLai                      | CC BY-SA 3.0    |
+  | Etobicoke     | Humber Bay Shores in Toronto 2026-05-15      | Janusz Sobolewski           | CC BY 4.0       |
+  | Markham       | MarkhamCivicCenter11                         | Raysonho @ Open Grid Sched. | CC0             |
+  | Vaughan       | Vaughan Metropolitan Centre aerial view 2022 | Canmenwalker                | CC BY 4.0       |
+  | Richmond Hill | RichmondHillCentreForThePerformingArts       | Raysonho @ Open Grid Sched. | CC0             |
+  | Mississauga   | Skyline of Mississauga, Ontario              | K2HWY                       | CC BY 4.0       |
+
+  The CC BY-SA crops are shared under the same license. A new city without a photo shows the
+  map alone.
+
+## Site-wide theme, official contact details and cleanup (2026-11-05)
+
+- **One theme across the site.** The home page's night palette is the reference. The header is
+  dark on every page. Every inner page hero (`PageHero`, `AreaHero` and the contact hero) uses
+  the night background (`hero-night`), white text and the wide display face for its H1
+  (`display-type display-page`), with a new `night` button style for secondary actions. Body
+  sections below the hero stay light, so long text, forms and tables keep their contrast. The
+  quote flow and legal pages keep their plain light headers (forms and documents). White cards
+  in a hero keep their own colours: the night text colours (`NIGHT_TEXT`) apply to the text
+  column only, never to the map, whose Leaflet popups and attribution are white.
+- **Display font on every page.** The 14 KB Archivo file is now preloaded by the site layout
+  instead of the home page, as every hero uses it.
+- **Official contact details** (owner, 2026-11-05) in `config/site.ts`: phone
+  +1 (647) 451-0230, `info@washcraft.ca`, every day 7:00 AM – 8:00 PM, 43 Ridgemoor Ave,
+  Scarborough, ON M1N 1M5, region "Toronto and the GTA". The address links to Google Maps
+  directions (`directionsHref`, tracked as `directions_click`). Saved Site settings win over
+  `site.ts`, so the live site needs them entered in the admin too (CONTENT_TODO.md §1). The
+  header shows its own phone link only from 1536 px: the bar above it already has the number.
+- **Contact page:** a night hero with "Contact Us", "Get Your Free Quote" and "Call
+  +1 (647) 451-0230" on the left and the details card (`ContactDetails`, shared with the area
+  pages) on the right. The message form, postal code check and service area map are unchanged.
+- **Removed at the owner's request:** "Meet the founder" (home and About pages; the founder's
+  bio page stays as the blog author page), the neighborhoods section on city and
+  service-in-city pages, and the About hero's photo placeholder (it shows once a photo is
+  uploaded). The CMS fields stay, so no migration: the home page's `founder` section renders
+  nothing, like `client-logos`.
+- **Reviews:** the sample reviews are fictional customers with natural, varied wording across
+  window, gutter, exterior (soft washing), pressure washing and snow removal jobs, marked
+  `isSample`, so they show a "Sample" badge in development and preview and never appear on the
+  live site (brief §3.2). There is no sample rating any more: a rating shows only real numbers
+  (Google's daily sync or Site settings). Verified Google reviews already have their own path
+  (`source: google`, a "Verified Google review" link, `lib/reviews/google.ts`).

@@ -57,17 +57,17 @@ export const site: SiteConfig = {
   shortName: 'WashCraft',
   // Tagline and email confirmed by the owner 2026-10-31 (see DECISIONS.md).
   tagline: 'Professional Property Care, Every Season',
-  // Not confirmed yet: no phone number or hours are shown until the owner sets them.
-  phone: '[PHONE]',
-  email: 'abirbotnsu69@gmail.com',
-  // Never publish a home address without the owner's explicit permission.
-  address: null,
-  hours: '[HOURS]',
+  // Official contact details, address and region given by the owner 2026-11-05 (DECISIONS.md).
+  phone: '+1 (647) 451-0230',
+  email: 'info@washcraft.ca',
+  // "street, city, ON postal code", so the structured data can split it into its parts.
+  address: '43 Ridgemoor Ave, Scarborough, ON M1N 1M5',
+  hours: 'Every day, 7:00 AM – 8:00 PM',
   country: 'CA',
   currency: 'CAD',
   locale: 'en-CA',
-  // Reads after "in" ("Gutter Cleaning in the Toronto area"). Doesn't claim the whole GTA.
-  region: 'the Toronto area',
+  // Reads after "in" ("Gutter Cleaning in Toronto and the GTA").
+  region: 'Toronto and the GTA',
   // Confirmed by the owner 2026-10-27 (see DECISIONS.md).
   serviceAreas: [
     'Scarborough',
@@ -101,13 +101,12 @@ export const site: SiteConfig = {
 }
 
 /**
- * Sample proof (brief §3.2), so the rating badge, trust strip and guarantee band can be checked
- * in development and preview before the owner has real ones. Used only while the real value is
- * unset, always with a "Sample" badge, and never on the live site (`lib/proof.ts`).
+ * Sample proof (brief §3.2), so the guarantee band can be checked in development and preview
+ * before the owner has a real one. Used only while the real value is unset, always with a
+ * "Sample" badge, and never on the live site (`lib/proof.ts`). There is no sample rating: a
+ * rating only ever shows the real numbers (owner, 2026-11-05).
  */
 export const sampleProof = {
-  rating: 4.9,
-  reviewCount: 48,
   guarantee:
     'Sample guarantee. If any part of the job isn’t right, tell us within 7 days and we’ll come back to fix it. Write your own wording in Site settings.',
 } as const

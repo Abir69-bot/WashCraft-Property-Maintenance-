@@ -3,10 +3,10 @@ import type { Metadata } from 'next'
 
 import { CmsImage } from '@/components/cms-image'
 import { credentials } from '@/components/sections/commercial-blocks'
-import { FinalCta, Founder, TrustStrip } from '@/components/sections/home-blocks'
+import { FinalCta, TrustStrip } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { Section } from '@/components/sections/section'
-import { getAboutPage, getTeam } from '@/lib/data/content'
+import { getAboutPage } from '@/lib/data/content'
 import { getLayoutData } from '@/lib/data/layout'
 import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
@@ -30,19 +30,14 @@ export async function generateMetadata(): Promise<Metadata> {
 const paragraphs = (text: string) => text.split(/\n\s*\n/).filter((part) => part.trim())
 
 /**
- * About (brief §9.7): story, mission and values, founder, credentials with downloadable
- * certificates, and community involvement. Sections without real content are left out. The team
- * grid was removed at the owner's request (2026-11-01); bio pages stay for the founder's link.
+ * About (brief §9.7): story, mission and values, credentials with downloadable certificates, and
+ * community involvement. Sections without real content are left out. The team grid (2026-11-01)
+ * and "Meet the founder" (2026-11-05) were removed at the owner's request.
  */
 export default async function AboutPage() {
-  const [{ site, quote }, about, team] = await Promise.all([
-    getLayoutData(),
-    getAboutPage(),
-    getTeam(),
-  ])
+  const [{ site, quote }, about] = await Promise.all([getLayoutData(), getAboutPage()])
   const region = site.region
   const fill = (text: string) => fillTokens(text, { region })
-  const founder = team.find((member) => member.isFounder) ?? null
   const proof = credentials(site)
   const certificates = (about.certificates ?? []).flatMap((certificate) => {
     const file = asMedia(certificate.file)
@@ -58,14 +53,17 @@ export default async function AboutPage() {
         lead={fill(about.headline)}
         intro={fill(about.intro)}
         actions={<QuoteActions cta={generalCta(quote)} phone={site.phone} />}
+        // Only once the owner uploads the photo: an empty placeholder never shows in the hero.
         aside={
-          <CmsImage
-            media={about.heroImage}
-            label={about.heroImageLabel}
-            ratio="4/3"
-            sizes="(min-width: 1024px) 560px, 100vw"
-            priority
-          />
+          asMedia(about.heroImage) && (
+            <CmsImage
+              media={about.heroImage}
+              label={about.heroImageLabel}
+              ratio="4/3"
+              sizes="(min-width: 1024px) 560px, 100vw"
+              priority
+            />
+          )
         }
       />
 
@@ -99,8 +97,6 @@ export default async function AboutPage() {
           )}
         </Section>
       )}
-
-      <Founder founder={founder} region={region} />
 
       {(proof.length > 0 || certificates.length > 0) && (
         <Section id="credentials" eyebrow="Paperwork" title="Our credentials">
