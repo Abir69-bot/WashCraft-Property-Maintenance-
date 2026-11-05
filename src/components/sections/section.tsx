@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 const TONES = {
-  default: 'bg-white',
+  default: 'bg-page',
   surface: 'bg-surface',
   dark: 'on-dark',
 } as const

@@ -70,7 +70,7 @@ export function SiteSearch() {
             <li key={entry.href}>
               <Link
                 href={entry.href}
-                className="block rounded-card border border-border bg-white p-4 no-underline hover:border-primary"
+                className="block rounded-card border border-border bg-card p-4 no-underline hover:border-primary"
               >
                 <span className="block text-small font-semibold text-secondary-strong">
                   {entry.kind}

@@ -54,7 +54,7 @@ export function ServiceChecklist<T extends FieldValues>({
             <details
               key={group.title}
               open={open.includes(group.title) || count > 0}
-              className="group rounded-card border border-border bg-white"
+              className="group rounded-card border border-border bg-card"
             >
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 font-semibold text-primary">
                 <span>

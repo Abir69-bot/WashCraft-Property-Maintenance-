@@ -20,7 +20,7 @@ export function LocalConditions({ city }: { city: City }) {
     >
       <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => (
-          <li key={stat.id ?? stat.label} className="rounded-card bg-white p-6">
+          <li key={stat.id ?? stat.label} className="rounded-card border border-border bg-card p-6">
             <p className="text-h2 font-heading font-extrabold text-primary">{stat.value}</p>
             <p className="mt-1 font-semibold text-ink">{stat.label}</p>
             <a
@@ -50,7 +50,7 @@ export function NearbyAreas({ cities, current }: { cities: AreaCity[]; current: 
           <li key={city.id}>
             <Link
               href={routes.city(city.slug)}
-              className="flex min-h-12 items-center gap-2 rounded-card border border-border bg-white px-4 font-semibold no-underline hover:border-primary"
+              className="flex min-h-12 items-center gap-2 rounded-card border border-border bg-card px-4 font-semibold no-underline hover:border-primary"
             >
               <MapPin aria-hidden className="size-4 shrink-0 text-secondary-strong" />
               {city.name}

@@ -42,7 +42,7 @@ function Attribution({ testimonial }: { testimonial: Testimonial }) {
 export function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   const photo = asMedia(testimonial.photo)
   return (
-    <figure className="h-full overflow-hidden rounded-card border border-border bg-white">
+    <figure className="h-full overflow-hidden rounded-card border border-border bg-card">
       {photo && (
         <CmsImage
           media={photo}
@@ -100,7 +100,7 @@ export function Testimonials({
         ) : undefined
       }
     >
-      <figure className="grid items-center gap-8 rounded-card bg-white p-6 md:grid-cols-[16rem_1fr] md:p-10">
+      <figure className="grid items-center gap-8 rounded-card border border-border bg-card p-6 md:grid-cols-[16rem_1fr] md:p-10">
         <CmsImage
           media={featured.photo}
           label={featured.photoLabel || `Photo of ${featured.name} at their home`}

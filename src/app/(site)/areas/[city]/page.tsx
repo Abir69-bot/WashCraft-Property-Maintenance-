@@ -8,7 +8,7 @@ import { FaqList } from '@/components/sections/areas-and-faq'
 import { ServiceGrid } from '@/components/sections/category-hub'
 import { LocalConditions, NearbyAreas } from '@/components/sections/city-blocks'
 import { FinalCta, HowItWorks, TrustStrip, WhyChooseUs } from '@/components/sections/home-blocks'
-import { BeforeAfter, Testimonials } from '@/components/sections/proof'
+import { BeforeAfter } from '@/components/sections/proof'
 import { Section } from '@/components/sections/section'
 import { ZipChecker } from '@/components/sections/zip-checker'
 import { areaSummaries } from '@/config/areas'
@@ -112,7 +112,6 @@ export default async function CityPage({ params }: PageProps<'/areas/[city]'>) {
         tone="surface"
       />
       <BeforeAfter items={page.gallery} title={`Our work in ${city.name}`} />
-      <Testimonials testimonials={page.testimonials} site={site} />
       {/* Shared cards keep the region: they make claims about the business, not this city. */}
       <WhyChooseUs
         cards={shared.whyChooseUs}

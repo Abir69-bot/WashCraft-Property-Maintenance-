@@ -5,7 +5,7 @@ export function TodoChip({ label }: { label: string }) {
   return (
     <span
       title="Placeholder: set this in src/config/site.ts or the admin's Site settings"
-      className="inline-flex items-center rounded-md border border-dashed border-ink bg-todo px-2 py-0.5 font-mono text-small font-semibold text-ink"
+      className="inline-flex items-center rounded-md border border-dashed border-brand-ink bg-todo px-2 py-0.5 font-mono text-small font-semibold text-brand-ink"
     >
       TODO: {label}
     </span>

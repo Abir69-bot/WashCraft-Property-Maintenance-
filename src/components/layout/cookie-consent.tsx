@@ -33,7 +33,7 @@ export function CookieConsent() {
   return (
     <section
       aria-label="Cookie choices"
-      className="fixed inset-x-3 bottom-[4.25rem] z-50 mx-auto max-w-2xl animate-slide-in-up rounded-card border border-border bg-white p-5 text-small text-ink shadow-xl md:bottom-4"
+      className="fixed inset-x-3 bottom-[4.25rem] z-50 mx-auto max-w-2xl animate-slide-in-up rounded-card border border-border bg-card p-5 text-small night-palette text-ink shadow-xl md:bottom-4"
     >
       <p>
         We&apos;d like to use cookies to see how visitors use this site, so we can improve it.

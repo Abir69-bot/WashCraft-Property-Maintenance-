@@ -33,6 +33,9 @@ export const colorTokens: ColorToken[] = [
   { name: 'night', hex: '#061B23', use: 'Home page background' },
   { name: 'night-raised', hex: '#0B2631', use: 'Home page alternating bands and cards' },
   { name: 'night-muted', hex: '#A7BDC7', use: 'Secondary text on the home page' },
+  { name: 'page', hex: '#FFFFFF', use: 'Page background (night inside night-palette)' },
+  { name: 'card', hex: '#FFFFFF', use: 'Cards, panels, fields (night-raised in night-palette)' },
+  { name: 'error-on-dark', hex: '#FF8A80', use: 'Error text and borders on night pages' },
 ]
 
 export type ContrastPair = { fg: string; bg: string; min: 3 | 4.5; where: string }
@@ -72,6 +75,13 @@ export const contrastPairs: ContrastPair[] = [
   { fg: 'cta', bg: 'night-raised', min: 4.5, where: 'Accent links on home cards' },
   { fg: 'secondary-on-dark', bg: 'night', min: 4.5, where: 'Teal text on the home page' },
   { fg: 'secondary-on-dark', bg: 'night-raised', min: 4.5, where: 'Teal text on home bands' },
+  // Inner pages: `night-palette` (globals.css) remaps the light tokens onto the night colours.
+  { fg: 'success', bg: 'night', min: 4.5, where: 'Success text on night pages' },
+  { fg: 'success', bg: 'night-raised', min: 4.5, where: 'Success text on night cards' },
+  { fg: 'error-on-dark', bg: 'night', min: 4.5, where: 'Error messages on night pages' },
+  { fg: 'error-on-dark', bg: 'night-raised', min: 4.5, where: 'Error messages in night fields' },
+  { fg: 'border-strong', bg: 'night', min: 3, where: 'Form field borders on night pages' },
+  { fg: 'border-strong', bg: 'night-raised', min: 3, where: 'Form field borders in night cards' },
 ]
 
 export function tokenHex(name: string): string {

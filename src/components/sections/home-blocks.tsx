@@ -38,7 +38,7 @@ export function QuickQuoteStrip({
   consentLabel: string
 }) {
   return (
-    <section aria-labelledby="quick-quote-heading" className="border-y border-border bg-white">
+    <section aria-labelledby="quick-quote-heading" className="border-y border-border bg-card">
       <div className="container py-10">
         <h2 id="quick-quote-heading" className="text-h3">
           Get a quick quote
@@ -282,11 +282,11 @@ export function ComparisonTable({
         role="region"
         aria-label="Comparison table"
         tabIndex={0}
-        className="overflow-x-auto rounded-card border border-border bg-white"
+        className="overflow-x-auto rounded-card border border-border bg-card"
       >
         <table className="w-full min-w-xl text-left">
           <caption className="sr-only">WashCraft compared with typical alternatives</caption>
-          <thead className="bg-primary text-white">
+          <thead className="bg-brand-primary text-white">
             <tr>
               <th scope="col" className="p-4">
                 <span className="sr-only">Criterion</span>
@@ -341,7 +341,7 @@ export function PlansTeaser({ plans }: { plans: Plan[] }) {
           return (
             <li
               key={plan.id}
-              className={`flex flex-col rounded-card border bg-white p-6 ${plan.highlighted ? 'border-2 border-primary shadow-lg' : 'border-border'}`}
+              className={`flex flex-col rounded-card border bg-card p-6 ${plan.highlighted ? 'border-2 border-primary shadow-lg' : 'border-border'}`}
             >
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-h3">{plan.name}</h3>

@@ -8,11 +8,11 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        cta: 'bg-cta text-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_6px_14px_-6px_rgb(0_0_0/0.35)] hover:bg-cta-hover',
+        cta: 'bg-cta text-brand-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_6px_14px_-6px_rgb(0_0_0/0.35)] hover:bg-cta-hover',
         primary:
-          'bg-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.15),0_6px_14px_-6px_rgb(0_0_0/0.4)] hover:bg-primary-hover',
-        outline: 'border-2 border-primary bg-white text-primary hover:bg-surface',
-        inverse: 'bg-white text-primary hover:bg-surface',
+          'bg-brand-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.15),0_6px_14px_-6px_rgb(0_0_0/0.4)] hover:bg-primary-hover',
+        outline: 'border-2 border-primary bg-card text-primary hover:bg-surface',
+        inverse: 'bg-card text-primary hover:bg-surface',
         /** Secondary button on the night theme (home page and page heroes). */
         night: 'border border-white/25 text-white hover:border-white hover:bg-white/5',
         ghost: 'text-primary hover:bg-surface',

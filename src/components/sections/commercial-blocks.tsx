@@ -115,7 +115,10 @@ export function CaseStudies({ items }: { items: CaseStudy[] }) {
             (service): service is Service => typeof service === 'object',
           )
           return (
-            <li key={study.id} className="overflow-hidden rounded-card bg-white">
+            <li
+              key={study.id}
+              className="overflow-hidden rounded-card border border-border bg-card"
+            >
               <CmsImage
                 media={study.image}
                 label={study.imageLabel}

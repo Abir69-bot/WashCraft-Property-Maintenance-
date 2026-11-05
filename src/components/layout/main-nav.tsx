@@ -15,10 +15,9 @@ export type NavLink = { label: string; href: string }
  */
 const triggerClass =
   'nav-top group inline-flex min-h-11 items-center gap-1 rounded-full px-2 text-[0.9375rem] font-semibold whitespace-nowrap text-ink transition-colors hover:bg-surface hover:text-primary data-[state=open]:bg-surface data-[state=open]:text-primary xl:px-3 xl:text-base'
+/** Dropdown panels (Services, Service Areas): the home page's night background and gold accent. */
 const panelClass =
-  'absolute top-full z-50 mt-2 animate-fade-in rounded-card border border-border bg-white p-6 text-ink shadow-xl [--focus-ring:var(--primary)]'
-const linkClass =
-  'block rounded-md px-2 py-1.5 text-small text-ink no-underline hover:bg-surface hover:text-primary'
+  'absolute top-full left-0 z-50 mt-3 animate-menu-in rounded-xl border border-white/10 bg-night p-3 text-white shadow-2xl [--focus-ring:var(--cta)]'
 
 function Trigger({ children }: { children: React.ReactNode }) {
   return (
@@ -32,33 +31,33 @@ function Trigger({ children }: { children: React.ReactNode }) {
   )
 }
 
-function MenuLink({
-  href,
-  children,
-  className,
-}: {
-  href: string
-  children: React.ReactNode
-  className?: string
-}) {
+/**
+ * A dropdown link: a gold arrow slides in on hover and focus. `all` marks the closing
+ * "All …" link, set apart by a divider and shown in gold.
+ */
+function MenuLink({ link, all = false }: { link: NavLink; all?: boolean }) {
   return (
-    <NavigationMenu.Link asChild>
-      <Link href={href} className={cn(linkClass, className)}>
-        {children}
-      </Link>
-    </NavigationMenu.Link>
-  )
-}
-
-function LinkList({ links }: { links: NavLink[] }) {
-  return (
-    <ul className="grid gap-0.5">
-      {links.map((link) => (
-        <li key={link.href}>
-          <MenuLink href={link.href}>{link.label}</MenuLink>
-        </li>
-      ))}
-    </ul>
+    <li>
+      <NavigationMenu.Link asChild>
+        <Link
+          href={link.href}
+          className={cn(
+            'group/item flex min-h-12 items-center justify-between gap-3 rounded-lg px-4 py-3 font-semibold no-underline transition-colors duration-200 hover:bg-white/[0.07] focus-visible:bg-white/[0.07]',
+            all ? 'mt-1 border-t border-white/10 text-cta' : 'text-white/90 hover:text-white',
+          )}
+        >
+          {link.label}
+          <ArrowRight
+            aria-hidden
+            className={cn(
+              'size-4 shrink-0 text-cta transition duration-200',
+              !all &&
+                '-translate-x-1 opacity-0 group-hover/item:translate-x-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:opacity-100',
+            )}
+          />
+        </Link>
+      </NavigationMenu.Link>
+    </li>
   )
 }
 
@@ -84,38 +83,13 @@ export function MainNav({
         <NavigationMenu.Item className="relative">
           <Trigger>Services</Trigger>
           {/* Dark two-column panel, opening right under the Services button. */}
-          <NavigationMenu.Content className="absolute top-full left-0 z-50 mt-3 w-[min(38rem,calc(100vw-3rem))] animate-menu-in rounded-xl border border-white/10 bg-night p-3 text-white shadow-2xl [--focus-ring:var(--cta)]">
+          <NavigationMenu.Content className={cn(panelClass, 'w-[min(38rem,calc(100vw-3rem))]')}>
             <div className="grid grid-cols-2 gap-x-2">
               {services.map((column, index) => (
                 <ul key={index} className="grid content-start gap-0.5">
-                  {column.map((link) => {
-                    const all = link === last
-                    return (
-                      <li key={link.label}>
-                        <NavigationMenu.Link asChild>
-                          <Link
-                            href={link.href}
-                            className={cn(
-                              'group/item flex min-h-12 items-center justify-between gap-3 rounded-lg px-4 py-3 font-semibold no-underline transition-colors duration-200 hover:bg-white/[0.07] focus-visible:bg-white/[0.07]',
-                              all
-                                ? 'mt-1 border-t border-white/10 text-cta'
-                                : 'text-white/90 hover:text-white',
-                            )}
-                          >
-                            {link.label}
-                            <ArrowRight
-                              aria-hidden
-                              className={cn(
-                                'size-4 shrink-0 text-cta transition duration-200',
-                                !all &&
-                                  '-translate-x-1 opacity-0 group-hover/item:translate-x-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:opacity-100',
-                              )}
-                            />
-                          </Link>
-                        </NavigationMenu.Link>
-                      </li>
-                    )
-                  })}
+                  {column.map((link) => (
+                    <MenuLink key={link.label} link={link} all={link === last} />
+                  ))}
                 </ul>
               ))}
             </div>
@@ -124,8 +98,14 @@ export function MainNav({
 
         <NavigationMenu.Item className="relative">
           <Trigger>Service Areas</Trigger>
-          <NavigationMenu.Content className={cn(panelClass, 'left-0 w-64')}>
-            <LinkList links={[...areaLinks, { label: 'All service areas', href: routes.areas }]} />
+          {/* Same dark panel as Services, one column. */}
+          <NavigationMenu.Content className={cn(panelClass, 'w-72')}>
+            <ul className="grid gap-0.5">
+              {areaLinks.map((link) => (
+                <MenuLink key={link.href} link={link} />
+              ))}
+              <MenuLink link={{ label: 'All service areas', href: routes.areas }} all />
+            </ul>
           </NavigationMenu.Content>
         </NavigationMenu.Item>
 

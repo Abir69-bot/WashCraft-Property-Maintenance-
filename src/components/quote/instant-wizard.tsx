@@ -314,7 +314,7 @@ export function InstantWizard({
           className="mt-2 h-2 overflow-hidden rounded-full bg-surface"
         >
           <div
-            className="h-full rounded-full bg-primary transition-[width]"
+            className="h-full rounded-full bg-brand-primary transition-[width]"
             style={{ width: `${((index + 1) / steps.length) * 100}%` }}
           />
         </div>

@@ -30,7 +30,7 @@ export function PostCard({
   const Heading = headingLevel
   const category = postCategory(post.category)
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-card border border-border bg-white">
+    <article className="flex h-full flex-col overflow-hidden rounded-card border border-border bg-card">
       <CmsImage
         media={post.heroImage}
         label={post.heroImageLabel}
@@ -192,7 +192,7 @@ export function SolutionCard({
   region: string
 }) {
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-card border border-border bg-white">
+    <article className="flex h-full flex-col overflow-hidden rounded-card border border-border bg-card">
       <CmsImage
         media={solution.heroImage}
         label={solution.heroImageLabel}

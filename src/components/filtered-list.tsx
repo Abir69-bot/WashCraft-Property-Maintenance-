@@ -8,7 +8,7 @@ export type FilterOption = { value: string; label: string }
 export type FilterItem = { key: string; tags: string[] }
 
 export const chipClass =
-  'min-h-11 rounded-full border border-border-strong px-4 font-semibold text-ink hover:border-primary aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-white'
+  'min-h-11 rounded-full border border-border-strong px-4 font-semibold text-ink hover:border-primary aria-pressed:border-primary aria-pressed:bg-brand-primary aria-pressed:text-white'
 
 /**
  * Cards with filter chips (blog categories, solution topics). The cards are rendered on the

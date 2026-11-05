@@ -39,13 +39,17 @@ const POPULATE = {
 
 export type Proof = { gallery: GalleryItem[]; testimonials: Testimonial[] }
 
+/** Query options for a page's proof: up to six items in admin order, samples hidden live. */
+const proofOptions = (draft: boolean) =>
+  ({ ...readAs(draft), sort: 'order', limit: 6, depth: 1, populate: POPULATE }) as const
+
 /** Before/after pairs and testimonials matching a filter (samples hidden on the live site). */
 async function findProof(
   payload: BasePayload,
   draft: boolean,
   where: { gallery: Where; testimonials: Where },
 ): Promise<Proof> {
-  const options = { ...readAs(draft), sort: 'order', limit: 6, depth: 1, populate: POPULATE }
+  const options = proofOptions(draft)
   const [gallery, testimonials] = await Promise.all([
     payload.find({ collection: 'gallery-items', where: where.gallery, ...options }),
     payload.find({ collection: 'testimonials', where: where.testimonials, ...options }),
@@ -152,7 +156,8 @@ export const getCategoryPage = cachedQuery(
   },
 )
 
-export type CityPage = Proof & { city: City }
+/** City pages show before/after pairs only; reviews were removed at the owner's request. */
+export type CityPage = Pick<Proof, 'gallery'> & { city: City }
 
 export const getCityPage = cachedQuery(
   'city-page',
@@ -168,11 +173,12 @@ export const getCityPage = cachedQuery(
     })
     const city = docs[0]
     if (!city) return null
-    const proof = await findProof(payload, draft, {
-      gallery: { city: { equals: city.id } },
-      testimonials: { city: { equals: city.id } },
+    const gallery = await payload.find({
+      collection: 'gallery-items',
+      where: { city: { equals: city.id } },
+      ...proofOptions(draft),
     })
-    return { city, ...proof }
+    return { city, gallery: gallery.docs }
   },
 )
 

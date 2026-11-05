@@ -19,7 +19,7 @@ export function ZipChecker({ cities }: { cities: AreaCity[] }) {
   const [result, setResult] = useState<Result | null>(null)
 
   return (
-    <div className="rounded-card border border-border bg-white p-6">
+    <div className="rounded-card border border-border bg-card p-6">
       <form
         className="flex flex-wrap items-end gap-3"
         onSubmit={(event) => {

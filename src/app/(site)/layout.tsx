@@ -91,7 +91,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <body className="pb-14 md:pb-0">
         <a
           href="#main"
-          className="sr-only z-50 rounded-full bg-cta px-5 py-3 font-semibold text-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          className="sr-only z-50 rounded-full bg-cta px-5 py-3 font-semibold text-brand-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
         >
           Skip to main content
         </a>

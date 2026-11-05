@@ -761,7 +761,7 @@ export function NightHowItWorks({
               <span
                 aria-hidden
                 className={cn(
-                  'absolute top-1/2 -left-5 z-10 hidden size-10 items-center justify-center rounded-full bg-cta text-ink shadow-lg',
+                  'absolute top-1/2 -left-5 z-10 hidden size-10 items-center justify-center rounded-full bg-cta text-brand-ink shadow-lg',
                   oneRow ? 'md:flex' : 'lg:flex',
                 )}
               >

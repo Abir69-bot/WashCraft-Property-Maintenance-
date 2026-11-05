@@ -47,7 +47,7 @@ function LeaveReview({ site, tone = 'outline' }: { site: SiteConfig; tone?: 'out
 /** A review copied from Google, with the attribution Google requires. */
 function GoogleReviewCard({ review }: { review: GoogleReview }) {
   return (
-    <figure className="h-full rounded-card border border-border bg-white p-6">
+    <figure className="h-full rounded-card border border-border bg-card p-6">
       <Stars rating={review.rating} />
       {review.text && <blockquote className="mt-3 whitespace-pre-line">{review.text}</blockquote>}
       <figcaption className="mt-4 text-small">

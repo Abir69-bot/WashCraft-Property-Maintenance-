@@ -45,7 +45,7 @@ export function BeforeAfterSlider({
       </div>
       <span
         className={cn(
-          'absolute left-3 rounded-full bg-ink/80 px-3 py-1 text-small font-semibold text-white',
+          'absolute left-3 rounded-full bg-brand-ink/80 px-3 py-1 text-small font-semibold text-white',
           night ? 'bottom-3' : 'top-3',
         )}
       >
@@ -53,7 +53,7 @@ export function BeforeAfterSlider({
       </span>
       <span
         className={cn(
-          'absolute right-3 rounded-full bg-ink/80 px-3 py-1 text-small font-semibold text-white',
+          'absolute right-3 rounded-full bg-brand-ink/80 px-3 py-1 text-small font-semibold text-white',
           night ? 'bottom-3' : 'top-3',
         )}
       >
@@ -82,7 +82,7 @@ export function BeforeAfterSlider({
         <span
           className={cn(
             'absolute top-1/2 left-1/2 flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full shadow-lg',
-            night ? 'bg-cta text-ink' : 'bg-white text-primary ring-cta',
+            night ? 'bg-cta text-brand-ink' : 'bg-white text-brand-primary ring-cta',
           )}
         >
           <ChevronsLeftRight className="size-5" />

@@ -17,7 +17,7 @@ export function PopoverContent({
       <PopoverPrimitive.Content
         sideOffset={sideOffset}
         className={cn(
-          'z-50 w-72 max-w-[calc(100vw-2rem)] animate-fade-in rounded-card border border-border bg-white p-4 text-small text-ink shadow-lg',
+          'z-50 w-72 max-w-[calc(100vw-2rem)] animate-fade-in rounded-card border border-border bg-card p-4 text-small text-ink shadow-lg',
           className,
         )}
         {...props}

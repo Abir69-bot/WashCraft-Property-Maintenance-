@@ -62,7 +62,7 @@ export function PlanCards({
           <li
             key={plan.id}
             className={cn(
-              'flex flex-col rounded-card border bg-white p-6',
+              'flex flex-col rounded-card border bg-card p-6',
               plan.highlighted ? 'border-2 border-primary shadow-lg' : 'border-border',
             )}
           >
@@ -116,11 +116,11 @@ export function PlanTable({
         role="region"
         aria-label={title}
         tabIndex={0}
-        className="overflow-x-auto rounded-card border border-border bg-white"
+        className="overflow-x-auto rounded-card border border-border bg-card"
       >
         <table className="w-full min-w-2xl text-left">
           <caption className="sr-only">{title}</caption>
-          <thead className="bg-primary text-white">
+          <thead className="bg-brand-primary text-white">
             <tr>
               <th scope="col" className="p-4">
                 <span className="sr-only">Plan detail</span>

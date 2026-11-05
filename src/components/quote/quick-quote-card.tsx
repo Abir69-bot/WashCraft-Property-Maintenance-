@@ -13,7 +13,7 @@ export function QuickQuoteCard({
   return (
     <section
       aria-labelledby="quick-quote-heading"
-      className="rounded-card border border-border bg-white p-6 shadow-lg md:p-8"
+      className="rounded-card border border-border bg-card p-6 shadow-lg md:p-8"
     >
       <h2 id="quick-quote-heading" className="text-h3">
         Get a quick quote

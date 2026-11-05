@@ -56,7 +56,7 @@ export default async function NotFound() {
                 <li key={service.id}>
                   <Link
                     href={routes.service(service.slug)}
-                    className="flex min-h-11 items-center justify-between gap-2 rounded-card border border-border bg-white px-4 py-3 font-semibold no-underline hover:border-primary"
+                    className="flex min-h-11 items-center justify-between gap-2 rounded-card border border-border bg-card px-4 py-3 font-semibold no-underline hover:border-primary"
                   >
                     {service.title}
                     <ArrowRight aria-hidden className="size-4 shrink-0" />

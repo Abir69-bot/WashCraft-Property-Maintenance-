@@ -11,7 +11,7 @@ export function PreviewBanner() {
   const pathname = usePathname()
   const [pending, startTransition] = useTransition()
   return (
-    <div role="status" className="bg-todo text-ink">
+    <div role="status" className="bg-todo text-brand-ink">
       <div className="container flex flex-wrap items-center justify-between gap-3 py-2 text-small">
         <p className="flex items-center gap-2 font-semibold">
           <Eye aria-hidden className="size-4" />
@@ -21,7 +21,7 @@ export function PreviewBanner() {
           type="button"
           disabled={pending}
           onClick={() => startTransition(() => exitPreview(pathname))}
-          className="min-h-11 rounded-full border border-ink px-4 font-semibold hover:bg-white"
+          className="min-h-11 rounded-full border border-brand-ink px-4 font-semibold hover:bg-white"
         >
           Exit preview
         </button>

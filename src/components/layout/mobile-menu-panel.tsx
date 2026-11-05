@@ -50,6 +50,8 @@ export function MobileMenuPanel({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         side="full"
+        // Dark on every page, the home page included, like the desktop dropdowns.
+        className="night-palette"
         closeLabel="Close menu"
         aria-describedby={undefined}
         onCloseAutoFocus={(event) => {

@@ -70,7 +70,7 @@ export function EstimateResult({
       )}
 
       {estimate ? (
-        <div className="grid gap-4 rounded-card border border-border bg-white p-6">
+        <div className="grid gap-4 rounded-card border border-border bg-card p-6">
           <ul className="grid gap-3">
             {estimate.lines.map((line) => (
               <li

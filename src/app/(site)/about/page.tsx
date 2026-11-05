@@ -85,7 +85,10 @@ export default async function AboutPage() {
           {(about.values ?? []).length > 0 && (
             <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {(about.values ?? []).map((value) => (
-                <li key={value.id ?? value.title} className="rounded-card bg-white p-6">
+                <li
+                  key={value.id ?? value.title}
+                  className="rounded-card border border-border bg-card p-6"
+                >
                   <h3 className="flex items-start gap-2">
                     <BadgeCheck aria-hidden className="mt-1 size-5 shrink-0 text-success-strong" />
                     {value.title}

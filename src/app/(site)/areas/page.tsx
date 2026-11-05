@@ -48,7 +48,7 @@ export default async function AreasPage() {
               <li key={city.id}>
                 <Link
                   href={routes.city(city.slug)}
-                  className="flex min-h-14 items-center gap-3 rounded-card border border-border bg-white px-4 no-underline hover:border-primary"
+                  className="flex min-h-14 items-center gap-3 rounded-card border border-border bg-card px-4 no-underline hover:border-primary"
                 >
                   <MapPin aria-hidden className="size-5 shrink-0 text-secondary-strong" />
                   <span>

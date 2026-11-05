@@ -171,7 +171,7 @@ export function BenefitTabs({
             key={benefit.id ?? benefit.title}
             value={String(index)}
             forceMount
-            className="max-w-3xl rounded-card bg-white p-6 data-[state=inactive]:hidden md:p-10"
+            className="max-w-3xl rounded-card border border-border bg-card p-6 data-[state=inactive]:hidden md:p-10"
           >
             <h3>{benefit.title}</h3>
             <p className="mt-3 text-lg text-muted">{fillTokens(benefit.body, { region })}</p>
@@ -214,7 +214,7 @@ export function MethodAndSafety({
       <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <p className="text-lg text-muted">{fillTokens(method, { region })}</p>
         {safety && (
-          <div className="rounded-card border border-border bg-white p-6">
+          <div className="rounded-card border border-border bg-card p-6">
             <h3 className="flex items-center gap-2">
               <ShieldCheck aria-hidden className="size-6 text-success-strong" />
               Safety first
@@ -283,7 +283,7 @@ export function PricingGuide({ service, cta }: { service: Service; cta: QuoteCta
       intro="Every property is different, so we price each job on what it needs."
     >
       <div className="grid gap-8 lg:grid-cols-2">
-        <div className="rounded-card bg-white p-6">
+        <div className="rounded-card border border-border bg-card p-6">
           {service.fromPrice != null && (
             <p className="mb-4 text-h3 font-heading font-extrabold text-primary">
               From ${service.fromPrice.toLocaleString('en-US')}
@@ -304,7 +304,7 @@ export function PricingGuide({ service, cta }: { service: Service; cta: QuoteCta
           </Button>
         </div>
         {addOns.length > 0 && (
-          <div className="rounded-card bg-white p-6">
+          <div className="rounded-card border border-border bg-card p-6">
             <h3>Popular add-ons</h3>
             <ul className="mt-4 grid gap-3">
               {addOns.map((addOn) => (
@@ -453,7 +453,7 @@ export function RelatedLinks({
 /** A short note beside the hero actions, e.g. seasonal booking timing. */
 export function NoteBadge({ children }: { children: React.ReactNode }) {
   return (
-    <p className="inline-flex max-w-xl items-start gap-2 rounded-card bg-white px-4 py-2 text-small font-semibold text-ink shadow-sm">
+    <p className="inline-flex max-w-xl items-start gap-2 rounded-card border border-border bg-card px-4 py-2 text-small font-semibold text-ink shadow-sm">
       <CalendarClock aria-hidden className="mt-0.5 size-4 shrink-0 text-secondary-strong" />
       <span>{children}</span>
     </p>

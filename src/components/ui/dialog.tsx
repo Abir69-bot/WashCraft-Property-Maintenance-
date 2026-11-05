@@ -11,7 +11,7 @@ export const Dialog = DialogPrimitive.Root
 export const DialogTrigger = DialogPrimitive.Trigger
 export const DialogClose = DialogPrimitive.Close
 
-const contentVariants = cva('fixed z-50 bg-white text-ink shadow-xl focus:outline-none', {
+const contentVariants = cva('fixed z-50 bg-card text-ink shadow-xl focus:outline-none', {
   variants: {
     side: {
       center:
@@ -33,7 +33,7 @@ export function DialogContent({
   VariantProps<typeof contentVariants> & { closeLabel?: string }) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50 animate-fade-in bg-ink/60" />
+      <DialogPrimitive.Overlay className="fixed inset-0 z-50 animate-fade-in bg-brand-ink/60" />
       <DialogPrimitive.Content className={cn(contentVariants({ side }), className)} {...props}>
         {children}
         <DialogPrimitive.Close

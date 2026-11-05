@@ -31,7 +31,20 @@
   --night: #061b23;
   --night-raised: #0b2631;
   --night-muted: #a7bdc7;
+  /* Page and default-section background, and card/panel fill: white here; night and night
+     raised inside `night-palette`. */
+  --page: #ffffff;
+  --card: #ffffff;
+  /* Error text and borders inside `night-palette`. */
+  --error-on-dark: #ff8a80;
   --focus-ring: var(--primary);
+
+  /* Fixed brand fills: resolved here, so the `night-palette` remaps below never reach them.
+     For fills that carry white or gold-on-ink text (buttons, badges, dark bands, overlays). */
+  --brand-primary: var(--primary);
+  --brand-ink: var(--ink);
+  --brand-secondary-strong: var(--secondary-strong);
+  --brand-success-strong: var(--success-strong);
 
   /* Depth: layered, navy-tinted shadows for raised surfaces (not colours, so not in the
      contrast table). */
@@ -120,6 +133,12 @@
   --color-night: var(--night);
   --color-night-raised: var(--night-raised);
   --color-night-muted: var(--night-muted);
+  --color-page: var(--page);
+  --color-card: var(--card);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-secondary-strong: var(--brand-secondary-strong);
+  --color-brand-success-strong: var(--brand-success-strong);
 
   --font-heading: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -181,7 +200,7 @@
 @utility card-raised {
   border-radius: var(--radius-card);
   border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-  background-color: #fff;
+  background-color: var(--card);
   box-shadow: var(--shadow-raised);
 }
 
@@ -217,7 +236,7 @@
   height: 3rem;
   border-radius: 0.875rem;
   color: var(--primary);
-  background: linear-gradient(145deg, #fff, var(--surface));
+  background: linear-gradient(145deg, var(--card), var(--surface));
   border: 1px solid var(--border);
   box-shadow:
     var(--shadow-inset),
@@ -235,7 +254,7 @@
   font-family: var(--font-heading);
   font-weight: 800;
   color: #fff;
-  background: linear-gradient(145deg, var(--secondary-strong), var(--primary));
+  background: linear-gradient(145deg, var(--brand-secondary-strong), var(--brand-primary));
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.25),
     0 8px 16px -6px hsl(var(--shadow-color) / 0.45);
@@ -246,7 +265,7 @@
   background:
     radial-gradient(60rem 30rem at 90% -10%, rgb(44 177 188 / 0.14), transparent 60%),
     radial-gradient(40rem 24rem at -10% 110%, rgb(14 77 100 / 0.07), transparent 60%),
-    linear-gradient(180deg, var(--surface), #fff);
+    linear-gradient(180deg, var(--surface), var(--card));
 }
 
 /* Closing call-to-action panel: deep brand gradient with a soft highlight. */
@@ -259,7 +278,7 @@
   --focus-ring: var(--cta);
   background:
     radial-gradient(40rem 20rem at 85% 0%, rgb(44 177 188 / 0.35), transparent 65%),
-    linear-gradient(135deg, var(--primary), #0a3646);
+    linear-gradient(135deg, var(--brand-primary), #0a3646);
   box-shadow: var(--shadow-lifted);
   @variant md {
     padding: 4rem 3rem;
@@ -268,7 +287,7 @@
 
 /* Dark band: white text, light focus ring, white headings and plain links. */
 @utility on-dark {
-  background-color: var(--primary);
+  background-color: var(--brand-primary);
   color: #fff;
   --focus-ring: var(--cta);
   & :where(h1, h2, h3, h4) {
@@ -292,6 +311,37 @@
   & :where(a:not([class])) {
     color: #fff;
   }
+}
+
+/*
+ * The home page's night palette for every other page, applied through the shared tokens so
+ * components keep their classes: white headings and text, night-muted secondary text, raised
+ * night cards and bands, hairline white borders, teal links and a gold focus ring. Fills that
+ * need the brand hues use the fixed `--brand-*` aliases from :root.
+ */
+@utility night-palette {
+  --ink: #fff;
+  --muted: var(--night-muted);
+  --primary: #fff;
+  --secondary-strong: var(--secondary-on-dark);
+  --success-strong: var(--success);
+  --error: var(--error-on-dark);
+  --page: var(--night);
+  --surface: var(--night-raised);
+  --card: var(--night-raised);
+  --border: rgb(255 255 255 / 0.12);
+  --focus-ring: var(--cta);
+  --shadow-color: 197 90% 2%;
+  --shadow-inset: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  color-scheme: dark;
+  color: var(--ink);
+}
+
+/* Every page but the home page, whose night sections set their own colours. Portals (menus,
+   dialogs, popovers) render in <body>, so they pick it up too. Maps get the home page's dark
+   tiles. */
+body:not(:has(.night-theme)) {
+  @apply night-palette map-night;
 }
 
 /*
@@ -459,7 +509,7 @@
     scroll-padding-top: 6rem;
   }
   body {
-    @apply bg-white font-sans text-body text-ink antialiased;
+    @apply bg-page font-sans text-body text-ink antialiased;
   }
   h1 {
     @apply text-h1 text-primary;
