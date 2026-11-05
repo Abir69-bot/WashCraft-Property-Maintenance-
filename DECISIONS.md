@@ -984,3 +984,11 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   "After shovelling 1", one driveway an hour apart, the photographer's own pair; the second
   photo looks back toward the street, which the caption says). Rejected: Famartin's Aquetong
   Lane storm photos (the morning and evening shots can't be confirmed as the same house).
+  Searched again for driveway sealing and house cleaning (2026-11-05): no genuine licensed
+  pair. Rejected for driveway sealing: "Sealcoating before and after" (CBCO13: a small
+  marketing graphic of two textures with text on it, not shown to be the same surface),
+  "Sealcoating-process" (an infographic) and frames from "Sealcoating process by spray" (Steven
+  Pavlov: a moving camera over an already-sealed parking lot, no fixed before/after view). Rejected
+  for house cleaning: a dishwasher-cleaned hood filter (after only) and "Otaku Room - Before and
+  After" (a renovation). Found but not used: "Hood1" (Achim Hering, public domain), a
+  restaurant kitchen exhaust hood before and after cleaning, an option for Restaurant Cleaning.
