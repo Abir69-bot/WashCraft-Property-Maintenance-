@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
+import type { BeforeAfterExample } from '@/assets/before-after'
 import { CmsImage } from '@/components/cms-image'
 import { ServiceCard, ServiceCardCredits } from '@/components/service-card'
 import { Button } from '@/components/ui/button'
@@ -26,24 +27,29 @@ import { asMedia } from '@/lib/view'
 import type { Post, Service, Solution } from '@/payload-types'
 
 import { Section, type SectionTone } from './section'
+import { BeforeAfterPair } from './service-before-after'
 
 type Titled = { id?: string | null; title: string; body: string }
 
-/** The problem, three benefits, a trust line and the service photo (brief §9.3.2). */
+/**
+ * The problem, three benefits and a trust line (brief §9.3.2), with a before-and-after pair on
+ * the right (below on phones) or, without one, the service photo.
+ */
 export function ServiceIntro({
   service,
   region,
   trust,
+  example,
 }: {
   service: Service
   region: string
   trust: string[]
+  example?: BeforeAfterExample
 }) {
+  const photo = !example && asMedia(service.heroImage)
   return (
     <Section id="overview">
-      <div
-        className={cn('grid items-center gap-10', asMedia(service.heroImage) && 'lg:grid-cols-2')}
-      >
+      <div className={cn('grid items-center gap-10', (example || photo) && 'lg:grid-cols-2')}>
         <div>
           <h2>Why it matters</h2>
           <p className="mt-4 text-lg text-muted">{fillTokens(service.problem, { region })}</p>
@@ -62,7 +68,8 @@ export function ServiceIntro({
             <p className="mt-6 text-small font-semibold text-ink">{trust.join(' · ')}</p>
           )}
         </div>
-        {asMedia(service.heroImage) && (
+        {example && <BeforeAfterPair example={example} />}
+        {photo && (
           <CmsImage
             media={service.heroImage}
             ratio="4/3"

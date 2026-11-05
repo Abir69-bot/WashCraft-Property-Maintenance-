@@ -13,14 +13,12 @@ describe('before-and-after examples', () => {
   })
 
   it('are equal-sized, described, credited pairs', () => {
-    for (const [, examples] of entries) {
-      for (const example of examples) {
-        expect(example.before.width).toBe(example.after.width)
-        expect(example.before.height).toBe(example.after.height)
-        expect(example.beforeAlt.length).toBeGreaterThan(20)
-        expect(example.afterAlt.length).toBeGreaterThan(20)
-        expect(example.credit.licenseUrl).toMatch(/^https:\/\/creativecommons\.org\//)
-      }
+    for (const [, example] of entries) {
+      expect(example.before.width).toBe(example.after.width)
+      expect(example.before.height).toBe(example.after.height)
+      expect(example.beforeAlt.length).toBeGreaterThan(20)
+      expect(example.afterAlt.length).toBeGreaterThan(20)
+      expect(example.credit.licenseUrl).toMatch(/^https:\/\/creativecommons\.org\//)
     }
   })
 })

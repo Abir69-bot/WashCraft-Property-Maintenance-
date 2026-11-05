@@ -5,80 +5,56 @@ import type { BeforeAfterExample } from '@/assets/before-after'
 import { routes } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
-import { Section } from './section'
-
-/** One labelled photo of the pair: equal frames, rounded, a slow zoom on hover. */
-function Frame({
+/** One half of the pair: the photo with its label along the bottom edge. */
+function Half({
   src,
   alt,
   label,
-  wide,
 }: {
   src: StaticImageData
   alt: string
   label: 'Before' | 'After'
-  wide: boolean
 }) {
   return (
-    <figure className="group relative aspect-[4/5] overflow-hidden rounded-card border border-border bg-card">
+    <figure className="group relative aspect-[4/5] overflow-hidden bg-night-raised">
       <Image
         src={src}
         alt={alt}
         placeholder="blur"
         fill
-        sizes={wide ? '(min-width: 1024px) 380px, 50vw' : '(min-width: 768px) 280px, 50vw'}
+        sizes="(min-width: 1280px) 290px, (min-width: 1024px) 24vw, 50vw"
         className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
       />
-      <figcaption
-        className={cn(
-          'absolute top-3 left-3 rounded-full px-3 py-1 text-small font-bold tracking-wide uppercase',
-          label === 'After' ? 'bg-cta text-brand-ink' : 'bg-brand-ink/80 text-white',
-        )}
-      >
-        {label}
+      <figcaption className="absolute inset-x-0 bottom-0 flex justify-center bg-linear-to-t from-brand-ink/80 to-transparent pt-10 pb-3">
+        <span
+          className={cn(
+            'rounded-full px-4 py-1 text-small font-bold tracking-widest uppercase',
+            label === 'After' ? 'bg-cta text-brand-ink' : 'bg-brand-ink/85 text-white',
+          )}
+        >
+          {label}
+        </span>
       </figcaption>
     </figure>
   )
 }
 
 /**
- * Before-and-after examples near the top of a service page: the two photos side by side (also
- * on phones, so the comparison stays visible), labelled, with a note that the pair is another
- * company's job. Hidden when the service has no verified pair.
+ * A before-and-after pair beside "Why it matters" on service pages: the two photos side by side
+ * in one rounded frame, split by a thin line, labelled along the bottom, with a note that they are
+ * example photos (credited on the Photo Credits page), not WashCraft's work.
  */
-export function ServiceBeforeAfter({
-  examples,
-  service,
-}: {
-  examples: BeforeAfterExample[] | undefined
-  service: string
-}) {
-  if (!examples?.length) return null
+export function BeforeAfterPair({ example }: { example: BeforeAfterExample }) {
   return (
-    <Section
-      id="before-after-examples"
-      eyebrow="Before & after"
-      title={`What ${service.toLowerCase()} can do`}
-      intro="An example of the kind of result this service is for. It’s from another company’s job, not ours: ask us for photos of our own work."
-    >
-      <ul className="grid gap-10">
-        {examples.map((example) => {
-          // Small originals are shown at a smaller size, so they stay sharp.
-          const wide = example.before.width >= 800
-          return (
-            <li key={example.credit.source} className={wide ? 'max-w-3xl' : 'max-w-xl'}>
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <Frame src={example.before} alt={example.beforeAlt} label="Before" wide={wide} />
-                <Frame src={example.after} alt={example.afterAlt} label="After" wide={wide} />
-              </div>
-              <p className="mt-3 text-small text-muted">
-                {example.caption}. Example photo by {example.credit.author} (
-                <Link href={routes.photoCredits}>photo credits</Link>).
-              </p>
-            </li>
-          )
-        })}
-      </ul>
-    </Section>
+    <div>
+      <div className="grid grid-cols-2 gap-0.5 overflow-hidden rounded-card border border-border bg-white/70 shadow-raised">
+        <Half src={example.before} alt={example.beforeAlt} label="Before" />
+        <Half src={example.after} alt={example.afterAlt} label="After" />
+      </div>
+      <p className="mt-3 text-small text-muted">
+        {example.caption}. Example photos by {example.credit.author}, not WashCraft’s work (
+        <Link href={routes.photoCredits}>photo credits</Link>).
+      </p>
+    </div>
   )
 }

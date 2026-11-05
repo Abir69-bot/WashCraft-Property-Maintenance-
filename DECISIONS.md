@@ -965,18 +965,22 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   (area and stock) is credited on `/photo-credits` with its author, source, license and changes,
   linked from the footer by a fixed link (not a Footer setting, so it can't be removed by
   mistake). The collapsible "Stock photo credits" lists on the home and service pages stay.
-- **Before-and-after examples on service pages** (owner, 2026-11-05). A section right after the
-  service hero (`ServiceBeforeAfter`, data in `src/assets/before-after.ts`) shows a licensed
-  before/after pair side by side, labelled "Before" and "After", with a note that it is another
-  company's job, not WashCraft's, and a link to the Photo Credits page. Only genuine pairs are
-  used: one photo of the same surface before and after the same kind of work, split into its
-  two halves. A service without one shows no section; the owner's own pairs (Gallery) still
+- **Before-and-after examples on service pages** (owner, 2026-11-05). "Why it matters" shows a
+  licensed before/after pair on the right (below on phones; `BeforeAfterPair`, data in
+  `src/assets/before-after.ts`): the two photos side by side split by a thin line, labelled
+  "Before" and "After" along the bottom, with a note that they are example photos, not
+  WashCraft's work, and a link to the Photo Credits page. A pair replaces the service photo there. Only genuine pairs are
+  used: the same surface or property before and after the same kind of work, published as a
+  pair by the photographer. A service without one keeps its service photo (or text only); the owner's own pairs (Gallery) still
   show lower down in "Our work". Searched Wikimedia Commons and Openverse (commercial-use
   licenses) on 2026-11-05 for all 13 live services. Found and used: soft washing (East Coast
   Powerwashing, CC BY-SA 3.0) and window cleaning (Daniel Christensen, CC BY-SA 3.0; small
-  original, so shown smaller). Rejected: a "dirty path / path after pressure washing" set (two
+  original). Rejected: a "dirty path / path after pressure washing" set (two
   different paths), an NPS gutter pair (a repair, not cleaning), a building facelift and a
   single-photo "before and after" of a tower. No genuine licensed pair was found for pressure
-  washing, gutter cleaning, roof cleaning, patio and balcony cleaning, driveway sealing, snow
-  removal, Christmas light installation, house cleaning, commercial cleaning, restaurant
+  washing, gutter cleaning, roof cleaning, patio and balcony cleaning, driveway sealing, Christmas light installation, house cleaning, commercial cleaning, restaurant
   cleaning or post-construction cleaning: those pages need the owner's own photos.
+  Added later the same day: snow removal (Ben Babcock, CC BY 2.0: "Before shovelling" and
+  "After shovelling 1", one driveway an hour apart, the photographer's own pair; the second
+  photo looks back toward the street, which the caption says). Rejected: Famartin's Aquetong
+  Lane storm photos (the morning and evening shots can't be confirmed as the same house).

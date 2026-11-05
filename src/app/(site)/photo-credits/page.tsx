@@ -36,9 +36,10 @@ export default async function PhotoCreditsPage() {
   })
   const stock = [...new Set(Object.values(stockPhotos))]
   const serviceNames = new Map(services.map((service) => [service.slug, service.title]))
-  const beforeAfter = Object.entries(beforeAfterExamples).flatMap(([service, examples]) =>
-    examples.map(({ credit }) => ({ service, credit })),
-  )
+  const beforeAfter = Object.entries(beforeAfterExamples).map(([service, { credit }]) => ({
+    service,
+    credit,
+  }))
 
   return (
     <article aria-labelledby="page-heading">

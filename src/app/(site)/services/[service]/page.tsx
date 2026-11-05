@@ -8,7 +8,6 @@ import { proofPoints } from '@/components/sections/hero'
 import { ComparisonTable, FinalCta, NeedUsNow } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { BeforeAfter, Testimonials } from '@/components/sections/proof'
-import { ServiceBeforeAfter } from '@/components/sections/service-before-after'
 import {
   AreaLinks,
   BenefitTabs,
@@ -127,8 +126,12 @@ export default async function ServicePage({ params }: PageProps<'/services/[serv
           )
         }
       />
-      <ServiceBeforeAfter examples={beforeAfterExamples[service.slug]} service={service.title} />
-      <ServiceIntro service={service} region={region} trust={proofPoints(site)} />
+      <ServiceIntro
+        service={service}
+        region={region}
+        trust={proofPoints(site)}
+        example={beforeAfterExamples[service.slug]}
+      />
       <IncludedList items={service.included} />
       <PointList
         kind="suitableFor"
