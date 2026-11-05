@@ -10,6 +10,7 @@ import {
   TriangleAlert,
   Users,
 } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import type { BeforeAfterExample } from '@/assets/before-after'
@@ -19,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SEASON_LABELS, type Season } from '@/config/catalog'
 import type { AreaCity } from '@/lib/data/layout'
+import type { Photo } from '@/lib/photos'
 import type { QuoteCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
 import { fillTokens } from '@/lib/text'
@@ -33,23 +35,31 @@ type Titled = { id?: string | null; title: string; body: string }
 
 /**
  * The problem, three benefits and a trust line (brief §9.3.2), with a before-and-after pair on
- * the right (below on phones) or, without one, the service photo.
+ * the right (below on phones) or, without one, the owner's feature image or the service photo.
  */
 export function ServiceIntro({
   service,
   region,
   trust,
   example,
+  feature,
 }: {
   service: Service
   region: string
   trust: string[]
   example?: BeforeAfterExample
+  feature?: Photo
 }) {
-  const photo = !example && asMedia(service.heroImage)
+  const shownFeature = !example && feature
+  const photo = !example && !feature && asMedia(service.heroImage)
   return (
     <Section id="overview">
-      <div className={cn('grid items-center gap-10', (example || photo) && 'lg:grid-cols-2')}>
+      <div
+        className={cn(
+          'grid items-center gap-10',
+          (example || shownFeature || photo) && 'lg:grid-cols-2',
+        )}
+      >
         <div>
           <h2>Why it matters</h2>
           <p className="mt-4 text-lg text-muted">{fillTokens(service.problem, { region })}</p>
@@ -69,6 +79,17 @@ export function ServiceIntro({
           )}
         </div>
         {example && <BeforeAfterPair example={example} />}
+        {shownFeature && (
+          <div className="group relative aspect-video overflow-hidden rounded-card border border-border bg-card shadow-raised">
+            <Image
+              src={shownFeature.src}
+              alt={shownFeature.alt}
+              fill
+              sizes="(min-width: 1280px) 580px, (min-width: 1024px) 45vw, 100vw"
+              className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
+            />
+          </div>
+        )}
         {photo && (
           <CmsImage
             media={service.heroImage}

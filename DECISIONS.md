@@ -998,3 +998,8 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   labels (`public/images/services/snow-removal-*.jpg`). Its origin isn't recorded, so the caption
   says "Illustration" and makes no claim that it is a WashCraft job. If it is the owner's own job
   photo, the caption can say so.
+- **Owner feature images on service pages** (owner, 2026-11-05). `src/assets/service-feature-photos.ts`
+  holds images the owner supplies for a service page, shown beside "Why it matters" (16:9, below
+  the text on phones) when there is no before-and-after pair, in place of the admin's service
+  photo. First: Commercial Cleaning, a worker in a WashCraft jacket pressure washing a home's
+  driveway (`public/images/services/commercial-cleaning.jpg`).

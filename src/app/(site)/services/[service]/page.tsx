@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { beforeAfterExamples } from '@/assets/before-after'
+import { serviceFeaturePhotos } from '@/assets/service-feature-photos'
 import { JsonLd } from '@/components/json-ld'
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
 import { FaqList } from '@/components/sections/areas-and-faq'
@@ -131,6 +132,7 @@ export default async function ServicePage({ params }: PageProps<'/services/[serv
         region={region}
         trust={proofPoints(site)}
         example={beforeAfterExamples[service.slug]}
+        feature={serviceFeaturePhotos[service.slug]}
       />
       <IncludedList items={service.included} />
       <PointList
