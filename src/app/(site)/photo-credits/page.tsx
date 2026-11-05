@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { areaPhotos } from '@/assets/area-photos'
+import { beforeAfterExamples } from '@/assets/before-after'
 import { stockPhotos } from '@/assets/photos'
 import { Breadcrumbs } from '@/components/layout/breadcrumbs'
 import { CreditLine } from '@/components/photo-credits'
@@ -28,12 +29,16 @@ export async function generateMetadata(): Promise<Metadata> {
  * where they are credited. A document page like the legal ones: no quote CTA.
  */
 export default async function PhotoCreditsPage() {
-  const { cities } = await getLayoutData()
+  const { cities, services } = await getLayoutData()
   const areas = Object.entries(areaPhotos).flatMap(([slug, photo]) => {
     const city = cities.find((item) => item.slug === slug)
     return city ? [{ slug, name: city.name, photo }] : []
   })
   const stock = [...new Set(Object.values(stockPhotos))]
+  const serviceNames = new Map(services.map((service) => [service.slug, service.title]))
+  const beforeAfter = Object.entries(beforeAfterExamples).flatMap(([service, examples]) =>
+    examples.map(({ credit }) => ({ service, credit })),
+  )
 
   return (
     <article aria-labelledby="page-heading">
@@ -63,6 +68,22 @@ export default async function PhotoCreditsPage() {
                 <p className="mt-2">
                   <CreditLine credit={photo.credit} />
                 </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section aria-labelledby="before-after-photos">
+          <h2 id="before-after-photos">Before and after examples</h2>
+          <p className="mt-3 max-w-2xl text-muted">
+            Example pairs on our service pages. They show other companies’ jobs, not ours.
+          </p>
+          <ul className="mt-6 grid gap-2">
+            {beforeAfter.map(({ service, credit }) => (
+              <li key={credit.source}>
+                <Link href={routes.service(service)} className="text-ink underline">
+                  {serviceNames.get(service) ?? service}
+                </Link>
+                : <CreditLine credit={credit} />
               </li>
             ))}
           </ul>

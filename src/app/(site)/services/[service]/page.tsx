@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { beforeAfterExamples } from '@/assets/before-after'
 import { JsonLd } from '@/components/json-ld'
 import { QuickQuoteCard } from '@/components/quote/quick-quote-card'
 import { FaqList } from '@/components/sections/areas-and-faq'
@@ -7,6 +8,7 @@ import { proofPoints } from '@/components/sections/hero'
 import { ComparisonTable, FinalCta, NeedUsNow } from '@/components/sections/home-blocks'
 import { PageHero, QuoteActions } from '@/components/sections/page-hero'
 import { BeforeAfter, Testimonials } from '@/components/sections/proof'
+import { ServiceBeforeAfter } from '@/components/sections/service-before-after'
 import {
   AreaLinks,
   BenefitTabs,
@@ -125,6 +127,7 @@ export default async function ServicePage({ params }: PageProps<'/services/[serv
           )
         }
       />
+      <ServiceBeforeAfter examples={beforeAfterExamples[service.slug]} service={service.title} />
       <ServiceIntro service={service} region={region} trust={proofPoints(site)} />
       <IncludedList items={service.included} />
       <PointList

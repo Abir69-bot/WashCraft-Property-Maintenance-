@@ -965,3 +965,18 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   (area and stock) is credited on `/photo-credits` with its author, source, license and changes,
   linked from the footer by a fixed link (not a Footer setting, so it can't be removed by
   mistake). The collapsible "Stock photo credits" lists on the home and service pages stay.
+- **Before-and-after examples on service pages** (owner, 2026-11-05). A section right after the
+  service hero (`ServiceBeforeAfter`, data in `src/assets/before-after.ts`) shows a licensed
+  before/after pair side by side, labelled "Before" and "After", with a note that it is another
+  company's job, not WashCraft's, and a link to the Photo Credits page. Only genuine pairs are
+  used: one photo of the same surface before and after the same kind of work, split into its
+  two halves. A service without one shows no section; the owner's own pairs (Gallery) still
+  show lower down in "Our work". Searched Wikimedia Commons and Openverse (commercial-use
+  licenses) on 2026-11-05 for all 13 live services. Found and used: soft washing (East Coast
+  Powerwashing, CC BY-SA 3.0) and window cleaning (Daniel Christensen, CC BY-SA 3.0; small
+  original, so shown smaller). Rejected: a "dirty path / path after pressure washing" set (two
+  different paths), an NPS gutter pair (a repair, not cleaning), a building facelift and a
+  single-photo "before and after" of a tower. No genuine licensed pair was found for pressure
+  washing, gutter cleaning, roof cleaning, patio and balcony cleaning, driveway sealing, snow
+  removal, Christmas light installation, house cleaning, commercial cleaning, restaurant
+  cleaning or post-construction cleaning: those pages need the owner's own photos.
