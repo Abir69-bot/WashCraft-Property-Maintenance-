@@ -1,4 +1,5 @@
 import fall from '../../public/images/seasons/fall.jpg'
+import summer from '../../public/images/seasons/summer.jpg'
 import winter from '../../public/images/seasons/winter.jpg'
 
 import type { Photo } from '@/lib/photos'
@@ -8,6 +9,11 @@ import type { Photo } from '@/lib/photos'
  * season's hero photo and its services' photos. Keyed by season.
  */
 export const seasonPhotos: Partial<Record<string, Photo>> = {
+  // Supplied by the owner (2026-11-06).
+  summer: {
+    src: summer,
+    alt: 'A surface cleaner on a freshly washed backyard stone patio, with steps, a covered grill and outdoor dining chairs',
+  },
   // Supplied by the owner (2026-11-06).
   fall: {
     src: fall,
