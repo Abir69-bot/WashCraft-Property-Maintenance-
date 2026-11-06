@@ -1,4 +1,5 @@
 import fall from '../../public/images/seasons/fall.jpg'
+import winter from '../../public/images/seasons/winter.jpg'
 
 import type { Photo } from '@/lib/photos'
 
@@ -11,5 +12,10 @@ export const seasonPhotos: Partial<Record<string, Photo>> = {
   fall: {
     src: fall,
     alt: 'A gloved WashCraft worker on a ladder pulling wet autumn leaves out of a house gutter',
+  },
+  // Supplied by the owner (2026-11-06): the same driveway before and after clearing, side by side.
+  winter: {
+    src: winter,
+    alt: 'A brick house’s driveway side by side: covered in snow on the left, and cleared to wet pavement with snow banked along the edges on the right',
   },
 }
