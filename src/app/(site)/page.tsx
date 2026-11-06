@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 
 import { stockPhotos, type StockPhoto } from '@/assets/photos'
+import { seasonPhotos } from '@/assets/season-photos'
 import { GoogleReviews } from '@/components/sections/google-reviews'
 import {
   ComparisonTable,
@@ -115,7 +116,8 @@ export default async function HomePage() {
     photo: cardPhoto(service.slug),
   }))
 
-  // Season tabs: the season's hero photo, else a service photo from that season, else stock.
+  // Season tabs: the owner's photo for that season, else the season's hero photo, else a service
+  // photo from that season, else stock.
   const panels: SeasonPanel[] = TAB_SEASONS.flatMap((key) => {
     const inSeason = services.filter((service) => service.seasons?.includes(key))
     if (inSeason.length === 0) return []
@@ -133,7 +135,9 @@ export default async function HomePage() {
         title: eyebrow ? fillTokens(eyebrow, { region }) : `${SEASON_LABELS[key]} services`,
         current: key === season,
         services: inSeason.map(({ slug, title }) => ({ slug, title })),
-        photo: media ? fromMedia(media) : fallback ? stock(fallback, 'seasonal-spotlight') : null,
+        photo:
+          seasonPhotos[key] ??
+          (media ? fromMedia(media) : fallback ? stock(fallback, 'seasonal-spotlight') : null),
       },
     ]
   })
