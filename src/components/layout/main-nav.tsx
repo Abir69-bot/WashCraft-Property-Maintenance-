@@ -80,6 +80,14 @@ export function MainNav({
   return (
     <NavigationMenu.Root aria-label="Main" className="hidden lg:block">
       <NavigationMenu.List className="flex items-center gap-0.5">
+        <NavigationMenu.Item>
+          <NavigationMenu.Link asChild>
+            <Link href={routes.home} className={cn(triggerClass, 'no-underline')}>
+              Home
+            </Link>
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
+
         <NavigationMenu.Item className="relative">
           <Trigger>Services</Trigger>
           {/* Dark two-column panel, opening right under the Services button. */}
