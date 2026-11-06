@@ -208,7 +208,7 @@ and Resend) first.
    `production` strings), a new random `PAYLOAD_SECRET` (`openssl rand -hex 32`),
    `NEXT_PUBLIC_SITE_URL` (`https://www.yourdomain.com`), the R2 and Resend values, and
    `CRON_SECRET`. For **Preview**, use the Neon `dev` strings so previews never touch production.
-3. **Region:** `vercel.json` runs functions in `cle1` (Cleveland), next to Neon in Ohio. If your
+3. **Region:** `vercel.json` runs functions in `syd1` (Sydney), next to Neon in `ap-southeast-2`. If your
    Neon project is elsewhere, pick the nearest Vercel region.
 4. **Business facts:** the build stops at `check-config` until a confirmed email address and
    tagline are set and no demo values remain (CONTENT_TODO.md, section 1). A phone number and
