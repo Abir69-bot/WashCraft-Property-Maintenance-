@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 
+import { categoryTiles } from '@/assets/home-tiles'
 import { stockPhotos, type StockPhoto } from '@/assets/photos'
 import { seasonPhotos } from '@/assets/season-photos'
 import { serviceFeaturePhotos } from '@/assets/service-feature-photos'
@@ -42,7 +43,7 @@ import { fromMedia, fromStock, servicePhoto, type Photo } from '@/lib/photos'
 import { shownGuarantee } from '@/lib/proof'
 import { generalCta } from '@/lib/quote/flow'
 import { homeReviews } from '@/lib/reviews/view'
-import { categoryHref, COMMERCIAL_CATEGORY } from '@/lib/routes'
+import { categoryHref, COMMERCIAL_CATEGORY, routes } from '@/lib/routes'
 import { fillTokens } from '@/lib/text'
 import { asMedia, mediaSrc, publishedServices, serviceGroups } from '@/lib/view'
 import type { Media, Service } from '@/payload-types'
@@ -109,13 +110,29 @@ export default async function HomePage() {
     (service) =>
       featured.includes(service.slug) || servicePhoto(service.slug, servicePhotos[service.slug]),
   )
-  const tiles: ServiceTile[] = withPhotos.slice(0, SERVICE_CARDS).map((service) => ({
-    slug: service.slug,
-    title: service.title,
-    summary: service.summary,
-    icon: service.icon,
-    photo: cardPhoto(service.slug),
-  }))
+  const tiles: ServiceTile[] = withPhotos.slice(0, SERVICE_CARDS).map((service) => {
+    // A category card (assets/home-tiles.ts) takes this service's place while its hub exists.
+    const tile = categoryTiles[service.slug]
+    const category = tile && categories.find((item) => item.slug === tile.category)
+    if (tile && category && category.services.length > 1) {
+      return {
+        slug: category.slug,
+        href: categoryHref(category),
+        title: category.title,
+        summary: tile.summary,
+        icon: category.icon ?? service.icon,
+        photo: tile.photo,
+      }
+    }
+    return {
+      slug: service.slug,
+      href: routes.service(service.slug),
+      title: service.title,
+      summary: service.summary,
+      icon: service.icon,
+      photo: cardPhoto(service.slug),
+    }
+  })
 
   // Season tabs: the owner's photo for that season, else the season's hero photo, else a service
   // photo from that season, else stock.

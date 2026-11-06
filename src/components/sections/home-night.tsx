@@ -235,6 +235,8 @@ export function NightIntro({ intro, region }: { intro: Homepage['introduction'];
 
 export type ServiceTile = {
   slug: string
+  /** The service's page, or a category's page for a card that stands for the category. */
+  href: string
   title: string
   summary: string
   icon: Service['icon']
@@ -278,7 +280,7 @@ export function NightServices({ tiles, region }: { tiles: ServiceTile[]; region:
             <div className="flex flex-1 flex-col p-6">
               <h3 className="display-type display-h3">
                 <Link
-                  href={routes.service(tile.slug)}
+                  href={tile.href}
                   className="text-white no-underline after:absolute after:inset-0"
                 >
                   {tile.title}

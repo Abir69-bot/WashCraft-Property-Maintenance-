@@ -1044,3 +1044,9 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   Borkowski, CC BY-SA 4.0), an empty apartment (SmashingIt99, CC0) and a handheld vacuum on a
   couch (Shixart1985, CC BY 2.0). No genuine licensed before/after pair exists for these services
   (searched Commons again 2026-11-06), so their pages show none.
+- **Residential Cleaning card on the home page** (owner, 2026-11-06). In "Services for every
+  season", the Interior House Cleaning card is replaced by a Residential Cleaning card linking to
+  the category page, with the owner's photo and a summary naming the four services
+  (`src/assets/home-tiles.ts`). The owner chose a photo of a WashCraft worker pressure washing a
+  house's driveway; the card shows it as supplied. It falls back to the service's own card if the
+  category ever has fewer than two published services (no category page).
