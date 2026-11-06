@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "regions": ["cle1"],
+  "buildCommand": "pnpm db:migrate && pnpm check-config && pnpm build",
   "crons": [{ "path": "/next/cron/google-reviews", "schedule": "0 10 * * *" }]
 }
