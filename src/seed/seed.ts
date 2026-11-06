@@ -32,7 +32,7 @@ import {
   seasonalSettings,
 } from './data/globals'
 import { discounts, plans, pricingRules } from './data/pricing'
-import { sampleClientLogos, sampleJobs, sampleTeam, sampleTestimonials } from './data/samples'
+import { sampleClientLogos, sampleJobs, sampleTeam } from './data/samples'
 import type { CitySeed } from './types'
 import {
   featuredServices,
@@ -56,7 +56,10 @@ export type SeedOptions = {
   log?: (message: string) => void
 }
 
-export type SeedReport = Record<string, { created: number; updated: number; skipped: number }>
+export type SeedReport = Record<
+  string,
+  { created: number; updated: number; skipped: number; deleted: number }
+>
 
 const PUBLISHED = { _status: 'published' as const }
 const DRAFT = { _status: 'draft' as const }
@@ -71,8 +74,8 @@ export async function seed(
   { force = false, log = console.log }: SeedOptions = {},
 ) {
   const report: SeedReport = {}
-  const tally = (collection: string, outcome: 'created' | 'updated' | 'skipped') => {
-    report[collection] ??= { created: 0, updated: 0, skipped: 0 }
+  const tally = (collection: string, outcome: 'created' | 'updated' | 'skipped' | 'deleted') => {
+    report[collection] ??= { created: 0, updated: 0, skipped: 0, deleted: 0 }
     report[collection][outcome] += 1
   }
 
@@ -412,25 +415,14 @@ export async function seed(
     )
   }
 
-  // Sample social proof (hidden on the live site).
-  const optionalCity = (name: string) => cityIds.get(name)
-  for (const [index, testimonial] of sampleTestimonials.entries()) {
-    await upsert(
-      'testimonials',
-      { name: { equals: testimonial.name } },
-      {
-        name: testimonial.name,
-        quote: testimonial.quote,
-        rating: testimonial.rating,
-        source: 'direct',
-        service: idsFor(serviceIds, [testimonial.service])[0],
-        city: optionalCity(testimonial.city),
-        featured: testimonial.featured ?? false,
-        isSample: true,
-        order: (index + 1) * 10,
-      },
-    )
-  }
+  // The fictional sample reviews are gone (owner, 2026-11-06): reviews are genuine only, from
+  // Google or entered by the owner. Older databases still hold them, so they're removed here.
+  const { docs: oldSamples } = await payload.delete({
+    collection: 'testimonials',
+    where: { isSample: { equals: true } },
+    depth: 0,
+  })
+  for (const _ of oldSamples) tally('testimonials', 'deleted')
 
   // Real before/after pairs from the owner's jobs.
   for (const [index, item] of gallery.entries()) {
@@ -602,7 +594,7 @@ export async function seed(
 
   for (const [collection, counts] of Object.entries(report)) {
     log(
-      `${collection.padEnd(28)} ${counts.created} created, ${counts.updated} updated, ${counts.skipped} unchanged`,
+      `${collection.padEnd(28)} ${counts.created} created, ${counts.updated} updated, ${counts.skipped} unchanged${counts.deleted ? `, ${counts.deleted} removed` : ''}`,
     )
   }
   return report

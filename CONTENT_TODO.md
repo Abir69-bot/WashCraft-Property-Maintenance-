@@ -344,10 +344,14 @@ The starter text was written for you, but only you know your methods and policie
 - [ ] **Cities.** Check each city's postal code prefixes (the first three characters, e.g. M1B)
       and neighborhoods, and read the intro (admin, **Cities**). Add local conditions (snowfall,
       rainfall) only with a source link.
-- [ ] **Sample content.** Testimonials, client logos, team members and the two job openings are
-      samples. They never appear on the live site. Replace them with real ones. (The 23 job photos
-      you sent are real and already in use: before/after gallery, home hero, "Why choose us", and
-      as photos on three sample testimonials.)
+- [ ] **Sample content.** Client logos, team members and the two job openings are samples. They
+      never appear on the live site. Replace them with real ones. (The 23 job photos you sent are
+      real and already in use: before/after gallery, home hero and "Why choose us".)
+- [ ] **Google reviews.** The home page's "What Our Customers Say" shows genuine reviews only, so
+      it shows an empty state until there are some. In **Site settings**, add your Google Place ID
+      (reviews are then copied from Google once a day), your Google review link (shows the "Read
+      Our Google Reviews" button) and your real Google rating and review count. Reviews customers
+      gave you directly can be added under **Testimonials**.
 - [ ] **Sample rating and guarantee.** The development site shows a sample rating (4.9 from 48
       reviews) and a sample guarantee, both badged "Sample", so you can see where they go. The
       live site shows neither until you connect Google reviews or fill in **Stats** and

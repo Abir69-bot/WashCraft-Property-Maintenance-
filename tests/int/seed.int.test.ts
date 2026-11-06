@@ -18,7 +18,7 @@ import { categories } from '@/seed/data/categories'
 import { faqs } from '@/seed/data/faqs'
 import { commercialPages } from '@/seed/data/globals'
 import { gallery, mediaFiles } from '@/seed/data/media'
-import { sampleClientLogos, sampleTestimonials } from '@/seed/data/samples'
+import { sampleClientLogos } from '@/seed/data/samples'
 import { allServices, seed } from '@/seed/seed'
 
 let payload: Payload
@@ -71,7 +71,7 @@ describe('seed', () => {
       faqs: faqs.length,
       posts: 6,
       solutions: 6,
-      testimonials: sampleTestimonials.length,
+      testimonials: 0,
       'job-openings': 2,
       plans: 7,
       'gallery-items': gallery.length,
@@ -86,6 +86,23 @@ describe('seed', () => {
     const report = await seed(payload, quiet)
     expect(Object.values(report).every((outcome) => outcome.created === 0)).toBe(true)
     expect(await counts()).toEqual(before)
+  })
+
+  it('removes the old fictional sample reviews, but keeps real ones', async () => {
+    const data = { quote: 'Great job on the gutters.', rating: 5, source: 'direct' } as const
+    await payload.create({
+      collection: 'testimonials',
+      data: { ...data, name: 'Sample customer', isSample: true },
+    })
+    const real = await payload.create({
+      collection: 'testimonials',
+      data: { ...data, name: 'Real customer' },
+    })
+    const report = await seed(payload, quiet)
+    expect(report.testimonials).toMatchObject({ deleted: 1 })
+    const { docs } = await payload.find({ collection: 'testimonials', depth: 0 })
+    expect(docs.map((doc) => doc.id)).toEqual([real.id])
+    await payload.delete({ collection: 'testimonials', id: real.id })
   })
 
   it('seeds the globals once', async () => {
@@ -145,10 +162,9 @@ describe('seed', () => {
     const liveWhere = publicRead({ samples: true, production: true })({
       req: { user: null },
     } as unknown as AccessArgs) as Where
-    for (const collection of ['testimonials', 'client-logos'] as const) {
-      expect((await payload.count({ collection })).totalDocs).toBeGreaterThan(0)
-      expect((await payload.count({ collection, where: liveWhere })).totalDocs).toBe(0)
-    }
+    const collection = 'client-logos'
+    expect((await payload.count({ collection })).totalDocs).toBeGreaterThan(0)
+    expect((await payload.count({ collection, where: liveWhere })).totalDocs).toBe(0)
     expect((await payload.count({ collection: 'gallery-items', where: liveWhere })).totalDocs).toBe(
       gallery.length,
     )
@@ -160,13 +176,6 @@ describe('seed', () => {
     )
     const logos = await payload.find({ collection: 'client-logos', depth: 1, pagination: false })
     expect(logos.docs.every((client) => (client.logo as Media | null)?.filename)).toBe(true)
-    const featured = await payload.find({
-      collection: 'testimonials',
-      where: { featured: { equals: true } },
-      depth: 1,
-    })
-    // Fictional sample reviews never sit next to the owner's real job photos.
-    expect(featured.docs[0].photo ?? null).toBeNull()
     const { docs } = await payload.find({
       collection: 'services',
       where: { slug: { equals: 'gutter-cleaning' } },

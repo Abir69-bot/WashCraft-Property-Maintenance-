@@ -1,4 +1,12 @@
-import type { Faq, GalleryItem, Homepage, Plan, Post, Testimonial } from '@/payload-types'
+import type {
+  Faq,
+  GalleryItem,
+  GoogleReview,
+  Homepage,
+  Plan,
+  Post,
+  Testimonial,
+} from '@/payload-types'
 
 import { cachedQuery, getPayloadClient } from './cache'
 
@@ -6,6 +14,8 @@ export type HomeData = {
   homepage: Homepage
   gallery: GalleryItem[]
   testimonials: Testimonial[]
+  /** Reviews copied from Google by the daily sync, minus any the owner hid. */
+  googleReviews: GoogleReview[]
   faqs: Faq[]
   posts: Post[]
   plans: Plan[]
@@ -15,7 +25,7 @@ export const getHomeData = cachedQuery('home', async (): Promise<HomeData> => {
   const payload = await getPayloadClient()
   const common = { overrideAccess: false } as const
   const all = { overrideAccess: false, pagination: false } as const
-  const [homepage, gallery, testimonials, faqs, posts, plans] = await Promise.all([
+  const [homepage, gallery, testimonials, googleReviews, faqs, posts, plans] = await Promise.all([
     payload.findGlobal({ slug: 'homepage', depth: 1 }),
     payload.find({
       ...common,
@@ -25,7 +35,15 @@ export const getHomeData = cachedQuery('home', async (): Promise<HomeData> => {
       limit: 6,
       depth: 1,
     }),
-    payload.find({ ...common, collection: 'testimonials', sort: 'order', limit: 7, depth: 1 }),
+    payload.find({ ...common, collection: 'testimonials', sort: 'order', limit: 12, depth: 1 }),
+    payload.find({
+      ...common,
+      collection: 'google-reviews',
+      where: { hidden: { not_equals: true } },
+      sort: '-publishedAt',
+      limit: 12,
+      depth: 0,
+    }),
     payload.find({
       ...all,
       collection: 'faqs',
@@ -62,6 +80,7 @@ export const getHomeData = cachedQuery('home', async (): Promise<HomeData> => {
     homepage,
     gallery: gallery.docs,
     testimonials: testimonials.docs,
+    googleReviews: googleReviews.docs,
     faqs: faqs.docs,
     posts: posts.docs as Post[],
     plans: plans.docs,

@@ -1,86 +1,8 @@
 /**
- * Sample social proof and company content (brief §3.2, §16). Every item is seeded with
+ * Sample company content (brief §3.2, §16). Every item is seeded with
  * isSample: true, shows a "Sample" badge in development and preview, and never appears on the
  * live site. Replace with real content before launch.
  */
-
-/**
- * Fictional reviews: made-up customers with natural, varied wording across the main services,
- * for checking the review section's layout in development and preview. Never real feedback, so
- * they never sit next to the owner's job photos, carry no Google link, and stay off the live site.
- */
-export const sampleTestimonials: {
-  name: string
-  city: string
-  service: string
-  rating: number
-  featured?: boolean
-  quote: string
-}[] = [
-  {
-    name: 'Priya S.',
-    city: 'Markham',
-    service: 'window-cleaning',
-    rating: 5,
-    featured: true,
-    quote:
-      'Our second-floor windows haven’t looked this clear since we moved in. They did the screens and sills too, and put down drop cloths inside before they started.',
-  },
-  {
-    name: 'Daniel R.',
-    city: 'North York',
-    service: 'gutter-cleaning',
-    rating: 5,
-    quote:
-      'Sent before and after photos of every run of gutter and pointed out a loose downspout bracket. No mess left on the driveway.',
-  },
-  {
-    name: 'Siobhan M.',
-    city: 'Etobicoke',
-    service: 'snow-removal',
-    rating: 4,
-    quote:
-      'Driveway and front steps were clear before we left for work most mornings. After the big February storm they came later than usual, but the job was still done well.',
-  },
-  {
-    name: 'Marc-André T.',
-    city: 'Scarborough',
-    service: 'pressure-washing',
-    rating: 5,
-    quote:
-      'Our interlock patio had turned green under the maple. Now you can see the real color of the stones again.',
-  },
-  {
-    name: 'Grace L.',
-    city: 'Richmond Hill',
-    service: 'soft-washing',
-    rating: 5,
-    quote: 'Gentle on our older stucco, and the dark streaks under the eaves are gone.',
-  },
-  {
-    name: 'Ahmed K.',
-    city: 'Mississauga',
-    service: 'pressure-washing',
-    rating: 4,
-    quote:
-      'Booked a spring clean for the driveway and walkway. They worked carefully around the garden beds. One oil stain is still faintly there, which they warned us about up front.',
-  },
-  {
-    name: 'Jenna and Rob P.',
-    city: 'Vaughan',
-    service: 'window-cleaning',
-    rating: 5,
-    quote: 'Easy to book and on time. Clear windows, no streaks.',
-  },
-  {
-    name: 'Wei C.',
-    city: 'Scarborough',
-    service: 'snow-removal',
-    rating: 5,
-    quote:
-      'Our walkway was salted every icy morning. With two kids and a dog going in and out, that made a real difference this winter.',
-  },
-]
 
 export const sampleTeam = [
   {

@@ -43,10 +43,12 @@ const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
     localPatterns: [{ pathname: '/api/media/file/**' }],
-    // Site photos served from the public R2 bucket in production (see .env.example).
-    remotePatterns: process.env.R2_PUBLIC_URL
-      ? [new URL(`${process.env.R2_PUBLIC_URL}/media/**`)]
-      : [],
+    // Site photos served from the public R2 bucket in production (see .env.example), and the
+    // profile photos of Google reviewers (the daily Google reviews sync).
+    remotePatterns: [
+      ...(process.env.R2_PUBLIC_URL ? [new URL(`${process.env.R2_PUBLIC_URL}/media/**`)] : []),
+      new URL('https://lh3.googleusercontent.com/**'),
+    ],
   },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {

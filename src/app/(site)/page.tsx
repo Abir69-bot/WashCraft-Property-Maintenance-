@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 
 import { stockPhotos, type StockPhoto } from '@/assets/photos'
+import { GoogleReviews } from '@/components/sections/google-reviews'
 import {
   ComparisonTable,
   LatestArticles,
@@ -21,7 +22,6 @@ import {
   NightServiceAreas,
   NightServices,
   NightStats,
-  NightTestimonials,
   NightWhyChooseUs,
   PhotoCredits,
   type SeasonPanel,
@@ -39,6 +39,7 @@ import { seasonNow } from '@/lib/data/season'
 import { fromMedia, fromStock, servicePhoto, type Photo } from '@/lib/photos'
 import { shownGuarantee } from '@/lib/proof'
 import { generalCta } from '@/lib/quote/flow'
+import { homeReviews } from '@/lib/reviews/view'
 import { categoryHref, COMMERCIAL_CATEGORY } from '@/lib/routes'
 import { fillTokens } from '@/lib/text'
 import { asMedia, mediaSrc, publishedServices, serviceGroups } from '@/lib/view'
@@ -169,7 +170,9 @@ export default async function HomePage() {
     'before-after': <NightBeforeAfter items={home.gallery} />,
     guarantee: <NightGuarantee guarantee={shownGuarantee(site)} />,
     'need-us-now': <NeedUsNow phone={site.phone} tone="night" />,
-    testimonials: <NightTestimonials testimonials={home.testimonials} site={site} />,
+    testimonials: (
+      <GoogleReviews reviews={homeReviews(home.googleReviews, home.testimonials)} site={site} />
+    ),
     'why-choose-us': <NightWhyChooseUs cards={home.homepage.whyChooseUs} region={region} />,
     comparison: flags.comparisonTable && <ComparisonTable comparison={home.homepage.comparison} />,
     commercial: commercial && (

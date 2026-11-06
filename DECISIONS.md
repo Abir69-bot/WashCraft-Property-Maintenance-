@@ -1017,3 +1017,15 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   `featuredServices` in `src/seed/data/media.ts`) now has Window Cleaning where Christmas Light
   Installation was; the service itself is still published. An existing database keeps its saved
   list until it is changed in the admin.
+- **Home page reviews: genuine Google reviews only** (owner, 2026-11-06). "What customers say" is
+  now "What Our Customers Say" (`components/sections/google-reviews.tsx`): Google-styled cards
+  (profile photo or initials, stars, Google "G", review text, "Read on Google"), two rows scrolling
+  in opposite directions with faded edges, paused on hover, keyboard focus or the Pause button,
+  and still with reduced motion. It shows reviews from the daily Google sync (`google-reviews`,
+  newest first, minus hidden ones) and then real reviews the owner entered (`testimonials`); fewer
+  than four sit in a still grid so no card repeats. The rating line and the "Read Our Google
+  Reviews" button appear only once the owner sets the rating and the review link in Site settings.
+  The eight fictional sample reviews are gone from the seed, and the seed deletes any
+  `isSample` testimonials left in older databases. With no reviews yet, the section shows a plain
+  empty state ("Reviews will appear here") instead of hiding: the owner asked for one, and it
+  makes no claim. This is the one exception to "sections with no real entries hide themselves".

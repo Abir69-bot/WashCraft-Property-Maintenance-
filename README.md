@@ -151,7 +151,8 @@ The development-only styleguide is at <http://localhost:3000/styleguide>.
 
 `pnpm seed` fills the database in `.env` with all starter content: 49 services, 6 categories,
 the cities from `src/config/site.ts`, 36 FAQs, 6 blog posts, 6 solutions, placeholder pricing and
-sample testimonials, team and gallery items (samples never appear on the live site).
+sample team members, client logos and job openings (samples never appear on the live site). There
+are no sample reviews: reviews come from Google or are entered by the owner.
 
 - **Safe to re-run.** Existing documents are matched by slug or name and left alone, so your
   edits survive. `pnpm seed --force` overwrites them with the starter content.

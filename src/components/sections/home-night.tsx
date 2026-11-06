@@ -39,12 +39,11 @@ import { faqPage } from '@/lib/seo/json-ld'
 import { fillTokens, telHref } from '@/lib/text'
 import { cn } from '@/lib/utils'
 import { asMedia, mediaSrc } from '@/lib/view'
-import type { City, GalleryItem, Homepage, Service, Testimonial } from '@/payload-types'
+import type { GalleryItem, Homepage, Service } from '@/payload-types'
 
 import { BeforeAfterSlider } from './before-after-slider'
 import { credentials } from './commercial-blocks'
 import { proofPoints } from './hero'
-import { MarqueePause } from './marquee-pause'
 import { ServiceAreaMap } from './service-area-map'
 import { ZipChecker } from './zip-checker'
 
@@ -300,147 +299,6 @@ export function NightServices({ tiles, region }: { tiles: ServiceTile[]; region:
         ))}
       </ul>
     </NightSection>
-  )
-}
-
-const nameOf = (value: number | City | Service | null | undefined) =>
-  value && typeof value === 'object' ? ('name' in value ? value.name : value.title) : null
-
-function ReviewCard({ testimonial }: { testimonial: Testimonial }) {
-  const details = [nameOf(testimonial.city), nameOf(testimonial.service)].filter(Boolean)
-  return (
-    <figure className="flex h-full night-card flex-col p-6">
-      <figcaption className="flex items-center gap-3">
-        <span
-          aria-hidden
-          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary-strong font-bold text-white"
-        >
-          {testimonial.name.replace(/^Sample customer,\s*/, '').charAt(0)}
-        </span>
-        <span className="min-w-0">
-          <span className="block truncate font-semibold">{testimonial.name}</span>
-          {details.length > 0 && (
-            <span className="block truncate text-small text-night-muted">
-              {details.join(' · ')}
-            </span>
-          )}
-        </span>
-        <SampleBadge show={testimonial.isSample} className="ml-auto shrink-0" />
-      </figcaption>
-      <Stars rating={testimonial.rating} className="mt-4" />
-      <blockquote className="mt-3 line-clamp-5 text-night-muted">{testimonial.quote}</blockquote>
-      {testimonial.source === 'google' && testimonial.sourceUrl && (
-        <a
-          href={testimonial.sourceUrl}
-          data-track="review_link_click"
-          rel="noopener"
-          target="_blank"
-          className="mt-auto inline-flex min-h-11 items-center pt-3 text-small font-semibold text-secondary-on-dark"
-        >
-          Verified Google review<span className="sr-only"> (opens in a new tab)</span>
-        </a>
-      )}
-    </figure>
-  )
-}
-
-/** Each scrolling track holds at least this many cards so it always fills a wide screen. */
-const TRACK_MIN = 8
-
-/**
- * Reviews in two slowly scrolling rows. Only the first copy of each review is in the
- * accessibility tree; the repeats that keep the loop seamless are inert. With reduced motion
- * the rows stop and wrap instead.
- */
-export function NightTestimonials({
-  testimonials,
-  site,
-}: {
-  testimonials: Testimonial[]
-  site: SiteConfig
-}) {
-  if (testimonials.length === 0) return null
-  const rated = shownRating(site)
-  const rows = (
-    testimonials.length >= 6
-      ? [
-          testimonials.filter((_, index) => index % 2 === 0),
-          testimonials.filter((_, index) => index % 2 === 1),
-        ]
-      : [testimonials]
-  ).filter((row) => row.length > 0)
-
-  return (
-    <section
-      id="reviews"
-      aria-labelledby="reviews-heading"
-      data-marquee
-      className="group/marquee overflow-hidden border-y border-white/5 bg-night-raised section-y"
-    >
-      <div className="container mb-10 flex reveal flex-wrap items-end justify-between gap-6 lg:mb-12">
-        <div>
-          <h2 id="reviews-heading" className="display-type display-h2">
-            What customers say
-          </h2>
-          {rated && (
-            <p className="mt-3 flex flex-wrap items-center gap-3">
-              <span className="display-type text-4xl">{rated.rating.toFixed(1)}</span>
-              <Stars rating={Math.round(rated.rating)} />
-              <span className="text-small text-night-muted">
-                from {rated.reviewCount} Google reviews
-              </span>
-            </p>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <MarqueePause label="reviews" />
-          {site.googleReviewUrl && (
-            <a href={site.googleReviewUrl} data-track="review_link_click" className={pill}>
-              Read them on Google
-            </a>
-          )}
-          <Link href={routes.reviews} className={pill}>
-            All reviews
-          </Link>
-        </div>
-      </div>
-      <div className="grid gap-5">
-        {rows.map((row, rowIndex) => {
-          const track = Array.from({ length: Math.ceil(TRACK_MIN / row.length) }, () => row).flat()
-          return (
-            <div
-              key={rowIndex}
-              className="flex [mask-image:linear-gradient(90deg,transparent,#000_5%,#000_95%,transparent)] motion-reduce:container motion-reduce:[mask-image:none]"
-            >
-              {[0, 1].map((copy) => (
-                <ul
-                  key={copy}
-                  inert={copy === 1}
-                  className={cn(
-                    'flex shrink-0 animate-marquee gap-5 pr-5 [animation-duration:80s] group-focus-within/marquee:[animation-play-state:paused] group-hover/marquee:[animation-play-state:paused] group-data-[paused]/marquee:[animation-play-state:paused] motion-reduce:shrink motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:pr-0',
-                    rowIndex === 1 && '[animation-direction:reverse]',
-                    copy === 1 && 'motion-reduce:hidden',
-                  )}
-                >
-                  {track.map((testimonial, index) => (
-                    <li
-                      key={`${testimonial.id}-${index}`}
-                      inert={copy === 0 && index >= row.length}
-                      className={cn(
-                        'w-[min(22rem,80vw)]',
-                        index >= row.length && 'motion-reduce:hidden',
-                      )}
-                    >
-                      <ReviewCard testimonial={testimonial} />
-                    </li>
-                  ))}
-                </ul>
-              ))}
-            </div>
-          )
-        })}
-      </div>
-    </section>
   )
 }
 
