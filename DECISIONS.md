@@ -1035,10 +1035,9 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   (unchanged page, related links now point to its siblings), Deep Cleaning (`deep-cleaning`, new),
   Move-In & Move-Out Cleaning (`move-in-move-out-cleaning`, rewritten to the full template and
   published) and Regular Home Cleaning (`regular-home-cleaning`, new). The new services use the
-  custom quote form, so no prices were invented. The Services dropdown and the phone menu show
-  the group first (`SERVICES_MENU_GROUPS` in `lib/services-menu.ts`): the category name links to
-  its hub, with the four services under it. A third column would run off a 1024px screen, so the
-  group sits above the two existing columns. The move-out article no longer links to unpublished
+  custom quote form, so no prices were invented. The Services dropdown and the phone menu list
+  "Residential Cleaning" first, as a plain link to the category page like the other items (the
+  owner asked for no sub-items and no gold heading); the page lists the four services. The move-out article no longer links to unpublished
   services (junk removal, garage cleaning) or promises an instant price. Card photos are licensed
   Commons photos (credited on `/photo-credits`): a floor scrubber in a tiled bathroom (Moritz
   Borkowski, CC BY-SA 4.0), an empty apartment (SmashingIt99, CC0) and a handheld vacuum on a

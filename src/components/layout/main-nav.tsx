@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { NavigationMenu } from 'radix-ui'
 
 import { routes } from '@/lib/routes'
-import type { MenuGroup } from '@/lib/services-menu'
 import { cn } from '@/lib/utils'
 
 export type NavLink = { label: string; href: string }
@@ -68,14 +67,11 @@ function MenuLink({ link, all = false }: { link: NavLink; all?: boolean }) {
  */
 export function MainNav({
   services,
-  serviceGroups,
   areaLinks,
   pageLinks,
 }: {
   /** The Services menu's two columns (lib/services-menu.ts); the last link is All Services. */
   services: NavLink[][]
-  /** Categories listed with their services at the top of the Services menu. */
-  serviceGroups: MenuGroup[]
   areaLinks: NavLink[]
   /** Plain top-level links (About, FAQs, Contact…), set under Navigation in the admin. */
   pageLinks: NavLink[]
@@ -96,28 +92,6 @@ export function MainNav({
           <Trigger>Services</Trigger>
           {/* Dark two-column panel, opening right under the Services button. */}
           <NavigationMenu.Content className={cn(panelClass, 'w-[min(38rem,calc(100vw-3rem))]')}>
-            {serviceGroups.map((group) => (
-              <section
-                key={group.heading.href}
-                aria-label={group.heading.label}
-                className="mb-2 border-b border-white/10 pb-2"
-              >
-                <NavigationMenu.Link asChild>
-                  <Link
-                    href={group.heading.href}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-lg px-4 text-small font-bold tracking-wide text-cta uppercase no-underline hover:bg-white/[0.07]"
-                  >
-                    {group.heading.label}
-                    <ArrowRight aria-hidden className="size-4" />
-                  </Link>
-                </NavigationMenu.Link>
-                <ul className="grid grid-cols-2 gap-x-2 gap-y-0.5">
-                  {group.links.map((link) => (
-                    <MenuLink key={link.href} link={link} />
-                  ))}
-                </ul>
-              </section>
-            ))}
             <div className="grid grid-cols-2 gap-x-2">
               {services.map((column, index) => (
                 <ul key={index} className="grid content-start gap-0.5">

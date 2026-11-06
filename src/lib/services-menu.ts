@@ -13,6 +13,8 @@ export type ServicesMenuItem = { label: string; targets: MenuTarget[] }
  */
 export const SERVICES_MENU: ServicesMenuItem[][] = [
   [
+    // Added 2026-11-06: the category page lists its four services.
+    { label: 'Residential Cleaning', targets: [{ category: 'interior-cleaning' }] },
     { label: 'Exterior Cleaning', targets: [{ category: 'exterior-cleaning' }] },
     {
       label: 'Property Maintenance',
@@ -35,31 +37,12 @@ export const SERVICES_MENU: ServicesMenuItem[][] = [
   ],
 ]
 
-/**
- * Categories shown in the Services menu as a group: the category's name as a heading (linking to
- * its page) with its services listed under it (owner, 2026-11-06).
- */
-export type ServicesMenuGroup = { heading: ServicesMenuItem; items: ServicesMenuItem[] }
-
-export const SERVICES_MENU_GROUPS: ServicesMenuGroup[] = [
-  {
-    heading: { label: 'Residential Cleaning', targets: [{ category: 'interior-cleaning' }] },
-    items: [
-      { label: 'Interior House Cleaning', targets: [{ service: 'house-cleaning' }] },
-      { label: 'Deep Cleaning', targets: [{ service: 'deep-cleaning' }] },
-      { label: 'Move-In & Move-Out Cleaning', targets: [{ service: 'move-in-move-out-cleaning' }] },
-      { label: 'Regular Home Cleaning', targets: [{ service: 'regular-home-cleaning' }] },
-    ],
-  },
-]
-
-/** A menu group with live links: its heading and the links under it. */
-export type MenuGroup = { heading: NavLink; links: NavLink[] }
-
-type MenuCategory = { slug: string; services: { slug: string }[] }
-
-/** Turns menu items into live links: the first target that's live wins, items with none drop. */
-function linker(categories: MenuCategory[], services: { slug: string }[]) {
+/** The menu's columns with each item's live link (published services and categories only). */
+export function servicesMenu(
+  categories: { slug: string; services: { slug: string }[] }[],
+  services: { slug: string }[],
+  menu: ServicesMenuItem[][] = SERVICES_MENU,
+): NavLink[][] {
   const href = (target: MenuTarget): string | null => {
     if ('path' in target) return target.path
     if ('service' in target) {
@@ -72,32 +55,10 @@ function linker(categories: MenuCategory[], services: { slug: string }[]) {
     )
     return category ? categoryHref(category) : null
   }
-  return (item: ServicesMenuItem): NavLink[] => {
-    const link = item.targets.map(href).find((value) => value !== null)
-    return link ? [{ label: item.label, href: link }] : []
-  }
-}
-
-/** The menu's columns with each item's live link (published services and categories only). */
-export function servicesMenu(
-  categories: MenuCategory[],
-  services: { slug: string }[],
-  menu: ServicesMenuItem[][] = SERVICES_MENU,
-): NavLink[][] {
-  const link = linker(categories, services)
-  return menu.map((column) => column.flatMap(link))
-}
-
-/** The menu's category groups with live links; a group with no live heading or links is left out. */
-export function servicesMenuGroups(
-  categories: MenuCategory[],
-  services: { slug: string }[],
-  groups: ServicesMenuGroup[] = SERVICES_MENU_GROUPS,
-): MenuGroup[] {
-  const link = linker(categories, services)
-  return groups.flatMap((group) => {
-    const [heading] = link(group.heading)
-    const links = group.items.flatMap(link)
-    return heading && links.length > 0 ? [{ heading, links }] : []
-  })
+  return menu.map((column) =>
+    column.flatMap((item) => {
+      const link = item.targets.map(href).find((value) => value !== null)
+      return link ? [{ label: item.label, href: link }] : []
+    }),
+  )
 }
