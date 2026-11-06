@@ -1,6 +1,5 @@
 import type { StaticImageData } from 'next/image'
 
-import floorMopping from './home/floor-mopping.jpg'
 import heroHoliday from './home/hero-holiday.jpg'
 import heroHome from './home/hero-home.jpg'
 import heroWinter from './home/hero-winter.jpg'
@@ -79,18 +78,6 @@ export const stockPhotos = {
       licenseUrl: null,
       source: commons('Shovelling_Snow,_USAF.jpg'),
       changes: 'Resized',
-    },
-  },
-  floorMopping: {
-    src: floorMopping,
-    alt: 'A cleaner in an apron mopping the shiny floor of a bright shopping concourse',
-    credit: {
-      title: 'Regular cleaning service',
-      author: 'Arayabee',
-      license: 'CC BY-SA 4.0',
-      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
-      source: commons('บริการแม่บ้านทำความสะอาด_แบบประจำ.jpg'),
-      changes: 'Cropped and resized',
     },
   },
   houseCleaning: {

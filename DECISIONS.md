@@ -1012,8 +1012,9 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   surface-cleaned, and Post-Construction and Window Cleaning use the owner's crew photos. Each
   `service-feature-photos.ts` image is also the service's card photo (`servicePhoto()`: admin photo
   first, then the owner's supplied photo, then the licensed one). The licensed photos they replaced
-  on cards (rope-access window cleaner, squeegee) were removed; floor mopping stays for the home
-  page's commercial band. The home page's featured services list (Home page settings, seeded from
+  on cards (rope-access window cleaner, squeegee) were removed. Later the same day the home page's
+  commercial band switched to the owner's Commercial Cleaning photo too, and the floor-mopping
+  stock photo was removed. The home page's featured services list (Home page settings, seeded from
   `featuredServices` in `src/seed/data/media.ts`) now has Window Cleaning where Christmas Light
   Installation was; the service itself is still published. An existing database keeps its saved
   list until it is changed in the admin.

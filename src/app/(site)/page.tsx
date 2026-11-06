@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 
 import { stockPhotos, type StockPhoto } from '@/assets/photos'
 import { seasonPhotos } from '@/assets/season-photos'
+import { serviceFeaturePhotos } from '@/assets/service-feature-photos'
 import { GoogleReviews } from '@/components/sections/google-reviews'
 import {
   ComparisonTable,
@@ -184,7 +185,7 @@ export default async function HomePage() {
         site={site}
         cta={cta}
         servicesHref={categoryHref(commercial)}
-        photo={stock(stockPhotos.floorMopping, 'commercial')}
+        photo={serviceFeaturePhotos['commercial-cleaning']}
       />
     ),
     plans: quote.instantPricing && <PlansTeaser plans={home.plans} />,
