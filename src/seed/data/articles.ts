@@ -229,7 +229,7 @@ A [spring yard cleanup](/services/yard-cleanup) handles the raking, cutting back
     category: 'guides',
     publishedAt: '2026-06-10T15:00:00.000Z',
     heroImageLabel: 'Empty, clean kitchen with open cabinets',
-    relatedServices: ['move-in-move-out-cleaning', 'junk-removal', 'garage-cleaning'],
+    relatedServices: ['move-in-move-out-cleaning', 'deep-cleaning', 'house-cleaning'],
     markdown: `A move-out clean is deeper than a regular house cleaning. With the furniture gone, everything is on display, and landlords and buyers look closely.
 
 ## What’s usually included
@@ -246,17 +246,17 @@ A [spring yard cleanup](/services/yard-cleanup) handles the raking, cutting back
 - **Inside the fridge and oven**, often an add-on.
 - **Carpet steam cleaning**, usually a separate specialist.
 - **Wall repairs and painting.**
-- **Leftover furniture and junk.** Add [junk removal](/services/junk-removal) to clear it.
+- **Leftover furniture and junk**, which needs to be cleared before the clean.
 
 ## Timing it right
 
 Book the clean **after the movers leave** and **before the final walk-through**. Keep the water and power on until the cleaners finish.
 
-## Don’t forget the garage
+## Moving in instead?
 
-Garages are often left full of odds and ends. A [garage cleaning](/services/garage-cleaning) clears and sweeps it so the whole property is ready.
+The same clean works before you unpack. If the home has been lived in for a while, a [deep clean](/services/deep-cleaning) covers the build-up in the kitchen and bathrooms too.
 
-Get an instant price for a [move-in or move-out clean](/services/move-in-move-out-cleaning) based on bedrooms and bathrooms.`,
+Tell us the bedrooms, bathrooms and your moving dates, and we’ll send a written estimate for a [move-in or move-out clean](/services/move-in-move-out-cleaning).`,
   },
 ]
 

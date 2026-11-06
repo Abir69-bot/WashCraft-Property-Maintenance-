@@ -108,7 +108,130 @@ export const interiorServices: ServiceSeed[] = [
           'No, as long as we have a safe way in. We’ll agree access with you before the visit.',
       },
     ],
-    related: ['post-construction-cleaning', 'window-cleaning', 'patio-balcony-cleaning'],
+    related: ['deep-cleaning', 'regular-home-cleaning', 'move-in-move-out-cleaning'],
+    questions: [
+      bedrooms,
+      bathrooms,
+      ask.yesNo('pets', 'Any pets?'),
+      ask.yesNo('fridge', 'Clean inside the fridge?'),
+      ask.yesNo('oven', 'Clean inside the oven?'),
+    ],
+  },
+  {
+    slug: 'deep-cleaning',
+    title: 'Deep Cleaning',
+    category: 'interior-cleaning',
+    icon: 'brush',
+    quoteMode: 'custom',
+    seasons: ['all-year'],
+    headline: 'The clean that reaches the corners',
+    promise: 'Deep house cleaning in {region}, with every extra task listed in writing.',
+    summary:
+      'A top-to-bottom clean for homes that need more than a regular visit: built-up grime in kitchens and bathrooms, baseboards, doors and the spots a quick clean skips.',
+    outcomeLabel: 'Get a deep clean',
+    bullets: [
+      'Kitchens and bathrooms in detail',
+      'Baseboards, doors and switches',
+      'Extra tasks agreed up front',
+    ],
+    heroImageLabel: 'Bathroom with a scrubbed tub, clean tile and polished fixtures',
+    problem:
+      'Regular cleaning keeps a home tidy, but grime still builds up over time. Grease collects in the kitchen, soap scum and hard-water marks build up in bathrooms, and dust settles on baseboards, doors and vents.',
+    benefits: [
+      {
+        title: 'A fresh starting point',
+        body: 'A deep clean resets the whole home, so regular cleaning is easier to keep up.',
+      },
+      {
+        title: 'Detail work',
+        body: 'Baseboards, doors, switches and fixtures get attention, not just the open surfaces.',
+      },
+      {
+        title: 'No surprises',
+        body: 'Every extra task, like inside the oven, is listed in your written estimate.',
+      },
+    ],
+    included: [
+      'Everything in a regular clean: kitchens, bathrooms, dusting and floors',
+      'Kitchen backsplash, cabinet fronts, range hood and outside of appliances degreased',
+      'Bathrooms scrubbed in detail: tile, grout lines, fixtures, tub or shower and mirrors',
+      'Baseboards, door frames, doors, light switches and outlet covers wiped',
+      'Window sills and reachable vents dusted',
+      'Inside the fridge, oven or cabinets when your estimate lists them',
+    ],
+    suitableFor: [
+      'Homes that haven’t had a thorough clean in a while',
+      'Spring cleaning, or getting ready for guests or a holiday',
+      'A first visit before switching to regular home cleaning',
+      'Homes being listed for sale',
+    ],
+    exclusions: [
+      'Carpet steam cleaning is not offered. We vacuum carpets and rugs.',
+      'Walls are spot-cleaned only when your estimate lists them.',
+      'We don’t move heavy furniture or clean at heights that need a ladder.',
+      'Mold remediation, biohazards and pest-related cleanup are not included.',
+    ],
+    preparation: [
+      'Clear counters, floors and surfaces of clutter and personal items.',
+      'Empty the fridge or cabinets if we’re cleaning inside them.',
+      'Tell us about pets, alarm codes, parking and how we’ll get in.',
+      'Point out delicate surfaces and any products to use or avoid.',
+    ],
+    method:
+      'We follow the checklist in your estimate room by room, working from top to bottom so dust falls onto floors we clean last. Kitchens and bathrooms take the most time: we use cleaners suited to each surface and let them sit on built-up grime instead of scrubbing harder.',
+    safety: 'Tell us about allergies, pets and any products you prefer us to use or avoid.',
+    process: [
+      {
+        title: 'Send a request',
+        body: 'Use the quote form or call. Photos of the kitchen and bathrooms help.',
+      },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for more photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the rooms, tasks, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Approve and schedule',
+        body: 'Once you approve the estimate, we confirm a date that suits you.',
+      },
+    ],
+    priceFactors: [
+      'Bedrooms and bathrooms',
+      'Size of the home',
+      'How much build-up there is',
+      'Extra tasks such as inside the fridge or oven',
+    ],
+    addOns: [
+      { name: 'Inside fridge', description: 'Shelves and drawers emptied, wiped and restocked.' },
+      { name: 'Inside oven', description: 'Racks and interior degreased.' },
+      { name: 'Inside cabinets', description: 'Shelves wiped out once they are emptied.' },
+    ],
+    faqs: [
+      {
+        question: 'How is a deep clean different from a regular clean?',
+        answer:
+          'A regular clean keeps up with the everyday mess. A deep clean also covers the build-up and the details, like baseboards, doors, grout lines and the outside of appliances.',
+      },
+      {
+        question: 'How long does a deep clean take?',
+        answer:
+          'It depends on the size of the home and how much build-up there is. We’ll give you an idea of the time in your estimate.',
+      },
+      {
+        question: 'Do you bring your own supplies?',
+        answer:
+          'We’ll confirm supplies and equipment in your estimate. If you’d like us to use your own products, tell us when you send your request.',
+      },
+      {
+        question: 'Can I switch to regular cleaning afterward?',
+        answer:
+          'Yes. Many people start with a deep clean and then book regular home cleaning to keep it up.',
+      },
+    ],
+    related: ['regular-home-cleaning', 'house-cleaning', 'move-in-move-out-cleaning'],
     questions: [
       bedrooms,
       bathrooms,
@@ -119,55 +242,90 @@ export const interiorServices: ServiceSeed[] = [
   },
   {
     slug: 'move-in-move-out-cleaning',
-    title: 'Move-In / Move-Out Cleaning',
+    title: 'Move-In & Move-Out Cleaning',
     category: 'interior-cleaning',
     icon: 'package',
     quoteMode: 'instant',
     seasons: ['all-year'],
-    headline: 'Empty home, spotless from top to bottom',
-    promise: 'A deep clean built for landlord walk-throughs and fresh starts.',
+    headline: 'An empty home, cleaned top to bottom',
+    promise:
+      'Move-in and move-out cleaning in {region}, timed around your moving day and walk-through.',
     summary:
-      'A deep clean of an empty home, including inside cabinets, appliances and closets, for moving in or out.',
-    outcomeLabel: 'Get move-out ready',
+      'A thorough clean of an empty home, including inside cabinets, closets and drawers, for moving in, moving out or getting a rental ready.',
+    outcomeLabel: 'Get move-ready',
     bullets: [
-      'Inside cabinets and closets',
-      'Inside appliances available',
-      'Built for walk-throughs',
+      'Inside cabinets, drawers and closets',
+      'Kitchen and bathrooms in detail',
+      'Timed around your move',
     ],
     heroImageLabel: 'Empty, freshly cleaned kitchen with open cabinets',
     problem:
-      'Moving is exhausting, and the last thing you want is to scrub an empty house. Landlords and buyers look closely, and dirt hidden by furniture is suddenly on display.',
+      'Moving is tiring, and an empty home shows everything. Dust and marks hidden by furniture are suddenly on display, and landlords, buyers and new owners look closely.',
     benefits: [
       {
-        title: 'Walk-through ready',
-        body: 'We clean the places inspectors check: inside cabinets, appliances and baseboards.',
+        title: 'Ready for the walk-through',
+        body: 'We clean the places people check: inside cabinets, closets and the kitchen and bathrooms.',
       },
       {
         title: 'Start fresh',
-        body: 'Moving in? Unpack into a home that’s clean inside every drawer.',
+        body: 'Moving in? Unpack into a home that’s clean inside every drawer and closet.',
       },
       { title: 'One less moving task', body: 'Hand us the keys and focus on the move.' },
     ],
     included: [
       'Inside all cabinets, drawers and closets',
-      'Kitchen and bathrooms deep cleaned',
-      'Baseboards, doors, switches and outlets wiped',
+      'Kitchen: counters, sink, backsplash and outside of appliances',
+      'Bathrooms: toilet, sink, tub or shower, mirrors and cabinets',
+      'Baseboards, doors, light switches and outlet covers wiped',
       'Window sills and tracks',
       'Floors vacuumed and mopped',
-      'Inside appliances (if selected)',
+      'Inside the fridge and oven when your estimate lists them',
+    ],
+    suitableFor: [
+      'Tenants moving out of a rental',
+      'Buyers and owners moving into a new home',
+      'Landlords and property managers between tenants',
+      'Sellers getting an empty home ready for closing',
+    ],
+    exclusions: [
+      'The home should be empty, or nearly. Furniture and boxes block the areas this clean covers.',
+      'Carpet steam cleaning, wall repairs and painting are not included.',
+      'Leftover furniture and junk are not removed.',
+      'We don’t clean at heights that need a ladder.',
+      'Mold remediation, biohazards and pest-related cleanup are not included.',
+    ],
+    preparation: [
+      'Book the clean after the movers leave and before the final walk-through.',
+      'Keep the water and power on until we finish.',
+      'Remove leftover items, or tell us what will stay.',
+      'Tell us how we’ll get in and where to park.',
     ],
     method:
-      'An empty home lets us reach everything. We start with cabinets and closets, work through kitchens and bathrooms, wipe every surface people touch, and finish with floors. We follow a move-out checklist modeled on common landlord walk-through forms.',
+      'An empty home lets us reach everything. We start inside cabinets and closets, work through the kitchen and bathrooms, wipe the surfaces people touch and finish with the floors, so nothing gets dusty again after it’s cleaned.',
+    safety: 'Tell us about any surfaces that need special care, like natural stone counters.',
     process: [
       {
-        title: 'Get a price',
-        body: 'Tell us bedrooms, bathrooms and whether to clean inside appliances.',
+        title: 'Send a request',
+        body: 'Tell us the bedrooms, bathrooms and your moving dates.',
       },
-      { title: 'Pick the date', body: 'Ideally after the movers and before the walk-through.' },
-      { title: 'Deep clean', body: 'Every room, cabinet and closet.' },
-      { title: 'Photos', body: 'We send photos you can share with a landlord or buyer.' },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the scope, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Clean on your date',
+        body: 'Ideally after the movers leave and before the walk-through.',
+      },
     ],
     priceFactors: ['Bedrooms and bathrooms', 'Inside appliances', 'Condition of the home'],
+    addOns: [
+      { name: 'Inside fridge', description: 'Shelves and drawers wiped out.' },
+      { name: 'Inside oven', description: 'Racks and interior degreased.' },
+    ],
     faqs: [
       {
         question: 'Does the home need to be empty?',
@@ -176,24 +334,124 @@ export const interiorServices: ServiceSeed[] = [
       {
         question: 'Will this get my deposit back?',
         answer:
-          'We clean to a high standard and follow a typical walk-through checklist, but deposits also depend on damage and your landlord’s decision.',
+          'We clean the places a walk-through usually checks, but a deposit also depends on any damage and on your landlord’s decision.',
       },
       {
         question: 'Do you clean carpets?',
-        answer:
-          'We vacuum them thoroughly. Steam cleaning is not included, and we can recommend a partner.',
+        answer: 'We vacuum carpets. Carpet steam cleaning is not included.',
       },
       {
-        question: 'Can you remove leftover items?',
-        answer: 'Yes. Add junk removal and we’ll haul away what’s left behind.',
-      },
-      {
-        question: 'Do you need electricity and water on?',
-        answer: 'Yes, please keep utilities on until we’ve finished.',
+        question: 'Do you need the water and power on?',
+        answer: 'Yes, please keep both on until we’ve finished.',
       },
     ],
-    related: ['house-cleaning', 'junk-removal', 'garage-cleaning'],
+    related: ['deep-cleaning', 'house-cleaning', 'regular-home-cleaning'],
     questions: [bedrooms, bathrooms, ask.yesNo('appliances', 'Clean inside appliances?')],
+  },
+  {
+    slug: 'regular-home-cleaning',
+    title: 'Regular Home Cleaning',
+    category: 'interior-cleaning',
+    icon: 'house',
+    quoteMode: 'custom',
+    seasons: ['all-year'],
+    headline: 'A clean home, kept that way',
+    promise: 'Recurring home cleaning in {region}, on a schedule you choose.',
+    summary:
+      'Recurring home cleaning on a schedule you choose, with the same checklist each visit: kitchens, bathrooms, dusting and floors.',
+    outcomeLabel: 'Set up regular cleaning',
+    bullets: [
+      'Weekly, every two weeks or monthly',
+      'The same checklist each visit',
+      'Changes agreed in writing',
+    ],
+    heroImageLabel: 'Tidy living room with a vacuumed rug and clear surfaces',
+    problem:
+      'A home doesn’t stay clean on its own. Between work, kids and everything else, the cleaning piles up, and weekends go to catching up instead of resting.',
+    benefits: [
+      {
+        title: 'Always ready',
+        body: 'Your home stays clean between visits instead of swinging between messy and spotless.',
+      },
+      {
+        title: 'Same checklist each time',
+        body: 'The rooms and tasks are agreed once in writing, so every visit covers the same ground.',
+      },
+      {
+        title: 'Your schedule',
+        body: 'Pick weekly, every two weeks or monthly, and change it when your needs change.',
+      },
+    ],
+    included: [
+      'Kitchen counters, sink, outside of appliances and cabinet fronts',
+      'Bathrooms: toilet, sink, tub or shower, mirrors and floors',
+      'Dusting of reachable surfaces',
+      'Vacuuming and mopping of hard floors, and vacuuming of rugs',
+      'Emptying trash bins',
+      'Any extra tasks listed in your estimate',
+    ],
+    suitableFor: [
+      'Busy households who want to keep up without spending weekends cleaning',
+      'Families with kids or pets',
+      'Homeowners and tenants who want a set routine',
+      'Homes that had a deep clean and want to keep it that way',
+    ],
+    exclusions: [
+      'Carpet cleaning is not offered.',
+      'Inside appliances, inside cabinets and walls are only included when your estimate lists them.',
+      'Laundry, dishes and tidying are not included unless your estimate lists them.',
+      'We don’t move heavy furniture or clean at heights that need a ladder.',
+    ],
+    preparation: [
+      'Pick up clothes, toys and clutter so surfaces and floors are clear.',
+      'Tell us about pets, alarm codes, parking and how we’ll get in.',
+      'Let us know before a visit if you need to skip or move it.',
+    ],
+    method:
+      'We follow the same checklist each visit, working room by room from top to bottom so dust falls onto floors we clean last. If a home hasn’t been cleaned in a while, we may suggest a deep clean first so regular visits can keep up.',
+    safety: 'Tell us about allergies, pets and any products you prefer us to use or avoid.',
+    process: [
+      {
+        title: 'Send a request',
+        body: 'Tell us about your home and how often you’d like cleaning.',
+      },
+      {
+        title: 'We review it',
+        body: 'We look at the details and may ask for photos or a quick visit.',
+      },
+      {
+        title: 'Written estimate',
+        body: 'You get the checklist, schedule, exclusions, price and conditions in writing.',
+      },
+      {
+        title: 'Regular visits',
+        body: 'Once you approve, we set up the visits on the schedule you chose.',
+      },
+    ],
+    priceFactors: ['Bedrooms and bathrooms', 'Size of the home', 'How often we visit', 'Pets'],
+    faqs: [
+      {
+        question: 'How often can you come?',
+        answer:
+          'Weekly, every two weeks or monthly. We’ll agree the schedule in your written estimate.',
+      },
+      {
+        question: 'Can I skip or move a visit?',
+        answer: 'Yes. Let us know ahead of time and we’ll work out a new date.',
+      },
+      {
+        question: 'Do I need a deep clean first?',
+        answer:
+          'Not always. If there’s a lot of build-up, we may suggest starting with a deep clean so regular visits can keep up.',
+      },
+      {
+        question: 'Do I need to be home?',
+        answer:
+          'No, as long as we have a safe way in. We’ll agree access with you before the first visit.',
+      },
+    ],
+    related: ['deep-cleaning', 'house-cleaning', 'move-in-move-out-cleaning'],
+    questions: [bedrooms, bathrooms, ask.yesNo('pets', 'Any pets?')],
   },
   {
     slug: 'post-construction-cleaning',

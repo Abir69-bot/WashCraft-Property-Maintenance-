@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import type { LayoutData } from '@/lib/data/layout'
 import { generalCta } from '@/lib/quote/flow'
 import { routes } from '@/lib/routes'
-import { servicesMenu } from '@/lib/services-menu'
+import { servicesMenu, servicesMenuGroups } from '@/lib/services-menu'
 import { smsHref, telHref } from '@/lib/text'
 
 import { HeaderShell } from './header-shell'
@@ -16,6 +16,7 @@ import { MobileMenu } from './mobile-menu'
 export function Header({ data }: { data: LayoutData }) {
   const { site, cities, navigation } = data
   const services = servicesMenu(data.categories, data.services)
+  const serviceGroups = servicesMenuGroups(data.categories, data.services)
   // An owner-set header button wins; otherwise it follows the quote settings.
   const cta =
     navigation.headerCta?.href && navigation.headerCta.label
@@ -46,7 +47,12 @@ export function Header({ data }: { data: LayoutData }) {
             className="h-12 w-auto transition-[height] group-data-[scrolled]:h-11 sm:h-14"
           />
         </Link>
-        <MainNav services={services} areaLinks={areaLinks} pageLinks={pageLinks} />
+        <MainNav
+          services={services}
+          serviceGroups={serviceGroups}
+          areaLinks={areaLinks}
+          pageLinks={pageLinks}
+        />
         <div className="ml-auto flex items-center gap-2">
           {/* Only on very wide screens: the number is in the bar above and in the home hero. */}
           {callHref && (
@@ -64,6 +70,7 @@ export function Header({ data }: { data: LayoutData }) {
           </Button>
           <MobileMenu
             services={services}
+            serviceGroups={serviceGroups}
             areaLinks={areaLinks}
             pageLinks={pageLinks}
             cta={cta}

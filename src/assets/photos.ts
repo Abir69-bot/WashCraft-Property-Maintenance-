@@ -4,8 +4,11 @@ import heroHoliday from './home/hero-holiday.jpg'
 import heroHome from './home/hero-home.jpg'
 import heroWinter from './home/hero-winter.jpg'
 import snowShoveling from './home/snow-shoveling.jpg'
+import deepCleaning from './services/deep-cleaning.jpg'
 import drivewaySealing from './services/driveway-sealing.jpg'
 import houseCleaning from './services/house-cleaning.jpg'
+import moveCleaning from './services/move-in-move-out-cleaning.jpg'
+import regularCleaning from './services/regular-home-cleaning.jpg'
 import restaurantKitchen from './services/restaurant-cleaning.jpg'
 
 /**
@@ -120,6 +123,42 @@ export const stockPhotos = {
       changes: 'Cropped and resized',
     },
   },
+  deepCleaning: {
+    src: deepCleaning,
+    alt: 'A cleaner deep cleaning a tiled bathroom floor with a floor scrubbing machine',
+    credit: {
+      title: 'Grundreinigung Fliesenboden',
+      author: 'Moritz Borkowski',
+      license: 'CC BY-SA 4.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+      source: commons('Grundreinigung-Fliesenboden.jpg'),
+      changes: 'Cropped and resized',
+    },
+  },
+  moveCleaning: {
+    src: moveCleaning,
+    alt: 'An empty, clean apartment with wood floors, white walls and a fitted kitchen',
+    credit: {
+      title: 'Empty apartment in Berlin with fitted kitchen and chair',
+      author: 'SmashingIt99',
+      license: 'CC0 1.0',
+      licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+      source: commons('Empty_apartment_in_Berlin_with_fitted_kitchen_and_chair.jpg'),
+      changes: 'Cropped and resized',
+    },
+  },
+  regularCleaning: {
+    src: regularCleaning,
+    alt: 'A person vacuuming the cushions of a gray couch with a handheld vacuum',
+    credit: {
+      title: 'Person using a handheld vacuum cleaner on a couch in a living room',
+      author: 'Shixart1985',
+      license: 'CC BY 2.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
+      source: commons('Person_using_a_handheld_vacuum_cleaner_on_a_couch_in_a_living_room.jpg'),
+      changes: 'Cropped and resized',
+    },
+  },
 } satisfies Record<string, StockPhoto>
 
 /**
@@ -128,6 +167,9 @@ export const stockPhotos = {
  */
 export const stockByService: Record<string, StockPhoto> = {
   'house-cleaning': stockPhotos.houseCleaning,
+  'deep-cleaning': stockPhotos.deepCleaning,
+  'move-in-move-out-cleaning': stockPhotos.moveCleaning,
+  'regular-home-cleaning': stockPhotos.regularCleaning,
   'restaurant-cleaning': stockPhotos.restaurantKitchen,
   'driveway-sealing': stockPhotos.drivewaySealing,
   'snow-removal': stockPhotos.snowShoveling,

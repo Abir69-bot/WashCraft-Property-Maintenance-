@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { routes } from '@/lib/routes'
+import type { MenuGroup } from '@/lib/services-menu'
 
 import type { NavLink } from './main-nav'
 
@@ -20,6 +21,8 @@ const linkClass = 'block rounded-md px-2 py-2.5 text-ink no-underline hover:bg-s
 export type MobileMenuProps = {
   /** The Services menu's columns (lib/services-menu.ts): stacked on phones, side by side from sm. */
   services: NavLink[][]
+  /** Categories listed with their services above the columns. */
+  serviceGroups: MenuGroup[]
   areaLinks: NavLink[]
   pageLinks: NavLink[]
   cta: NavLink
@@ -33,6 +36,7 @@ export type MobileMenuProps = {
  */
 export function MobileMenuPanel({
   services,
+  serviceGroups,
   areaLinks,
   pageLinks,
   cta,
@@ -86,6 +90,29 @@ export function MobileMenuPanel({
               <AccordionItem value="services">
                 <AccordionTrigger>Services</AccordionTrigger>
                 <AccordionContent>
+                  {serviceGroups.map((group) => (
+                    <section
+                      key={group.heading.href}
+                      aria-label={group.heading.label}
+                      className="mb-2 border-b border-border pb-2"
+                    >
+                      <Link
+                        href={group.heading.href}
+                        className="block px-2 py-2.5 text-small font-bold tracking-wide text-cta uppercase no-underline"
+                      >
+                        {group.heading.label}
+                      </Link>
+                      <ul className="grid sm:grid-cols-2 sm:gap-x-4">
+                        {group.links.map((link) => (
+                          <li key={link.href}>
+                            <Link href={link.href} className={linkClass}>
+                              {link.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ))}
                   <div className="grid sm:grid-cols-2 sm:gap-x-4">
                     {services.map((column, index) => (
                       <ul key={index}>

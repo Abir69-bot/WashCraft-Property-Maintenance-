@@ -1030,3 +1030,17 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   `isSample` testimonials left in older databases. With no reviews yet the section hides itself,
   like every other section with nothing real to show (it had an empty state for a few hours; the
   owner asked to remove it, 2026-11-06).
+- **Residential Cleaning in the Services menu** (owner, 2026-11-06). The existing `interior-cleaning`
+  category (titled Residential Cleaning) now has four published services: Interior House Cleaning
+  (unchanged page, related links now point to its siblings), Deep Cleaning (`deep-cleaning`, new),
+  Move-In & Move-Out Cleaning (`move-in-move-out-cleaning`, rewritten to the full template and
+  published) and Regular Home Cleaning (`regular-home-cleaning`, new). The new services use the
+  custom quote form, so no prices were invented. The Services dropdown and the phone menu show
+  the group first (`SERVICES_MENU_GROUPS` in `lib/services-menu.ts`): the category name links to
+  its hub, with the four services under it. A third column would run off a 1024px screen, so the
+  group sits above the two existing columns. The move-out article no longer links to unpublished
+  services (junk removal, garage cleaning) or promises an instant price. Card photos are licensed
+  Commons photos (credited on `/photo-credits`): a floor scrubber in a tiled bathroom (Moritz
+  Borkowski, CC BY-SA 4.0), an empty apartment (SmashingIt99, CC0) and a handheld vacuum on a
+  couch (Shixart1985, CC BY 2.0). No genuine licensed before/after pair exists for these services
+  (searched Commons again 2026-11-06), so their pages show none.

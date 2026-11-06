@@ -99,9 +99,19 @@ test.describe('navigation', () => {
     for (const name of ['Pressure Washing', 'Snow Removal', 'Roof Cleaning', 'All Services']) {
       await expect(menu.getByRole('link', { name, exact: true })).toBeVisible()
     }
+    // Residential Cleaning comes first: its heading links to the category, its services follow.
+    const residential = menu.getByRole('region', { name: 'Residential Cleaning' })
+    for (const name of [
+      'Interior House Cleaning',
+      'Deep Cleaning',
+      'Move-In & Move-Out Cleaning',
+      'Regular Home Cleaning',
+    ]) {
+      await expect(residential.getByRole('link', { name, exact: true })).toBeVisible()
+    }
     await expectAccessible(page, { exclude: [RADIX_FOCUS_PROXY] })
     await page.keyboard.press('Tab')
-    await expect(menu.getByRole('link', { name: 'Exterior Cleaning', exact: true })).toBeFocused()
+    await expect(residential.getByRole('link', { name: 'Residential Cleaning' })).toBeFocused()
     await page.keyboard.press('Escape')
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expect(trigger).toBeFocused()
