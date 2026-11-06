@@ -145,5 +145,5 @@ export const featuredServices = [
   'post-construction-cleaning',
   'soft-washing',
   'snow-removal',
-  'christmas-light-installation',
+  'window-cleaning',
 ]

@@ -1007,3 +1007,13 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   "example photos by …, not WashCraft's work (photo credits)" note under each pair are gone. The
   caption still names the pair for screen readers (`role="group"`), and licensed pairs stay
   credited on `/photo-credits`, linked from every page's footer.
+- **Owner photos on service cards; Window Cleaning replaces Christmas lights on the home page**
+  (owner, 2026-11-06). Commercial Cleaning now uses the owner's photo of a commercial entrance being
+  surface-cleaned, and Post-Construction and Window Cleaning use the owner's crew photos. Each
+  `service-feature-photos.ts` image is also the service's card photo (`servicePhoto()`: admin photo
+  first, then the owner's supplied photo, then the licensed one). The licensed photos they replaced
+  on cards (rope-access window cleaner, squeegee) were removed; floor mopping stays for the home
+  page's commercial band. The home page's featured services list (Home page settings, seeded from
+  `featuredServices` in `src/seed/data/media.ts`) now has Window Cleaning where Christmas Light
+  Installation was; the service itself is still published. An existing database keeps its saved
+  list until it is changed in the admin.

@@ -5,10 +5,8 @@ import heroHoliday from './home/hero-holiday.jpg'
 import heroHome from './home/hero-home.jpg'
 import heroWinter from './home/hero-winter.jpg'
 import snowShoveling from './home/snow-shoveling.jpg'
-import windowSqueegee from './home/window-squeegee.jpg'
 import drivewaySealing from './services/driveway-sealing.jpg'
 import houseCleaning from './services/house-cleaning.jpg'
-import postConstruction from './services/post-construction-cleaning.jpg'
 import restaurantKitchen from './services/restaurant-cleaning.jpg'
 
 /**
@@ -83,18 +81,6 @@ export const stockPhotos = {
       changes: 'Resized',
     },
   },
-  windowSqueegee: {
-    src: windowSqueegee,
-    alt: 'Close-up of a squeegee drawing water down a window pane',
-    credit: {
-      title: 'Cleaning windows',
-      author: 'Andrés Nieto Porras',
-      license: 'CC BY-SA 2.0',
-      licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0/',
-      source: commons('Cleaning_windows.jpg'),
-      changes: 'Resized',
-    },
-  },
   floorMopping: {
     src: floorMopping,
     alt: 'A cleaner in an apron mopping the shiny floor of a bright shopping concourse',
@@ -133,20 +119,6 @@ export const stockPhotos = {
       changes: 'Cropped and resized',
     },
   },
-  postConstruction: {
-    src: postConstruction,
-    alt: 'A window cleaner on ropes washing the glass of a newly built building',
-    credit: {
-      title: 'Window cleaner on a new building on Douglas - Pandora St, Victoria',
-      author: 'Michal Klajban',
-      license: 'CC BY-SA 4.0',
-      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
-      source: commons(
-        'Window_cleaner_on_a_new_building_on_Douglas_-_Pandora_St,_Victoria,_British_Columbia,_Canada_13.jpg',
-      ),
-      changes: 'Cropped and resized',
-    },
-  },
   drivewaySealing: {
     src: drivewaySealing,
     alt: 'A worker spreading fresh sealcoat across an asphalt driveway with a squeegee',
@@ -169,10 +141,7 @@ export const stockPhotos = {
  */
 export const stockByService: Record<string, StockPhoto> = {
   'house-cleaning': stockPhotos.houseCleaning,
-  'commercial-cleaning': stockPhotos.floorMopping,
   'restaurant-cleaning': stockPhotos.restaurantKitchen,
-  'post-construction-cleaning': stockPhotos.postConstruction,
-  'window-cleaning': stockPhotos.windowSqueegee,
   'driveway-sealing': stockPhotos.drivewaySealing,
   'snow-removal': stockPhotos.snowShoveling,
   'christmas-light-installation': stockPhotos.heroHoliday,

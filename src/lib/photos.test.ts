@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { stockByService } from '@/assets/photos'
+import { serviceFeaturePhotos } from '@/assets/service-feature-photos'
 import { confirmedServices } from '@/config/site'
 import { serviceHeroImages } from '@/seed/data/media'
 import type { Media } from '@/payload-types'
@@ -31,9 +32,14 @@ describe('servicePhoto', () => {
     expect(servicePhoto('no-such-service', null)).toBeNull()
   })
 
+  it('uses a photo the owner supplied with the site before the licensed one', () => {
+    const photo = servicePhoto('commercial-cleaning', null)
+    expect(photo).toMatchObject({ ...serviceFeaturePhotos['commercial-cleaning'], stock: null })
+  })
+
   it('has a photo for every confirmed service', () => {
     const missing = confirmedServices.filter(
-      (slug) => !stockByService[slug] && !serviceHeroImages[slug],
+      (slug) => !stockByService[slug] && !serviceFeaturePhotos[slug] && !serviceHeroImages[slug],
     )
     expect(missing).toEqual([])
   })
