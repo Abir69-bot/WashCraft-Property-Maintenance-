@@ -348,7 +348,7 @@ The starter text was written for you, but only you know your methods and policie
       never appear on the live site. Replace them with real ones. (The 23 job photos you sent are
       real and already in use: before/after gallery, home hero and "Why choose us".)
 - [ ] **Google reviews.** The home page's "What Our Customers Say" shows genuine reviews only, so
-      it shows an empty state until there are some. In **Site settings**, add your Google Place ID
+      it stays hidden until there are some. In **Site settings**, add your Google Place ID
       (reviews are then copied from Google once a day), your Google review link (shows the "Read
       Our Google Reviews" button) and your real Google rating and review count. Reviews customers
       gave you directly can be added under **Testimonials**.

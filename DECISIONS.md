@@ -1027,6 +1027,6 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   than four sit in a still grid so no card repeats. The rating line and the "Read Our Google
   Reviews" button appear only once the owner sets the rating and the review link in Site settings.
   The eight fictional sample reviews are gone from the seed, and the seed deletes any
-  `isSample` testimonials left in older databases. With no reviews yet, the section shows a plain
-  empty state ("Reviews will appear here") instead of hiding: the owner asked for one, and it
-  makes no claim. This is the one exception to "sections with no real entries hide themselves".
+  `isSample` testimonials left in older databases. With no reviews yet the section hides itself,
+  like every other section with nothing real to show (it had an empty state for a few hours; the
+  owner asked to remove it, 2026-11-06).

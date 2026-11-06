@@ -157,11 +157,12 @@ function ReviewRows({ reviews }: { reviews: ReviewView[] }) {
 /**
  * The home page's review section: genuine reviews only, from Google (the daily sync) and from the
  * owner. The rating and the profile link show only once the owner has set them in Site
- * settings. With no reviews yet it says so plainly instead of hiding, so the section is ready the
- * day the first review arrives. Only the first copy of each scrolling review is in the
+ * settings. With no reviews yet the section hides itself (owner, 2026-11-06) and comes back on
+ * its own when the first one arrives. Only the first copy of each scrolling review is in the
  * accessibility tree; with reduced motion the rows stop and wrap.
  */
 export function GoogleReviews({ reviews, site }: { reviews: ReviewView[]; site: SiteConfig }) {
+  if (reviews.length === 0) return null
   const rated = shownRating(site)
   const profile = site.googleReviewUrl
   const scrolling = reviews.length >= MARQUEE_MIN
@@ -206,7 +207,7 @@ export function GoogleReviews({ reviews, site }: { reviews: ReviewView[]; site: 
 
       {scrolling ? (
         <ReviewRows reviews={reviews} />
-      ) : reviews.length > 0 ? (
+      ) : (
         <ul className="relative container flex flex-wrap justify-center gap-5">
           {reviews.map((review) => (
             <li key={review.key} className="w-full sm:w-[min(23rem,calc(50%-0.625rem))]">
@@ -214,19 +215,6 @@ export function GoogleReviews({ reviews, site }: { reviews: ReviewView[]; site: 
             </li>
           ))}
         </ul>
-      ) : (
-        <div className="relative container">
-          <div className="mx-auto flex max-w-2xl night-card flex-col items-center p-8 text-center sm:p-10">
-            <span className="flex size-14 items-center justify-center rounded-full bg-white">
-              <GoogleMark className="size-8" />
-            </span>
-            <p className="mt-5 text-h3 text-white">Reviews will appear here</p>
-            <p className="mt-3 text-night-muted">
-              We only show genuine reviews from {site.shortName} customers. As customers post
-              reviews on Google, they will show up here.
-            </p>
-          </div>
-        </div>
       )}
     </section>
   )
