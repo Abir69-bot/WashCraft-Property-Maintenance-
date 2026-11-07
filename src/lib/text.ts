@@ -2,8 +2,13 @@ import { isPlaceholder } from '@/config/site'
 
 export type TokenValues = { region: string; city?: string; company?: string }
 
-/** Fills {region}, {city} and {company} in CMS text. Unknown tokens are left as written. */
-export function fillTokens(text: string, values: TokenValues): string {
+/**
+ * Fills {region}, {city} and {company} in CMS text. Unknown tokens are left as written.
+ * Missing text (a global or field never saved, e.g. on a database that isn't seeded yet) gives ''
+ * instead of crashing the page.
+ */
+export function fillTokens(text: string | null | undefined, values: TokenValues): string {
+  if (!text) return ''
   return text.replace(/\{(region|city|company)\}/g, (token, key: keyof TokenValues) => {
     const value = values[key]
     return value && !isPlaceholder(value) ? value : token

@@ -14,6 +14,11 @@ describe('fillTokens', () => {
       'Serving {region} and {city}',
     )
   })
+
+  it('returns empty text for content that was never saved', () => {
+    expect(fillTokens(undefined, { region: 'Denver Metro' })).toBe('')
+    expect(fillTokens(null, { region: 'Denver Metro' })).toBe('')
+  })
 })
 
 describe('phone links', () => {
