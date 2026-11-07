@@ -216,8 +216,8 @@ and Resend) first.
    them in `src/config/site.ts` before the first deploy, or in the admin under Site settings once
    the site runs.
 5. **First production database setup** (from GitHub, close to Neon): in the repository, add these
-   secrets under Settings → Secrets and variables → Actions: `PRODUCTION_DATABASE_URI`,
-   `PRODUCTION_DATABASE_URI_DIRECT`, `PRODUCTION_PAYLOAD_SECRET` (the same value as in Vercel),
+   secrets under Settings → Secrets and variables → Actions: `DATABASE_URI`,
+   `DATABASE_URI_DIRECT`, `PAYLOAD_SECRET` (the same value as in Vercel),
    `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_PUBLIC_BUCKET`, `R2_PUBLIC_URL` and
    `R2_PRIVATE_BUCKET`. Then Actions → **Production database** → Run workflow, with "Also add the
    starter content" ticked. It applies the migrations and seeds the content in a few minutes.

@@ -28,9 +28,9 @@ jobs:
 
     env:
       # Repository → Settings → Secrets and variables → Actions (README → "Deploying").
-      DATABASE_URI: ${{ secrets.PRODUCTION_DATABASE_URI }}
-      DATABASE_URI_DIRECT: ${{ secrets.PRODUCTION_DATABASE_URI_DIRECT }}
-      PAYLOAD_SECRET: ${{ secrets.PRODUCTION_PAYLOAD_SECRET }}
+      DATABASE_URI: ${{ secrets.DATABASE_URI }}
+      DATABASE_URI_DIRECT: ${{ secrets.DATABASE_URI_DIRECT }}
+      PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
       # Seeded photos go to the public R2 bucket, like uploads on the live site.
       R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
