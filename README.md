@@ -221,8 +221,11 @@ and Resend) first.
    `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_PUBLIC_BUCKET`, `R2_PUBLIC_URL` and
    `R2_PRIVATE_BUCKET`. Then Actions → **Production database** → Run workflow, with "Also add the
    starter content" ticked. It applies the migrations and seeds the content in a few minutes.
-6. **Deploy** (push to `main`, or Redeploy in Vercel). Open `/admin` on the live site and create
-   the first user straight away: it becomes the owner.
+6. **Deploy** (push to `main`, or Redeploy in Vercel) **after the workflow has finished**. Pages
+   are built from the database, so a build that runs while it is still empty saves pages such as
+   `/before-and-after` and `/commercial` as "Page not found" until the next deploy. If that
+   happens, Redeploy. Open `/admin` on the live site and create the first user straight away: it
+   becomes the owner.
 7. **Domain and HTTPS:** Settings → Domains → add `washcraft.ca` (or the confirmed domain) and
    `www.washcraft.ca`, and set the DNS records Vercel shows at the registrar. Vercel issues and
    renews the HTTPS certificate and redirects HTTP to HTTPS by itself; the site also sends HSTS
