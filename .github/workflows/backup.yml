@@ -40,7 +40,7 @@ jobs:
 
     env:
       # Repository → Settings → Secrets and variables → Actions (README → "Backups and restore").
-      DATABASE_URI_DIRECT: ${{ secrets.PRODUCTION_DATABASE_URI_DIRECT }}
+      DATABASE_URI_DIRECT: ${{ secrets.DATABASE_URI_DIRECT }}
       R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
       R2_PRIVATE_BUCKET: ${{ secrets.R2_PRIVATE_BUCKET }}
       AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
