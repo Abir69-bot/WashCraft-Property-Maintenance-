@@ -5,7 +5,7 @@ import path from 'path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { localUploadUrl, verifyLocalUpload } from './index'
-import { isSafeKey, LocalObjectStore } from './object-store'
+import { isSafeKey, LocalObjectStore, S3ObjectStore } from './object-store'
 
 describe('isSafeKey', () => {
   it('accepts server-made keys only', () => {
@@ -73,5 +73,21 @@ describe('local upload links', () => {
     bigger.set('size', '99999999')
     expect(verifyLocalUpload(bigger, now)).toBeNull()
     expect(verifyLocalUpload(url.searchParams, now + 11 * 60 * 1000)).toBeNull()
+  })
+})
+
+describe('R2 upload links', () => {
+  it('carry no checksum of an empty body, which R2 would reject for the real file', async () => {
+    const store = new S3ObjectStore({
+      bucket: 'private',
+      endpoint: 'https://account.r2.cloudflarestorage.com',
+      accessKeyId: 'id',
+      secretAccessKey: 'secret',
+    })
+    const target = await store.uploadTarget('lead-files/2026/photo.png', 'image/png', 1234)
+    const params = [...new URL(target.url).searchParams.keys()].map((key) => key.toLowerCase())
+    expect(params.some((key) => key.startsWith('x-amz-checksum'))).toBe(false)
+    expect(params).not.toContain('x-amz-sdk-checksum-algorithm')
+    expect(target.headers).toEqual({ 'Content-Type': 'image/png' })
   })
 })

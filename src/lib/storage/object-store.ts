@@ -64,6 +64,10 @@ export class S3ObjectStore implements ObjectStore {
       region: 'auto',
       endpoint: settings.endpoint,
       forcePathStyle: true,
+      // The SDK's default adds a CRC32 of the (empty) body to presigned upload URLs, so R2 rejects
+      // the browser's real file. Only send checksums when an operation requires one.
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED',
       credentials: {
         accessKeyId: settings.accessKeyId,
         secretAccessKey: settings.secretAccessKey,
