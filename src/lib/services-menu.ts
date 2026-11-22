@@ -13,6 +13,9 @@ export type ServicesMenuItem = { label: string; targets: MenuTarget[] }
  */
 export const SERVICES_MENU: ServicesMenuItem[][] = [
   [
+    // Owner, 2026-11-23: Snow Removal first, Gutter Cleaning second.
+    { label: 'Snow Removal', targets: [{ service: 'snow-removal' }] },
+    { label: 'Gutter Cleaning', targets: [{ service: 'gutter-cleaning' }] },
     // Added 2026-11-06: the category page lists its four services.
     { label: 'Residential Cleaning', targets: [{ category: 'interior-cleaning' }] },
     { label: 'Exterior Cleaning', targets: [{ category: 'exterior-cleaning' }] },
@@ -20,10 +23,8 @@ export const SERVICES_MENU: ServicesMenuItem[][] = [
       label: 'Property Maintenance',
       targets: [{ service: 'commercial-property-maintenance' }, { path: routes.services }],
     },
-    { label: 'Snow Removal', targets: [{ service: 'snow-removal' }] },
     { label: 'Pressure Washing', targets: [{ service: 'pressure-washing' }] },
     { label: 'Window Cleaning', targets: [{ service: 'window-cleaning' }] },
-    { label: 'Gutter Cleaning', targets: [{ service: 'gutter-cleaning' }] },
   ],
   [
     { label: 'Soft Washing', targets: [{ service: 'soft-washing' }] },

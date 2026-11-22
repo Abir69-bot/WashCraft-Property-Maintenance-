@@ -1049,3 +1049,7 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   (`src/assets/home-tiles.ts`). The owner chose a photo of a WashCraft worker pressure washing a
   house's driveway; the card shows it as supplied. It falls back to the service's own card if the
   category ever has fewer than two published services (no category page).
+- **Services menu order** (owner, 2026-11-23). The first column of the Services dropdown and the
+  phone menu now starts with Snow Removal, then Gutter Cleaning, followed by Residential Cleaning,
+  Exterior Cleaning, Property Maintenance, Pressure Washing and Window Cleaning
+  (`src/lib/services-menu.ts`). The second column is unchanged.

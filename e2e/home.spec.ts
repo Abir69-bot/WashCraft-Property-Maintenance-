@@ -101,9 +101,7 @@ test.describe('navigation', () => {
     }
     await expectAccessible(page, { exclude: [RADIX_FOCUS_PROXY] })
     await page.keyboard.press('Tab')
-    await expect(
-      menu.getByRole('link', { name: 'Residential Cleaning', exact: true }),
-    ).toBeFocused()
+    await expect(menu.getByRole('link', { name: 'Snow Removal', exact: true })).toBeFocused()
     await page.keyboard.press('Escape')
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expect(trigger).toBeFocused()

@@ -48,9 +48,12 @@ describe('servicesMenu', () => {
     expect(column).toEqual([{ label: 'Winter', href: routes.service('snow-removal') }])
   })
 
-  it('keeps the owner’s two columns, Residential Cleaning first', () => {
+  it('keeps the owner’s two columns, Snow Removal then Gutter Cleaning first', () => {
     expect(SERVICES_MENU.map((column) => column.length)).toEqual([7, 6])
-    expect(SERVICES_MENU[0][0].label).toBe('Residential Cleaning')
+    expect(SERVICES_MENU[0].slice(0, 2).map((item) => item.label)).toEqual([
+      'Snow Removal',
+      'Gutter Cleaning',
+    ])
     expect(SERVICES_MENU.at(-1)?.at(-1)?.label).toBe('All Services')
   })
 })
