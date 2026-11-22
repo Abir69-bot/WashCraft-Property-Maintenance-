@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 
-import { categoryTiles } from '@/assets/home-tiles'
+import { categoryTiles, serviceTileSwaps } from '@/assets/home-tiles'
 import { stockPhotos, type StockPhoto } from '@/assets/photos'
 import { seasonPhotos } from '@/assets/season-photos'
 import { serviceFeaturePhotos } from '@/assets/service-feature-photos'
@@ -97,10 +97,22 @@ export default async function HomePage() {
 
   // Featured services first (Home page settings), then the rest; each with its card photo.
   const featured = publishedServices<Service>(home.homepage.featuredServices).map((s) => s.slug)
-  const ordered = [
+  const listed = [
     ...featured.flatMap((slug) => services.filter((service) => service.slug === slug)),
     ...services.filter((service) => !featured.includes(service.slug)),
   ]
+  // A card swap (assets/home-tiles.ts) puts its service in the replaced card's place.
+  const swaps = new Map(
+    Object.entries(serviceTileSwaps).filter(
+      ([from, to]) => listed.some((s) => s.slug === from) && listed.some((s) => s.slug === to),
+    ),
+  )
+  const swappedIn = new Set(swaps.values())
+  const ordered = listed.flatMap((service) => {
+    const to = swaps.get(service.slug)
+    if (to) return listed.filter((s) => s.slug === to)
+    return swappedIn.has(service.slug) ? [] : [service]
+  })
   const cardPhoto = (slug: string): Photo | null => {
     const photo = servicePhoto(slug, servicePhotos[slug])
     if (photo?.stock) stockUse.push({ photo: photo.stock, section: 'services' })

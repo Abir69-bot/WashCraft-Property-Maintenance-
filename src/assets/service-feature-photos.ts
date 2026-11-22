@@ -1,3 +1,4 @@
+import gutterCleaning from '../../public/images/seasons/fall.jpg'
 import commercialCleaning from '../../public/images/services/commercial-cleaning.jpg'
 import postConstructionCleaning from '../../public/images/services/post-construction-cleaning.jpg'
 import windowCleaning from '../../public/images/services/window-cleaning.jpg'
@@ -14,6 +15,11 @@ export const serviceFeaturePhotos: Record<string, Photo> = {
   'commercial-cleaning': {
     src: commercialCleaning,
     alt: 'A worker in a WashCraft hoodie cleaning the paved entrance of a glass-fronted commercial building with a surface cleaner, beside a WashCraft trailer',
+  },
+  // The owner's fall season photo (assets/season-photos.ts), chosen for this card 2026-11-23.
+  'gutter-cleaning': {
+    src: gutterCleaning,
+    alt: 'A gloved WashCraft worker on a ladder pulling wet autumn leaves out of a house gutter',
   },
   // Supplied by the owner (2026-11-06).
   'post-construction-cleaning': {

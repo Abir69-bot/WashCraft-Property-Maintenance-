@@ -1053,3 +1053,9 @@ reference site they named, without its copy, logo, colours or photos (rule 1).
   phone menu now starts with Snow Removal, then Gutter Cleaning, followed by Residential Cleaning,
   Exterior Cleaning, Property Maintenance, Pressure Washing and Window Cleaning
   (`src/lib/services-menu.ts`). The second column is unchanged.
+- **Gutter Cleaning card on the home page** (owner, 2026-11-23). In "Services for every season",
+  the Post-Construction Cleaning card is replaced by Gutter Cleaning in the same place
+  (`serviceTileSwaps` in `src/assets/home-tiles.ts`), so the Home page's featured list in the
+  admin doesn't need editing. Its card photo is the owner's fall photo of a WashCraft worker
+  clearing leaves from a gutter (`src/assets/service-feature-photos.ts`). The swap only applies
+  while Gutter Cleaning is published; the Post-Construction Cleaning page itself is unchanged.

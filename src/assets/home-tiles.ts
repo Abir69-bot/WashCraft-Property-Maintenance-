@@ -3,6 +3,15 @@ import residentialCleaning from '../../public/images/home/residential-cleaning.j
 import type { Photo } from '@/lib/photos'
 
 /**
+ * Home page service cards that go to another service (owner, 2026-11-23): the named service's
+ * card shows the other service in the same place, while that service is published. Keyed by the
+ * service slug it replaces.
+ */
+export const serviceTileSwaps: Record<string, string> = {
+  'post-construction-cleaning': 'gutter-cleaning',
+}
+
+/**
  * Home page service cards that stand for a whole category instead of one service (owner,
  * 2026-11-06). The card replaces the named service's card and links to the category page, so it
  * only shows while that category has a page. Keyed by the service slug it replaces.
