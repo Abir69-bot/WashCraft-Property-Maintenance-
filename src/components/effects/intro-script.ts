@@ -43,9 +43,13 @@ export function introWanted(page: {
 
 /**
  * Runs in the page before the overlay is parsed. Reduced motion or blocked storage: no intro.
- * Otherwise it remembers the visit, then shows the overlay by setting <html data-intro> and ends
- * it on any key, focus, click, wheel, swipe or scroll (or when it has finished). A click ends it
- * rather than a press, so the tap that skips it can never land on a link underneath.
+ * Otherwise it remembers the visit and shows the overlay frozen on its first frame
+ * (data-intro="wait"). The animation starts only once the browser reports its first paint (or
+ * after about a second of frames, whichever comes first), so a slow computer still busy loading
+ * the page sees the whole intro instead of its end, and a page opened in a background tab waits
+ * until it's looked at. Any key, focus,
+ * click, wheel, swipe or scroll ends it. A click ends it rather than a press, so the tap that
+ * skips it can never land on a link underneath.
  */
 export const INTRO_SCRIPT = `(function(){
 var d=document,h=d.documentElement,key='wc-intro';
@@ -59,11 +63,14 @@ var begin=function(){if(!seen)try{localStorage.setItem(key,JSON.stringify({v:${I
 if(d.prerendering){if(show)h.setAttribute('data-intro','wait');d.addEventListener('prerenderingchange',begin,{once:true})}else begin();
 }catch(e){}
 function play(){
-var events=['keydown','focusin','click','wheel','touchmove','scroll'];
-var timer=setTimeout(function(){end(true)},${INTRO_LENGTH_MS + 100});
+var events=['keydown','focusin','click','wheel','touchmove','scroll'],timer=0;
 function end(now){clearTimeout(timer);events.forEach(function(t){removeEventListener(t,skip,true)});h.setAttribute('data-intro',now?'done':'leaving');if(!now)setTimeout(function(){h.setAttribute('data-intro','done')},350)}
 function skip(e){end(e.type==='keydown'||e.type==='focusin')}
-h.setAttribute('data-intro','play');
+var frames=0;
+function painted(){try{return performance.getEntriesByType('paint').length>0}catch(e){return true}}
+function run(){if(h.getAttribute('data-intro')!=='wait')return;if(!painted()&&frames++<60){requestAnimationFrame(run);return}h.setAttribute('data-intro','play');timer=setTimeout(function(){end(true)},${INTRO_LENGTH_MS + 100})}
+h.setAttribute('data-intro','wait');
 events.forEach(function(t){addEventListener(t,skip,{capture:true,passive:true})});
+requestAnimationFrame(function(){requestAnimationFrame(run)});
 }
 })()`

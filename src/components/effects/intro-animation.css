@@ -72,7 +72,8 @@ html[data-intro='leaving'] .wc-intro {
   animation: wc-intro-leave 0.3s ease-in forwards;
 }
 
-/* A page Chrome prepared in the background waits, frozen on its first frame, until it's shown. */
+/* Frozen on the first frame (snowed over) until that frame is on screen, so the whole intro is
+   seen even on a slow computer; a page prepared or opened in the background waits the same way. */
 html[data-intro='wait'] .wc-intro,
 html[data-intro='wait'] .wc-intro *,
 html[data-intro='wait'] .wc-intro::before,
@@ -182,10 +183,28 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
   display: none;
 }
 
-/* The snow covering the screen, cleared from left to right by the beam. */
+/*
+ * The snow covering the screen, cleared from left to right by the beam. The clip slides right
+ * while the snow inside slides left by exactly as much, so the snow stays put and only its left
+ * edge (softened by the clip's fixed mask) moves. Everything here is a transform, so the
+ * graphics card runs it smoothly even while the page is still loading underneath.
+ */
+.wc-intro__snow-clip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(100% + 6rem); /* the soft edge starts off-screen, so the snow covers it all */
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6rem);
+  mask-image: linear-gradient(90deg, transparent 0, #000 6rem);
+  animation: wc-intro-clear 0.7s cubic-bezier(0.45, 0, 0.35, 1) 0.15s both;
+}
+
 .wc-intro__snow {
   position: absolute;
   inset: 0;
+  animation: wc-intro-hold 0.7s cubic-bezier(0.45, 0, 0.35, 1) 0.15s both;
   /* Fine random grain (fractal noise, drawn once), soft uneven drifts, and a cold base. */
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.68 0 0 0 0 0.78 0 0 0 -1.6 1.05'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")
@@ -195,23 +214,16 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
     radial-gradient(70% 50% at 40% 85%, rgb(255 255 255 / 0.9), transparent 70%),
     radial-gradient(45% 35% at 88% 88%, rgb(205 225 237 / 0.9), transparent 70%),
     linear-gradient(180deg, #f3f8fb 0%, #e2eef4 55%, #cfe2ec 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0 46%, #000 54%);
-  mask-image: linear-gradient(90deg, transparent 0 46%, #000 54%);
-  -webkit-mask-size: 200% 100%;
-  mask-size: 200% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: 110% 0;
-  mask-position: 110% 0;
-  animation: wc-intro-clear 0.7s cubic-bezier(0.45, 0, 0.35, 1) 0.15s both;
 }
 
-/* The clearing beam, moving exactly with the edge of the cleared snow. */
+/* The clearing beam rides the middle of the snow's soft edge (same motion as the clip). */
 .wc-intro__sweep {
   position: absolute;
   inset: 0;
   opacity: 0;
-  animation: wc-intro-sweep 0.7s cubic-bezier(0.45, 0, 0.35, 1) 0.15s both;
+  animation:
+    wc-intro-clear 0.7s cubic-bezier(0.45, 0, 0.35, 1) 0.15s both,
+    wc-intro-beam 0.7s linear 0.15s both;
 }
 
 .wc-intro__sweep::before {
@@ -219,7 +231,7 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: -36px;
+  left: calc(3rem - 36px);
   width: 72px;
   background: linear-gradient(
     90deg,
@@ -234,7 +246,7 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
 .wc-intro__sweep span {
   position: absolute;
   top: var(--y);
-  left: 0;
+  left: 3rem;
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
@@ -265,16 +277,27 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
 }
 
 @keyframes wc-intro-clear {
+  from {
+    transform: translateX(-6rem);
+  }
   to {
-    -webkit-mask-position: -10% 0;
-    mask-position: -10% 0;
+    transform: translateX(calc(100vw + 1rem));
   }
 }
 
-@keyframes wc-intro-sweep {
+/* The exact opposite of wc-intro-clear, so the snow itself never moves. */
+@keyframes wc-intro-hold {
+  from {
+    transform: translateX(6rem);
+  }
+  to {
+    transform: translateX(calc(-100vw - 1rem));
+  }
+}
+
+@keyframes wc-intro-beam {
   0% {
     opacity: 0;
-    transform: translateX(-10%);
   }
   8%,
   92% {
@@ -282,7 +305,6 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
   }
   100% {
     opacity: 0;
-    transform: translateX(110%);
   }
 }
 

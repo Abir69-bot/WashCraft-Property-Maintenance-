@@ -53,7 +53,9 @@ export function IntroAnimation({ winter }: { winter: boolean }) {
           {FLAKES.map((style, index) => (
             <span key={index} className="wc-intro__flake" style={style} />
           ))}
-          <div className="wc-intro__snow" />
+          <div className="wc-intro__snow-clip">
+            <div className="wc-intro__snow" />
+          </div>
           <div className="wc-intro__sweep">
             {SPRAY.map((style, index) => (
               <span key={index} style={style} />
