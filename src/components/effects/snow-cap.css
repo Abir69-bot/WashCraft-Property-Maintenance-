@@ -1,0 +1,143 @@
+/*
+ * Effect 3 (snow-cap.tsx): an edge of settled snow hanging from the bottom of the site header,
+ * and holiday lights peeking out of it. Both are pseudo-elements of the header with
+ * pointer-events: none and z-index: -1 (above the header's background, below its links and
+ * focus rings), so the header keeps its height, layout and click targets. The snow shows in
+ * winter (marker from the layout) or with ?snow=on; the lights during the holiday season.
+ */
+@property --wc-bulb-1 {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+@property --wc-bulb-2 {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+@property --wc-bulb-3 {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+@property --wc-bulb-4 {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
+html:is([data-snow='on'], :not([data-snow='off']):has(> body > [data-snow-cap]))
+  > body
+  > header[data-tone='night']::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% - 4px); /* covers the header's bottom border */
+  z-index: -1;
+  height: 16px;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 16'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23dcebf3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23s)' d='M0 0H160V6Q156 6 152 8Q148 10 144 8Q140 6 134 6Q128 6 124 9Q121 12 118 9Q115 6 108 6Q100 6 96 8Q92 10 86 7Q82 5 76 6Q70 7 67 10Q65 13 62 10Q59 7 52 6Q44 5 40 8Q36 11 30 8Q26 6 20 6Q14 6 11 9Q8 12 5 8Q3 6 0 6Z'/%3E%3C/svg%3E")
+    0 0 / 160px 16px repeat-x;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3));
+}
+
+/* Four bulbs every 128px (holiday red, yard green, gold, winter blue), each with a soft glow. */
+html:is([data-snow='on'], :not([data-snow='off']):has(> body > [data-snow-lights]))
+  > body
+  > header[data-tone='night']::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + 4px);
+  z-index: -1;
+  height: 10px;
+  pointer-events: none;
+  background:
+    radial-gradient(
+        circle at 16px 5px,
+        color-mix(in srgb, var(--holiday) calc(var(--wc-bulb-1) * 100%), transparent) 0 1.7px,
+        color-mix(in srgb, var(--holiday) calc(var(--wc-bulb-1) * 35%), transparent) 2.6px,
+        transparent 5px
+      )
+      0 0 / 128px 10px repeat-x,
+    radial-gradient(
+        circle at 48px 5px,
+        color-mix(in srgb, var(--yard) calc(var(--wc-bulb-2) * 100%), transparent) 0 1.7px,
+        color-mix(in srgb, var(--yard) calc(var(--wc-bulb-2) * 35%), transparent) 2.6px,
+        transparent 5px
+      )
+      0 0 / 128px 10px repeat-x,
+    radial-gradient(
+        circle at 80px 5px,
+        color-mix(in srgb, var(--cta) calc(var(--wc-bulb-3) * 100%), transparent) 0 1.7px,
+        color-mix(in srgb, var(--cta) calc(var(--wc-bulb-3) * 35%), transparent) 2.6px,
+        transparent 5px
+      )
+      0 0 / 128px 10px repeat-x,
+    radial-gradient(
+        circle at 112px 5px,
+        color-mix(in srgb, var(--winter) calc(var(--wc-bulb-4) * 100%), transparent) 0 1.7px,
+        color-mix(in srgb, var(--winter) calc(var(--wc-bulb-4) * 35%), transparent) 2.6px,
+        transparent 5px
+      )
+      0 0 / 128px 10px repeat-x;
+}
+
+/*
+ * Twinkle: slow (each bulb changes about once a second) and never fully off, so nothing flashes
+ * (WCAG 2.3.1). On arrival the bulbs twinkle once (3.2 s, under the 5 s limit of WCAG 2.2.2),
+ * then stay lit. While the falling snow runs they keep twinkling, and its snowflake button stops
+ * both (falling-snow.tsx sets data-snow-motion).
+ */
+header[data-tone='night']::before {
+  animation: wc-twinkle 3.2s ease-in-out 1 both;
+}
+
+html[data-snow-motion='on'] > body > header[data-tone='night']::before {
+  animation-iteration-count: infinite;
+}
+
+html[data-snow-motion='off'] > body > header[data-tone='night']::before {
+  animation: none;
+}
+
+@keyframes wc-twinkle {
+  0%,
+  100% {
+    --wc-bulb-1: 1;
+    --wc-bulb-2: 0.5;
+    --wc-bulb-3: 0.8;
+    --wc-bulb-4: 0.55;
+  }
+  25% {
+    --wc-bulb-1: 0.55;
+    --wc-bulb-2: 1;
+    --wc-bulb-3: 0.5;
+    --wc-bulb-4: 0.8;
+  }
+  50% {
+    --wc-bulb-1: 0.8;
+    --wc-bulb-2: 0.55;
+    --wc-bulb-3: 1;
+    --wc-bulb-4: 0.5;
+  }
+  75% {
+    --wc-bulb-1: 0.5;
+    --wc-bulb-2: 0.8;
+    --wc-bulb-3: 0.55;
+    --wc-bulb-4: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  header[data-tone='night']::before {
+    animation: none !important;
+  }
+}
+
+@media print {
+  header[data-tone='night']::before,
+  header[data-tone='night']::after {
+    display: none;
+  }
+}

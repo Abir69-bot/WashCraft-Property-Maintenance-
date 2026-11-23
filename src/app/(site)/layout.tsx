@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import { draftMode } from 'next/headers'
 
 import logo from '@/assets/brand/washcraft-logo.png'
+import * as Effects from '@/components/effects'
 import { JsonLd } from '@/components/json-ld'
 import {
   AnnouncementBar,
@@ -89,6 +90,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         )}
       </head>
       <body className="pb-14 md:pb-0">
+        <Effects.Intro winter={active.includes('winter')} />
         <a
           href="#main"
           className="sr-only z-50 rounded-full bg-cta px-5 py-3 font-semibold text-brand-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
@@ -130,6 +132,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
             consentLabel={consentText(site.country, site.shortName)}
           />
         )}
+        <Effects.FallingSnow winter={active.includes('winter')} />
+        <Effects.SnowCap winter={active.includes('winter')} lights={active.includes('holiday')} />
+        <Effects.HeroParallax />
       </body>
     </html>
   )

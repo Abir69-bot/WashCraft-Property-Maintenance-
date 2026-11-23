@@ -1,0 +1,211 @@
+/*
+ * Effect 2 (intro-animation.tsx). Hidden unless the inline script sets <html data-intro>, so it
+ * never shows without JavaScript, on other pages, or after a click between pages. Timeline
+ * (INTRO_LENGTH_MS = 1.5 s): the logo comes forward by 0.9 s, the light sweeps across it from
+ * 0.5 s to 1.1 s, and the curtain lifts from 1.05 s to 1.5 s. Only transform, opacity and a
+ * mask move, so the page underneath never shifts.
+ */
+.wc-intro {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* above the header, cookie banner and dialogs */
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(
+    120% 85% at 50% 42%,
+    var(--brand-primary, #0e4d64) 0%,
+    #0a3546 42%,
+    var(--night, #061b23) 100%
+  );
+  box-shadow: 0 24px 48px rgb(0 0 0 / 0.35);
+  --focus-ring: var(--cta);
+}
+
+/* Phones: the Call · Text · Quote bar stays in view and works throughout. */
+@media (max-width: 47.99rem) {
+  .wc-intro {
+    bottom: 3.5rem;
+  }
+}
+
+html:is([data-intro='play'], [data-intro='leaving'], [data-intro='wait']) .wc-intro {
+  display: grid;
+}
+
+html[data-intro='play'] .wc-intro {
+  animation: wc-intro-lift 0.45s cubic-bezier(0.65, 0, 0.85, 0.15) 1.05s forwards;
+}
+
+html[data-intro='leaving'] .wc-intro {
+  animation: wc-intro-leave 0.35s ease-in forwards;
+}
+
+/* A page Chrome prepared in the background waits, frozen on its first frame, until it's shown. */
+html[data-intro='wait'] .wc-intro,
+html[data-intro='wait'] .wc-intro * {
+  animation-play-state: paused !important;
+}
+
+.wc-intro__stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+}
+
+.wc-intro__glow {
+  position: absolute;
+  width: min(90vmin, 40rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(44 177 188 / 0.28),
+    rgb(14 77 100 / 0.2) 40%,
+    transparent 70%
+  );
+  animation: wc-intro-glow 1s ease-out both;
+}
+
+.wc-intro__logo {
+  position: relative;
+  width: min(52vw, 13.75rem);
+  transform-style: preserve-3d;
+  animation: wc-intro-arrive 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (min-width: 64rem) {
+  .wc-intro__logo {
+    width: 17.5rem;
+  }
+}
+
+.wc-intro__logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 18px 28px rgb(0 0 0 / 0.45));
+}
+
+/* The same logo, brightened and revealed only inside a moving band: a light sweeping across it
+   that follows the logo's own outline. Both copies share one download. */
+.wc-intro__logo img.wc-intro__shine {
+  position: absolute;
+  inset: 0;
+  filter: brightness(1.9) saturate(1.15);
+  -webkit-mask-image: linear-gradient(100deg, transparent 40%, #000 50%, transparent 60%);
+  mask-image: linear-gradient(100deg, transparent 40%, #000 50%, transparent 60%);
+  -webkit-mask-size: 250% 100%;
+  mask-size: 250% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  animation: wc-intro-sweep 0.6s ease-in-out 0.5s both;
+}
+
+/* Snow in winter (the layout passes the season), or with ?snow=on; never with ?snow=off. */
+.wc-intro__flake {
+  display: none;
+  position: absolute;
+  top: -12px;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #fff;
+  opacity: var(--opacity);
+  animation: wc-intro-fall var(--fall) linear var(--start) infinite;
+}
+
+.wc-intro[data-winter] .wc-intro__flake,
+html[data-snow='on'] .wc-intro__flake {
+  display: block;
+}
+
+html[data-snow='off'] .wc-intro .wc-intro__flake {
+  display: none;
+}
+
+/* Fully opaque from the first frame, so it always has its full contrast. */
+.wc-intro__skip {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  border-radius: 999px;
+  background: rgb(6 27 35 / 0.65);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.wc-intro__skip:hover {
+  border-color: #fff;
+  background: rgb(255 255 255 / 0.12);
+}
+
+@keyframes wc-intro-arrive {
+  from {
+    opacity: 0;
+    transform: translateZ(-520px) rotateX(22deg) rotateY(-34deg) scale(0.72);
+  }
+  55% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes wc-intro-sweep {
+  to {
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+  }
+}
+
+@keyframes wc-intro-glow {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes wc-intro-fall {
+  to {
+    transform: translate3d(var(--drift), calc(100vh + 24px), 0);
+  }
+}
+
+/* Each exit ends hidden, so the overlay is gone even if the script never marks it done. */
+@keyframes wc-intro-lift {
+  to {
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+}
+
+@keyframes wc-intro-leave {
+  to {
+    opacity: 0;
+    transform: translateY(-6%);
+    visibility: hidden;
+  }
+}
+
+@media print {
+  .wc-intro {
+    display: none !important;
+  }
+}

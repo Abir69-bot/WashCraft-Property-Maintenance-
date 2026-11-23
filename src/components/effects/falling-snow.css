@@ -1,0 +1,65 @@
+/* Effect 1 (falling-snow.tsx): the snow canvas and its snowflake on/off button. */
+.wc-snow-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30; /* under the header, phone action bar, cookie banner and dialogs */
+  width: 100%;
+  height: 100vh; /* the engine sets the exact height */
+  pointer-events: none;
+}
+
+/* 44px button: bottom-right above the phone action bar (56px); bottom-left on larger screens,
+   clear of the home hero's scroll cue. The gold focus ring reads on the dark background. */
+.wc-snow-toggle {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(3.5rem + 0.5rem);
+  z-index: 40;
+  background-color: rgb(6 27 35 / 0.82);
+  backdrop-filter: blur(4px);
+  --focus-ring: var(--cta);
+}
+
+.wc-snow-toggle:hover {
+  background-color: rgb(11 38 49 / 0.95);
+}
+
+@media (min-width: 48rem) {
+  .wc-snow-toggle {
+    right: auto;
+    bottom: 1rem;
+    left: 1rem;
+  }
+}
+
+/* Off: a dimmed flake with a line through it, so the state isn't shown by colour alone. */
+.wc-snow-toggle[aria-pressed='false'] svg {
+  opacity: 0.6;
+}
+
+.wc-snow-toggle[aria-pressed='false']::after {
+  content: '';
+  position: absolute;
+  width: 1.5rem;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  box-shadow: 0 0 0 1.5px rgb(6 27 35 / 0.9);
+  transform: rotate(-45deg);
+}
+
+/* On phones the cookie banner covers this corner while it's open: hide the button meanwhile, so
+   keyboard focus never lands on something out of sight (WCAG 2.4.11). */
+@media (max-width: 47.99rem) {
+  body:has(section[aria-label='Cookie choices']) .wc-snow-toggle {
+    display: none;
+  }
+}
+
+@media print {
+  .wc-snow-canvas,
+  .wc-snow-toggle {
+    display: none;
+  }
+}
