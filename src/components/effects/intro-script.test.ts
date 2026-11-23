@@ -1,15 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import {
-  INTRO_REPEAT_DAYS,
-  INTRO_SCRIPT,
-  INTRO_VERSION,
-  introSeen,
-  introWanted,
-} from './intro-script'
+import { INTRO_SCRIPT, introWanted } from './intro-script'
 
-const DAY = 86400000
-const NOW = Date.UTC(2026, 10, 23, 12)
 const page = (overrides: Partial<Parameters<typeof introWanted>[0]> = {}) => ({
   path: '/',
   search: '',
@@ -18,34 +10,13 @@ const page = (overrides: Partial<Parameters<typeof introWanted>[0]> = {}) => ({
   ...overrides,
 })
 
-describe('introSeen', () => {
-  const seen = (record: unknown, now = NOW) =>
-    introSeen(record, now, INTRO_VERSION, INTRO_REPEAT_DAYS)
-
-  it('counts a visit from the last 30 days', () => {
-    expect(seen({ v: INTRO_VERSION, at: NOW - 29 * DAY })).toBe(true)
-  })
-
-  it('greets the browser again after 30 days, or when the intro version changes', () => {
-    expect(seen({ v: INTRO_VERSION, at: NOW - 30 * DAY })).toBe(false)
-    expect(seen({ v: INTRO_VERSION + 1, at: NOW })).toBe(false)
-  })
-
-  it('ignores missing, malformed or future records', () => {
-    for (const record of [null, undefined, 'x', 42, {}, { v: INTRO_VERSION, at: 'yesterday' }]) {
-      expect(seen(record)).toBe(false)
-    }
-    expect(seen({ v: INTRO_VERSION, at: NOW + DAY })).toBe(false)
-  })
-})
-
 describe('introWanted', () => {
   it('plays when a visit starts on the home page', () => {
     expect(introWanted(page())).toBe(true)
     expect(introWanted(page({ referrer: 'https://www.facebook.com/' }))).toBe(true)
   })
 
-  it('never plays on other pages, or twice', () => {
+  it('never plays on other pages, or twice in one visit', () => {
     expect(introWanted(page({ path: '/services/gutter-cleaning' }))).toBe(false)
     expect(introWanted(page({ seen: true }))).toBe(false)
   })
