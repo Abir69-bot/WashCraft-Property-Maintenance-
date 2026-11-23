@@ -1,9 +1,11 @@
 /*
  * Effect 2 (intro-animation.tsx). Hidden unless the inline script sets <html data-intro>, so it
- * never shows without JavaScript, on other pages, or after a click between pages. Timeline
- * (INTRO_LENGTH_MS = 1.5 s): the logo comes forward by 0.9 s, the light sweeps across it from
- * 0.5 s to 1.1 s, and the curtain lifts from 1.05 s to 1.5 s. Only transform, opacity and a
- * mask move, so the page underneath never shifts.
+ * never shows without JavaScript, on other pages, or after a click between pages.
+ * Timeline (INTRO_LENGTH_MS = 1.8 s):
+ *   0.15–0.85 s  a clearing beam sweeps the snow off the screen, throwing snow ahead of it
+ *   0.85–1.30 s  the logo slams forward in 3D, a shockwave rings out and the screen shakes
+ *   1.30–1.80 s  the screen splits and bursts open while the logo flies toward the viewer
+ * Only transform, opacity and masks move, so the page underneath never shifts.
  */
 .wc-intro {
   display: none;
@@ -12,14 +14,13 @@
   z-index: 60; /* above the header, cookie banner and dialogs */
   place-items: center;
   overflow: hidden;
-  background: radial-gradient(
+  --focus-ring: var(--cta);
+  --intro-night: radial-gradient(
     120% 85% at 50% 42%,
     var(--brand-primary, #0e4d64) 0%,
     #0a3546 42%,
     var(--night, #061b23) 100%
   );
-  box-shadow: 0 24px 48px rgb(0 0 0 / 0.35);
-  --focus-ring: var(--cta);
 }
 
 /* Phones: the Call · Text · Quote bar stays in view and works throughout. */
@@ -29,30 +30,64 @@
   }
 }
 
+/* The night-teal background, in two halves that burst apart at the end. */
+.wc-intro::before,
+.wc-intro::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.5%;
+  background: var(--intro-night);
+  background-size: 200% 100%;
+}
+
+.wc-intro::before {
+  left: 0;
+  background-position: 0 0;
+}
+
+.wc-intro::after {
+  right: 0;
+  background-position: 100% 0;
+}
+
 html:is([data-intro='play'], [data-intro='leaving'], [data-intro='wait']) .wc-intro {
   display: grid;
 }
 
 html[data-intro='play'] .wc-intro {
-  animation: wc-intro-lift 0.45s cubic-bezier(0.65, 0, 0.85, 0.15) 1.05s forwards;
+  animation: wc-intro-end 0s linear 1.8s forwards;
+}
+
+html[data-intro='play'] .wc-intro::before {
+  animation: wc-intro-open-left 0.5s cubic-bezier(0.7, 0, 0.9, 0.4) 1.3s forwards;
+}
+
+html[data-intro='play'] .wc-intro::after {
+  animation: wc-intro-open-right 0.5s cubic-bezier(0.7, 0, 0.9, 0.4) 1.3s forwards;
 }
 
 html[data-intro='leaving'] .wc-intro {
-  animation: wc-intro-leave 0.35s ease-in forwards;
+  animation: wc-intro-leave 0.3s ease-in forwards;
 }
 
 /* A page Chrome prepared in the background waits, frozen on its first frame, until it's shown. */
 html[data-intro='wait'] .wc-intro,
-html[data-intro='wait'] .wc-intro * {
+html[data-intro='wait'] .wc-intro *,
+html[data-intro='wait'] .wc-intro::before,
+html[data-intro='wait'] .wc-intro::after {
   animation-play-state: paused !important;
 }
 
 .wc-intro__stage {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: grid;
   place-items: center;
   perspective: 900px;
+  animation: wc-intro-shake 0.32s ease-out 0.92s;
 }
 
 .wc-intro__glow {
@@ -62,18 +97,36 @@ html[data-intro='wait'] .wc-intro * {
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgb(44 177 188 / 0.28),
+    rgb(44 177 188 / 0.32),
     rgb(14 77 100 / 0.2) 40%,
     transparent 70%
   );
-  animation: wc-intro-glow 1s ease-out both;
+  animation:
+    wc-intro-glow 0.5s ease-out 0.85s both,
+    wc-intro-fade 0.4s ease-in 1.3s forwards;
+}
+
+/* The shockwave when the logo lands. */
+.wc-intro__ring {
+  position: absolute;
+  width: min(70vmin, 18rem);
+  aspect-ratio: 1;
+  border: 3px solid rgb(255 255 255 / 0.85);
+  border-radius: 50%;
+  box-shadow:
+    0 0 32px rgb(104 199 207 / 0.7),
+    inset 0 0 32px rgb(104 199 207 / 0.5);
+  opacity: 0;
+  animation: wc-intro-ring 0.6s ease-out 0.95s both;
 }
 
 .wc-intro__logo {
   position: relative;
   width: min(52vw, 13.75rem);
   transform-style: preserve-3d;
-  animation: wc-intro-arrive 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation:
+    wc-intro-slam 0.45s cubic-bezier(0.2, 1.6, 0.4, 1) 0.85s both,
+    wc-intro-burst 0.5s cubic-bezier(0.55, 0, 0.85, 0.35) 1.3s forwards;
 }
 
 @media (min-width: 64rem) {
@@ -103,10 +156,10 @@ html[data-intro='wait'] .wc-intro * {
   mask-repeat: no-repeat;
   -webkit-mask-position: 100% 0;
   mask-position: 100% 0;
-  animation: wc-intro-sweep 0.6s ease-in-out 0.5s both;
+  animation: wc-intro-shine 0.4s ease-in-out 1s both;
 }
 
-/* Snow in winter (the layout passes the season), or with ?snow=on; never with ?snow=off. */
+/* Falling snow in winter (the layout passes the season), or with ?snow=on; never ?snow=off. */
 .wc-intro__flake {
   display: none;
   position: absolute;
@@ -129,16 +182,77 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
   display: none;
 }
 
-/* Fully opaque from the first frame, so it always has its full contrast. */
+/* The snow covering the screen, cleared from left to right by the beam. */
+.wc-intro__snow {
+  position: absolute;
+  inset: 0;
+  /* Fine random grain (fractal noise, drawn once), soft uneven drifts, and a cold base. */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.68 0 0 0 0 0.78 0 0 0 -1.6 1.05'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")
+      0 0 / 240px 240px,
+    radial-gradient(60% 45% at 18% 22%, rgb(255 255 255 / 0.95), transparent 70%),
+    radial-gradient(55% 40% at 78% 35%, rgb(255 255 255 / 0.85), transparent 70%),
+    radial-gradient(70% 50% at 40% 85%, rgb(255 255 255 / 0.9), transparent 70%),
+    radial-gradient(45% 35% at 88% 88%, rgb(205 225 237 / 0.9), transparent 70%),
+    linear-gradient(180deg, #f3f8fb 0%, #e2eef4 55%, #cfe2ec 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0 46%, #000 54%);
+  mask-image: linear-gradient(90deg, transparent 0 46%, #000 54%);
+  -webkit-mask-size: 200% 100%;
+  mask-size: 200% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 110% 0;
+  mask-position: 110% 0;
+  animation: wc-intro-clear 0.7s cubic-bezier(0.45, 0, 0.35, 1) 0.15s both;
+}
+
+/* The clearing beam, moving exactly with the edge of the cleared snow. */
+.wc-intro__sweep {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: wc-intro-sweep 0.7s cubic-bezier(0.45, 0, 0.35, 1) 0.15s both;
+}
+
+.wc-intro__sweep::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -36px;
+  width: 72px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.9) 42%,
+    rgb(150 222 255 / 0.95) 58%,
+    transparent
+  );
+  filter: blur(6px);
+}
+
+.wc-intro__sweep span {
+  position: absolute;
+  top: var(--y);
+  left: 0;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px rgb(150 222 255 / 0.9);
+  animation: wc-intro-spray 0.42s ease-out var(--delay) infinite;
+}
+
 .wc-intro__skip {
   position: absolute;
   right: 1rem;
   bottom: 1rem;
+  z-index: 2;
   min-height: 2.75rem;
   padding: 0 1.25rem;
-  border: 1px solid rgb(255 255 255 / 0.55);
+  border: 1px solid rgb(255 255 255 / 0.6);
   border-radius: 999px;
-  background: rgb(6 27 35 / 0.65);
+  background: rgb(6 27 35 / 0.88); /* stays readable over the snow and the night background */
   color: #fff;
   font-weight: 600;
   font-size: 0.9375rem;
@@ -147,27 +261,84 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
 
 .wc-intro__skip:hover {
   border-color: #fff;
-  background: rgb(255 255 255 / 0.12);
+  background: rgb(11 38 49 / 0.95);
 }
 
-@keyframes wc-intro-arrive {
-  from {
-    opacity: 0;
-    transform: translateZ(-520px) rotateX(22deg) rotateY(-34deg) scale(0.72);
-  }
-  55% {
-    opacity: 1;
-  }
+@keyframes wc-intro-clear {
   to {
-    opacity: 1;
-    transform: none;
+    -webkit-mask-position: -10% 0;
+    mask-position: -10% 0;
   }
 }
 
 @keyframes wc-intro-sweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-10%);
+  }
+  8%,
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(110%);
+  }
+}
+
+@keyframes wc-intro-spray {
+  from {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
   to {
-    -webkit-mask-position: 0% 0;
-    mask-position: 0% 0;
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(0.4);
+  }
+}
+
+@keyframes wc-intro-slam {
+  from {
+    transform: translateZ(-180px) rotateY(-16deg) rotateX(8deg) scale(0.86);
+    filter: brightness(0.8);
+  }
+  to {
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes wc-intro-burst {
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+@keyframes wc-intro-shake {
+  0%,
+  100% {
+    transform: none;
+  }
+  20% {
+    transform: translate(-6px, 3px);
+  }
+  45% {
+    transform: translate(5px, -3px);
+  }
+  70% {
+    transform: translate(-3px, 2px);
+  }
+}
+
+@keyframes wc-intro-ring {
+  from {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.6);
   }
 }
 
@@ -182,16 +353,40 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
   }
 }
 
+@keyframes wc-intro-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes wc-intro-shine {
+  to {
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+  }
+}
+
 @keyframes wc-intro-fall {
   to {
     transform: translate3d(var(--drift), calc(100vh + 24px), 0);
   }
 }
 
-/* Each exit ends hidden, so the overlay is gone even if the script never marks it done. */
-@keyframes wc-intro-lift {
+@keyframes wc-intro-open-left {
   to {
-    transform: translateY(-100%);
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes wc-intro-open-right {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Each ending finishes hidden, so the overlay is gone even if the script never marks it done. */
+@keyframes wc-intro-end {
+  to {
     visibility: hidden;
   }
 }
@@ -199,7 +394,6 @@ html[data-snow='off'] .wc-intro .wc-intro__flake {
 @keyframes wc-intro-leave {
   to {
     opacity: 0;
-    transform: translateY(-6%);
     visibility: hidden;
   }
 }

@@ -7,8 +7,8 @@
 export const INTRO_VERSION = 1
 /** The intro greets the same browser at most once in this many days. */
 export const INTRO_REPEAT_DAYS = 30
-/** Logo arrives, light sweeps, curtain lifts: all over by this point (intro-animation.css). */
-export const INTRO_LENGTH_MS = 1500
+/** Snow is cleared, the logo lands, the screen bursts open: all over by this point (CSS). */
+export const INTRO_LENGTH_MS = 1800
 
 /** Whether this browser saw the current intro (or started a visit elsewhere) in the last N days. */
 export function introSeen(record: unknown, now: number, version: number, days: number): boolean {
