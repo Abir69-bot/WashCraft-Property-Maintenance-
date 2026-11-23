@@ -6,19 +6,19 @@ const page = (overrides: Partial<Parameters<typeof introWanted>[0]> = {}) => ({
   path: '/',
   search: '',
   referrer: '',
-  seen: false,
   ...overrides,
 })
 
 describe('introWanted', () => {
-  it('plays when a visit starts on the home page', () => {
+  it('plays whenever the home page is opened directly or from another site', () => {
     expect(introWanted(page())).toBe(true)
     expect(introWanted(page({ referrer: 'https://www.facebook.com/' }))).toBe(true)
+    expect(introWanted(page({ referrer: 'https://www.washcraft.ca/services' }))).toBe(true)
   })
 
-  it('never plays on other pages, or twice in one visit', () => {
+  it('never plays on other pages', () => {
     expect(introWanted(page({ path: '/services/gutter-cleaning' }))).toBe(false)
-    expect(introWanted(page({ seen: true }))).toBe(false)
+    expect(introWanted(page({ path: '/quote' }))).toBe(false)
   })
 
   it('lets search, ad and tagged-link visitors straight in', () => {
@@ -38,10 +38,9 @@ describe('introWanted', () => {
     expect(introWanted(page({ referrer: 'https://mygoogle.example.com/' }))).toBe(true)
   })
 
-  it('plays on demand with ?intro=on', () => {
-    expect(introWanted(page({ path: '/about', seen: true, search: '?intro=on' }))).toBe(true)
-    expect(introWanted(page({ search: '?intro=only' }))).toBe(true)
-    expect(introWanted(page({ seen: true, search: '?intro=only' }))).toBe(false)
+  it('plays on any page with ?intro=on', () => {
+    expect(introWanted(page({ path: '/about', search: '?intro=on' }))).toBe(true)
+    expect(introWanted(page({ path: '/about', search: '?intro=only' }))).toBe(false)
   })
 })
 
